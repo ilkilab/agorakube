@@ -1,0 +1,22 @@
+---
+- name: Install apt repo longsleep/golang-backports
+  apt_repository:
+    repo: 'ppa:longsleep/golang-backports'
+    state: present
+
+- name: Install go
+  apt:
+    name: golang-go
+    state: present
+    update_cache: yes
+
+#- name: add gopath
+#  lineinfile:
+#    path: /root/.bash_profile
+#    line: 'export GOPATH=$HOME/go'
+#    create: yes
+#  register: update_profile
+
+#- name: update env variables
+#  shell: source /root/.bash_profile
+#  when: update_profile.changed|lower == "true"

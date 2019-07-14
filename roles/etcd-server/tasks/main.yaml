@@ -1,0 +1,23 @@
+---
+- name: Download etcd binaries
+  unarchive:
+    src: https://github.com/etcd-io/etcd/releases/download/v3.3.13/etcd-v3.3.13-linux-amd64.tar.gz
+    dest: /usr/bin
+    remote_src: yes
+
+- name: create folder /var/lib/etcd
+  file: 
+    path: /var/lib/etcd
+    state: directory
+
+- name: Import etcd.service
+  copy:
+    src: /tmp/kubernetes/configs/etcd/{{ansible_hostname}}/etcd.service 
+    dest: /etc/systemd/system/etcd.service
+  notify:
+    - Restart etcd
+- name: Run etcd
+  systemd:
+    state: started
+    daemon_reload: yes
+    name: etcd

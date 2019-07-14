@@ -1,0 +1,109 @@
+---
+- name: Creatopn dossiers /etc/kubernetes/pki /etc/kubernetes/pki/etcd
+  file:
+    path: "{{ item }}"
+    state: directory
+  with_items:
+    - /etc/kubernetes
+    - /etc/kubernetes/pki
+    - /etc/kubernetes/pki/etcd
+
+- name: Import certificates etcd/ca.key
+  copy:
+    src: /tmp/kubernetes/certificates/intermediate/etcd-ca/etcd-ca-key.pem
+    dest: /etc/kubernetes/pki/etcd/ca.key
+
+- name: Import certificates etcd/ca.crt
+  copy:
+    src: /tmp/kubernetes/certificates/intermediate/etcd-ca/signed/etcd-ca.pem
+    dest: /etc/kubernetes/pki/etcd/ca.crt
+
+- name: Import kubernetes ca.key
+  copy:
+    src: /tmp/kubernetes/certificates/intermediate/kubernetes-ca/kubernetes-ca-key.pem
+    dest: /etc/kubernetes/pki/ca.key
+
+- name: Import kubernetes ca.key
+  copy:
+    src: /tmp/kubernetes/certificates/intermediate/kubernetes-ca/signed/kubernetes-ca.pem
+    dest: /etc/kubernetes/pki/ca.crt
+
+- name: Import front-proxy-ca.key
+  copy:
+    src: /tmp/kubernetes/certificates/intermediate/kubernetes-front-proxy-ca/kubernetes-front-proxy-ca-key.pem
+    dest: /etc/kubernetes/pki/front-proxy-ca.key
+
+- name: Import front-proxy-ca.crt
+  copy:
+    src: /tmp/kubernetes/certificates/intermediate/kubernetes-front-proxy-ca/signed/kubernetes-front-proxy-ca.pem
+    dest: /etc/kubernetes/pki/front-proxy-ca.crt
+
+- name: Import etcd/server.key
+  copy:
+    src: /tmp/kubernetes/certificates/end/kube-etcd/kube-etcd-key.pem
+    dest: /etc/kubernetes/pki/etcd/server.key
+
+- name: Import etcd/server.crt
+  copy:
+    src: /tmp/kubernetes/certificates/end/kube-etcd/kube-etcd.pem
+    dest: /etc/kubernetes/pki/etcd/server.crt
+
+- name: Import etcd/peer.key
+  copy:
+    src: /tmp/kubernetes/certificates/end/kube-etcd-peer/{{ ansible_hostname }}/kube-etcd-peer-key.pem
+    dest: /etc/kubernetes/pki/etcd/peer.key
+
+- name: Import etcd/peer.crt
+  copy:
+    src: /tmp/kubernetes/certificates/end/kube-etcd-peer/{{ ansible_hostname }}/kube-etcd-peer.pem
+    dest: /etc/kubernetes/pki/etcd/peer.crt
+
+- name: Import etcd/healthcheck-client.key
+  copy:
+    src: /tmp/kubernetes/certificates/end/kube-etcd-healthcheck-client/kube-etcd-healthcheck-client-key.pem
+    dest: /etc/kubernetes/pki/etcd/healthcheck-client.key
+
+- name: Import etcd/healthcheck-client.crt
+  copy:
+    src: /tmp/kubernetes/certificates/end/kube-etcd-healthcheck-client/kube-etcd-healthcheck-client.pem
+    dest: /etc/kubernetes/pki/etcd/healthcheck-client.crt
+
+- name: Import apiserver-etcd-client.key
+  copy:
+    src: /tmp/kubernetes/certificates/end/kube-apiserver-etcd-client/kube-apiserver-etcd-client-key.pem
+    dest: /etc/kubernetes/pki/apiserver-etcd-client.key
+
+- name: Import apiserver-etcd-client.crt
+  copy:
+    src: /tmp/kubernetes/certificates/end/kube-apiserver-etcd-client/kube-apiserver-etcd-client.pem
+    dest: /etc/kubernetes/pki/apiserver-etcd-client.crt
+
+- name: Import apiserver.key
+  copy:
+    src: /tmp/kubernetes/certificates/end/kube-apiserver/{{ansible_hostname}}/kube-apiserver-key.pem
+    dest: /etc/kubernetes/pki/apiserver.key
+
+- name: Import apiserver.crt
+  copy:
+    src: /tmp/kubernetes/certificates/end/kube-apiserver/{{ansible_hostname}}/kube-apiserver.pem
+    dest: /etc/kubernetes/pki/apiserver.crt
+
+- name: Import apiserver-kubelet-client.key
+  copy:
+    src: /tmp/kubernetes/certificates/end/kube-apiserver-kubelet-client/kube-apiserver-kubelet-client-key.pem
+    dest: /etc/kubernetes/pki/apiserver-kubelet-client.key
+
+- name: Import apiserver-kubelet-client.crt
+  copy:
+    src: /tmp/kubernetes/certificates/end/kube-apiserver-kubelet-client/kube-apiserver-kubelet-client.pem
+    dest: /etc/kubernetes/pki/apiserver-kubelet-client.crt
+
+- name: Import front-proxy-client.key
+  copy:
+    src: /tmp/kubernetes/certificates/end/front-proxy-client/front-proxy-client-key.pem
+    dest: /etc/kubernetes/pki/front-proxy-client.key
+
+- name: Import front-proxy-client.crt
+  copy:
+    src: /tmp/kubernetes/certificates/end/front-proxy-client/front-proxy-client.pem
+    dest: /etc/kubernetes/pki/front-proxy-client.crt

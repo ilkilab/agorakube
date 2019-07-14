@@ -1,0 +1,5 @@
+---
+- name: Install cfssl and cfssljson
+  include_tasks: install-cfssl-cfssljson.yaml
+- name: generate certificates and configs
+  include_tasks: gen-certs.yaml

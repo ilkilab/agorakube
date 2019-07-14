@@ -1,0 +1,20 @@
+{
+    "CN": "kube-etcd-peer",
+    "hosts": [
+        "localhost",
+        "127.0.0.1",
+        "{{ item.value.hostname  }}",
+        "{{ item.value.ip }}"
+    ],
+    "key": {
+        "algo": "rsa",
+        "size": 2048
+    },
+    "names": [
+        {
+            "C": "{{ c }}",
+            "ST": "{{ st }}",
+            "L": "{{ l }}"
+        }
+    ]
+}

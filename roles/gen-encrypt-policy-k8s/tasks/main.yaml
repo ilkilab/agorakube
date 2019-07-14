@@ -1,0 +1,9 @@
+---
+- name: generate /tmp/kubernetes/yaml/ folder
+  file:
+    path: /tmp/kubernetes/yaml
+    state: directory
+- name: genrate encrypt config file etcd in /tmp/kubernetes/yaml/encryption-provider-config.yaml
+  template:
+    src: encryption-provider-config.yaml.j2
+    dest: /tmp/kubernetes/yaml/encryption-provider-config.yaml

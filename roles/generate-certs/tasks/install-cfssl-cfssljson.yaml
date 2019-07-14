@@ -1,0 +1,7 @@
+---
+- name: Install cfssl and cfssljson
+  shell: bash <(curl -s https://raw.githubusercontent.com/ilkilab/docker-k8s-cri-scripts/master/install-cfssl-cfssljson-latest.sh)
+  args:
+    creates: /usr/bin/cfssljson
+  environment:
+    GOPATH: /root/go 

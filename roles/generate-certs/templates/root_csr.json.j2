@@ -1,0 +1,17 @@
+{
+    "CN": "{{ cn_root_ca  }}",
+    "key": {
+        "algo": "rsa",
+        "size": 2048
+    },
+    "names": [
+        {
+            "C": "{{ c }}",
+            "ST": "{{ st }}",
+            "L": "{{ l }}"
+        }
+    ],
+    "ca": {
+      "expiry": "{{ expiry }}"
+        }
+}

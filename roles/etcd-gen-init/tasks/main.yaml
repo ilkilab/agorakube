@@ -1,0 +1,21 @@
+---
+- name: Create folders
+  file:
+    path: "{{item}}"
+    state: directory
+  with_items:
+    - /tmp/kubernetes
+    - /tmp/kubernetes/configs
+    - /tmp/kubernetes/configs/etcd
+
+- name: Generate folder etcd hosts
+  file:
+    path: /tmp/kubernetes/configs/etcd/{{item.value.hostname }}
+    state: directory
+  with_dict: "{{ etcd }}"
+
+- name: Generate etcd.service
+  template:
+    src: etcd.service.j2
+    dest: /tmp/kubernetes/configs/etcd/{{ item.value.hostname }}/etcd.service
+  with_dict: "{{ etcd }}"

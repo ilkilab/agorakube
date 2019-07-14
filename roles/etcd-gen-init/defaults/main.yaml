@@ -1,0 +1,52 @@
+---
+cn_root_ca: ilkilabs
+c: FR
+st: Ile-De-France
+l: Paris
+expiry: 87600h
+advertise_ip_masters: 84.39.47.22
+
+masters:
+  master-k8s-3:
+    hostname: master-k8s-3
+    ip: 10.20.20.7
+    public_ip: 84.39.43.114
+  master-k8s-2:
+    hostname: master-k8s-2
+    ip: 10.20.20.8
+    public_ip: 84.39.42.223
+  master-k8s-1:
+    hostname: master-k8s-1
+    ip: 10.20.20.6
+    public_ip: 84.39.47.22
+  k8s-1:
+    hostname: k8s-1
+    ip: 10.20.20.4
+    public_ip: 84.39.47.11
+etcd:
+  master-k8s-3:
+    hostname: master-k8s-3
+    ip: 10.20.20.7
+    public_ip: 84.39.43.114
+  master-k8s-2:
+    hostname: master-k8s-2
+    ip: 10.20.20.8
+    public_ip: 84.39.42.223
+  master-k8s-1:
+    hostname: master-k8s-1
+    ip: 10.20.20.6
+    public_ip: 84.39.47.22
+  k8s-1:
+    hostname: k8s-1
+    ip: 10.20.20.4
+    public_ip: 84.39.47.11
+workers:
+  worker-k8s-2:
+    hostname: worker-k8s-2
+    ip: 10.20.20.9
+  worker-k8s-1:
+    hostname: worker-k8s-1
+    ip: 10.20.20.5
+
+
+etcd_initial_cluster: master-k8s-3=https://10.20.20.7:2380,master-k8s-2=https://10.20.20.8:2380,master-k8s-1=https://10.20.20.6:2380
