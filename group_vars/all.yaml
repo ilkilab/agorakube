@@ -13,11 +13,11 @@ masters:
     public_ip: 84.39.43.114
   etcd-2:
     hostname: etcd-2
-    ip: 10.20.20.6
+    ip: 10.20.20.4
     public_ip: 84.39.42.223
   etcd-3:
     hostname: etcd-3
-    ip: 10.20.20.7
+    ip: 10.20.20.6
     public_ip: 84.39.47.22
 
 etcd:
@@ -27,11 +27,11 @@ etcd:
     public_ip: 84.39.43.114
   etcd-2:
     hostname: etcd-2
-    ip: 10.20.20.6
+    ip: 10.20.20.4
     public_ip: 84.39.42.223
   etcd-3:
     hostname: etcd-3
-    ip: 10.20.20.7
+    ip: 10.20.20.6
     public_ip: 84.39.47.22
 workers:
   worker-k8s-2:
@@ -40,4 +40,5 @@ workers:
   worker-k8s-1:
     hostname: worker-k8s-1
     ip: 10.20.20.5
-etcd_initial_cluster: etcd-1=https://10.20.20.5:2380,etcd-2=https://10.20.20.6:2380,etcd-3=https://10.20.20.7:2380
+etcd_initial_cluster: etcd-1=https://10.20.20.5:2380,etcd-2=https://10.20.20.4:2380,etcd-3=https://10.20.20.6:2380
+etcd_servers: https://10.20.20.5:2379,https://10.20.20.4:2379,https://10.20.20.6:2379

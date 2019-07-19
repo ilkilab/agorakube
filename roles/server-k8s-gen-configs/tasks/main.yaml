@@ -1,0 +1,12 @@
+---
+- name: Generate folder
+  file:
+    path: /tmp/kubernetes/configs/kube-apiserver/{{item.value.hostname}}
+    state: directory
+    recurse: true
+  with_dict: "{{masters}}"
+- name: generate kube-apiserver.service files
+  template:
+    src: kube-apiserver.service.j2 
+    dest: /tmp/kubernetes/configs/kube-apiserver/{{item.value.hostname}}/kube-apiserver.service
+  with_dict: "{{masters}}"

@@ -1,0 +1,50 @@
+---
+- name: Download Kubernetes server binaries
+  unarchive:
+    src: https://dl.k8s.io/v1.15.0/kubernetes-server-linux-amd64.tar.gz 
+    dest: /usr/local/bin
+    remote_src: yes
+    creates: /usr/local/bin/kubernetes/server/bin/kube-apiserver
+- name: Create /var/lib/kubernetes
+  file:
+    path: /var/lib/kubernetes
+    state: directory
+- name: Create /etc/kubernetes/config
+  file:
+    path: /etc/kubernetes/config
+    state: directory
+- name: Inject kube-encrypt config
+  copy:
+    src: /tmp/kubernetes/yaml/encryption-provider-config.yaml
+    dest: /var/lib/kubernetes/encryption-provider-config.yaml
+
+- name: Import kube-apiserver.service
+  copy:
+    src: /tmp/kubernetes/configs/kube-apiserver/{{ansible_hostname}}/kube-apiserver.service
+    dest: /etc/systemd/system/kube-apiserver.service
+
+- name: Import controller-manager.conf
+  copy:
+    src: /tmp/kubernetes/certificates/configs/controller-manager/controller-manager.conf
+    dest: /var/lib/kubernetes/controller-manager.conf
+- name: Import kube-apiserver.service
+  copy:
+    src: /tmp/kubernetes/configs/kube-apiserver/{{ansible_hostname}}/kube-apiserver.service
+    dest: /etc/systemd/system/kube-apiserver.service
+- name: Import kube scheduler yaml file config
+  copy:
+    src: kube-scheduler.yaml
+    dest: /etc/kubernetes/config/kube-scheduler.yaml
+- name: Import service unit kube-scheduler
+  copy:
+    src: kube-scheduler.yaml
+    dest: /etc/systemd/system/kube-scheduler.service
+- name: Load [] [] []
+  systemd:
+    state: restarted
+    daemon_reload: yes
+    name: "{{ item }}"
+  with_items:
+    - kube-apiserver
+    - kube-controller-manager
+    - kube-scheduler

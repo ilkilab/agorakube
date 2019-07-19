@@ -46,10 +46,10 @@
 deploy ansible_connection=local
 
 [masters]
-deploy ansible_connection=local
-etcd-1
-etcd-2
-etcd-3
+#deploy ansible_connection=local
+etcd-1 ip=10.20.20.5
+etcd-2 ip=10.20.20.4
+etcd-3 ip=10.20.20.6
 
 [etcd]
 #k8s-1 ansible_connection=local

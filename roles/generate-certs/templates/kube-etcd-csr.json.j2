@@ -2,6 +2,9 @@
     "CN": "kube-etcd",
     "hosts": [
         "localhost",
+{% for host in groups['masters'] %}
+        "{{ hostvars[host].ip}}",
+{% endfor %}
         "127.0.0.1"
     ],
     "key": {
