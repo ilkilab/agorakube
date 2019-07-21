@@ -57,5 +57,10 @@ etcd-1
 etcd-2
 etcd-3
 
-[workers]
+#[workers]
 
+
+#[masters:vars]
+#[workers:vars]
+#[etcd:vars]
+#[all:vars]

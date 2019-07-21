@@ -1,7 +1,7 @@
 
-apiVersion: componentconfig/v1alpha1
+apiVersion: kubescheduler.config.k8s.io/v1alpha1
 kind: KubeSchedulerConfiguration
 clientConnection:
-  kubeconfig: "/var/lib/kubernetes/kube-scheduler.kubeconfig"
+  kubeconfig: "/etc/kubernetes/manifests/kube-scheduler.yaml"
 leaderElection:
   leaderElect: true

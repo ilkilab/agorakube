@@ -4,7 +4,7 @@ c: FR
 st: Ile-De-France
 l: Paris
 expiry: 87600h
-advertise_ip_masters: 84.39.47.22
+advertise_ip_masters: 10.20.20.5
 encrypt_key_etcd: 1fJcKt6vBxMt+AkBanoaxFF2O6ytHIkETNgQWv4b/+Q=
 masters:
   etcd-1:

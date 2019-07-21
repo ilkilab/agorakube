@@ -1,4 +1,8 @@
 ---
+- name: Create /etc/kubernetes/manifests/
+  file:
+    path: /etc/kubernetes/manifests/
+    state: directory
 - name: Download Kubernetes server binaries
   unarchive:
     src: https://dl.k8s.io/v1.15.0/kubernetes-server-linux-amd64.tar.gz 
@@ -23,25 +27,34 @@
     src: /tmp/kubernetes/configs/kube-apiserver/{{ansible_hostname}}/kube-apiserver.service
     dest: /etc/systemd/system/kube-apiserver.service
 
-- name: Import controller-manager.conf
+- name: Import controller-manager.conf kubeconfig
   copy:
     src: /tmp/kubernetes/certificates/configs/controller-manager/controller-manager.conf
-    dest: /var/lib/kubernetes/controller-manager.conf
-- name: Import kube-apiserver.service
-  copy:
-    src: /tmp/kubernetes/configs/kube-apiserver/{{ansible_hostname}}/kube-apiserver.service
-    dest: /etc/systemd/system/kube-apiserver.service
+    dest: /etc/kubernetes/manifests/kube-controller-manager.yaml
+
+- name: Import kube-controller-manager.service
+  template:
+    src: kube-controller-manager.service.j2
+    dest: /etc/systemd/system/kube-controller-manager.service
+
 - name: Import kube scheduler yaml file config
   copy:
     src: kube-scheduler.yaml
     dest: /etc/kubernetes/config/kube-scheduler.yaml
+
+- name: Import /etc/kubernetes/manifests/kube-scheduler.yaml
+  copy:
+    src: /tmp/kubernetes/certificates/configs/scheduler/scheduler.conf
+    dest: /etc/kubernetes/manifests/kube-scheduler.yaml
+
 - name: Import service unit kube-scheduler
   copy:
-    src: kube-scheduler.yaml
+    src: kube-scheduler.service
     dest: /etc/systemd/system/kube-scheduler.service
-- name: Load [] [] []
+
+- name: Load [kube-apiserver] [kube-controller-manager] [kube-scheduler]
   systemd:
-    state: restarted
+    state: started
     daemon_reload: yes
     name: "{{ item }}"
   with_items:
