@@ -26,8 +26,6 @@
 # If you have multiple hosts following a pattern you can specify
 # them like this:
 
-## www[001:006].example.com
-
 # Ex 3: A collection of database servers in the 'dbservers' group
 
 ## [dbservers]
