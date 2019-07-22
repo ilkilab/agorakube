@@ -33,7 +33,6 @@
 ## db01.intranet.mydomain.net
 ## db02.intranet.mydomain.net
 ## 10.25.1.56
-## 10.25.1.57
 
 # Here's another example of host ranges, this time there are no
 # leading 0s:
