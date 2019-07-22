@@ -56,8 +56,9 @@
   systemd:
     state: started
     daemon_reload: yes
+    enabled: yes
     name: "{{ item }}"
   with_items:
     - kube-apiserver
-    - kube-controller-manager
-    - kube-scheduler
+#    - kube-controller-manager
+#    - kube-scheduler
