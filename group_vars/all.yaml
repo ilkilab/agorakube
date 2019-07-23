@@ -34,11 +34,14 @@ etcd:
     ip: 10.20.20.6
     public_ip: 84.39.47.22
 workers:
-  worker-k8s-2:
-    hostname: worker-k8s-2
+  worker-1:
+    hostname: worker-1
+    ip: 10.20.20.7
+  worker-2:
+    hostname: worker-2
     ip: 10.20.20.9
-  worker-k8s-1:
-    hostname: worker-k8s-1
-    ip: 10.20.20.5
+  worker-3:
+    hostname: worker-3
+    ip: 10.20.20.10
 etcd_initial_cluster: etcd-1=https://10.20.20.5:2380,etcd-2=https://10.20.20.4:2380,etcd-3=https://10.20.20.6:2380
 etcd_servers: https://10.20.20.5:2379,https://10.20.20.4:2379,https://10.20.20.6:2379

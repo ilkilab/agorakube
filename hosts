@@ -1,43 +1,3 @@
-# This is the default ansible 'hosts' file.
-#
-# It should live in /etc/ansible/hosts
-#
-#   - Comments begin with the '#' character
-#   - Blank lines are ignored
-#   - Groups of hosts are delimited by [header] elements
-#   - You can enter hostnames or ip addresses
-#   - A hostname/ip can be a member of multiple groups
-
-# Ex 1: Ungrouped hosts, specify before any group headers.
-
-## green.example.com
-## blue.example.com
-## 192.168.100.1
-## 192.168.100.10
-
-# Ex 2: A collection of hosts belonging to the 'webservers' group
-
-## [webservers]
-## alpha.example.org
-## beta.example.org
-## 192.168.1.100
-## 192.168.1.110
-
-# If you have multiple hosts following a pattern you can specify
-# them like this:
-
-# Ex 3: A collection of database servers in the 'dbservers' group
-
-## [dbservers]
-## 
-## db01.intranet.mydomain.net
-## db02.intranet.mydomain.net
-## 10.25.1.56
-
-# Here's another example of host ranges, this time there are no
-# leading 0s:
-
-## db-[99:101]-node.example.com
 
 [deploy]
 deploy ansible_connection=local
@@ -50,12 +10,14 @@ etcd-3 ip=10.20.20.6
 
 [etcd]
 #k8s-1 ansible_connection=local
-etcd-1
-etcd-2
-etcd-3
+etcd-1 ip=10.20.20.5
+etcd-2 ip=10.20.20.4
+etcd-3 ip=10.20.20.6
 
-#[workers]
-
+[workers]
+worker-1 ip=10.20.20.7
+worker-2 ip=10.20.20.9
+worker-3 ip=10.20.20.10
 
 #[masters:vars]
 #[workers:vars]

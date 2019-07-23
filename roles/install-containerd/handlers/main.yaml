@@ -1,0 +1,5 @@
+---
+- name: restart containerd
+  systemd:
+    state: restarted
+    name: containerd
