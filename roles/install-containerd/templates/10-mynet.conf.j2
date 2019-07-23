@@ -7,7 +7,7 @@
 	"ipMasq": true,
 	"ipam": {
 		"type": "host-local",
-		"subnet": "{{ cluster_cidr }}",
+		"subnet": "{{ pod_cidr }}",
 		"routes": [
 			{ "dst": "0.0.0.0/0" }
 		]

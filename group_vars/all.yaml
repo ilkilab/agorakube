@@ -46,3 +46,4 @@ workers:
 etcd_initial_cluster: etcd-1=https://10.20.20.5:2380,etcd-2=https://10.20.20.4:2380,etcd-3=https://10.20.20.6:2380
 etcd_servers: https://10.20.20.5:2379,https://10.20.20.4:2379,https://10.20.20.6:2379
 cluster_cidr: 10.200.0.0/16
+#service_cluster_ip_range: 10.200.55.0/24

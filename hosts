@@ -15,9 +15,9 @@ etcd-2 ip=10.20.20.4
 etcd-3 ip=10.20.20.6
 
 [workers]
-worker-1 ip=10.20.20.7
-worker-2 ip=10.20.20.9
-worker-3 ip=10.20.20.10
+worker-1 ip=10.20.20.7 pod_cidr=10.200.1.0/24
+worker-2 ip=10.20.20.9 pod_cidr=10.200.2.0/24
+worker-3 ip=10.20.20.10 pod_cidr=10.200.3.0/24
 
 #[masters:vars]
 #[workers:vars]
