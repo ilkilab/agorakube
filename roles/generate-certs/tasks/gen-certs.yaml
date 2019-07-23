@@ -25,6 +25,8 @@
     - /tmp/kubernetes/certificates/configs/kubelet
     - /tmp/kubernetes/certificates/configs/controller-manager
     - /tmp/kubernetes/certificates/configs/scheduler
+    - /tmp/kubernetes/certificates/configs/proxier
+
 - name: create ca_root_csr file
   template:
     src: root_csr.json.j2
@@ -153,7 +155,7 @@
     - { name: 'admin', o: 'system:masters', cname: 'kubernetes-admin' }
     - { name: 'controller-manager', o: '', cname: 'system:kube-controller-manager' }
     - { name: 'scheduler', o: '', cname: 'system:kube-scheduler' }
-
+    - { name: 'proxier', o: '', cname: 'system:kube-proxy' }
 - name: generation des certificats pour [admin] [controller-manager] [scheduler]
   shell: 'cfssl gencert -ca /tmp/kubernetes/certificates/intermediate/kubernetes-ca/signed/kubernetes-ca.pem -ca-key /tmp/kubernetes/certificates/intermediate/kubernetes-ca/kubernetes-ca-key.pem  /tmp/kubernetes/certificates/configs/{{ item }}/{{ item }}-csr.json | cfssljson -bare /tmp/kubernetes/certificates/configs/{{ item }}/{{ item }}'
   args:
@@ -162,6 +164,7 @@
     - admin
     - controller-manager
     - scheduler
+    - proxier
 
 - name: generate arbo kubelet for masters
   file:
@@ -199,6 +202,16 @@
     creates: /tmp/kubernetes/certificates/configs/kubelet/{{ item.value.hostname }}/kubelet-key.pem
   with_dict: "{{ workers }}"
 
+- name: Generation fichier de configuration kubeconfig pour [proxier]
+  shell: "{{ item }}"
+  args:
+    creates: /tmp/kubernetes/certificates/configs/proxier/proxier.flag
+  with_items:
+    - KUBECONFIG=/tmp/kubernetes/certificates/configs/proxier/proxier.conf kubectl config set-cluster default-cluster --server=https://{{advertise_ip_masters}}:6443 --certificate-authority /tmp/kubernetes/certificates/intermediate/kubernetes-ca/signed/kubernetes-ca.pem --embed-certs
+    - KUBECONFIG=/tmp/kubernetes/certificates/configs/proxier/proxier.conf kubectl config set-credentials system:kube-proxy --client-key /tmp/kubernetes/certificates/configs/proxier/proxier-key.pem --client-certificate /tmp/kubernetes/certificates/configs/proxier/proxier.pem --embed-certs
+    - KUBECONFIG=/tmp/kubernetes/certificates/configs/proxier/proxier.conf kubectl config set-context default-system --cluster default-cluster --user system:kube-proxy
+    - KUBECONFIG=/tmp/kubernetes/certificates/configs/proxier/proxier.conf kubectl config use-context default-system
+    - touch /tmp/kubernetes/certificates/configs/proxier/proxier.flag
 
 - name: Generation fichier de configuration kubeconfig pour [admin]
   shell: "{{ item }}"
@@ -221,6 +234,7 @@
     - KUBECONFIG=/tmp/kubernetes/certificates/configs/controller-manager/controller-manager.conf kubectl config set-context default-system --cluster default-cluster --user default-controller-manager
     - KUBECONFIG=/tmp/kubernetes/certificates/configs/controller-manager/controller-manager.conf kubectl config use-context default-system
     - touch /tmp/kubernetes/certificates/configs/controller-manager/controller-manager.flag
+
 - name: Generation fichier de configuration kubeconfig pour [scheduler]
   shell: "{{ item }}"
   args:

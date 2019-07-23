@@ -1,9 +1,9 @@
 ---
 - hosts: deploy
   roles:
-    - install-kubectl
-    - install-go
+#    - install-kubectl
+#    - install-go
     - generate-certs
-    - gen-encrypt-policy-k8s
-    - etcd-gen-init
-    - server-k8s-gen-configs
+#    - gen-encrypt-policy-k8s
+#    - etcd-gen-init
+#    - server-k8s-gen-configs

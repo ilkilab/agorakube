@@ -16,11 +16,14 @@
   copy:
     src: kubelet.service
     dest: /etc/systemd/system/kubelet.service
-
+  notify:
+    - restart kubelet
 - name: Create kubelet config file
   template:
     src: kubelet-config.yaml.j2
-    dest: /etc/kubernetes/kubelet-config.yaml 
+    dest: /etc/kubernetes/kubelet-config.yaml
+  notify:
+    - restart kubelet 
 - name: Create /etc/kubernetes/manifests directory
   file:
     path: /etc/kubernetes/manifests
@@ -29,16 +32,26 @@
   copy:
     src: /tmp/kubernetes/certificates/configs/kubelet/{{ ansible_hostname }}/kubelet.config 
     dest: /etc/kubernetes/manifests/kubelet.conf
-
+  notify:
+    - restart kubelet
 - name: Create kube-proxy service
   copy:
     src: kube-proxy.service
     dest: /etc/systemd/system/kube-proxy.service
-
+  notify:
+    - restart kube-proxy
 - name: Create kube-proxy config file
   template:
     src: kube-proxy-config.yaml.j2
     dest: /etc/kubernetes/kube-proxy-config.yaml
+  notify:
+    - restart kube-proxy
+- name: Inporte proxier kubeconfig
+  copy:
+    src: /tmp/kubernetes/certificates/configs/proxier/proxier.conf
+    dest: /etc/kubernetes/manifests/proxier.conf
+  notify:
+    - restart kube-proxy
 - name: Start kubelet and kube-proxy services
   systemd:
     state: started
