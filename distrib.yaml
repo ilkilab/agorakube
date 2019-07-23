@@ -24,3 +24,4 @@
   roles:
     - install-go
     - setup-master
+    - install-kubectl

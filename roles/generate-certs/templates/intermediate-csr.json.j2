@@ -4,6 +4,10 @@
         "algo": "rsa",
         "size": 2048
     },
+    "hosts": [
+        "{{ advertise_ip_masters }}",
+        "127.0.0.1"
+    ],
     "names": [
         {
             "C": "{{ c }}",
