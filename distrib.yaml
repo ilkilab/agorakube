@@ -25,3 +25,12 @@
     - install-go
     - setup-master
     - install-kubectl
+
+- hosts: workers
+  become: true
+  roles:
+  - import-certs
+  - install-go
+  - install-kubectl
+  - install-containerd
+  - setup-worker
