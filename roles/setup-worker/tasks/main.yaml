@@ -1,0 +1,14 @@
+---
+- name: Install packages [socat] [conntrack] [ipset]
+  apt:
+    name: ["socat", "conntrack", "ipset"]
+    state: latest
+    update_cache: yes
+
+- name: Download Kubernetes node binaries
+  unarchive:
+    src: https://dl.k8s.io/v1.15.0/kubernetes-node-linux-amd64.tar.gz 
+    dest: /usr/local/bin
+    remote_src: yes
+    creates: /usr/local/bin/kubernetes/node/bin/kubelet
+

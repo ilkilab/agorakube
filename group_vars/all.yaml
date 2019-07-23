@@ -45,3 +45,4 @@ workers:
     ip: 10.20.20.10
 etcd_initial_cluster: etcd-1=https://10.20.20.5:2380,etcd-2=https://10.20.20.4:2380,etcd-3=https://10.20.20.6:2380
 etcd_servers: https://10.20.20.5:2379,https://10.20.20.4:2379,https://10.20.20.6:2379
+cluster_cidr: 10.200.0.0/16
