@@ -1,0 +1,9 @@
+---
+- name: Create /root/.kube directory
+  file:
+    path: /root/.kube
+    state: directory
+- name: Inject Kubeconfig
+  copy:
+    src: /tmp/kubernetes/certificates/configs/admin/admin.conf 
+    dest: /root/.kube/config

@@ -25,7 +25,7 @@
     - install-go
     - setup-master
     - install-kubectl
-
+    - configure-kubeconfig
 - hosts: workers
   become: true
   roles:
@@ -34,3 +34,4 @@
   - install-kubectl
   - install-containerd
   - setup-worker
+  - configure-kubeconfig
