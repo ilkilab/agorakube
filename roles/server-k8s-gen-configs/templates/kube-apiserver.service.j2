@@ -14,7 +14,6 @@ ExecStart=/usr/local/bin/kubernetes/server/bin/kube-apiserver \
   --authorization-mode=Node,RBAC \
   --bind-address=0.0.0.0 \
   --client-ca-file=/etc/kubernetes/pki/ca.crt \
-  --enable-admission-plugins=NamespaceLifecycle,LimitRanger,ServiceAccount,DefaultStorageClass,DefaultTolerationSeconds,MutatingAdmissionWebhook,ValidatingAdmissionWebhook,Priority,ResourceQuota,PodSecurityPolicy \
   --enable-swagger-ui=true \
   --etcd-cafile=/etc/kubernetes/pki/etcd/ca.crt \
   --etcd-certfile=/etc/kubernetes/pki/apiserver-etcd-client.crt \
