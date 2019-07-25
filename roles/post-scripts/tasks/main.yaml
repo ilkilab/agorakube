@@ -5,3 +5,6 @@
 - name: Include label workers
   include_tasks: label-workers.yaml
   when: label_workers
+- name: Deploy CoreDNS to K8S
+  include_tasks: coredns.yaml
+  when: dns_server_soft == 'coredns'

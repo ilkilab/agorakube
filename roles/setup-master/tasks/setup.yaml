@@ -69,3 +69,4 @@
     line: "{{ hostvars[item].ip }} {{ hostvars[item].hostname }}"
     create: yes
   with_items:  "{{ groups['workers'] }}"
+  when: populate_etc_hosts

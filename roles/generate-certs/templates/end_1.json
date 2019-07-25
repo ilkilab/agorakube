@@ -1,5 +1,12 @@
 {
     "CN": "{{ item.name }}",
+    "hosts": [
+{% for host in groups['workers'] %}
+        "{{ hostvars[host].ip}}",
+        "{{ hostvars[host].hostname}}",
+{% endfor %}
+        "127.0.0.1"
+    ],
     "key": {
         "algo": "rsa",
         "size": 2048

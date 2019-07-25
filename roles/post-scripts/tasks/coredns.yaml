@@ -1,0 +1,7 @@
+---
+- name: Generate CoreDNS resources file
+  template:
+    src: coredns.yaml.j2
+    dest: /tmp/kubernetes/coredns.yaml
+- name: Deploy CoreDNS to K8S Cluster
+  shell: kubectl create -f /tmp/kubernetes/coredns.yaml

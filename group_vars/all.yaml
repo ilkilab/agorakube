@@ -48,3 +48,4 @@ etcd_servers: https://10.20.20.5:2379,https://10.20.20.4:2379,https://10.20.20.6
 cluster_cidr: 10.244.0.0/16
 #service_cluster_ip_range: 10.200.55.0/24
 runtime: containerd
+populate_etc_hosts: yes
