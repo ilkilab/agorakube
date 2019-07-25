@@ -1,4 +1,4 @@
---- 
+---
 - hosts: deploy
   roles:
     - install-kubectl
@@ -32,6 +32,14 @@
   - import-certs
   - install-go
   - install-kubectl
-  - install-containerd
+  - install-runtimes
   - setup-worker
   - configure-kubeconfig
+
+- hosts: deploy
+  become: true
+  roles:
+    - install-go
+    - install-kubectl
+    - configure-kubeconfig
+    - post-scripts

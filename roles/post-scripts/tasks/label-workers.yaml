@@ -1,0 +1,4 @@
+---
+- name: Label Workers nodes as workers
+  shell: "kubectl label node {{item}}  node-role.kubernetes.io/worker="
+  with_items: "{{ groups['workers'] }}"

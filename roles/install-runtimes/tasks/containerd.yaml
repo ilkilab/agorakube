@@ -71,7 +71,6 @@
     dest: /etc/cni/net.d/99-loopback.conf
   notify:
     - restart containerd
-
 - name: Create /opt/cni/bin/ directory
   file:
     path: /opt/cni/bin/
@@ -79,14 +78,14 @@
 
 - name: Download CNI 0.8.1
   unarchive:
-    src: https://github.com/containernetworking/plugins/releases/download/v0.8.1/cni-plugins-linux-amd64-v0.8.1.tgz 
+    src: https://github.com/containernetworking/plugins/releases/download/v0.8.1/cni-plugins-linux-amd64-v0.8.1.tgz
     dest: /opt/cni/bin/
     remote_src: yes
     creates: /opt/cni/bin/bridge
   notify:
     - restart containerd
 
-- name: Start Containerd
+- name: Start Runtime
   systemd:
     state: started
     name: containerd

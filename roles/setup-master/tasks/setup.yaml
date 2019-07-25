@@ -62,3 +62,10 @@
     - kube-apiserver
     - kube-controller-manager
     - kube-scheduler
+
+- name: Configure /etc/hosts
+  lineinfile:
+    path: /etc/hosts
+    line: "{{ hostvars[item].ip }} {{ hostvars[item].hostname }}"
+    create: yes
+  with_items:  "{{ groups['workers'] }}"

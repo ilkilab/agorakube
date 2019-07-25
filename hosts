@@ -10,14 +10,14 @@ etcd-3 ip=10.20.20.6
 
 [etcd]
 #k8s-1 ansible_connection=local
-etcd-1 ip=10.20.20.5
-etcd-2 ip=10.20.20.4
-etcd-3 ip=10.20.20.6
+etcd-1 hostname=etcd-1 ip=10.20.20.5
+etcd-2 hostname=etcd-2 ip=10.20.20.4
+etcd-3 hostname=etcd-3 ip=10.20.20.6
 
 [workers]
-worker-1 ip=10.20.20.7 pod_cidr=10.244.1.0/24
-worker-2 ip=10.20.20.9 pod_cidr=10.244.2.0/24
-worker-3 ip=10.20.20.10 pod_cidr=10.244.3.0/24
+worker-1 hostname=worker-1 ip=10.20.20.7 pod_cidr=10.244.1.0/24
+worker-2 hostname=worker-2 ip=10.20.20.9 pod_cidr=10.244.2.0/24
+worker-3 hostname=worker-3 ip=10.20.20.10 pod_cidr=10.244.3.0/24
 
 #[masters:vars]
 #[workers:vars]
