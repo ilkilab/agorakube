@@ -1,6 +1,0 @@
----
-- hosts: masters
-  become: true
-  roles:
-    - install-go
-    - setup-master

@@ -1,52 +1,20 @@
 ---
+
+# CERTIFICATES
 cn_root_ca: ilkilabs
 c: FR
 st: Ile-De-France
 l: Paris
 expiry: 87600h
+
+
 advertise_ip_masters: 10.20.20.5
 encrypt_key_etcd: 1fJcKt6vBxMt+AkBanoaxFF2O6ytHIkETNgQWv4b/+Q=
-masters:
-  etcd-1:
-    hostname: etcd-1
-    ip: 10.20.20.5
-    public_ip: 84.39.43.114
-  etcd-2:
-    hostname: etcd-2
-    ip: 10.20.20.4
-    public_ip: 84.39.42.223
-  etcd-3:
-    hostname: etcd-3
-    ip: 10.20.20.6
-    public_ip: 84.39.47.22
-
-etcd:
-  etcd-1:
-    hostname: etcd-1
-    ip: 10.20.20.5
-    public_ip: 84.39.43.114
-  etcd-2:
-    hostname: etcd-2
-    ip: 10.20.20.4
-    public_ip: 84.39.42.223
-  etcd-3:
-    hostname: etcd-3
-    ip: 10.20.20.6
-    public_ip: 84.39.47.22
-workers:
-  worker-1:
-    hostname: worker-1
-    ip: 10.20.20.7
-  worker-2:
-    hostname: worker-2
-    ip: 10.20.20.9
-  worker-3:
-    hostname: worker-3
-    ip: 10.20.20.10
 etcd_initial_cluster: etcd-1=https://10.20.20.5:2380,etcd-2=https://10.20.20.4:2380,etcd-3=https://10.20.20.6:2380
 etcd_servers: https://10.20.20.5:2379,https://10.20.20.4:2379,https://10.20.20.6:2379
 cluster_cidr: 10.244.0.0/16
-#service_cluster_ip_range: 10.200.55.0/24
+service_cluster_ip_range: 10.32.0.0/24
 runtime: containerd
 populate_etc_hosts: yes
 kubernetes_service: 10.32.0.1
+cluster_dns_ip: 10.32.0.10

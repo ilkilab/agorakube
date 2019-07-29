@@ -1,6 +1,0 @@
----
-- hosts: etcd
-  become: true
-  roles:
-    - install-go
-    - etcd-server

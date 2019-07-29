@@ -1,5 +1,0 @@
----
-- hosts: etcd
-  become: true
-  roles:
-    - import-certs 

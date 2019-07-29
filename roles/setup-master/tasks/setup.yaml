@@ -66,7 +66,7 @@
 - name: Configure /etc/hosts
   lineinfile:
     path: /etc/hosts
-    line: "{{ hostvars[item].ip }} {{ hostvars[item].hostname }}"
+    line: "{{ hostvars[item].ip }} {{ item }}"
     create: yes
   with_items:  "{{ groups['workers'] }}"
   when: populate_etc_hosts
