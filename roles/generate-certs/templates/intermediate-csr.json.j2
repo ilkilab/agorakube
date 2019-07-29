@@ -6,7 +6,7 @@
     },
     "hosts": [
         "{{ advertise_ip_masters }}",
-        "10.32.0.1",
+        "{{kubernetes_service}}",
 {% for host in groups['workers'] %}
         "{{ hostvars[host].ip}}",
         "{{ hostvars[host].hostname}}",

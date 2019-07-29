@@ -49,3 +49,4 @@ cluster_cidr: 10.244.0.0/16
 #service_cluster_ip_range: 10.200.55.0/24
 runtime: containerd
 populate_etc_hosts: yes
+kubernetes_service: 10.32.0.1
