@@ -4,7 +4,7 @@ Documentation=https://github.com/kubernetes/kubernetes
 
 [Service]
 ExecStart=/usr/local/bin/kubernetes/server/bin/kube-apiserver \
-  --advertise-address={{item.value.ip}} \
+  --advertise-address={{ hostvars[item].ip}} \
   --allow-privileged=true \
   --apiserver-count={{ groups['masters'] | length }} \
   --audit-log-maxage=30 \
@@ -26,7 +26,7 @@ ExecStart=/usr/local/bin/kubernetes/server/bin/kube-apiserver \
   --kubelet-client-key=/etc/kubernetes/pki/apiserver-kubelet-client.key \
   --kubelet-https=true \
   --runtime-config=api/all \
-  --service-cluster-ip-range=10.32.0.0/24 \
+  --service-cluster-ip-range={{service_cluster_ip_range}} \
   --service-node-port-range=30000-32767 \
   --tls-cert-file=/etc/kubernetes/pki/ca.crt \
   --tls-private-key-file=/etc/kubernetes/pki/ca.key \
