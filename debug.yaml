@@ -1,0 +1,10 @@
+---
+- hosts: deploy
+  vars:
+    message: ''
+  tasks:
+  - name: lol
+    debug:
+      msg: "{{ message + item   }}"
+    with_items: "{{ groups['etcd'] }}"
+    register: message
