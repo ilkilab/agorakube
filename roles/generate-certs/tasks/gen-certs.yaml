@@ -98,9 +98,9 @@
 
 - name: generation dossiers serveurs etcd dans /tmp/kubernetes/certificates/end/kube-apiserver/[serveur_name]
   file:
-    path: /tmp/kubernetes/certificates/end/kube-apiserver/{{item.value.hostname}}
+    path: /tmp/kubernetes/certificates/end/kube-apiserver/{{item}}
     state: directory
-  with_dict: "{{ masters }}"
+  with_items: "{{ groups['masters'] }}"
 
 - name: generation de la configuration du ca final kube-apiserver
   template:

@@ -3,8 +3,8 @@
     "hosts": [
         "localhost",
         "127.0.0.1",
-        "{{ item.value.hostname  }}",
-        "{{ item.value.ip }}"
+        "{{ hostvars[item].ip}}",
+        "{{ hostvars[item].hostname}}"
     ],
     "key": {
         "algo": "rsa",
