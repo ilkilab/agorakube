@@ -10,12 +10,12 @@
 
 - name: Generate folder etcd hosts
   file:
-    path: /tmp/kubernetes/configs/etcd/{{item.value.hostname }}
+    path: /tmp/kubernetes/configs/etcd/{{item }}
     state: directory
-  with_dict: "{{ etcd }}"
+  with_items: "{{ groups['etcd'] }}"
 
 - name: Generate etcd.service
   template:
     src: etcd.service.j2
-    dest: /tmp/kubernetes/configs/etcd/{{ item.value.hostname }}/etcd.service
-  with_dict: "{{ etcd }}"
+    dest: /tmp/kubernetes/configs/etcd/{{ item }}/etcd.service
+  with_items: "{{ groups['etcd'] }}"

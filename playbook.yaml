@@ -5,5 +5,5 @@
 #    - install-go
     - generate-certs
 #    - gen-encrypt-policy-k8s
-#    - etcd-gen-init
+    - etcd-gen-init
 #    - server-k8s-gen-configs

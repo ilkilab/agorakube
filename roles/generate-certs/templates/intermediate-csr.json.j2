@@ -9,7 +9,7 @@
         "{{kubernetes_service}}",
 {% for host in groups['workers'] %}
         "{{ hostvars[host].ip}}",
-        "{{ hostvars[host].hostname}}",
+        "{{ host }}",
 {% endfor %}
         "127.0.0.1"
     ],
