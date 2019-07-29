@@ -7,18 +7,15 @@
     - gen-encrypt-policy-k8s
     - etcd-gen-init
     - server-k8s-gen-configs
-
 - hosts: etcd
   become: true
   roles:
     - import-certs
-
 - hosts: etcd
   become: true
   roles:
     - install-go
     - etcd-server
-
 - hosts: masters
   become: true
   roles:
@@ -35,7 +32,6 @@
   - install-runtimes
   - setup-worker
   - configure-kubeconfig
-
 - hosts: deploy
   become: true
   roles:
