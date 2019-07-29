@@ -4,4 +4,6 @@
     src: coredns.yaml.j2
     dest: /tmp/kubernetes/coredns.yaml
 - name: Deploy CoreDNS to K8S Cluster
-  shell: kubectl create -f /tmp/kubernetes/coredns.yaml
+  shell: kubectl create -f /tmp/kubernetes/coredns.yaml  && touch /tmp/kubernetes/flags/coredns
+  args:
+    creates: /tmp/kubernetes/flags/coredns

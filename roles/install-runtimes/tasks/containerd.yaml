@@ -59,12 +59,12 @@
     state: directory
     recurse: yes
 
-- name: Push /etc/cni/net.d/10-mynet.conf cni configs
-  template:
-    src: 10-mynet.conf.j2
-    dest: /etc/cni/net.d/10-mynet.conf
-  notify:
-    - restart containerd
+#- name: Push /etc/cni/net.d/10-mynet.conf cni configs
+#  template:
+#    src: 10-mynet.conf.j2
+#    dest: /etc/cni/net.d/10-mynet.conf
+#  notify:
+#    - restart containerd
 - name: Puch /etc/cni/net.d/99-loopback.conf
   copy:
     src: 99-loopback.conf

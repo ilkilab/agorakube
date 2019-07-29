@@ -1,4 +1,8 @@
 ---
+- name: Create flag directory
+  file:
+    path: /tmp/kubernetes/flags
+    state: directory
 - name: Include Tasks Flannel
   include_tasks: flannel.yaml
   when: network-cni-plugin == 'flannel'
@@ -8,3 +12,6 @@
 - name: Deploy CoreDNS to K8S
   include_tasks: coredns.yaml
   when: dns_server_soft == 'coredns'
+- name: Install ingress
+  include_tasks: traefik.yaml
+  when: ingress_controller == 'traefik'
