@@ -81,15 +81,15 @@
 
 - name: generation dossiers serveurs etcd dans /tmp/kubernetes/certificates/end/kube-etcd-peer/[serveur_name]
   file:
-    path: /tmp/kubernetes/certificates/end/kube-etcd-peer/{{item.value.hostname}}
+    path: /tmp/kubernetes/certificates/end/kube-etcd-peer/{{item}}
     state: directory
-  with_dict: "{{ etcd }}"
+  with_items: "{{ groups['etcd'] }}"
 
 - name: generation de la configuration du ca final kube-etcd-peer 
   template:
     src: kube-etcd-peer-csr.json.j2
-    dest : /tmp/kubernetes/certificates/end/kube-etcd-peer/{{item.value.hostname}}/kube-etcd-peer-csr.json
-  with_dict: "{{ etcd }}"
+    dest : /tmp/kubernetes/certificates/end/kube-etcd-peer/{{item}}/kube-etcd-peer-csr.json
+  with_items: "{{ groups['etcd'] }}"
 
 - name: generation de la configuration du ca final kube-etcd
   template:
