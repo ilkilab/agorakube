@@ -1,8 +1,8 @@
 {
     "CN": "kube-apiserver",
     "hosts": [
-        "{{ item.value.ip }}",
-        "{{ item.value.hostname }}",
+        "{{ hostvars[item].ip}}",
+        "{{ hostvars[item].hostname }}",
         "{{ advertise_ip_masters }}",
         "kubernetes",
         "kubernetes.default",

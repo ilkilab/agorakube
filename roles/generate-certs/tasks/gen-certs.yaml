@@ -105,8 +105,8 @@
 - name: generation de la configuration du ca final kube-apiserver
   template:
     src: kube-apiserver-csr.json.j2
-    dest: /tmp/kubernetes/certificates/end/kube-apiserver/{{item.value.hostname}}/kube-apiserver-csr.json
-  with_dict: "{{ masters }}"
+    dest: /tmp/kubernetes/certificates/end/kube-apiserver/{{item}}/kube-apiserver-csr.json
+  with_items: "{{ groups['masters'] }}"
 
 - name: Config /tmp/kubernetes/certificates/intermediate/intermediate_to_end.json
   template:
@@ -121,10 +121,10 @@
     - kube-etcd-healthcheck-client 
     - kube-apiserver-etcd-client
 - name: generate certificate [kube-etcd-peer]
-  shell: 'cfssl gencert -ca /tmp/kubernetes/certificates/intermediate/etcd-ca/signed/etcd-ca.pem -ca-key /tmp/kubernetes/certificates/intermediate/etcd-ca/etcd-ca-key.pem  -config /tmp/kubernetes/certificates/intermediate/intermediate_to_end.json -profile client -profile server /tmp/kubernetes/certificates/end/kube-etcd-peer/{{item.value.hostname}}/kube-etcd-peer-csr.json | cfssljson -bare /tmp/kubernetes/certificates/end/kube-etcd-peer/{{item.value.hostname}}/kube-etcd-peer'
+  shell: 'cfssl gencert -ca /tmp/kubernetes/certificates/intermediate/etcd-ca/signed/etcd-ca.pem -ca-key /tmp/kubernetes/certificates/intermediate/etcd-ca/etcd-ca-key.pem  -config /tmp/kubernetes/certificates/intermediate/intermediate_to_end.json -profile client -profile server /tmp/kubernetes/certificates/end/kube-etcd-peer/{{item}}/kube-etcd-peer-csr.json | cfssljson -bare /tmp/kubernetes/certificates/end/kube-etcd-peer/{{item}}/kube-etcd-peer'
   args:
-    creates: /tmp/kubernetes/certificates/end/kube-etcd-peer/{{item.value.hostname}}/kube-etcd-peer-key.pem
-  with_dict: "{{ etcd }}"
+    creates: /tmp/kubernetes/certificates/end/kube-etcd-peer/{{item}}/kube-etcd-peer-key.pem
+  with_items: "{{ groups['etcd'] }}"
 
 - name: generate certificate [kube-etcd]
   shell: 'cfssl gencert -ca /tmp/kubernetes/certificates/intermediate/etcd-ca/signed/etcd-ca.pem -ca-key /tmp/kubernetes/certificates/intermediate/etcd-ca/etcd-ca-key.pem  -config /tmp/kubernetes/certificates/intermediate/intermediate_to_end.json -profile client -profile server /tmp/kubernetes/certificates/end/kube-etcd/kube-etcd-csr.json | cfssljson -bare /tmp/kubernetes/certificates/end/kube-etcd/kube-etcd'
@@ -132,10 +132,10 @@
     creates: /tmp/kubernetes/certificates/end/kube-etcd/kube-etcd-key.pem
 
 - name : generate certificate [kube-apiserver]
-  shell: 'cfssl gencert -ca /tmp/kubernetes/certificates/intermediate/kubernetes-ca/signed/kubernetes-ca.pem -ca-key /tmp/kubernetes/certificates/intermediate/kubernetes-ca/kubernetes-ca-key.pem  -config /tmp/kubernetes/certificates/intermediate/intermediate_to_end.json -profile server  /tmp/kubernetes/certificates/end/kube-apiserver/{{ item.value.hostname }}/kube-apiserver-csr.json | cfssljson -bare /tmp/kubernetes/certificates/end/kube-apiserver/{{ item.value.hostname }}/kube-apiserver'
+  shell: 'cfssl gencert -ca /tmp/kubernetes/certificates/intermediate/kubernetes-ca/signed/kubernetes-ca.pem -ca-key /tmp/kubernetes/certificates/intermediate/kubernetes-ca/kubernetes-ca-key.pem  -config /tmp/kubernetes/certificates/intermediate/intermediate_to_end.json -profile server  /tmp/kubernetes/certificates/end/kube-apiserver/{{ item }}/kube-apiserver-csr.json | cfssljson -bare /tmp/kubernetes/certificates/end/kube-apiserver/{{ item }}/kube-apiserver'
   args:
-    creates: /tmp/kubernetes/certificates/end/kube-apiserver/{{ item.value.hostname }}/kube-apiserver-key.pem
-  with_dict: "{{ masters }}"
+    creates: /tmp/kubernetes/certificates/end/kube-apiserver/{{ item }}/kube-apiserver-key.pem
+  with_items: "{{ groups['masters'] }}"
 
 - name: generate certificate [kube-apiserver-kubelet-client]
   shell: 'cfssl gencert -ca /tmp/kubernetes/certificates/intermediate/kubernetes-ca/signed/kubernetes-ca.pem -ca-key /tmp/kubernetes/certificates/intermediate/kubernetes-ca/kubernetes-ca-key.pem  -config /tmp/kubernetes/certificates/intermediate/intermediate_to_end.json -profile client  /tmp/kubernetes/certificates/end/kube-apiserver-kubelet-client/kube-apiserver-kubelet-client-csr.json | cfssljson -bare /tmp/kubernetes/certificates/end/kube-apiserver-kubelet-client/kube-apiserver-kubelet-client'
@@ -168,39 +168,39 @@
 
 - name: generate arbo kubelet for masters
   file:
-    path: /tmp/kubernetes/certificates/configs/kubelet/{{ item.value.hostname}}
+    path: /tmp/kubernetes/certificates/configs/kubelet/{{ item}}
     state: directory
-  with_dict: "{{ masters }}"
+  with_items: "{{ groups['masters'] }}"
 
 - name: generate arbo kubelet for workers
   file:
-    path: /tmp/kubernetes/certificates/configs/kubelet/{{ item.value.hostname}}
+    path: /tmp/kubernetes/certificates/configs/kubelet/{{item}}
     state: directory
-  with_dict: "{{ workers }}"
+  with_items: "{{ groups['workers'] }}"
 
 - name : generate configuration account kubelet masters
   template:
     src: config-kubelet-account.json.j2
-    dest:  /tmp/kubernetes/certificates/configs/kubelet/{{ item.value.hostname}}/config-kubelet-account.json
-  with_dict: "{{ masters }}"
+    dest:  /tmp/kubernetes/certificates/configs/kubelet/{{item}}/config-kubelet-account.json
+  with_items: "{{ groups['masters'] }}"
 
 - name: generation des certificats pour [kubelet] masters
-  shell: 'cfssl gencert -ca /tmp/kubernetes/certificates/intermediate/kubernetes-ca/signed/kubernetes-ca.pem -ca-key /tmp/kubernetes/certificates/intermediate/kubernetes-ca/kubernetes-ca-key.pem  /tmp/kubernetes/certificates/configs/kubelet/{{ item.value.hostname}}/config-kubelet-account.json | cfssljson -bare /tmp/kubernetes/certificates/configs/kubelet/{{ item.value.hostname }}/kubelet'
+  shell: 'cfssl gencert -ca /tmp/kubernetes/certificates/intermediate/kubernetes-ca/signed/kubernetes-ca.pem -ca-key /tmp/kubernetes/certificates/intermediate/kubernetes-ca/kubernetes-ca-key.pem  /tmp/kubernetes/certificates/configs/kubelet/{{ item }}/config-kubelet-account.json | cfssljson -bare /tmp/kubernetes/certificates/configs/kubelet/{{ item }}/kubelet'
   args:
-    creates: /tmp/kubernetes/certificates/configs/kubelet/{{ item.value.hostname }}/kubelet-key.pem
-  with_dict: "{{ masters }}"
+    creates: /tmp/kubernetes/certificates/configs/kubelet/{{ item }}/kubelet-key.pem
+  with_items: "{{ groups['masters'] }}"
 
 - name : generate configuration account kubelet workers
   template:
     src: config-kubelet-account.json.j2
-    dest:  /tmp/kubernetes/certificates/configs/kubelet/{{ item.value.hostname}}/config-kubelet-account.json
-  with_dict: "{{ workers }}"
+    dest:  /tmp/kubernetes/certificates/configs/kubelet/{{ item }}/config-kubelet-account.json
+  with_items: "{{ groups['workers'] }}"
 
 - name: generation des certificats pour [kubelet] workers
-  shell: 'cfssl gencert -ca /tmp/kubernetes/certificates/intermediate/kubernetes-ca/signed/kubernetes-ca.pem -ca-key /tmp/kubernetes/certificates/intermediate/kubernetes-ca/kubernetes-ca-key.pem  /tmp/kubernetes/certificates/configs/kubelet/{{ item.value.hostname}}/config-kubelet-account.json | cfssljson -bare /tmp/kubernetes/certificates/configs/kubelet/{{ item.value.hostname }}/kubelet'
+  shell: 'cfssl gencert -ca /tmp/kubernetes/certificates/intermediate/kubernetes-ca/signed/kubernetes-ca.pem -ca-key /tmp/kubernetes/certificates/intermediate/kubernetes-ca/kubernetes-ca-key.pem  /tmp/kubernetes/certificates/configs/kubelet/{{ item }}/config-kubelet-account.json | cfssljson -bare /tmp/kubernetes/certificates/configs/kubelet/{{ item }}/kubelet'
   args:
-    creates: /tmp/kubernetes/certificates/configs/kubelet/{{ item.value.hostname }}/kubelet-key.pem
-  with_dict: "{{ workers }}"
+    creates: /tmp/kubernetes/certificates/configs/kubelet/{{ item }}/kubelet-key.pem
+  with_items: "{{ groups['workers'] }}"
 
 - name: Generation fichier de configuration kubeconfig pour [proxier]
   shell: "{{ item }}"
@@ -247,62 +247,62 @@
     - touch /tmp/kubernetes/certificates/configs/scheduler/scheduler.flag
 
 - name: Generation fichier de configuration kubeconfig pour [kubelet] masters 1/4
-  shell: KUBECONFIG=/tmp/kubernetes/certificates/configs/kubelet/{{item.value.hostname}}/kubelet.config kubectl config set-cluster default-cluster --server=https://{{advertise_ip_masters}}:6443 --certificate-authority /tmp/kubernetes/certificates/intermediate/kubernetes-ca/signed/kubernetes-ca.pem --embed-certs
+  shell: KUBECONFIG=/tmp/kubernetes/certificates/configs/kubelet/{{item}}/kubelet.config kubectl config set-cluster default-cluster --server=https://{{advertise_ip_masters}}:6443 --certificate-authority /tmp/kubernetes/certificates/intermediate/kubernetes-ca/signed/kubernetes-ca.pem --embed-certs
   args:
-    creates: /tmp/kubernetes/certificates/configs/kubelet/{{item.value.hostname}}/kubelet.flag
-  with_dict: "{{ masters }}"
+    creates: /tmp/kubernetes/certificates/configs/kubelet/{{item}}/kubelet.flag
+  with_items: "{{ groups['masters'] }}"
 
 - name: Generation fichier de configuration kubeconfig pour [kubelet] masters 2/4
-  shell: KUBECONFIG=/tmp/kubernetes/certificates/configs/kubelet/{{item.value.hostname}}/kubelet.config kubectl config set-credentials default-auth --client-key /tmp/kubernetes/certificates/configs/kubelet/{{item.value.hostname}}/kubelet-key.pem --client-certificate /tmp/kubernetes/certificates/configs/kubelet/{{item.value.hostname}}/kubelet.pem --embed-certs
+  shell: KUBECONFIG=/tmp/kubernetes/certificates/configs/kubelet/{{item}}/kubelet.config kubectl config set-credentials default-auth --client-key /tmp/kubernetes/certificates/configs/kubelet/{{item}}/kubelet-key.pem --client-certificate /tmp/kubernetes/certificates/configs/kubelet/{{item}}/kubelet.pem --embed-certs
   args:
-    creates: /tmp/kubernetes/certificates/configs/kubelet/{{item.value.hostname}}/kubelet.flag
-  with_dict: "{{ masters }}"
+    creates: /tmp/kubernetes/certificates/configs/kubelet/{{item}}/kubelet.flag
+  with_items: "{{ groups['masters'] }}"
 
 - name: Generation fichier de configuration kubeconfig pour [kubelet] masters 3/4
-  shell: KUBECONFIG=/tmp/kubernetes/certificates/configs/kubelet/{{item.value.hostname}}/kubelet.config kubectl config set-context default-system --cluster default-cluster --user default-auth
+  shell: KUBECONFIG=/tmp/kubernetes/certificates/configs/kubelet/{{item}}/kubelet.config kubectl config set-context default-system --cluster default-cluster --user default-auth
   args:
-    creates: /tmp/kubernetes/certificates/configs/kubelet/{{item.value.hostname}}/kubelet.flag
-  with_dict: "{{ masters }}"
+    creates: /tmp/kubernetes/certificates/configs/kubelet/{{item}}/kubelet.flag
+  with_items: "{{ groups['masters'] }}"
 
 - name: Generation fichier de configuration kubeconfig pour [kubelet] masters 4/4
-  shell: KUBECONFIG=/tmp/kubernetes/certificates/configs/kubelet/{{item.value.hostname}}/kubelet.config kubectl config use-context default-system
+  shell: KUBECONFIG=/tmp/kubernetes/certificates/configs/kubelet/{{item}}/kubelet.config kubectl config use-context default-system
   args:
-    creates: /tmp/kubernetes/certificates/configs/kubelet/{{item.value.hostname}}/kubelet.flag
-  with_dict: "{{ masters }}"
+    creates: /tmp/kubernetes/certificates/configs/kubelet/{{item}}/kubelet.flag
+  with_items: "{{ groups['masters'] }}"
 
 - name: Create flags [Modifier plus tard !!]
   copy:
-    dest: /tmp/kubernetes/certificates/configs/kubelet/{{item.value.hostname}}/kubelet.flag
+    dest: /tmp/kubernetes/certificates/configs/kubelet/{{item}}/kubelet.flag
     content: ''
-  with_dict: "{{ masters }}"
+  with_items: "{{ groups['masters'] }}"
 
 
 - name: Generation fichier de configuration kubeconfig pour [kubelet] workers 1/4
-  shell: KUBECONFIG=/tmp/kubernetes/certificates/configs/kubelet/{{item.value.hostname}}/kubelet.config kubectl config set-cluster default-cluster --server=https://{{advertise_ip_masters}}:6443 --certificate-authority /tmp/kubernetes/certificates/intermediate/kubernetes-ca/signed/kubernetes-ca.pem --embed-certs
+  shell: KUBECONFIG=/tmp/kubernetes/certificates/configs/kubelet/{{item}}/kubelet.config kubectl config set-cluster default-cluster --server=https://{{advertise_ip_masters}}:6443 --certificate-authority /tmp/kubernetes/certificates/intermediate/kubernetes-ca/signed/kubernetes-ca.pem --embed-certs
   args:
-    creates: /tmp/kubernetes/certificates/configs/kubelet/{{item.value.hostname}}/kubelet.flag
-  with_dict: "{{ workers }}"
+    creates: /tmp/kubernetes/certificates/configs/kubelet/{{item}}/kubelet.flag
+  with_items: "{{ groups['workers'] }}"
 
 - name: Generation fichier de configuration kubeconfig pour [kubelet] workers 2/4
-  shell: KUBECONFIG=/tmp/kubernetes/certificates/configs/kubelet/{{item.value.hostname}}/kubelet.config kubectl config set-credentials default-auth --client-key /tmp/kubernetes/certificates/configs/kubelet/{{item.value.hostname}}/kubelet-key.pem --client-certificate /tmp/kubernetes/certificates/configs/kubelet/{{item.value.hostname}}/kubelet.pem --embed-certs
+  shell: KUBECONFIG=/tmp/kubernetes/certificates/configs/kubelet/{{item}}/kubelet.config kubectl config set-credentials default-auth --client-key /tmp/kubernetes/certificates/configs/kubelet/{{item}}/kubelet-key.pem --client-certificate /tmp/kubernetes/certificates/configs/kubelet/{{item}}/kubelet.pem --embed-certs
   args:
-    creates: /tmp/kubernetes/certificates/configs/kubelet/{{item.value.hostname}}/kubelet.flag
-  with_dict: "{{ workers }}"
+    creates: /tmp/kubernetes/certificates/configs/kubelet/{{item}}/kubelet.flag
+  with_items: "{{ groups['workers'] }}"
 
 - name: Generation fichier de configuration kubeconfig pour [kubelet] workers 3/4
-  shell: KUBECONFIG=/tmp/kubernetes/certificates/configs/kubelet/{{item.value.hostname}}/kubelet.config kubectl config set-context default-system --cluster default-cluster --user default-auth
+  shell: KUBECONFIG=/tmp/kubernetes/certificates/configs/kubelet/{{item}}/kubelet.config kubectl config set-context default-system --cluster default-cluster --user default-auth
   args:
-    creates: /tmp/kubernetes/certificates/configs/kubelet/{{item.value.hostname}}/kubelet.flag
-  with_dict: "{{ workers }}"
+    creates: /tmp/kubernetes/certificates/configs/kubelet/{{item}}/kubelet.flag
+  with_items: "{{ groups['workers'] }}"
 
 - name: Generation fichier de configuration kubeconfig pour [kubelet] workers 4/4
-  shell: KUBECONFIG=/tmp/kubernetes/certificates/configs/kubelet/{{item.value.hostname}}/kubelet.config kubectl config use-context default-system
+  shell: KUBECONFIG=/tmp/kubernetes/certificates/configs/kubelet/{{item}}/kubelet.config kubectl config use-context default-system
   args:
-    creates: /tmp/kubernetes/certificates/configs/kubelet/{{item.value.hostname}}/kubelet.flag
-  with_dict: "{{ workers }}"
+    creates: /tmp/kubernetes/certificates/configs/kubelet/{{item}}/kubelet.flag
+  with_items: "{{ groups['workers'] }}"
 
 - name: Create flags [Modifier plus tard !!] workers
   copy:
-    dest: /tmp/kubernetes/certificates/configs/kubelet/{{item.value.hostname}}/kubelet.flag
+    dest: /tmp/kubernetes/certificates/configs/kubelet/{{item}}/kubelet.flag
     content: ''
-  with_dict: "{{ workers }}"
+  with_items: "{{ groups['workers'] }}"
