@@ -35,8 +35,10 @@ This project is actually under development, ans only Ubuntu 18.04 (Bionic) - amd
 
 ## How to get it
 
+### On the Deploy machine
 bash <(curl -s https://raw.githubusercontent.com/pierreilki/IlkiKube/master/install.sh)
-
+### On the nodes machines
+sudo apt update && sudo apt install -yqq python
 
 ## How to give feedback
 
