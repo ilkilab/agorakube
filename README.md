@@ -14,7 +14,7 @@ as issues or pull (merge) requests.
 
 ## Summary
 
-This is a summary of the Ilki-Kube project :
+This is a list of points that will be explained in this Readme file for the Ilki-Kube project :
 
 - What is IlkiKube
 - How to get it
@@ -24,13 +24,11 @@ This is a summary of the Ilki-Kube project :
 
 ## What is IlkiKube
 
-Getting a passing badge is a significant achievement;
-on average only about 10% of pursuing projects have a passing badge.
-That said, some projects would like to meet even stronger criteria,
-and many users would like projects to do so.
-We have established two higher levels beyond passing: silver and gold.
-The higher levels strengthen some of the passing criteria and add new
-criteria of their own.
+IlkiKube is an easy-to-use, stable Kubernetes distribution.
+By its symplicity, IlkiKube provide a good way to deploy and manage K8S CLusters.
+IlkiKube is based on Ansible scripts that install and configure Kubernetes componants (control plane and data plane) quickly on bare-metal / VMs / Cloud Instances, as systemd services.
+Many options are customizable, like DNS Service (default: CoreDNS), Ingress (default: Traefik), Runtime (Default: Containerd), certificats,...
+This project is actually under development, ans only Ubuntu 18.04 (Bionic) - amd64 system is syported. Other systems will be added soon.
 
 ## How to get it
 
@@ -38,8 +36,17 @@ criteria of their own.
 
 ## How to give feedback
 
+This project is still under development. 
+Feedback is very welcome via the
+[GitHub site](https://github.com/pierreilki/k8s-distrib-2)
+as issues or pull (merge) requests.
 
 ## How to contribute
+
+This project is still under development. 
+Contributions are very welcome via the
+[GitHub site](https://github.com/pierreilki/k8s-distrib-2)
+as issues or pull (merge) requests.
 
 ## License
 
