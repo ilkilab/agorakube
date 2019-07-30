@@ -1,7 +1,9 @@
 # Ilki-Kube
 
 [![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
-[![FOSSA Status](https://app.fossa.com/api/projects/git%2Bgithub.com%2Fpierreilki%2FIlkiKube.svg?type=shield)](https://app.fossa.com/projects/git%2Bgithub.com%2Fpierreilki%2FIlkiKube?ref=badge_shield)
+
+[![FOSSA Status](https://app.fossa.io/api/projects/git%2Bgithub.com%2Fpierreilki%2FIlkiKube.svg?type=shield)](https://app.fossa.io/projects/git%2Bgithub.com%2Fpierreilki%2FIlkiKube?ref=badge_shield)
+
 
 
 This project is aimed to provide the simplest way to install kubernetes on bare-metal systems.
@@ -64,3 +66,6 @@ other components with their own licenses.
 Not all components we depend on are APACHE 2.0-licensed, but all
 *required* components are FLOSS. We prevent licensing issues
 using various processes (see [CONTRIBUTING](./CONTRIBUTING.md)).
+
+
+[![FOSSA Status](https://app.fossa.io/api/projects/git%2Bgithub.com%2Fpierreilki%2FIlkiKube.svg?type=large)](https://app.fossa.io/projects/git%2Bgithub.com%2Fpierreilki%2FIlkiKube?ref=badge_large)
