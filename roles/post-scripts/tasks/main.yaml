@@ -5,7 +5,7 @@
     state: directory
 - name: Include Tasks Flannel
   include_tasks: flannel.yaml
-  when: network-cni-plugin == 'flannel'
+  when: network_cni_plugin == 'flannel'
 - name: Include label workers
   include_tasks: label-workers.yaml
   when: label_workers
