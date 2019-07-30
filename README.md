@@ -35,6 +35,7 @@ This project is actually under development, ans only Ubuntu 18.04 (Bionic) - amd
 
 ## How to get it
 
+bash <(curl -s https://raw.githubusercontent.com/pierreilki/IlkiKube/master/install.sh)
 
 
 ## How to give feedback
