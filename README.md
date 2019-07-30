@@ -11,7 +11,7 @@ Actually, only Ubuntu 18.04 (Bionic) amd64 is supported, but many other systems 
 
 This project is still under development. 
 Feedback is very welcome via the
-[GitHub site](https://github.com/pierreilki/k8s-distrib-2)
+[GitHub site](https://github.com/pierreilki/IlkiKube)
 as issues or pull (merge) requests.
 
 
@@ -41,14 +41,14 @@ This project is actually under development, ans only Ubuntu 18.04 (Bionic) - amd
 
 This project is still under development. 
 Feedback is very welcome via the
-[GitHub site](https://github.com/pierreilki/k8s-distrib-2)
+[GitHub site](https://github.com/pierreilki/IlkiKube)
 as issues or pull (merge) requests.
 
 ## How to contribute
 
 This project is still under development. 
 Contributions are very welcome via the
-[GitHub site](https://github.com/pierreilki/k8s-distrib-2)
+[GitHub site](https://github.com/pierreilki/IlkiKube)
 as issues or pull (merge) requests.
 
 ## License
