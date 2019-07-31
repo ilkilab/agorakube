@@ -8,6 +8,7 @@ This section explains what are the prerequis to use Ilki-kube in your environeme
 
 # Architecture
 
+![Architecture](../images/Ilki-kube-architecture.PNG)
 
 # Setup machines
 
