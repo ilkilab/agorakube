@@ -44,6 +44,11 @@ bash <(curl -s https://raw.githubusercontent.com/pierreilki/IlkiKube/master/inst
 ```
 sudo apt update && sudo apt install -yqq python
 ```
+
+### Install instructions
+
+See ./documentation/instructions.dm for more details
+
 ## How to give feedback
 
 This project is still under development. 
