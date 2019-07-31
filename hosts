@@ -20,4 +20,4 @@ worker-3  ip=10.20.20.10
 [all:vars]
 ansible_ssh_extra_args='-o StrictHostKeyChecking=no'
 ansible_user=cloud
-ansible_ssh_private_key_file=/etc/ansible_keys/private.pem
+ansible_ssh_private_key_file=/tmp/private.pem

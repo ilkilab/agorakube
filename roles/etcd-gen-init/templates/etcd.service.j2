@@ -3,7 +3,7 @@ Description=etcd
 Documentation=https://github.com/coreos
 {% set etcd_initial_cluster = [] %}
 {% for host in groups['etcd']  %}
-{{ etcd_initial_cluster.append( host+"=https://"+hostvars[host].ip+":2379" ) }}
+{{ etcd_initial_cluster.append( host+"=https://"+hostvars[host].ip+":2380" ) }}
 {% endfor %}
 [Service]
 ExecStart=/usr/bin/etcd-v3.3.13-linux-amd64/etcd \
