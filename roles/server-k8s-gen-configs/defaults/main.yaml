@@ -1,3 +1,2 @@
 ---
 service_cluster_ip_range: 10.32.0.0/24
-etcd_servers: https://10.20.20.5:2379,https://10.20.20.4:2379,https://10.20.20.6:2379

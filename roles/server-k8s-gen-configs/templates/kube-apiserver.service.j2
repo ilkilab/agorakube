@@ -1,7 +1,10 @@
 [Unit]
 Description=Kubernetes API Server
 Documentation=https://github.com/kubernetes/kubernetes
-
+{% set etcd_servers = [] %}
+{% for host in groups['etcd']  %}
+{{ etcd_servers.append( "https://"+hostvars[host].ip+":2379" ) }}
+{% endfor %}
 [Service]
 ExecStart=/usr/local/bin/kubernetes/server/bin/kube-apiserver \
   --advertise-address={{ hostvars[item].ip}} \
@@ -18,7 +21,7 @@ ExecStart=/usr/local/bin/kubernetes/server/bin/kube-apiserver \
   --etcd-cafile=/etc/kubernetes/pki/etcd/ca.crt \
   --etcd-certfile=/etc/kubernetes/pki/apiserver-etcd-client.crt \
   --etcd-keyfile=/etc/kubernetes/pki/apiserver-etcd-client.key \
-  --etcd-servers={{etcd_servers}} \
+  --etcd-servers={{etcd_servers|join(',')}} \
   --event-ttl=1h \
   --experimental-encryption-provider-config=/var/lib/kubernetes/encryption-provider-config.yaml \
   --kubelet-certificate-authority=/etc/kubernetes/pki/ca.crt \

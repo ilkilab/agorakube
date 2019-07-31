@@ -1,7 +1,10 @@
 [Unit]
 Description=etcd
 Documentation=https://github.com/coreos
-
+{% set etcd_initial_cluster = [] %}
+{% for host in groups['etcd']  %}
+{{ etcd_initial_cluster.append( host+"=https://"+hostvars[host].ip+":2379" ) }}
+{% endfor %}
 [Service]
 ExecStart=/usr/bin/etcd-v3.3.13-linux-amd64/etcd \
   --name {{ item }} \
@@ -18,7 +21,7 @@ ExecStart=/usr/bin/etcd-v3.3.13-linux-amd64/etcd \
   --listen-client-urls https://{{ hostvars[item].ip}}:2379,https://127.0.0.1:2379 \
   --advertise-client-urls https://{{ hostvars[item].ip}}:2379 \
   --initial-cluster-token etcd-cluster-0 \
-  --initial-cluster {{ etcd_initial_cluster }} \
+  --initial-cluster {{ etcd_initial_cluster|join(',') }} \
   --initial-cluster-state new \
   --data-dir=/var/lib/etcd
 Restart=on-failure
