@@ -130,5 +130,5 @@ encrypt_key_etcd: 1fJcKt6vBxMt+AkBanoaxFF2O6ytHIkETNgQWv4b/+Q=
 Once all configuration files are set, run the following command :
 
 ```
-ansible-playbook ilkikube.yaml
+sudo ansible-playbook ilkikube.yaml
 ```
