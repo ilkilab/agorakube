@@ -52,7 +52,7 @@ sudo apt update && sudo apt install -yqq python
 
 ### Install instructions
 
-See ./documentation/instructions.dm for more details
+See [instructions](docs/instructions.md) for more details
 
 ## How to give feedback
 
