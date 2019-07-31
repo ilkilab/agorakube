@@ -41,6 +41,8 @@ sudo apt update && sudo apt install -yqq openssh-server python
 
 Ilki-Kube enable an easy way to deploy and manage K8S clusters automatically.
 
+## Inventory file : ./hosts
+
 The first file to modify is **"./hosts"**. This file contain all architecture information about your K8S Cluster.
 
 The next Sample deploy K8S components in HA mode on 6 machines (3 etcd/masters and 3 workers) :
@@ -80,4 +82,8 @@ The "masters" section contain information about the masters nodes (K8S Control P
 The "workers" section contain information about the workers nodes (K8S Data Plane).
 
 The "all:vars" section contain information about how to connect to K8S nodes.
+
+
+## Configuration file : ./group_vars/all.yaml
+
 
