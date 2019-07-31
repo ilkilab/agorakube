@@ -29,7 +29,7 @@ This is a list of points that will be explained in this Readme file for the Ilki
 
 ## What is IlkiKube
 
-IlkiKube is an easy-to-use, stable Kubernetes distribution.
+IlkiKube is an easy-to-use, stable Kubernetes distribution (Kubernetes v15.1)
 
 By its symplicity, IlkiKube provide a good way to deploy and manage K8S CLusters.
 
