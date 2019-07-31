@@ -1,6 +1,6 @@
 # Prerequis
 
-This section explain what are the prerequis to use Ilki-kube in your environement.
+This section explains what are the prerequis to use Ilki-kube in your environement.
 
 ## OS
 
@@ -11,7 +11,7 @@ This section explain what are the prerequis to use Ilki-kube in your environemen
 
 # Setup machines
 
-This section explain how to setup machines before deploying Kubernetes Clusters with Ilki-Kube.
+This section explains how to setup machines before deploying Kubernetes Clusters with Ilki-Kube.
 
 ## Deployment machine
 
@@ -73,21 +73,21 @@ ansible_user=cloud
 ansible_ssh_private_key_file=/etc/ansible_keys/private.pem
 ```
 
-The "deploy" section contain information about how to connect to the deployment machine.
+The "deploy" section contains information about how to connect to the deployment machine.
 
-The "etcd" section contain information about the etcd machine(s) instances.
+The "etcd" section contains information about the etcd machine(s) instances.
 
-The "masters" section contain information about the masters nodes (K8S Control Plane).
+The "masters" section contains information about the masters nodes (K8S Control Plane).
 
-The "workers" section contain information about the workers nodes (K8S Data Plane).
+The "workers" section contains information about the workers nodes (K8S Data Plane).
 
-The "all:vars" section contain information about how to connect to K8S nodes.
+The "all:vars" section contains information about how to connect to K8S nodes.
 
 
 ## Configuration file : ./group_vars/all.yaml
 
 
-This file contain all configuration variables that you can  customine to make your K8S Cluster fit your needs.
+This file contains all configuration variables that you can  customine to make your K8S Cluster fit your needs.
 
 Sample file : 
 
