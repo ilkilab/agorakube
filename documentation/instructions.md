@@ -87,3 +87,39 @@ The "all:vars" section contain information about how to connect to K8S nodes.
 ## Configuration file : ./group_vars/all.yaml
 
 
+This file contain all configuration variables that you can  customine to make your K8S Cluster fit your needs.
+
+Sample file : 
+
+```
+---
+
+# CERTIFICATES
+cn_root_ca: ilkilabs
+c: FR
+st: Ile-De-France
+l: Paris
+expiry: 87600h
+
+
+# IPs-CIDR Configurations
+ 
+advertise_ip_masters: 10.20.20.5
+cluster_cidr: 10.244.0.0/16
+service_cluster_ip_range: 10.32.0.0/24
+kubernetes_service: 10.32.0.1
+cluster_dns_ip: 10.32.0.10
+
+# Custom features
+
+runtime: containerd
+network_cni_plugin: flannel
+ingress_controller: traefik
+dns_server_soft: coredns
+label_workers: true
+populate_etc_hosts: yes
+
+# Security
+
+encrypt_key_etcd: 1fJcKt6vBxMt+AkBanoaxFF2O6ytHIkETNgQWv4b/+Q=
+```
