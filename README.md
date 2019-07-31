@@ -30,9 +30,13 @@ This is a list of points that will be explained in this Readme file for the Ilki
 ## What is IlkiKube
 
 IlkiKube is an easy-to-use, stable Kubernetes distribution.
+
 By its symplicity, IlkiKube provide a good way to deploy and manage K8S CLusters.
+
 IlkiKube is based on Ansible scripts that install and configure Kubernetes componants (control plane and data plane) quickly on bare-metal / VMs / Cloud Instances, as systemd services.
+
 Many options are customizable, like DNS Service (default: CoreDNS), Ingress (default: Traefik), Runtime (Default: Containerd), certificats,...
+
 This project is actually under development, ans only Ubuntu 18.04 (Bionic) - amd64 system is syported. Other systems will be added soon.
 
 ## How to get it
