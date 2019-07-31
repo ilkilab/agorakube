@@ -5,6 +5,7 @@
 [![CII Best Practices](https://bestpractices.coreinfrastructure.org/projects/3023/badge)](https://bestpractices.coreinfrastructure.org/projects/3023)
 
 
+
 This project is aimed to provide the simplest way to install kubernetes on bare-metal systems.
 Actually, only Ubuntu 18.04 (Bionic) amd64 is supported, but many other systems will be available soon.
 
