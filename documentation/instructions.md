@@ -123,3 +123,11 @@ populate_etc_hosts: yes
 
 encrypt_key_etcd: 1fJcKt6vBxMt+AkBanoaxFF2O6ytHIkETNgQWv4b/+Q=
 ```
+
+## Deploy K8S
+
+Once all configuration files are set, just run the following command :
+
+```
+ansible-playbook ilkikube.yaml
+```
