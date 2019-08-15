@@ -12,13 +12,13 @@
   copy:
     src: /tmp/kubernetes/certificates/intermediate/etcd-ca/etcd-ca-key.pem
     dest: /etc/kubernetes/pki/etcd/ca.key
-  when: role == 'etcd' or role == 'master'
+  when: ("'etcd' in group_names") or ("'master' in group_names")
 
 - name: Import certificates etcd/ca.crt
   copy:
     src: /tmp/kubernetes/certificates/intermediate/etcd-ca/signed/etcd-ca.pem
     dest: /etc/kubernetes/pki/etcd/ca.crt
-  when: role == 'etcd' or role == 'master'
+  when: ("'etcd' in group_names") or ("'master' in group_names")
 
 - name: Import kubernetes ca.key
   copy:
@@ -44,22 +44,22 @@
   copy:
     src: /tmp/kubernetes/certificates/end/kube-etcd/kube-etcd-key.pem
     dest: /etc/kubernetes/pki/etcd/server.key
-  when: role == 'etcd' or role == 'master'
+  when: ("'etcd' in group_names") or ("'master' in group_names")
 - name: Import etcd/server.crt
   copy:
     src: /tmp/kubernetes/certificates/end/kube-etcd/kube-etcd.pem
     dest: /etc/kubernetes/pki/etcd/server.crt
-  when: role == 'etcd' or role == 'master'
+  when: ("'etcd' in group_names") or ("'master' in group_names")
 - name: Import etcd/peer.key
   copy:
     src: /tmp/kubernetes/certificates/end/kube-etcd-peer/{{ ansible_hostname }}/kube-etcd-peer-key.pem
     dest: /etc/kubernetes/pki/etcd/peer.key
-  when: role == 'etcd' or role == 'master'
+  when: ("'etcd' in group_names") or ("'master' in group_names")
 - name: Import etcd/peer.crt
   copy:
     src: /tmp/kubernetes/certificates/end/kube-etcd-peer/{{ ansible_hostname }}/kube-etcd-peer.pem
     dest: /etc/kubernetes/pki/etcd/peer.crt
-  when: role == 'etcd' or role == 'master'
+  when: ("'etcd' in group_names") or ("'master' in group_names")
 - name: Import etcd/healthcheck-client.key
   copy:
     src: /tmp/kubernetes/certificates/end/kube-etcd-healthcheck-client/kube-etcd-healthcheck-client-key.pem
@@ -69,7 +69,7 @@
   copy:
     src: /tmp/kubernetes/certificates/end/kube-etcd-healthcheck-client/kube-etcd-healthcheck-client.pem
     dest: /etc/kubernetes/pki/etcd/healthcheck-client.crt
-  when: role == 'etcd' or role == 'master'
+  when: ("'etcd' in group_names") or ("'master' in group_names")
 - name: Import apiserver-etcd-client.key
   copy:
     src: /tmp/kubernetes/certificates/end/kube-apiserver-etcd-client/kube-apiserver-etcd-client-key.pem
@@ -84,12 +84,12 @@
   copy:
     src: /tmp/kubernetes/certificates/end/kube-apiserver/{{ansible_hostname}}/kube-apiserver-key.pem
     dest: /etc/kubernetes/pki/apiserver.key
-  when: role == 'etcd' or role == 'master'
+  when: ("'etcd' in group_names") or ("'master' in group_names")
 - name: Import apiserver.crt
   copy:
     src: /tmp/kubernetes/certificates/end/kube-apiserver/{{ansible_hostname}}/kube-apiserver.pem
     dest: /etc/kubernetes/pki/apiserver.crt
-  when: role == 'etcd' or role == 'master'
+  when: ("'etcd' in group_names") or ("'master' in group_names")
 - name: Import apiserver-kubelet-client.key
   copy:
     src: /tmp/kubernetes/certificates/end/kube-apiserver-kubelet-client/kube-apiserver-kubelet-client-key.pem
