@@ -1,6 +1,0 @@
----
-- hosts: deploy
-  tasks:
-  - name: test
-    debug:
-      msg: "{{role}}"
