@@ -13,8 +13,8 @@
     creates: /usr/local/bin/kubernetes/node/bin/kubelet
 
 - name: Create kubelet service
-  copy:
-    src: kubelet.service
+  template:
+    src: kubelet.service.j2
     dest: /etc/systemd/system/kubelet.service
   notify:
     - restart kubelet

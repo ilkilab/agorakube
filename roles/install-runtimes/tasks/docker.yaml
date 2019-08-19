@@ -17,22 +17,14 @@
     name: docker-ce=18.06.2~ce~3-0~ubuntu
     state: present
     update_cache: yes
+- name: Install containerd
+  apt:
+    name: containerd
+    state: latest
 - name: Configure /etc/docker/daemon.json
-  blockinfile:
-    path: /etc/docker/daemon.json
-    create: yes
-    marker: ''
-    marker_begin: ''
-    marker_end: ''
-    block: |
-      {
-        "exec-opts": ["native.cgroupdriver=systemd"],
-        "log-driver": "json-file",
-        "log-opts": {
-          "max-size": "100m"
-        },
-        "storage-driver": "overlay2"
-      }
+  copy:
+    dest: /etc/docker/daemon.json
+    src: daemon.json 
   notify:
     - Reload docker
 - name: create /etc/systemd/system/docker.service.d directory

@@ -10,7 +10,7 @@ expiry: 87600h
 
 # IPs-CIDR Configurations
  
-advertise_ip_masters: 84.39.47.22
+advertise_ip_masters: 84.39.43.114
 cluster_cidr: 10.244.0.0/16
 service_cluster_ip_range: 10.32.0.0/24
 kubernetes_service: 10.32.0.1
@@ -18,7 +18,7 @@ cluster_dns_ip: 10.32.0.10
 
 # Custom features
 
-runtime: containerd
+runtime: docker
 network_cni_plugin: flannel
 ingress_controller: traefik
 dns_server_soft: coredns
