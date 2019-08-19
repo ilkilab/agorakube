@@ -113,7 +113,7 @@ cluster_dns_ip: 10.32.0.10
 
 # Custom features
 
-runtime: containerd
+runtime: containerd   # supported values: containerd, docker
 network_cni_plugin: flannel
 ingress_controller: traefik
 dns_server_soft: coredns
