@@ -61,6 +61,7 @@ Feedback is very welcome via the
 [GitHub site](https://github.com/ilkilab/IlkiKube)
 as issues or pull (merge) requests.
 
+You can also give use vulnerability reports by this way.
 ## How to contribute
 
 This project is still under development. 
