@@ -1,6 +1,6 @@
 # How to contribute
 
-I'm really glad you're reading this, because we need volunteer developers to hel                                                                             p this project come to fruition.
+I'm really glad you're reading this, because we need volunteer developers to help this project come to fruition.
 
 We want you working on things you're excited about.
 
@@ -9,6 +9,18 @@ You can contact us by mail  pvillard@ilki.fr
 ## Testing
 
 Tests are not automated yet.
+
+
+## Sample needs
+
+All contributions are welcome :)
+
+Here is a non-exhaustive list of contributions needed for this project:
+
+* Documentation
+* Add features like new runtime support, new Ingress Controller installation, new CNI plugin, etc...
+* Improve the code quality
+* ...
 
 ## Submitting changes
 
