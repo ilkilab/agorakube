@@ -20,7 +20,7 @@ The deployment machine is an Ansible server wich contain all Ansible roles and v
 
 - Connect to the deployment machine and run the following command :
 ```
-bash <(curl -s https://raw.githubusercontent.com/pierreilki/IlkiKube/master/install.sh)
+bash <(curl -s https://raw.githubusercontent.com/ilkilab/IlkiKube/master/install.sh)
 ```
 
 The deployment machine MUST be able to resolve hostname of  K8S machines. (Use DNS or edit /etc/hosts)
