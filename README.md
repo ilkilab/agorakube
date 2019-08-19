@@ -12,7 +12,7 @@ Actually, only Ubuntu 18.04 (Bionic) amd64 is supported, but many other systems 
 
 This project is still under development. 
 Feedback is very welcome via the
-[GitHub site](https://github.com/pierreilki/IlkiKube)
+[GitHub site](https://github.com/ilkilab/IlkiKube)
 as issues or pull (merge) requests.
 
 
@@ -43,7 +43,7 @@ This project is actually under development, ans only Ubuntu 18.04 (Bionic) - amd
 
 ### On the Deploy machine
 ```
-bash <(curl -s https://raw.githubusercontent.com/pierreilki/IlkiKube/master/install.sh)
+bash <(curl -s https://raw.githubusercontent.com/ilkilab/IlkiKube/master/install.sh)
 ```
 ### On the nodes machines
 ```
@@ -58,14 +58,14 @@ See [instructions](docs/instructions.md) for more details
 
 This project is still under development. 
 Feedback is very welcome via the
-[GitHub site](https://github.com/pierreilki/IlkiKube)
+[GitHub site](https://github.com/ilkilab/IlkiKube)
 as issues or pull (merge) requests.
 
 ## How to contribute
 
 This project is still under development. 
 Contributions are very welcome via the
-[GitHub site](https://github.com/pierreilki/IlkiKube)
+[GitHub site](https://github.com/ilkilab/IlkiKube)
 as issues or pull (merge) requests.
 
 ## License
