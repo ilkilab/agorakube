@@ -1,7 +1,7 @@
 # Ilki-Kube
 
 [![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
-[![FOSSA Status](https://app.fossa.io/api/projects/git%2Bgithub.com%2Fpierreilki%2FIlkiKube.svg?type=shield)](https://app.fossa.io/projects/git%2Bgithub.com%2Fpierreilki%2FIlkiKube?ref=badge_shield)
+[![FOSSA Status](https://app.fossa.com/api/projects/git%2Bgithub.com%2Filkilab%2FIlkiKube.svg?type=small)](https://app.fossa.com/projects/git%2Bgithub.com%2Filkilab%2FIlkiKube?ref=badge_small)
 [![CII Best Practices](https://bestpractices.coreinfrastructure.org/projects/3023/badge)](https://bestpractices.coreinfrastructure.org/projects/3023)
 
 
