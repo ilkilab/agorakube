@@ -1,6 +1,6 @@
 # Prerequis
 
-This section explains what are the prerequis to use Ilki-kube in your environement.
+This section explains what are the prerequis to use AgoraKube in your environement.
 
 ## OS
 
@@ -12,15 +12,15 @@ This section explains what are the prerequis to use Ilki-kube in your environeme
 
 # Setup machines
 
-This section explains how to setup machines before deploying Kubernetes Clusters with Ilki-Kube.
+This section explains how to setup machines before deploying Kubernetes Clusters with AgoraKube.
 
 ## Deployment machine
 
-The deployment machine is an Ansible server wich contain all Ansible roles and variables used to deploy and configure Kubernetes Clusters with Ilki-Kube distribution.
+The deployment machine is an Ansible server wich contain all Ansible roles and variables used to deploy and configure Kubernetes Clusters with AgoraKube distribution.
 
 - Connect to the deployment machine and run the following command :
 ```
-bash <(curl -s https://raw.githubusercontent.com/ilkilab/IlkiKube/master/install.sh)
+bash <(curl -s https://raw.githubusercontent.com/ilkilab/agorakube/master/install.sh)
 ```
 
 The deployment machine MUST be able to resolve hostname of  K8S machines. (Use DNS or edit /etc/hosts)
@@ -40,7 +40,7 @@ sudo apt update && sudo apt install -yqq openssh-server python
 
 # Configuration K8S Cluster
 
-Ilki-Kube enable an easy way to deploy and manage K8S clusters automatically.
+AgoraKube enable an easy way to deploy and manage K8S clusters automatically.
 
 ## Inventory file : ./hosts
 
@@ -130,5 +130,5 @@ encrypt_key_etcd: 1fJcKt6vBxMt+AkBanoaxFF2O6ytHIkETNgQWv4b/+Q=
 Once all configuration files are set, run the following command :
 
 ```
-sudo ansible-playbook ilkikube.yaml
+sudo ansible-playbook agorakube.yaml
 ```
