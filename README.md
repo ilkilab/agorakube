@@ -1,7 +1,7 @@
 # AgoraKube
 
 [![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
-[![FOSSA Status](https://app.fossa.com/api/projects/git%2Bgithub.com%2Filkilab%2FIlkiKube.svg?type=shield)](https://app.fossa.com/projects/git%2Bgithub.com%2Filkilab%2FIlkiKube?ref=badge_shield)
+[![FOSSA Status](https://app.fossa.com/api/projects/git%2Bgithub.com%2Filkilab%2Fagorakube.svg?type=shield)](https://app.fossa.com/projects/git%2Bgithub.com%2Filkilab%2Fagorakube?ref=badge_shield)
 [![CII Best Practices](https://bestpractices.coreinfrastructure.org/projects/3066/badge)](https://bestpractices.coreinfrastructure.org/projects/3066)
 
 
