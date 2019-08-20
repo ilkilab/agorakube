@@ -6,8 +6,8 @@
 
 
 
-This project is aimed to provide the simplest way to install kubernetes on bare-metal systems.
-Actually, only Ubuntu 18.04 (Bionic) amd64 is supported, but many other systems will be available soon.
+This project is aimed to provide the simplest way to install kubernetes on bare-metal, virtual & Cloud environments.
+Actually, only Ubuntu 18.04 (Bionic) amd64 is supported, but several other operating systems will be available soon.
 
 
 This project is still under development. 
@@ -22,42 +22,48 @@ as issues or pull (merge) requests.
 This is a list of points that will be explained in this Readme file for the AgoraKube project :
 
 - What is AgoraKube
-- How to get it
+- How to install
 - How to give feedback
 - How to contribute
-- Licence
+- Licensing
 
 ## What is AgoraKube
 
-AgoraKube is an easy-to-use, stable Kubernetes distribution (Kubernetes v1.15)
+AgoraKube is an easy-to-use, stable Kubernetes distribution (Kubernetes v1.15).
 
-By its symplicity, AgoraKube provide a good way to deploy and manage K8S CLusters.
+By its symplicity, AgoraKube provide a good way to deploy and manage K8S Clusters.
 
-AgoraKube is based on Ansible scripts that install and configure Kubernetes componants (control plane and data plane) quickly on bare-metal / VMs / Cloud Instances, as systemd services.
+AgoraKube is based on Ansible scripts that install and configure Kubernetes components (control plane and data plane) quickly on bare-metal / VMs / Cloud Instances, as systemd services.
 
-Many options are customizable, like DNS Service (default: CoreDNS), Ingress (default: Traefik), Runtime (Default: Containerd), certificats,...
+This distribution is also adaptive by offering the opportunity to customize your deployment and fit to you needs : OS (default : Ubuntu 18.04 (Bionic) - amd64), DNS Service (default : CoreDNS), Ingress Controller (default : Traefik), Container Runtime (Default : Containerd), certificats,...
 
-This project is actually under development, ans only Ubuntu 18.04 (Bionic) - amd64 system is syported. Other systems will be added soon.
+This project is actually under development so other customizable options will be added soon.
 
-## How to get it
+## How to install
 
-### On the Deploy machine
+We regularly use a machine to deploy every cluster. We only use it for deployment and destroy it after.
+
+### Setup
+
+#### On the "deployment" machine
+Execute this command in order to install Ansible and clone the repository :
 ```
 bash <(curl -s https://raw.githubusercontent.com/ilkilab/agorakube/master/install.sh)
 ```
-### On the nodes machines
+#### On the K8S machines
+Execute this command on each machine to update them and install the last version of Python : 
 ```
 sudo apt update && sudo apt install -yqq python
 ```
 
-### Install instructions
+### Installation instructions
 
-See [instructions](docs/instructions.md) for more details
+To deploy you K8S cluster follow these [instructions](docs/instructions.md).
 
 ## How to give feedback
 
 This project is still under development. 
-Feedback is very welcome via the
+Every feedback is very welcome via the
 [GitHub site](https://github.com/ilkilab/agorakube)
 as issues or pull (merge) requests.
 
@@ -71,7 +77,7 @@ as issues or pull (merge) requests.
 
 See our [Code Of Conduct](https://github.com/ilkilab/agorakube/blob/master/CODE_OF_CONDUCT.md) and [CONTRIBUTING](https://github.com/ilkilab/agorakube/blob/master/docs/CONTRIBUTING.md) for more information.
 
-## License
+## Licensing
 
 All material here is released under the [APACHE 2.0 license](./LICENSE).
 All material that is not executable, including all text when not executed,
