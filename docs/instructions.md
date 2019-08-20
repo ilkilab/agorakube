@@ -40,7 +40,7 @@ sudo apt update && sudo apt install -yqq openssh-server python
 
 # Configuration K8S Cluster
 
-AgoraKube enable an easy way to deploy and manage K8S clusters automatically.
+AgoraKube enables an easy way to deploy and manage K8S clusters automatically.
 
 ## Inventory file : ./hosts
 
