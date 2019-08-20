@@ -69,6 +69,8 @@ Contributions are very welcome via the
 [GitHub site](https://github.com/ilkilab/agorakube)
 as issues or pull (merge) requests.
 
+See our [Code Of Conduct](https://github.com/ilkilab/agorakube/blob/master/CODE_OF_CONDUCT.md)
+
 ## License
 
 All material here is released under the [APACHE 2.0 license](./LICENSE).
