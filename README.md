@@ -19,9 +19,9 @@ as issues or pull (merge) requests.
 
 ## Summary
 
-This is a list of points that will be explained in this Readme file for the Ilki-Kube project :
+This is a list of points that will be explained in this Readme file for the AgoraKube project :
 
-- What is IlkiKube
+- What is AgoraKube
 - How to get it
 - How to give feedback
 - How to contribute
@@ -31,7 +31,7 @@ This is a list of points that will be explained in this Readme file for the Ilki
 
 AgoraKube is an easy-to-use, stable Kubernetes distribution (Kubernetes v1.15)
 
-By its symplicity, IlkiKube provide a good way to deploy and manage K8S CLusters.
+By its symplicity, AgoraKube provide a good way to deploy and manage K8S CLusters.
 
 AgoraKube is based on Ansible scripts that install and configure Kubernetes componants (control plane and data plane) quickly on bare-metal / VMs / Cloud Instances, as systemd services.
 
