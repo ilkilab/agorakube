@@ -93,4 +93,4 @@ Not all components we depend on are APACHE 2.0-licensed, but all
 using various processes (see [CONTRIBUTING](./docs/CONTRIBUTING.md)).
 
 
-[![FOSSA Status](https://app.fossa.io/api/projects/git%2Bgithub.com%2Fpierreilki%2FIlkiKube.svg?type=large)](https://app.fossa.io/projects/git%2Bgithub.com%2Fpierreilki%2FIlkiKube?ref=badge_large)
+[![FOSSA Status](https://app.fossa.io/api/projects/git%2Bgithub.com%2Filkilab%2Fagorakube.svg?type=large)](https://app.fossa.io/projects/git%2Bgithub.com%2Filkilab%2Fagorakube?ref=badge_large)
