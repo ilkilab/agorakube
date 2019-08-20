@@ -1,4 +1,4 @@
-# Ilki-Kube
+# AgoraKube
 
 [![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
 [![FOSSA Status](https://app.fossa.com/api/projects/git%2Bgithub.com%2Filkilab%2FIlkiKube.svg?type=shield)](https://app.fossa.com/projects/git%2Bgithub.com%2Filkilab%2FIlkiKube?ref=badge_shield)
@@ -27,13 +27,13 @@ This is a list of points that will be explained in this Readme file for the Ilki
 - How to contribute
 - Licence
 
-## What is IlkiKube
+## What is AgoraKube
 
-IlkiKube is an easy-to-use, stable Kubernetes distribution (Kubernetes v1.15)
+AgoraKube is an easy-to-use, stable Kubernetes distribution (Kubernetes v1.15)
 
 By its symplicity, IlkiKube provide a good way to deploy and manage K8S CLusters.
 
-IlkiKube is based on Ansible scripts that install and configure Kubernetes componants (control plane and data plane) quickly on bare-metal / VMs / Cloud Instances, as systemd services.
+AgoraKube is based on Ansible scripts that install and configure Kubernetes componants (control plane and data plane) quickly on bare-metal / VMs / Cloud Instances, as systemd services.
 
 Many options are customizable, like DNS Service (default: CoreDNS), Ingress (default: Traefik), Runtime (Default: Containerd), certificats,...
 
