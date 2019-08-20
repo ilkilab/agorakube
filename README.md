@@ -43,7 +43,7 @@ This project is actually under development so other customizable options will be
 
 We regularly use a machine to deploy every cluster. We only use it for deployment and destroy it after.
 
-### Set up
+### Setup
 
 #### On the "deployment" machine
 Execute this command in order to install Ansible and clone the repository :
@@ -56,7 +56,7 @@ Execute this command on each machine to update them and install the last version
 sudo apt update && sudo apt install -yqq python
 ```
 
-### Install instructions
+### Installation instructions
 
 To deploy you K8S cluster follow these [instructions](docs/instructions.md).
 
