@@ -1,10 +1,23 @@
-# Prerequis
+# Prerequisites
 
-This section explains what are the prerequis to use AgoraKube in your environement.
+This section explains what are the prerequisites to install AgoraKube in your environment.
 
 ## OS
 
+Below the OS currently supported :
   - Ubuntu 18.04 (Bionic) - amd64
+  
+## Machine Sizing
+
+Below the sizing prerequisites for all the machine (master and nodes) :
+- 2 GB or more of RAM per machine
+- 2 CPUs or more
+- Full network connectivity between all machines in the cluster (public or private network is fine)
+- Full internet access
+- Unique hostname, MAC address, and product_uuid for every node. See here for more [details](https://kubernetes.io/docs/setup/production-environment/tools/kubeadm/install-kubeadm/#verify-the-mac-address-and-product-uuid-are-unique-for-every-node).
+- Certain ports are open on your machines. See here for more [details](https://kubernetes.io/docs/setup/production-environment/tools/kubeadm/install-kubeadm/#check-required-ports).
+- Swap disabled. You MUST disable swap in order for the kubelet to work properly.
+
 
 # Architecture
 
@@ -40,7 +53,7 @@ sudo apt update && sudo apt install -yqq openssh-server python
 
 # Configuration K8S Cluster
 
-AgoraKube enables an easy way to deploy and manage K8S clusters automatically.
+AgoraKube enable an easy way to deploy and manage K8S clusters automatically.
 
 ## Inventory file : ./hosts
 
