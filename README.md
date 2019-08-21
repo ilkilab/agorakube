@@ -58,7 +58,7 @@ sudo apt update && sudo apt install -yqq python
 
 ### Installation instructions
 
-To deploy you K8S cluster follow these [instructions](docs/instructions.md).
+To deploy your K8S cluster follow these [instructions](docs/instructions.md).
 
 ## How to give feedback
 

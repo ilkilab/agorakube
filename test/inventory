@@ -1,0 +1,16 @@
+[deploy]
+deploy ansible_connection=local
+
+[masters]
+deploy ansible_connection=local ip=10.20.20.8
+
+[etcd]
+deploy ansible_connection=local ip=10.20.20.8
+[workers]
+
+deploy ansible_connection=local ip=10.20.20.8
+
+[all:vars]
+ansible_ssh_extra_args='-o StrictHostKeyChecking=no'
+ansible_user=cloud
+ansible_ssh_private_key_file=/tmp/private.pem
