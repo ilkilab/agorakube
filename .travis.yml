@@ -38,4 +38,4 @@ install:
 
 script:
   # Check the role/playbook's syntax.
-  - ansible-playbook -i tests/inventory agorakube.yml --syntax-check
+  - ansible-playbook -i test/inventory ./agorakube.yaml --syntax-check
