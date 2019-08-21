@@ -1,15 +1,26 @@
-# Prerequisites
+# High-level Architecture
+
+Below a diagram of the high-level architecture deployed by AgoraKube :
+![Architecture](../images/Ilki-kube-architecture.PNG)
+
+**Notes :** This distibution is aimed to be customizable so you can choose : 
+ - Where the **etcd** will be deployed (with the master or not) 
+ - The number of **master** nodes to deploy
+ - The number of **etcd** nodes to deploy
+ - The number of **worker** nodes to deploy
+ 
+ # Prerequisites
 
 This section explains what are the prerequisites to install AgoraKube in your environment.
 
 ## OS
 
-Below the OS currently supported :
+Below the OS currently supported on all the machines :
   - Ubuntu 18.04 (Bionic) - amd64
   
-## Machine Sizing
+## Node Sizing
 
-Below the sizing prerequisites for all the machine (master and nodes) :
+Below the sizing prerequisites for all the nodes (master and worker) :
 - 2 GB or more of RAM per machine
 - 2 CPUs or more
 - Full network connectivity between all machines in the cluster (public or private network is fine)
@@ -18,48 +29,49 @@ Below the sizing prerequisites for all the machine (master and nodes) :
 - Certain ports are open on your machines. See here for more [details](https://kubernetes.io/docs/setup/production-environment/tools/kubeadm/install-kubeadm/#check-required-ports).
 - Swap disabled. You MUST disable swap in order for the kubelet to work properly.
 
+Below the sizing prerequisites for the deployment machine :
+- 2 GB or more of RAM
+- 1 CPU or more
+- Full network connectivity between all machines in the cluster (public or private network is fine)
+- Full internet access
 
-# Architecture
+# Nodes Setup
 
-![Architecture](../images/Ilki-kube-architecture.PNG)
+This section explains how to setup notes before deploying Kubernetes Clusters with AgoraKube.
 
-# Setup machines
+## Deployment node
 
-This section explains how to setup machines before deploying Kubernetes Clusters with AgoraKube.
+The deployment node is an Ansible server which contains all Ansible roles and variables used to deploy and configure Kubernetes Clusters with AgoraKube distribution.
 
-## Deployment machine
-
-The deployment machine is an Ansible server wich contain all Ansible roles and variables used to deploy and configure Kubernetes Clusters with AgoraKube distribution.
-
-- Connect to the deployment machine and run the following command :
+- Connect to the deployment node and run the following command :
 ```
 bash <(curl -s https://raw.githubusercontent.com/ilkilab/agorakube/master/install.sh)
 ```
 
-The deployment machine MUST be able to resolve hostname of  K8S machines. (Use DNS or edit /etc/hosts)
+**Important note** : The deployment machine **MUST** be able to resolve all K8S nodes hostnames (Use a DNS server or edit **/etc/hosts** file).
 
-## K8S machines
+## K8S nodes
 
-The K8S machines are the node for the Control and Data planes of Kubernetes Clusters.
+The K8S nodes will host all the components needed for a Kubernetes cluster Control and Data planes.
 
-The prerequis are:
+The prerequisites are:
 - SSH Server (like Openssh)
-- python2
+- Python2
 
-You can run the following command to setup automatically prerequis:
+You can run the following command to automatically install those packages :
 ```
 sudo apt update && sudo apt install -yqq openssh-server python
 ```
 
-# Configuration K8S Cluster
+# K8S Cluster Configuration
 
-AgoraKube enable an easy way to deploy and manage K8S clusters automatically.
+AgoraKube enables an easy way to deploy and manage customizable K8S clusters.
 
-## Inventory file : ./hosts
+## Inventory file
 
-The first file to modify is **"./hosts"**. This file contain all architecture information about your K8S Cluster.
+The first file to modify is ["./hosts"](./hosts). This file contains all architecture information about your K8S Cluster.
 
-The next Sample deploy K8S components in HA mode on 6 machines (3 etcd/masters and 3 workers) :
+The next Sample deploys K8S components in HA mode on 6 nodes (3 **etcd/masters** nodes and 3 **workers** nodes) :
 
 ```
 [deploy]
@@ -87,23 +99,22 @@ ansible_user=cloud
 ansible_ssh_private_key_file=/etc/ansible_keys/private.pem
 ```
 
-The "deploy" section contains information about how to connect to the deployment machine.
+The **deploy** section contains information about how to connect to the deployment machine.
 
-The "etcd" section contains information about the etcd machine(s) instances.
+The **etcd** section contains information about the etcd machine(s) instances.
 
-The "masters" section contains information about the masters nodes (K8S Control Plane).
+The **masters** section contains information about the masters nodes (K8S Control Plane).
 
-The "workers" section contains information about the workers nodes (K8S Data Plane).
+The **workers** section contains information about the workers nodes (K8S Data Plane).
 
-The "all:vars" section contains information about how to connect to K8S nodes.
-
-
-## Configuration file : ./group_vars/all.yaml
+The **all:vars** section contains information about how to connect to K8S nodes.
 
 
-This file contains all configuration variables that you can  customine to make your K8S Cluster fit your needs.
+## Configuration file
 
-Sample file : 
+This [file](./group_vars/all.yaml) contains all configuration variables that you can customize to make your K8S Cluster fit your needs.
+
+Sample file will deploy **containerd** as container runtime, **flannel** as CNI plugin and **coredns** as DNS service : 
 
 ```
 ---
@@ -138,9 +149,11 @@ populate_etc_hosts: yes
 encrypt_key_etcd: 1fJcKt6vBxMt+AkBanoaxFF2O6ytHIkETNgQWv4b/+Q=
 ```
 
-## Deploy K8S
+**Note :** You can also modify the IPs-CIDR if you want.
 
-Once all configuration files are set, run the following command :
+## Kubernetes deployment
+
+Once all configuration files are set, run the following command to deploy the pre-configured Kubernetes cluster :
 
 ```
 sudo ansible-playbook agorakube.yaml
