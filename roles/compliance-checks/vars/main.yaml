@@ -1,0 +1,4 @@
+---
+MASTER_NUM: "{{ groups['masters'] | length }}"
+WORKER_NUM: "{{ groups['workers'] | length }}"
+ETCD_NUM: "{{ groups['etcd'] | length }}"
