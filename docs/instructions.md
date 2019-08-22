@@ -1,13 +1,13 @@
 # High-level Architecture
 
 Below a diagram of the high-level architecture deployed by AgoraKube :
-![Architecture](../images/Ilki-kube-architecture.PNG)
+![Architecture](./images/AgoraKube_diagram.png)
 
 **Notes :** This distibution is aimed to be customizable so you can choose : 
  - Where the **etcd** will be deployed (with the master or not) 
- - The number of **master** nodes to deploy
- - The number of **etcd** nodes to deploy
- - The number of **worker** nodes to deploy
+ - The number of **master** nodes to deploy (from 1 to many)
+ - The number of **etcd** nodes to deploy (from 1 to many)
+ - The number of **worker** nodes to deploy (from 1 to many)
  
  # Prerequisites
 
