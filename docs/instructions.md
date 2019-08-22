@@ -69,7 +69,7 @@ AgoraKube enables an easy way to deploy and manage customizable K8S clusters.
 
 ## Inventory file
 
-The first file to modify is ["./hosts"](./hosts). This file contains all architecture information about your K8S Cluster.
+The first file to modify is ["./hosts"](../hosts). This file contains all architecture information about your K8S Cluster.
 
 The next Sample deploys K8S components in HA mode on 6 nodes (3 **etcd/masters** nodes and 3 **workers** nodes) :
 
@@ -112,7 +112,7 @@ The **all:vars** section contains information about how to connect to K8S nodes.
 
 ## Configuration file
 
-This [file](./group_vars/all.yaml) contains all configuration variables that you can customize to make your K8S Cluster fit your needs.
+This [file](../group_vars/all.yaml) contains all configuration variables that you can customize to make your K8S Cluster fit your needs.
 
 Sample file will deploy **containerd** as container runtime, **flannel** as CNI plugin and **coredns** as DNS service : 
 
