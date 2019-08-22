@@ -153,7 +153,7 @@ encrypt_key_etcd: 1fJcKt6vBxMt+AkBanoaxFF2O6ytHIkETNgQWv4b/+Q=
 
 ## Kubernetes deployment
 
-Once all configuration files are set, run the following command to deploy the pre-configured Kubernetes cluster :
+Once all configuration files are set, run the following command to launch the Ansible playbook that will deploy the pre-configured Kubernetes cluster :
 
 ```
 sudo ansible-playbook agorakube.yaml
