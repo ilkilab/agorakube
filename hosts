@@ -2,7 +2,9 @@
 deploy ansible_connection=local
 
 [masters]
-etcd-1 ip=10.20.20.5
+etcd-1  ip=10.20.20.5
+etcd-2  ip=10.20.20.4
+etcd-3  ip=10.20.20.6
 #deploy ansible_connection=local ip=10.20.20.8
 [etcd]
 etcd-1  ip=10.20.20.5
@@ -11,7 +13,7 @@ etcd-3  ip=10.20.20.6
 #deploy ansible_connection=local ip=10.20.20.8
 [workers]
 worker-1  ip=10.20.20.7
-#worker-2  ip=10.20.20.9
+worker-2  ip=10.20.20.9
 #deploy ansible_connection=local ip=10.20.20.8
 
 [all:vars]
