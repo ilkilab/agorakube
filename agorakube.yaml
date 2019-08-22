@@ -2,6 +2,7 @@
 - hosts: deploy
   become: true
   roles:
+    - compliance-checks
     - install-kubectl
     - install-go
     - generate-certs
