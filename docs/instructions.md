@@ -1,7 +1,7 @@
 # High-level Architecture
 
 Below a diagram of the high-level architecture deployed by AgoraKube :
-![Architecture](./images/AgoraKube_diagram.png)
+![Architecture](../images/AgoraKube_diagram.png)
 
 **Notes :** This distibution is aimed to be customizable so you can choose : 
  - Where the **etcd** will be deployed (with the master or not) 
