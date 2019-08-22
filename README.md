@@ -3,6 +3,7 @@
 [![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
 [![FOSSA Status](https://app.fossa.com/api/projects/git%2Bgithub.com%2Filkilab%2Fagorakube.svg?type=shield)](https://app.fossa.com/projects/git%2Bgithub.com%2Filkilab%2Fagorakube?ref=badge_shield)
 [![CII Best Practices](https://bestpractices.coreinfrastructure.org/projects/3104/badge)](https://bestpractices.coreinfrastructure.org/projects/3104)
+[![Build Status](https://travis-ci.org/ilkilab/agorakube.svg?branch=master)](https://travis-ci.org/ilkilab/agorakube)
 
 
 
@@ -45,15 +46,15 @@ We regularly use a machine to deploy every cluster. We only use it for deploymen
 
 ### Setup
 
-#### On the "deployment" machine
+#### On the "deployment" node
 Execute this command in order to install Ansible and clone the repository :
 ```
 bash <(curl -s https://raw.githubusercontent.com/ilkilab/agorakube/master/install.sh)
 ```
-#### On the K8S machines
-Execute this command on each machine to update them and install the last version of Python : 
+#### On the K8S nodes
+Execute this command on each node to update them and install the last version of Python : 
 ```
-sudo apt update && sudo apt install -yqq python
+sudo apt update && sudo apt install -yqq python openssh-server
 ```
 
 ### Installation instructions
