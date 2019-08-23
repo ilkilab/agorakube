@@ -48,7 +48,6 @@ The deployment node is an Ansible server which contains all Ansible roles and va
 bash <(curl -s https://raw.githubusercontent.com/ilkilab/agorakube/master/install.sh)
 ```
 
-**Important note** : The deployment machine **MUST** be able to resolve all K8S nodes hostnames (Use a DNS server or edit **/etc/hosts** file).
 
 ## K8S nodes
 
