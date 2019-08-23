@@ -5,3 +5,5 @@ st: Ile-De-France
 l: Paris
 expiry: 87600h
 advertise_ip_masters: 10.10.10.10
+
+etcd_release: v3.3.13

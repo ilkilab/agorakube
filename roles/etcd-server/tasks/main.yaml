@@ -1,7 +1,7 @@
 ---
 - name: Download etcd binaries
   unarchive:
-    src: https://github.com/etcd-io/etcd/releases/download/v3.3.13/etcd-v3.3.13-linux-amd64.tar.gz
+    src: https://github.com/etcd-io/etcd/releases/download/{{etcd_release}}/etcd-{{etcd_release}}-linux-amd64.tar.gz
     dest: /usr/bin
     remote_src: yes
 
