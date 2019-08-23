@@ -126,9 +126,13 @@ l: Paris
 expiry: 87600h
 
 
+# Components version
+etcd_release: v3.3.15
+kubernetes_release: v1.15.3
+
 # IPs-CIDR Configurations
  
-advertise_ip_masters: 10.20.20.5
+advertise_ip_masters: 84.39.42.43
 cluster_cidr: 10.244.0.0/16
 service_cluster_ip_range: 10.32.0.0/24
 kubernetes_service: 10.32.0.1
@@ -136,7 +140,7 @@ cluster_dns_ip: 10.32.0.10
 
 # Custom features
 
-runtime: containerd   # supported values: containerd, docker
+runtime: containerd
 network_cni_plugin: flannel
 ingress_controller: traefik
 dns_server_soft: coredns
