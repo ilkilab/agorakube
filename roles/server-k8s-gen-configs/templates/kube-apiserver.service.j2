@@ -3,11 +3,11 @@ Description=Kubernetes API Server
 Documentation=https://github.com/kubernetes/kubernetes
 {% set etcd_servers = [] %}
 {% for host in groups['etcd']  %}
-{{ etcd_servers.append( "https://"+hostvars[host].ip+":2379" ) }}
+{{ etcd_servers.append( "https://"+hostvars[host].ansible_host+":2379" ) }}
 {% endfor %}
 [Service]
 ExecStart=/usr/local/bin/kubernetes/server/bin/kube-apiserver \
-  --advertise-address={{ hostvars[item].ip}} \
+  --advertise-address={{ hostvars[item].ansible_host}} \
   --allow-privileged=true \
   --apiserver-count={{ groups['masters'] | length }} \
   --audit-log-maxage=30 \

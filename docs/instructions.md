@@ -78,19 +78,19 @@ The next Sample deploys K8S components in HA mode on 6 nodes (3 **etcd/masters**
 deploy ansible_connection=local
 
 [masters]
-etcd-1 ip=10.20.20.5
-etcd-2 ip=10.20.20.4
-etcd-3 ip=10.20.20.6
+etcd-1 ansible_host=10.20.20.5
+etcd-2 ansible_host=10.20.20.4
+etcd-3 ansible_host=10.20.20.6
 
 [etcd]
-etcd-1  ip=10.20.20.5
-etcd-2  ip=10.20.20.4
-etcd-3  ip=10.20.20.6
+etcd-1  ansible_host=10.20.20.5
+etcd-2  ansible_host=10.20.20.4
+etcd-3  ansible_host=10.20.20.6
 
 [workers]
-worker-1  ip=10.20.20.7
-worker-2  ip=10.20.20.9
-worker-3  ip=10.20.20.10
+worker-1  ansible_host=10.20.20.7
+worker-2  ansible_host=10.20.20.9
+worker-3  ansible_host=10.20.20.10
 
 
 [all:vars]

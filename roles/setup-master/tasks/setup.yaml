@@ -66,7 +66,7 @@
 - name: Configure /etc/hosts
   lineinfile:
     path: /etc/hosts
-    line: "{{ hostvars[item].ip }} {{ item }}"
+    line: "{{ hostvars[item].ansible_host }} {{ item }}"
     create: yes
   with_items:  "{{ groups['workers'] }}"
   when: populate_etc_hosts

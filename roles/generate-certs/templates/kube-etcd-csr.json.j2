@@ -3,7 +3,7 @@
     "hosts": [
         "localhost",
 {% for host in groups['masters'] %}
-        "{{ hostvars[host].ip}}",
+        "{{ hostvars[host].ansible_host}}",
 {% endfor %}
         "127.0.0.1"
     ],

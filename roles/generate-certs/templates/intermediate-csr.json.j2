@@ -8,7 +8,7 @@
         "{{ advertise_ip_masters }}",
         "{{kubernetes_service}}",
 {% for host in groups['workers'] %}
-        "{{ hostvars[host].ip}}",
+        "{{ hostvars[host].ansible_host}}",
         "{{ host }}",
 {% endfor %}
         "127.0.0.1"
