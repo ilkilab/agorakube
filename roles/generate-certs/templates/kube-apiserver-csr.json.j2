@@ -1,7 +1,7 @@
 {
     "CN": "kube-apiserver",
     "hosts": [
-        "{{ hostvars[item].ip}}",
+        "{{ hostvars[item].ansible_host}}",
         "{{ item }}",
         "{{ advertise_ip_masters }}",
         "kubernetes",

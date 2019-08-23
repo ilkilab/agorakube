@@ -3,7 +3,7 @@
     "hosts": [
         "localhost",
         "127.0.0.1",
-        "{{ hostvars[item].ip}}",
+        "{{ hostvars[item].ansible_host}}",
         "{{ item }}"
     ],
     "key": {
