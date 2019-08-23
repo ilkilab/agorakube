@@ -5,7 +5,7 @@
     state: directory
 - name: Download Kubernetes server binaries
   unarchive:
-    src: https://dl.k8s.io/v1.15.0/kubernetes-server-linux-amd64.tar.gz 
+    src: https://dl.k8s.io/{{kubernetes_release}}/kubernetes-server-linux-amd64.tar.gz 
     dest: /usr/local/bin
     remote_src: yes
     creates: /usr/local/bin/kubernetes/server/bin/kube-apiserver

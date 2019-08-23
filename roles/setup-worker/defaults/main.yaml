@@ -1,3 +1,5 @@
+---
+kubernetes_release: v1.15.0
 cluster_cidr: 10.200.0.0/16
 cluster_dns_ip: 10.32.0.10
 runtime: containerd

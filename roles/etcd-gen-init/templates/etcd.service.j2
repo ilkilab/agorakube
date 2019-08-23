@@ -6,7 +6,7 @@ Documentation=https://github.com/coreos
 {{ etcd_initial_cluster.append( host+"=https://"+hostvars[host].ansible_host+":2380" ) }}
 {% endfor %}
 [Service]
-ExecStart=/usr/bin/etcd-v3.3.13-linux-amd64/etcd \
+ExecStart=/usr/bin/etcd-{{etcd_release}}-linux-amd64/etcd \
   --name {{ item }} \
   --cert-file=/etc/kubernetes/pki/etcd/server.crt \
   --key-file=/etc/kubernetes/pki/etcd/server.key \
