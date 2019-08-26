@@ -15,3 +15,6 @@
 - name: Install ingress
   include_tasks: traefik.yaml
   when: ingress_controller == 'traefik'
+- name: Install K8S Default Dashboard
+  include_tasks: default_dashboard.yaml
+  when: k8s_dashboard 
