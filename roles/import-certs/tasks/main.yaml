@@ -18,7 +18,7 @@
   copy:
     src: /tmp/kubernetes/certificates/intermediate/etcd-ca/signed/etcd-ca.pem
     dest: /etc/kubernetes/pki/etcd/ca.crt
-  when: ('etcd' in group_names) or ('master' in group_names)
+  when: ('etcd' in group_names) or ('masters' in group_names)
 
 - name: Import kubernetes ca.key
   copy:
@@ -54,12 +54,12 @@
   copy:
     src: /tmp/kubernetes/certificates/end/kube-etcd-peer/{{ ansible_hostname }}/kube-etcd-peer-key.pem
     dest: /etc/kubernetes/pki/etcd/peer.key
-  when: ('etcd' in group_names) or ('masters' in group_names)
+  when: ('etcd' in group_names)
 - name: Import etcd/peer.crt
   copy:
     src: /tmp/kubernetes/certificates/end/kube-etcd-peer/{{ ansible_hostname }}/kube-etcd-peer.pem
     dest: /etc/kubernetes/pki/etcd/peer.crt
-  when: ('etcd' in group_names) or ('masters' in group_names)
+  when: ('etcd' in group_names)
 - name: Import etcd/healthcheck-client.key
   copy:
     src: /tmp/kubernetes/certificates/end/kube-etcd-healthcheck-client/kube-etcd-healthcheck-client-key.pem
@@ -84,12 +84,12 @@
   copy:
     src: /tmp/kubernetes/certificates/end/kube-apiserver/{{ansible_hostname}}/kube-apiserver-key.pem
     dest: /etc/kubernetes/pki/apiserver.key
-  when: ('etcd' in group_names) or ('masters' in group_names)
+  when: ('masters' in group_names)
 - name: Import apiserver.crt
   copy:
     src: /tmp/kubernetes/certificates/end/kube-apiserver/{{ansible_hostname}}/kube-apiserver.pem
     dest: /etc/kubernetes/pki/apiserver.crt
-  when: ('etcd' in group_names) or ('masters' in group_names)
+  when: ('masters' in group_names)
 - name: Import apiserver-kubelet-client.key
   copy:
     src: /tmp/kubernetes/certificates/end/kube-apiserver-kubelet-client/kube-apiserver-kubelet-client-key.pem
