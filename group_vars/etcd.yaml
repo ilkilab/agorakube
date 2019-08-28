@@ -1,3 +1,0 @@
----
-role: etcd
-etcd_initial_cluster: master-k8s-3=https://10.20.20.7:2380,master-k8s-2=https://10.20.20.8:2380,master-k8s-1=https://10.20.20.6:2380
