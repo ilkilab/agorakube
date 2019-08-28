@@ -84,12 +84,12 @@
   copy:
     src: /tmp/kubernetes/certificates/end/kube-apiserver/{{ansible_hostname}}/kube-apiserver-key.pem
     dest: /etc/kubernetes/pki/apiserver.key
-  when: ('etcd' in group_names) or ('masters' in group_names)
+  when: ('masters' in group_names)
 - name: Import apiserver.crt
   copy:
     src: /tmp/kubernetes/certificates/end/kube-apiserver/{{ansible_hostname}}/kube-apiserver.pem
     dest: /etc/kubernetes/pki/apiserver.crt
-  when: ('etcd' in group_names) or ('masters' in group_names)
+  when: ('masters' in group_names)
 - name: Import apiserver-kubelet-client.key
   copy:
     src: /tmp/kubernetes/certificates/end/kube-apiserver-kubelet-client/kube-apiserver-kubelet-client-key.pem
