@@ -5,6 +5,9 @@
 {% for host in groups['masters'] %}
         "{{ hostvars[host].ansible_host}}",
 {% endfor %}
+{% for host in groups['etcd'] %}
+        "{{ hostvars[host].ansible_host}}",
+{% endfor %}
         "127.0.0.1"
     ],
     "key": {
