@@ -23,7 +23,6 @@
   become: true
   roles:
     - install-go
-    - import-certs
     - setup-master
     - install-kubectl
     - configure-kubeconfig
