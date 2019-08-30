@@ -39,4 +39,3 @@
     - install-kubectl
     - configure-kubeconfig
     - post-scripts
-
