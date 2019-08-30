@@ -3,9 +3,6 @@
   stat:
     path: /tmp/kubernetes/certificates/
   register: cert_check
-- name: debug
-  debug:
-    msg: "{{cert_check.stat.exists}}"
 - name: Delete existing certs and kubeconfig files
   file:
     path: /tmp/kubernetes/certificates/
