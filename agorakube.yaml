@@ -17,10 +17,6 @@
 - hosts: etcd
   become: true
   roles:
-    - import-certs
-- hosts: etcd
-  become: true
-  roles:
     - install-go
     - setup-etcd
 - hosts: masters
