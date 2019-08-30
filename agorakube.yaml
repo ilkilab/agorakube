@@ -29,7 +29,6 @@
 - hosts: workers
   become: true
   roles:
-  - import-certs
   - install-go
   - install-kubectl
   - install-runtimes

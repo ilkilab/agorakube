@@ -1,0 +1,27 @@
+---
+- name: Creatopn dossiers /etc/kubernetes/pki /etc/kubernetes/pki/etcd
+  file:
+    path: "{{ item }}"
+    state: directory
+  with_items:
+    - /etc/kubernetes
+    - /etc/kubernetes/pki
+
+- name: Import kubernetes ca.key
+  copy:
+    src: /tmp/kubernetes/certificates/intermediate/kubernetes-ca/signed/kubernetes-ca.pem
+    dest: /etc/kubernetes/pki/ca.crt
+  notify:
+    - restart kubelet
+- name: Import apiserver-kubelet-client.crt
+  copy:
+    src: /tmp/kubernetes/certificates/end/kube-apiserver-kubelet-client/kube-apiserver-kubelet-client.pem
+    dest: /etc/kubernetes/pki/apiserver-kubelet-client.crt
+  notify:
+    - restart kubelet
+- name: Import apiserver-kubelet-client.key
+  copy:
+    src: /tmp/kubernetes/certificates/end/kube-apiserver-kubelet-client/kube-apiserver-kubelet-client-key.pem
+    dest: /etc/kubernetes/pki/apiserver-kubelet-client.key
+  notify:
+    - restart kubelet
