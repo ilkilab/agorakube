@@ -15,7 +15,8 @@
     src: /tmp/kubernetes/configs/etcd/{{ansible_hostname}}/etcd.service 
     dest: /etc/systemd/system/etcd.service
   notify:
-    - Restart etcd
+    - Reload daemons
+    - Restart etcd    
 - name: Run etcd
   systemd:
     state: started

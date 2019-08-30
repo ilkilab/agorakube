@@ -1,3 +1,5 @@
 ---
+- name: Import certs
+  include_tasks: import-certs.yaml
 - name: Include Setup
-  include_tasks: setup.yaml
+  include_tasks: setup-master.yaml

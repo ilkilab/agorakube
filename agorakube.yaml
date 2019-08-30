@@ -17,24 +17,18 @@
 - hosts: etcd
   become: true
   roles:
-    - import-certs
-- hosts: etcd
-  become: true
-  roles:
     - install-go
-    - etcd-server
+    - setup-etcd
 - hosts: masters
   become: true
   roles:
     - install-go
-    - import-certs
     - setup-master
     - install-kubectl
     - configure-kubeconfig
 - hosts: workers
   become: true
   roles:
-  - import-certs
   - install-go
   - install-kubectl
   - install-runtimes

@@ -1,0 +1,10 @@
+---
+- name: check if certs exist
+  stat:
+    path: /tmp/kubernetes/certificates/
+  register: cert_check
+- name: Delete existing certs and kubeconfig files
+  file:
+    path: /tmp/kubernetes/certificates/
+    state: absent
+  when: cert_check.stat.exists

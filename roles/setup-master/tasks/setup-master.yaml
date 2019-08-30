@@ -21,37 +21,44 @@
   copy:
     src: /tmp/kubernetes/yaml/encryption-provider-config.yaml
     dest: /var/lib/kubernetes/encryption-provider-config.yaml
-
+  notify:
+    - Restart kube-apiserver service
 - name: Import kube-apiserver.service
   copy:
     src: /tmp/kubernetes/configs/kube-apiserver/{{ansible_hostname}}/kube-apiserver.service
     dest: /etc/systemd/system/kube-apiserver.service
-
+  notify:
+    - Reload daemons
 - name: Import controller-manager.conf kubeconfig
   copy:
     src: /tmp/kubernetes/certificates/configs/controller-manager/controller-manager.conf
     dest: /etc/kubernetes/manifests/kube-controller-manager.yaml
-
+  notify:
+    - Restart kube-controller-manager service
 - name: Import kube-controller-manager.service
   template:
     src: kube-controller-manager.service.j2
     dest: /etc/systemd/system/kube-controller-manager.service
-
+  notify:
+    - Reload daemons
 - name: Import kube scheduler yaml file config
   copy:
     src: kube-scheduler.yaml
     dest: /etc/kubernetes/config/kube-scheduler.yaml
-
+  notify:
+    - Restart kube-scheduler service
 - name: Import /etc/kubernetes/manifests/kube-scheduler.yaml
   copy:
     src: /tmp/kubernetes/certificates/configs/scheduler/scheduler.conf
     dest: /etc/kubernetes/manifests/kube-scheduler.yaml
-
+  notify:
+    - Restart kube-scheduler service
 - name: Import service unit kube-scheduler
   copy:
     src: kube-scheduler.service
     dest: /etc/systemd/system/kube-scheduler.service
-
+  notify:
+    - Reload daemons
 - name: Load [kube-apiserver] [kube-controller-manager] [kube-scheduler]
   systemd:
     state: started

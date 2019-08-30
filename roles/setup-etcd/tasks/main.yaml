@@ -1,0 +1,5 @@
+---
+- name: Import etcd certs
+  include_tasks: import-certs.yaml
+- name: Setup etcd server
+  include_tasks: setup-etcd.yaml
