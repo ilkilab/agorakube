@@ -24,13 +24,11 @@
   roles:
     - install-go
     - setup-master
-    - install-kubectl
     - configure-kubeconfig
 - hosts: workers
   become: true
   roles:
   - install-go
-  - install-kubectl
   - install-runtimes
   - setup-worker
   - configure-kubeconfig
