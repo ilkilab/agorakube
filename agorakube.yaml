@@ -22,7 +22,7 @@
   become: true
   roles:
     - install-go
-    - etcd-server
+    - setup-etcd
 - hosts: masters
   become: true
   roles:
