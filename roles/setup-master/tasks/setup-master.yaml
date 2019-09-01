@@ -18,8 +18,8 @@
     path: /etc/kubernetes/config
     state: directory
 - name: Inject kube-encrypt config
-  copy:
-    src: /tmp/kubernetes/yaml/encryption-provider-config.yaml
+  template:
+    src: encryption-provider-config.yaml.j2
     dest: /var/lib/kubernetes/encryption-provider-config.yaml
   notify:
     - Restart kube-apiserver service

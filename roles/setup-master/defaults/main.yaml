@@ -3,3 +3,5 @@ kubernetes_release: v1.15.0
 cluster_cidr: 10.200.0.0/16
 service_cluster_ip_range: 10.32.0.0/24
 populate_etc_hosts: yes
+
+encrypt_key_etcd: 1fJcKt6vBxMt+AkBanoaxFF2O6ytHIkETNgQWv4b/+Q=

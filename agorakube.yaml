@@ -11,7 +11,6 @@
     - install-kubectl
     - install-go
     - generate-certs
-    - gen-encrypt-policy-k8s
     - server-k8s-gen-configs
 - hosts: etcd
   become: true
