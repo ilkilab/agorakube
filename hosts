@@ -1,23 +1,26 @@
 [deploy]
-agora-1 ansible_connection=local
+kube1 ansible_connection=local
 
 [masters]
-agora-1  ansible_host=10.20.20.5
-agora-2  ansible_host=10.20.20.4
-agora-3  ansible_host=10.20.20.6
+kube1  ansible_host=10.10.20.51
+#agora-2  ansible_host=10.20.20.4
+#agora-3  ansible_host=10.20.20.6
 #deploy ansible_connection=local ip=10.20.20.8
 [etcd]
-agora-1  ansible_host=10.20.20.5
-agora-2  ansible_host=10.20.20.4
-agora-3  ansible_host=10.20.20.6
+kube1  ansible_host=10.10.20.51
+#agora-2  ansible_host=10.20.20.4
+#agora-3  ansible_host=10.20.20.6
 #deploy ansible_connection=local ip=10.20.20.8
 [workers]
-agora-1  ansible_host=10.20.20.5
-agora-2  ansible_host=10.20.20.4
-agora-3  ansible_host=10.20.20.6
+kube1  ansible_host=10.10.20.51
+#agora-2  ansible_host=10.20.20.4
+#agora-3  ansible_host=10.20.20.6
 #deploy ansible_connection=local ip=10.20.20.8
 
 [all:vars]
+advertise_ip_masters=10.10.20.51
+
+# SSH connection settings
 ansible_ssh_extra_args='-o StrictHostKeyChecking=no'
-ansible_user=cloud
+ansible_user=vagrant
 ansible_ssh_private_key_file=/tmp/private.pem

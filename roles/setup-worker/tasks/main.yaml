@@ -1,5 +1,7 @@
 ---
 - name: Import Worker certs
   include_tasks: import-certs.yaml
+- name: Disable swap
+  include_tasks: disable-swap.yaml
 - name: Setup Worker
   include_tasks: setup-worker.yaml
