@@ -7,7 +7,7 @@ Documentation=https://github.com/coreos
 {% endfor %}
 [Service]
 ExecStart=/usr/bin/etcd-{{etcd_release}}-linux-amd64/etcd \
-  --name {{ item }} \
+  --name {{ ansible_hostname }} \
   --cert-file=/etc/kubernetes/pki/etcd/server.crt \
   --key-file=/etc/kubernetes/pki/etcd/server.key \
   --peer-cert-file=/etc/kubernetes/pki/etcd/peer.crt \
@@ -16,10 +16,10 @@ ExecStart=/usr/bin/etcd-{{etcd_release}}-linux-amd64/etcd \
   --peer-trusted-ca-file=/etc/kubernetes/pki/etcd/ca.crt \
   --peer-client-cert-auth \
   --client-cert-auth \
-  --initial-advertise-peer-urls https://{{ hostvars[item].ansible_host}}:2380 \
-  --listen-peer-urls https://{{ hostvars[item].ansible_host}}:2380 \
-  --listen-client-urls https://{{ hostvars[item].ansible_host}}:2379,https://127.0.0.1:2379 \
-  --advertise-client-urls https://{{ hostvars[item].ansible_host}}:2379 \
+  --initial-advertise-peer-urls https://{{ hostvars[ansible_hostname].ansible_host}}:2380 \
+  --listen-peer-urls https://{{ hostvars[ansible_hostname].ansible_host}}:2380 \
+  --listen-client-urls https://{{ hostvars[ansible_hostname].ansible_host}}:2379,https://127.0.0.1:2379 \
+  --advertise-client-urls https://{{ hostvars[ansible_hostname].ansible_host}}:2379 \
   --initial-cluster-token etcd-cluster-0 \
   --initial-cluster {{ etcd_initial_cluster|join(',') }} \
   --initial-cluster-state new \
