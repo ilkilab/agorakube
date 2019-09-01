@@ -93,6 +93,11 @@ worker-3  ansible_host=10.20.20.10
 
 
 [all:vars]
+advertise_ip_masters: 84.39.42.43  # Should be the IP used to contact control plane Api Servers. 
+
+
+# SSH Connection Settings
+
 ansible_ssh_extra_args='-o StrictHostKeyChecking=no'
 ansible_user=cloud
 ansible_ssh_private_key_file=/etc/ansible_keys/private.pem
@@ -132,7 +137,6 @@ kubernetes_release: v1.15.3
 
 # IPs-CIDR Configurations
  
-advertise_ip_masters: 84.39.42.43
 cluster_cidr: 10.244.0.0/16
 service_cluster_ip_range: 10.32.0.0/24
 kubernetes_service: 10.32.0.1
