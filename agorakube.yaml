@@ -11,7 +11,6 @@
     - install-kubectl
     - install-go
     - generate-certs
-    - server-k8s-gen-configs
 - hosts: etcd
   become: true
   roles:
@@ -29,11 +28,9 @@
   - install-go
   - install-runtimes
   - setup-worker
-  - configure-kubeconfig
 - hosts: deploy
   become: true
   roles:
-    - install-go
     - install-kubectl
     - configure-kubeconfig
     - post-scripts

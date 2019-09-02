@@ -24,8 +24,8 @@
   notify:
     - Restart kube-apiserver service
 - name: Import kube-apiserver.service
-  copy:
-    src: /tmp/kubernetes/configs/kube-apiserver/{{ansible_hostname}}/kube-apiserver.service
+  template:
+    src: kube-apiserver.service.j2
     dest: /etc/systemd/system/kube-apiserver.service
   notify:
     - Reload daemons
