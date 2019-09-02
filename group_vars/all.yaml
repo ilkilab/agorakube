@@ -18,7 +18,7 @@ cluster_cidr: 10.244.0.0/16
 service_cluster_ip_range: 10.32.0.0/24
 kubernetes_service: 10.32.0.1
 cluster_dns_ip: 10.32.0.10
-
+service_node_port_range: 30000-32767
 # Custom features
 
 runtime: containerd
