@@ -1,55 +1,55 @@
 ---
-- name: Create temp directory /tmp/kubernetes/certificates
+- name: Create temp directory /var/agorakube/certificates
   file:
     path: "{{ item  }}"
     state: directory
   with_items:
-    - /tmp/kubernetes/certificates
-    - /tmp/kubernetes/certificates/ca
-    - /tmp/kubernetes/certificates/intermediate
-    - /tmp/kubernetes/certificates/intermediate/kubernetes-ca
-    - /tmp/kubernetes/certificates/intermediate/kubernetes-ca/signed
-    - /tmp/kubernetes/certificates/intermediate/etcd-ca
-    - /tmp/kubernetes/certificates/intermediate/etcd-ca/signed
-    - /tmp/kubernetes/certificates/intermediate/kubernetes-front-proxy-ca
-    - /tmp/kubernetes/certificates/intermediate/kubernetes-front-proxy-ca/signed
-    - /tmp/kubernetes/certificates/end/kube-etcd
-    - /tmp/kubernetes/certificates/end/kube-etcd-peer
-    - /tmp/kubernetes/certificates/end/kube-etcd-healthcheck-client
-    - /tmp/kubernetes/certificates/end/kube-apiserver-etcd-client
-    - /tmp/kubernetes/certificates/end/kube-apiserver
-    - /tmp/kubernetes/certificates/end/kube-apiserver-kubelet-client
-    - /tmp/kubernetes/certificates/end/front-proxy-client
-    - /tmp/kubernetes/certificates/configs
-    - /tmp/kubernetes/certificates/configs/admin
-    - /tmp/kubernetes/certificates/configs/kubelet
-    - /tmp/kubernetes/certificates/configs/controller-manager
-    - /tmp/kubernetes/certificates/configs/scheduler
-    - /tmp/kubernetes/certificates/configs/proxier
+    - /var/agorakube/certificates
+    - /var/agorakube/certificates/ca
+    - /var/agorakube/certificates/intermediate
+    - /var/agorakube/certificates/intermediate/kubernetes-ca
+    - /var/agorakube/certificates/intermediate/kubernetes-ca/signed
+    - /var/agorakube/certificates/intermediate/etcd-ca
+    - /var/agorakube/certificates/intermediate/etcd-ca/signed
+    - /var/agorakube/certificates/intermediate/kubernetes-front-proxy-ca
+    - /var/agorakube/certificates/intermediate/kubernetes-front-proxy-ca/signed
+    - /var/agorakube/certificates/end/kube-etcd
+    - /var/agorakube/certificates/end/kube-etcd-peer
+    - /var/agorakube/certificates/end/kube-etcd-healthcheck-client
+    - /var/agorakube/certificates/end/kube-apiserver-etcd-client
+    - /var/agorakube/certificates/end/kube-apiserver
+    - /var/agorakube/certificates/end/kube-apiserver-kubelet-client
+    - /var/agorakube/certificates/end/front-proxy-client
+    - /var/agorakube/certificates/configs
+    - /var/agorakube/certificates/configs/admin
+    - /var/agorakube/certificates/configs/kubelet
+    - /var/agorakube/certificates/configs/controller-manager
+    - /var/agorakube/certificates/configs/scheduler
+    - /var/agorakube/certificates/configs/proxier
 
 - name: create ca_root_csr file
   template:
     src: root_csr.json.j2
-    dest: /tmp/kubernetes/certificates/ca/ca-csr.json
+    dest: /var/agorakube/certificates/ca/ca-csr.json
 
 - name: generate ca_root certificates
-  shell: 'cfssl gencert -initca /tmp/kubernetes/certificates/ca/ca-csr.json | cfssljson -bare /tmp/kubernetes/certificates/ca/ca'
+  shell: 'cfssl gencert -initca /var/agorakube/certificates/ca/ca-csr.json | cfssljson -bare /var/agorakube/certificates/ca/ca'
   args:    
-    creates: /tmp/kubernetes/certificates/ca/ca-key.pem
+    creates: /var/agorakube/certificates/ca/ca-key.pem
 
 - name: Generate intermediate certificates
   template:
     src: intermediate-csr.json.j2
-    dest: /tmp/kubernetes/certificates/intermediate/{{ item }}/{{ item }}-csr.json
+    dest: /var/agorakube/certificates/intermediate/{{ item }}/{{ item }}-csr.json
   with_items:
     - kubernetes-front-proxy-ca
     - kubernetes-ca
     - etcd-ca
 
 - name: Generation des certificats intermediaires
-  shell: 'cfssl gencert -initca /tmp/kubernetes/certificates/intermediate/{{ item }}/{{ item }}-csr.json | cfssljson -bare /tmp/kubernetes/certificates/intermediate/{{ item }}/{{ item }}'
+  shell: 'cfssl gencert -initca /var/agorakube/certificates/intermediate/{{ item }}/{{ item }}-csr.json | cfssljson -bare /var/agorakube/certificates/intermediate/{{ item }}/{{ item }}'
   args:
-    creates: /tmp/kubernetes/certificates/intermediate/{{ item }}/{{ item }}-key.pem
+    creates: /var/agorakube/certificates/intermediate/{{ item }}/{{ item }}-key.pem
   with_items:
     - kubernetes-front-proxy-ca
     - kubernetes-ca
@@ -58,12 +58,12 @@
 - name: generation de la configuration des CA intermediaires
   template:
     src: root_to_intermediate.json.j2
-    dest: /tmp/kubernetes/certificates/ca/root_to_intermediate.json
+    dest: /var/agorakube/certificates/ca/root_to_intermediate.json
 
 - name: signature des certificats intermediaires sur le CA_ROOT
-  shell: 'cfssl sign -ca /tmp/kubernetes/certificates/ca/ca.pem  -ca-key /tmp/kubernetes/certificates/ca/ca-key.pem  -config /tmp/kubernetes/certificates/ca/root_to_intermediate.json /tmp/kubernetes/certificates/intermediate/{{ item }}/{{ item }}.csr   | cfssljson -bare /tmp/kubernetes/certificates/intermediate/{{ item }}/signed/{{ item }}'
+  shell: 'cfssl sign -ca /var/agorakube/certificates/ca/ca.pem  -ca-key /var/agorakube/certificates/ca/ca-key.pem  -config /var/agorakube/certificates/ca/root_to_intermediate.json /var/agorakube/certificates/intermediate/{{ item }}/{{ item }}.csr   | cfssljson -bare /var/agorakube/certificates/intermediate/{{ item }}/signed/{{ item }}'
   args:
-    creates: /tmp/kubernetes/certificates/intermediate/{{ item }}/signed/{{ item }}.pem
+    creates: /var/agorakube/certificates/intermediate/{{ item }}/signed/{{ item }}.pem
   with_items:
     - kubernetes-front-proxy-ca
     - kubernetes-ca
@@ -72,94 +72,94 @@
 - name: generation de la configuration des CAs finaux 1 
   template:
     src: end_1.json
-    dest: /tmp/kubernetes/certificates/end/{{item.name}}/{{item.name}}-csr.json
+    dest: /var/agorakube/certificates/end/{{item.name}}/{{item.name}}-csr.json
   with_items:
     - { name: 'kube-etcd-healthcheck-client', o: ''} 
     - { name: 'kube-apiserver-etcd-client',  o: 'system:masters' }
     - { name: 'kube-apiserver-kubelet-client', o: 'system:masters' }
     - { name: 'front-proxy-client', o: ''}
 
-- name: generation dossiers serveurs etcd dans /tmp/kubernetes/certificates/end/kube-etcd-peer/[serveur_name]
+- name: generation dossiers serveurs etcd dans /var/agorakube/certificates/end/kube-etcd-peer/[serveur_name]
   file:
-    path: /tmp/kubernetes/certificates/end/kube-etcd-peer/{{item}}
+    path: /var/agorakube/certificates/end/kube-etcd-peer/{{item}}
     state: directory
   with_items: "{{ groups['etcd'] }}"
 
 - name: generation de la configuration du ca final kube-etcd-peer 
   template:
     src: kube-etcd-peer-csr.json.j2
-    dest : /tmp/kubernetes/certificates/end/kube-etcd-peer/{{item}}/kube-etcd-peer-csr.json
+    dest : /var/agorakube/certificates/end/kube-etcd-peer/{{item}}/kube-etcd-peer-csr.json
   with_items: "{{ groups['etcd'] }}"
 
 - name: generation de la configuration du ca final kube-etcd
   template:
     src: kube-etcd-csr.json.j2
-    dest : /tmp/kubernetes/certificates/end/kube-etcd/kube-etcd-csr.json
+    dest : /var/agorakube/certificates/end/kube-etcd/kube-etcd-csr.json
 
-- name: generation dossiers serveurs etcd dans /tmp/kubernetes/certificates/end/kube-apiserver/[serveur_name]
+- name: generation dossiers serveurs etcd dans /var/agorakube/certificates/end/kube-apiserver/[serveur_name]
   file:
-    path: /tmp/kubernetes/certificates/end/kube-apiserver/{{item}}
+    path: /var/agorakube/certificates/end/kube-apiserver/{{item}}
     state: directory
   with_items: "{{ groups['masters'] }}"
 
 - name: generation de la configuration du ca final kube-apiserver
   template:
     src: kube-apiserver-csr.json.j2
-    dest: /tmp/kubernetes/certificates/end/kube-apiserver/{{item}}/kube-apiserver-csr.json
+    dest: /var/agorakube/certificates/end/kube-apiserver/{{item}}/kube-apiserver-csr.json
   with_items: "{{ groups['masters'] }}"
 
-- name: Config /tmp/kubernetes/certificates/intermediate/intermediate_to_end.json
+- name: Config /var/agorakube/certificates/intermediate/intermediate_to_end.json
   template:
     src: intermediate_to_end.json.j2
-    dest: /tmp/kubernetes/certificates/intermediate/intermediate_to_end.json
+    dest: /var/agorakube/certificates/intermediate/intermediate_to_end.json
 
 - name: generate certificates [kube-etcd-healthcheck-client] [kube-apiserver-etcd-client]
-  shell: 'cfssl gencert -ca /tmp/kubernetes/certificates/intermediate/etcd-ca/signed/etcd-ca.pem -ca-key /tmp/kubernetes/certificates/intermediate/etcd-ca/etcd-ca-key.pem  -config /tmp/kubernetes/certificates/intermediate/intermediate_to_end.json  -profile client  /tmp/kubernetes/certificates/end/{{item}}/{{item}}-csr.json | cfssljson -bare /tmp/kubernetes/certificates/end/{{item}}/{{item}}' 
+  shell: 'cfssl gencert -ca /var/agorakube/certificates/intermediate/etcd-ca/signed/etcd-ca.pem -ca-key /var/agorakube/certificates/intermediate/etcd-ca/etcd-ca-key.pem  -config /var/agorakube/certificates/intermediate/intermediate_to_end.json  -profile client  /var/agorakube/certificates/end/{{item}}/{{item}}-csr.json | cfssljson -bare /var/agorakube/certificates/end/{{item}}/{{item}}' 
   args:
-    creates: /tmp/kubernetes/certificates/end/{{ item }}/{{ item }}-key.pem
+    creates: /var/agorakube/certificates/end/{{ item }}/{{ item }}-key.pem
   with_items:
     - kube-etcd-healthcheck-client 
     - kube-apiserver-etcd-client
 - name: generate certificate [kube-etcd-peer]
-  shell: 'cfssl gencert -ca /tmp/kubernetes/certificates/intermediate/etcd-ca/signed/etcd-ca.pem -ca-key /tmp/kubernetes/certificates/intermediate/etcd-ca/etcd-ca-key.pem  -config /tmp/kubernetes/certificates/intermediate/intermediate_to_end.json -profile client -profile server /tmp/kubernetes/certificates/end/kube-etcd-peer/{{item}}/kube-etcd-peer-csr.json | cfssljson -bare /tmp/kubernetes/certificates/end/kube-etcd-peer/{{item}}/kube-etcd-peer'
+  shell: 'cfssl gencert -ca /var/agorakube/certificates/intermediate/etcd-ca/signed/etcd-ca.pem -ca-key /var/agorakube/certificates/intermediate/etcd-ca/etcd-ca-key.pem  -config /var/agorakube/certificates/intermediate/intermediate_to_end.json -profile client -profile server /var/agorakube/certificates/end/kube-etcd-peer/{{item}}/kube-etcd-peer-csr.json | cfssljson -bare /var/agorakube/certificates/end/kube-etcd-peer/{{item}}/kube-etcd-peer'
   args:
-    creates: /tmp/kubernetes/certificates/end/kube-etcd-peer/{{item}}/kube-etcd-peer-key.pem
+    creates: /var/agorakube/certificates/end/kube-etcd-peer/{{item}}/kube-etcd-peer-key.pem
   with_items: "{{ groups['etcd'] }}"
 
 - name: generate certificate [kube-etcd]
-  shell: 'cfssl gencert -ca /tmp/kubernetes/certificates/intermediate/etcd-ca/signed/etcd-ca.pem -ca-key /tmp/kubernetes/certificates/intermediate/etcd-ca/etcd-ca-key.pem  -config /tmp/kubernetes/certificates/intermediate/intermediate_to_end.json -profile client -profile server /tmp/kubernetes/certificates/end/kube-etcd/kube-etcd-csr.json | cfssljson -bare /tmp/kubernetes/certificates/end/kube-etcd/kube-etcd'
+  shell: 'cfssl gencert -ca /var/agorakube/certificates/intermediate/etcd-ca/signed/etcd-ca.pem -ca-key /var/agorakube/certificates/intermediate/etcd-ca/etcd-ca-key.pem  -config /var/agorakube/certificates/intermediate/intermediate_to_end.json -profile client -profile server /var/agorakube/certificates/end/kube-etcd/kube-etcd-csr.json | cfssljson -bare /var/agorakube/certificates/end/kube-etcd/kube-etcd'
   args:
-    creates: /tmp/kubernetes/certificates/end/kube-etcd/kube-etcd-key.pem
+    creates: /var/agorakube/certificates/end/kube-etcd/kube-etcd-key.pem
 
 - name : generate certificate [kube-apiserver]
-  shell: 'cfssl gencert -ca /tmp/kubernetes/certificates/intermediate/kubernetes-ca/signed/kubernetes-ca.pem -ca-key /tmp/kubernetes/certificates/intermediate/kubernetes-ca/kubernetes-ca-key.pem  -config /tmp/kubernetes/certificates/intermediate/intermediate_to_end.json -profile server  /tmp/kubernetes/certificates/end/kube-apiserver/{{ item }}/kube-apiserver-csr.json | cfssljson -bare /tmp/kubernetes/certificates/end/kube-apiserver/{{ item }}/kube-apiserver'
+  shell: 'cfssl gencert -ca /var/agorakube/certificates/intermediate/kubernetes-ca/signed/kubernetes-ca.pem -ca-key /var/agorakube/certificates/intermediate/kubernetes-ca/kubernetes-ca-key.pem  -config /var/agorakube/certificates/intermediate/intermediate_to_end.json -profile server  /var/agorakube/certificates/end/kube-apiserver/{{ item }}/kube-apiserver-csr.json | cfssljson -bare /var/agorakube/certificates/end/kube-apiserver/{{ item }}/kube-apiserver'
   args:
-    creates: /tmp/kubernetes/certificates/end/kube-apiserver/{{ item }}/kube-apiserver-key.pem
+    creates: /var/agorakube/certificates/end/kube-apiserver/{{ item }}/kube-apiserver-key.pem
   with_items: "{{ groups['masters'] }}"
 
 - name: generate certificate [kube-apiserver-kubelet-client]
-  shell: 'cfssl gencert -ca /tmp/kubernetes/certificates/intermediate/kubernetes-ca/signed/kubernetes-ca.pem -ca-key /tmp/kubernetes/certificates/intermediate/kubernetes-ca/kubernetes-ca-key.pem  -config /tmp/kubernetes/certificates/intermediate/intermediate_to_end.json -profile client  /tmp/kubernetes/certificates/end/kube-apiserver-kubelet-client/kube-apiserver-kubelet-client-csr.json | cfssljson -bare /tmp/kubernetes/certificates/end/kube-apiserver-kubelet-client/kube-apiserver-kubelet-client'
+  shell: 'cfssl gencert -ca /var/agorakube/certificates/intermediate/kubernetes-ca/signed/kubernetes-ca.pem -ca-key /var/agorakube/certificates/intermediate/kubernetes-ca/kubernetes-ca-key.pem  -config /var/agorakube/certificates/intermediate/intermediate_to_end.json -profile client  /var/agorakube/certificates/end/kube-apiserver-kubelet-client/kube-apiserver-kubelet-client-csr.json | cfssljson -bare /var/agorakube/certificates/end/kube-apiserver-kubelet-client/kube-apiserver-kubelet-client'
   args:
-    creates: /tmp/kubernetes/certificates/end/kube-apiserver-kubelet-client/kube-apiserver-kubelet-client-key.pem
+    creates: /var/agorakube/certificates/end/kube-apiserver-kubelet-client/kube-apiserver-kubelet-client-key.pem
 
 - name: generate certificate [front-proxy-client]
-  shell: 'cfssl gencert -ca /tmp/kubernetes/certificates/intermediate/kubernetes-front-proxy-ca/signed/kubernetes-front-proxy-ca.pem -ca-key /tmp/kubernetes/certificates/intermediate/kubernetes-front-proxy-ca/kubernetes-front-proxy-ca-key.pem  -config /tmp/kubernetes/certificates/intermediate/intermediate_to_end.json -profile client  /tmp/kubernetes/certificates/end/front-proxy-client/front-proxy-client-csr.json | cfssljson -bare /tmp/kubernetes/certificates/end/front-proxy-client/front-proxy-client'
+  shell: 'cfssl gencert -ca /var/agorakube/certificates/intermediate/kubernetes-front-proxy-ca/signed/kubernetes-front-proxy-ca.pem -ca-key /var/agorakube/certificates/intermediate/kubernetes-front-proxy-ca/kubernetes-front-proxy-ca-key.pem  -config /var/agorakube/certificates/intermediate/intermediate_to_end.json -profile client  /var/agorakube/certificates/end/front-proxy-client/front-proxy-client-csr.json | cfssljson -bare /var/agorakube/certificates/end/front-proxy-client/front-proxy-client'
   args:
-    creates: /tmp/kubernetes/certificates/end/front-proxy-client/front-proxy-client-key.pem
+    creates: /var/agorakube/certificates/end/front-proxy-client/front-proxy-client-key.pem
 
 - name: create configuration files for config [admin] [controller-manager] [scheduler]
   template:
     src: certificates_for_users_classics.json.j2
-    dest: /tmp/kubernetes/certificates/configs/{{ item.name }}/{{ item.name }}-csr.json
+    dest: /var/agorakube/certificates/configs/{{ item.name }}/{{ item.name }}-csr.json
   with_items:
     - { name: 'admin', o: 'system:masters', cname: 'kubernetes-admin' }
     - { name: 'controller-manager', o: '', cname: 'system:kube-controller-manager' }
     - { name: 'scheduler', o: '', cname: 'system:kube-scheduler' }
     - { name: 'proxier', o: '', cname: 'system:kube-proxy' }
 - name: generation des certificats pour [admin] [controller-manager] [scheduler]
-  shell: 'cfssl gencert -ca /tmp/kubernetes/certificates/intermediate/kubernetes-ca/signed/kubernetes-ca.pem -ca-key /tmp/kubernetes/certificates/intermediate/kubernetes-ca/kubernetes-ca-key.pem  /tmp/kubernetes/certificates/configs/{{ item }}/{{ item }}-csr.json | cfssljson -bare /tmp/kubernetes/certificates/configs/{{ item }}/{{ item }}'
+  shell: 'cfssl gencert -ca /var/agorakube/certificates/intermediate/kubernetes-ca/signed/kubernetes-ca.pem -ca-key /var/agorakube/certificates/intermediate/kubernetes-ca/kubernetes-ca-key.pem  /var/agorakube/certificates/configs/{{ item }}/{{ item }}-csr.json | cfssljson -bare /var/agorakube/certificates/configs/{{ item }}/{{ item }}'
   args:
-    creates: /tmp/kubernetes/certificates/configs/{{ item }}/{{ item }}-key.pem
+    creates: /var/agorakube/certificates/configs/{{ item }}/{{ item }}-key.pem
   with_items:
     - admin
     - controller-manager
@@ -168,141 +168,141 @@
 
 - name: generate arbo kubelet for masters
   file:
-    path: /tmp/kubernetes/certificates/configs/kubelet/{{ item}}
+    path: /var/agorakube/certificates/configs/kubelet/{{ item}}
     state: directory
   with_items: "{{ groups['masters'] }}"
 
 - name: generate arbo kubelet for workers
   file:
-    path: /tmp/kubernetes/certificates/configs/kubelet/{{item}}
+    path: /var/agorakube/certificates/configs/kubelet/{{item}}
     state: directory
   with_items: "{{ groups['workers'] }}"
 
 - name : generate configuration account kubelet masters
   template:
     src: config-kubelet-account.json.j2
-    dest:  /tmp/kubernetes/certificates/configs/kubelet/{{item}}/config-kubelet-account.json
+    dest:  /var/agorakube/certificates/configs/kubelet/{{item}}/config-kubelet-account.json
   with_items: "{{ groups['masters'] }}"
 
 - name: generation des certificats pour [kubelet] masters
-  shell: 'cfssl gencert -ca /tmp/kubernetes/certificates/intermediate/kubernetes-ca/signed/kubernetes-ca.pem -ca-key /tmp/kubernetes/certificates/intermediate/kubernetes-ca/kubernetes-ca-key.pem  /tmp/kubernetes/certificates/configs/kubelet/{{ item }}/config-kubelet-account.json | cfssljson -bare /tmp/kubernetes/certificates/configs/kubelet/{{ item }}/kubelet'
+  shell: 'cfssl gencert -ca /var/agorakube/certificates/intermediate/kubernetes-ca/signed/kubernetes-ca.pem -ca-key /var/agorakube/certificates/intermediate/kubernetes-ca/kubernetes-ca-key.pem  /var/agorakube/certificates/configs/kubelet/{{ item }}/config-kubelet-account.json | cfssljson -bare /var/agorakube/certificates/configs/kubelet/{{ item }}/kubelet'
   args:
-    creates: /tmp/kubernetes/certificates/configs/kubelet/{{ item }}/kubelet-key.pem
+    creates: /var/agorakube/certificates/configs/kubelet/{{ item }}/kubelet-key.pem
   with_items: "{{ groups['masters'] }}"
 
 - name : generate configuration account kubelet workers
   template:
     src: config-kubelet-account.json.j2
-    dest:  /tmp/kubernetes/certificates/configs/kubelet/{{ item }}/config-kubelet-account.json
+    dest:  /var/agorakube/certificates/configs/kubelet/{{ item }}/config-kubelet-account.json
   with_items: "{{ groups['workers'] }}"
 
 - name: generation des certificats pour [kubelet] workers
-  shell: 'cfssl gencert -ca /tmp/kubernetes/certificates/intermediate/kubernetes-ca/signed/kubernetes-ca.pem -ca-key /tmp/kubernetes/certificates/intermediate/kubernetes-ca/kubernetes-ca-key.pem  /tmp/kubernetes/certificates/configs/kubelet/{{ item }}/config-kubelet-account.json | cfssljson -bare /tmp/kubernetes/certificates/configs/kubelet/{{ item }}/kubelet'
+  shell: 'cfssl gencert -ca /var/agorakube/certificates/intermediate/kubernetes-ca/signed/kubernetes-ca.pem -ca-key /var/agorakube/certificates/intermediate/kubernetes-ca/kubernetes-ca-key.pem  /var/agorakube/certificates/configs/kubelet/{{ item }}/config-kubelet-account.json | cfssljson -bare /var/agorakube/certificates/configs/kubelet/{{ item }}/kubelet'
   args:
-    creates: /tmp/kubernetes/certificates/configs/kubelet/{{ item }}/kubelet-key.pem
+    creates: /var/agorakube/certificates/configs/kubelet/{{ item }}/kubelet-key.pem
   with_items: "{{ groups['workers'] }}"
 
 - name: Generation fichier de configuration kubeconfig pour [proxier]
   shell: "{{ item }}"
   args:
-    creates: /tmp/kubernetes/certificates/configs/proxier/proxier.flag
+    creates: /var/agorakube/certificates/configs/proxier/proxier.flag
   with_items:
-    - KUBECONFIG=/tmp/kubernetes/certificates/configs/proxier/proxier.conf kubectl config set-cluster default-cluster --server=https://{{advertise_ip_masters}}:6443 --certificate-authority /tmp/kubernetes/certificates/intermediate/kubernetes-ca/signed/kubernetes-ca.pem --embed-certs
-    - KUBECONFIG=/tmp/kubernetes/certificates/configs/proxier/proxier.conf kubectl config set-credentials system:kube-proxy --client-key /tmp/kubernetes/certificates/configs/proxier/proxier-key.pem --client-certificate /tmp/kubernetes/certificates/configs/proxier/proxier.pem --embed-certs
-    - KUBECONFIG=/tmp/kubernetes/certificates/configs/proxier/proxier.conf kubectl config set-context default-system --cluster default-cluster --user system:kube-proxy
-    - KUBECONFIG=/tmp/kubernetes/certificates/configs/proxier/proxier.conf kubectl config use-context default-system
-    - touch /tmp/kubernetes/certificates/configs/proxier/proxier.flag
+    - KUBECONFIG=/var/agorakube/certificates/configs/proxier/proxier.conf kubectl config set-cluster default-cluster --server=https://{{advertise_ip_masters}}:6443 --certificate-authority /var/agorakube/certificates/intermediate/kubernetes-ca/signed/kubernetes-ca.pem --embed-certs
+    - KUBECONFIG=/var/agorakube/certificates/configs/proxier/proxier.conf kubectl config set-credentials system:kube-proxy --client-key /var/agorakube/certificates/configs/proxier/proxier-key.pem --client-certificate /var/agorakube/certificates/configs/proxier/proxier.pem --embed-certs
+    - KUBECONFIG=/var/agorakube/certificates/configs/proxier/proxier.conf kubectl config set-context default-system --cluster default-cluster --user system:kube-proxy
+    - KUBECONFIG=/var/agorakube/certificates/configs/proxier/proxier.conf kubectl config use-context default-system
+    - touch /var/agorakube/certificates/configs/proxier/proxier.flag
 
 - name: Generation fichier de configuration kubeconfig pour [admin]
   shell: "{{ item }}"
   args:
-    creates: /tmp/kubernetes/certificates/configs/admin/admin.flag
+    creates: /var/agorakube/certificates/configs/admin/admin.flag
   with_items:
-    - KUBECONFIG=/tmp/kubernetes/certificates/configs/admin/admin.conf kubectl config set-cluster default-cluster --server=https://{{advertise_ip_masters}}:6443 --certificate-authority /tmp/kubernetes/certificates/intermediate/kubernetes-ca/signed/kubernetes-ca.pem --embed-certs
-    - KUBECONFIG=/tmp/kubernetes/certificates/configs/admin/admin.conf kubectl config set-credentials default-admin --client-key /tmp/kubernetes/certificates/configs/admin/admin-key.pem --client-certificate /tmp/kubernetes/certificates/configs/admin/admin.pem --embed-certs
-    - KUBECONFIG=/tmp/kubernetes/certificates/configs/admin/admin.conf kubectl config set-context default-system --cluster default-cluster --user default-admin
-    - KUBECONFIG=/tmp/kubernetes/certificates/configs/admin/admin.conf kubectl config use-context default-system
-    - touch /tmp/kubernetes/certificates/configs/admin/admin.flag
+    - KUBECONFIG=/var/agorakube/certificates/configs/admin/admin.conf kubectl config set-cluster default-cluster --server=https://{{advertise_ip_masters}}:6443 --certificate-authority /var/agorakube/certificates/intermediate/kubernetes-ca/signed/kubernetes-ca.pem --embed-certs
+    - KUBECONFIG=/var/agorakube/certificates/configs/admin/admin.conf kubectl config set-credentials default-admin --client-key /var/agorakube/certificates/configs/admin/admin-key.pem --client-certificate /var/agorakube/certificates/configs/admin/admin.pem --embed-certs
+    - KUBECONFIG=/var/agorakube/certificates/configs/admin/admin.conf kubectl config set-context default-system --cluster default-cluster --user default-admin
+    - KUBECONFIG=/var/agorakube/certificates/configs/admin/admin.conf kubectl config use-context default-system
+    - touch /var/agorakube/certificates/configs/admin/admin.flag
 
 - name: Generation fichier de configuration kubeconfig pour [controller-manager]
   shell: "{{ item }}"
   args:
-    creates: /tmp/kubernetes/certificates/configs/controller-manager/controller-manager.flag
+    creates: /var/agorakube/certificates/configs/controller-manager/controller-manager.flag
   with_items:
-    - KUBECONFIG=/tmp/kubernetes/certificates/configs/controller-manager/controller-manager.conf kubectl config set-cluster default-cluster --server=https://{{advertise_ip_masters}}:6443 --certificate-authority /tmp/kubernetes/certificates/intermediate/kubernetes-ca/signed/kubernetes-ca.pem --embed-certs
-    - KUBECONFIG=/tmp/kubernetes/certificates/configs/controller-manager/controller-manager.conf kubectl config set-credentials default-controller-manager --client-key /tmp/kubernetes/certificates/configs/controller-manager/controller-manager-key.pem --client-certificate /tmp/kubernetes/certificates/configs/controller-manager/controller-manager.pem --embed-certs
-    - KUBECONFIG=/tmp/kubernetes/certificates/configs/controller-manager/controller-manager.conf kubectl config set-context default-system --cluster default-cluster --user default-controller-manager
-    - KUBECONFIG=/tmp/kubernetes/certificates/configs/controller-manager/controller-manager.conf kubectl config use-context default-system
-    - touch /tmp/kubernetes/certificates/configs/controller-manager/controller-manager.flag
+    - KUBECONFIG=/var/agorakube/certificates/configs/controller-manager/controller-manager.conf kubectl config set-cluster default-cluster --server=https://{{advertise_ip_masters}}:6443 --certificate-authority /var/agorakube/certificates/intermediate/kubernetes-ca/signed/kubernetes-ca.pem --embed-certs
+    - KUBECONFIG=/var/agorakube/certificates/configs/controller-manager/controller-manager.conf kubectl config set-credentials default-controller-manager --client-key /var/agorakube/certificates/configs/controller-manager/controller-manager-key.pem --client-certificate /var/agorakube/certificates/configs/controller-manager/controller-manager.pem --embed-certs
+    - KUBECONFIG=/var/agorakube/certificates/configs/controller-manager/controller-manager.conf kubectl config set-context default-system --cluster default-cluster --user default-controller-manager
+    - KUBECONFIG=/var/agorakube/certificates/configs/controller-manager/controller-manager.conf kubectl config use-context default-system
+    - touch /var/agorakube/certificates/configs/controller-manager/controller-manager.flag
 
 - name: Generation fichier de configuration kubeconfig pour [scheduler]
   shell: "{{ item }}"
   args:
-    creates: /tmp/kubernetes/certificates/configs/scheduler/scheduler.flag
+    creates: /var/agorakube/certificates/configs/scheduler/scheduler.flag
   with_items:
-    - KUBECONFIG=/tmp/kubernetes/certificates/configs/scheduler/scheduler.conf kubectl config set-cluster default-cluster --server=https://{{advertise_ip_masters}}:6443 --certificate-authority /tmp/kubernetes/certificates/intermediate/kubernetes-ca/signed/kubernetes-ca.pem --embed-certs
-    - KUBECONFIG=/tmp/kubernetes/certificates/configs/scheduler/scheduler.conf kubectl config set-credentials default-manager --client-key /tmp/kubernetes/certificates/configs/scheduler/scheduler-key.pem --client-certificate /tmp/kubernetes/certificates/configs/scheduler/scheduler.pem --embed-certs
-    - KUBECONFIG=/tmp/kubernetes/certificates/configs/scheduler/scheduler.conf kubectl config set-context default-system --cluster default-cluster --user default-manager
-    - KUBECONFIG=/tmp/kubernetes/certificates/configs/scheduler/scheduler.conf kubectl config use-context default-system
-    - touch /tmp/kubernetes/certificates/configs/scheduler/scheduler.flag
+    - KUBECONFIG=/var/agorakube/certificates/configs/scheduler/scheduler.conf kubectl config set-cluster default-cluster --server=https://{{advertise_ip_masters}}:6443 --certificate-authority /var/agorakube/certificates/intermediate/kubernetes-ca/signed/kubernetes-ca.pem --embed-certs
+    - KUBECONFIG=/var/agorakube/certificates/configs/scheduler/scheduler.conf kubectl config set-credentials default-manager --client-key /var/agorakube/certificates/configs/scheduler/scheduler-key.pem --client-certificate /var/agorakube/certificates/configs/scheduler/scheduler.pem --embed-certs
+    - KUBECONFIG=/var/agorakube/certificates/configs/scheduler/scheduler.conf kubectl config set-context default-system --cluster default-cluster --user default-manager
+    - KUBECONFIG=/var/agorakube/certificates/configs/scheduler/scheduler.conf kubectl config use-context default-system
+    - touch /var/agorakube/certificates/configs/scheduler/scheduler.flag
 
 - name: Generation fichier de configuration kubeconfig pour [kubelet] masters 1/4
-  shell: KUBECONFIG=/tmp/kubernetes/certificates/configs/kubelet/{{item}}/kubelet.config kubectl config set-cluster default-cluster --server=https://{{advertise_ip_masters}}:6443 --certificate-authority /tmp/kubernetes/certificates/intermediate/kubernetes-ca/signed/kubernetes-ca.pem --embed-certs
+  shell: KUBECONFIG=/var/agorakube/certificates/configs/kubelet/{{item}}/kubelet.config kubectl config set-cluster default-cluster --server=https://{{advertise_ip_masters}}:6443 --certificate-authority /var/agorakube/certificates/intermediate/kubernetes-ca/signed/kubernetes-ca.pem --embed-certs
   args:
-    creates: /tmp/kubernetes/certificates/configs/kubelet/{{item}}/kubelet.flag
+    creates: /var/agorakube/certificates/configs/kubelet/{{item}}/kubelet.flag
   with_items: "{{ groups['masters'] }}"
 
 - name: Generation fichier de configuration kubeconfig pour [kubelet] masters 2/4
-  shell: KUBECONFIG=/tmp/kubernetes/certificates/configs/kubelet/{{item}}/kubelet.config kubectl config set-credentials default-auth --client-key /tmp/kubernetes/certificates/configs/kubelet/{{item}}/kubelet-key.pem --client-certificate /tmp/kubernetes/certificates/configs/kubelet/{{item}}/kubelet.pem --embed-certs
+  shell: KUBECONFIG=/var/agorakube/certificates/configs/kubelet/{{item}}/kubelet.config kubectl config set-credentials default-auth --client-key /var/agorakube/certificates/configs/kubelet/{{item}}/kubelet-key.pem --client-certificate /var/agorakube/certificates/configs/kubelet/{{item}}/kubelet.pem --embed-certs
   args:
-    creates: /tmp/kubernetes/certificates/configs/kubelet/{{item}}/kubelet.flag
+    creates: /var/agorakube/certificates/configs/kubelet/{{item}}/kubelet.flag
   with_items: "{{ groups['masters'] }}"
 
 - name: Generation fichier de configuration kubeconfig pour [kubelet] masters 3/4
-  shell: KUBECONFIG=/tmp/kubernetes/certificates/configs/kubelet/{{item}}/kubelet.config kubectl config set-context default-system --cluster default-cluster --user default-auth
+  shell: KUBECONFIG=/var/agorakube/certificates/configs/kubelet/{{item}}/kubelet.config kubectl config set-context default-system --cluster default-cluster --user default-auth
   args:
-    creates: /tmp/kubernetes/certificates/configs/kubelet/{{item}}/kubelet.flag
+    creates: /var/agorakube/certificates/configs/kubelet/{{item}}/kubelet.flag
   with_items: "{{ groups['masters'] }}"
 
 - name: Generation fichier de configuration kubeconfig pour [kubelet] masters 4/4
-  shell: KUBECONFIG=/tmp/kubernetes/certificates/configs/kubelet/{{item}}/kubelet.config kubectl config use-context default-system
+  shell: KUBECONFIG=/var/agorakube/certificates/configs/kubelet/{{item}}/kubelet.config kubectl config use-context default-system
   args:
-    creates: /tmp/kubernetes/certificates/configs/kubelet/{{item}}/kubelet.flag
+    creates: /var/agorakube/certificates/configs/kubelet/{{item}}/kubelet.flag
   with_items: "{{ groups['masters'] }}"
 
 - name: Create flags [Modifier plus tard !!]
   copy:
-    dest: /tmp/kubernetes/certificates/configs/kubelet/{{item}}/kubelet.flag
+    dest: /var/agorakube/certificates/configs/kubelet/{{item}}/kubelet.flag
     content: ''
   with_items: "{{ groups['masters'] }}"
 
 
 - name: Generation fichier de configuration kubeconfig pour [kubelet] workers 1/4
-  shell: KUBECONFIG=/tmp/kubernetes/certificates/configs/kubelet/{{item}}/kubelet.config kubectl config set-cluster default-cluster --server=https://{{advertise_ip_masters}}:6443 --certificate-authority /tmp/kubernetes/certificates/intermediate/kubernetes-ca/signed/kubernetes-ca.pem --embed-certs
+  shell: KUBECONFIG=/var/agorakube/certificates/configs/kubelet/{{item}}/kubelet.config kubectl config set-cluster default-cluster --server=https://{{advertise_ip_masters}}:6443 --certificate-authority /var/agorakube/certificates/intermediate/kubernetes-ca/signed/kubernetes-ca.pem --embed-certs
   args:
-    creates: /tmp/kubernetes/certificates/configs/kubelet/{{item}}/kubelet.flag
+    creates: /var/agorakube/certificates/configs/kubelet/{{item}}/kubelet.flag
   with_items: "{{ groups['workers'] }}"
 
 - name: Generation fichier de configuration kubeconfig pour [kubelet] workers 2/4
-  shell: KUBECONFIG=/tmp/kubernetes/certificates/configs/kubelet/{{item}}/kubelet.config kubectl config set-credentials default-auth --client-key /tmp/kubernetes/certificates/configs/kubelet/{{item}}/kubelet-key.pem --client-certificate /tmp/kubernetes/certificates/configs/kubelet/{{item}}/kubelet.pem --embed-certs
+  shell: KUBECONFIG=/var/agorakube/certificates/configs/kubelet/{{item}}/kubelet.config kubectl config set-credentials default-auth --client-key /var/agorakube/certificates/configs/kubelet/{{item}}/kubelet-key.pem --client-certificate /var/agorakube/certificates/configs/kubelet/{{item}}/kubelet.pem --embed-certs
   args:
-    creates: /tmp/kubernetes/certificates/configs/kubelet/{{item}}/kubelet.flag
+    creates: /var/agorakube/certificates/configs/kubelet/{{item}}/kubelet.flag
   with_items: "{{ groups['workers'] }}"
 
 - name: Generation fichier de configuration kubeconfig pour [kubelet] workers 3/4
-  shell: KUBECONFIG=/tmp/kubernetes/certificates/configs/kubelet/{{item}}/kubelet.config kubectl config set-context default-system --cluster default-cluster --user default-auth
+  shell: KUBECONFIG=/var/agorakube/certificates/configs/kubelet/{{item}}/kubelet.config kubectl config set-context default-system --cluster default-cluster --user default-auth
   args:
-    creates: /tmp/kubernetes/certificates/configs/kubelet/{{item}}/kubelet.flag
+    creates: /var/agorakube/certificates/configs/kubelet/{{item}}/kubelet.flag
   with_items: "{{ groups['workers'] }}"
 
 - name: Generation fichier de configuration kubeconfig pour [kubelet] workers 4/4
-  shell: KUBECONFIG=/tmp/kubernetes/certificates/configs/kubelet/{{item}}/kubelet.config kubectl config use-context default-system
+  shell: KUBECONFIG=/var/agorakube/certificates/configs/kubelet/{{item}}/kubelet.config kubectl config use-context default-system
   args:
-    creates: /tmp/kubernetes/certificates/configs/kubelet/{{item}}/kubelet.flag
+    creates: /var/agorakube/certificates/configs/kubelet/{{item}}/kubelet.flag
   with_items: "{{ groups['workers'] }}"
 
 - name: Create flags [Modifier plus tard !!] workers
   copy:
-    dest: /tmp/kubernetes/certificates/configs/kubelet/{{item}}/kubelet.flag
+    dest: /var/agorakube/certificates/configs/kubelet/{{item}}/kubelet.flag
     content: ''
   with_items: "{{ groups['workers'] }}"

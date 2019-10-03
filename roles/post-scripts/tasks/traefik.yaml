@@ -2,8 +2,8 @@
 - name: Configure Traefik Deployment
   copy:
     src: traefik.yaml
-    dest: /tmp/kubernetes/traefik.yaml
+    dest: /var/agorakube/traefik.yaml
 - name: Deploy Traefik
-  shell: kubectl create -f /tmp/kubernetes/traefik.yaml && touch /tmp/kubernetes/flags/traefik
+  shell: kubectl create -f /var/agorakube/traefik.yaml && touch /var/agorakube/flags/traefik
   args:
-    creates: /tmp/kubernetes/flags/traefik
+    creates: /var/agorakube/flags/traefik
