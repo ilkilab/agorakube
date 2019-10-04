@@ -1,7 +1,7 @@
 ---
 - name: Create flag directory
   file:
-    path: {{ data_path }}/flags
+    path: "{{ data_path }}"/flags
     state: directory
 - name: Include Tasks Flannel
   include_tasks: flannel.yaml
