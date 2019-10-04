@@ -2,8 +2,8 @@
 - name: Configure Traefik Deployment
   copy:
     src: traefik.yaml
-    dest: /tmp/kubernetes/traefik.yaml
+    dest: {{ data_path }}/traefik.yaml
 - name: Deploy Traefik
-  shell: kubectl create -f /tmp/kubernetes/traefik.yaml && touch /tmp/kubernetes/flags/traefik
+  shell: kubectl create -f {{ data_path }}/traefik.yaml && touch {{ data_path }}/flags/traefik
   args:
-    creates: /tmp/kubernetes/flags/traefik
+    creates: {{ data_path }}/flags/traefik

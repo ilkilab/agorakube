@@ -1,7 +1,7 @@
 ---
 - name: Label Workers nodes as workers
-  shell: "kubectl label node {{item}}  node-role.kubernetes.io/worker=  && touch /tmp/kubernetes/flags/label-{{item}}"
+  shell: "kubectl label node {{item}}  node-role.kubernetes.io/worker=  && touch {{ data_path }}/flags/label-{{item}}"
   args:
-    creates: /tmp/kubernetes/flags/label-{{item}}
+    creates: {{ data_path }}/flags/label-{{item}}
   with_items: "{{ groups['workers'] }}"
   
