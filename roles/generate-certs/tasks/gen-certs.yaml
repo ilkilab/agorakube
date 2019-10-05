@@ -114,7 +114,7 @@
     dest: "{{ data_path }}/certificates/intermediate/intermediate_to_end.json"
 
 - name: generate certificates [kube-etcd-healthcheck-client] [kube-apiserver-etcd-client]
-  shell: 'cfssl gencert -ca "{{ data_path }}/certificates/intermediate/etcd-ca/signed/etcd-ca.pem" -ca-key "{{ data_path }}/certificates/intermediate/etcd-ca/etcd-ca-key.pem"  -config "{{ data_path }}/certificates/intermediate/intermediate_to_end.json"  -profile client  "{{ data_path }}/certificates/end/{{item}}/{{item}}-csr.json" | cfssljson -bare "{{ data_path }}/certificates/end/{{item}}/{{item}}'"
+  shell: 'cfssl gencert -ca "{{ data_path }}/certificates/intermediate/etcd-ca/signed/etcd-ca.pem" -ca-key "{{ data_path }}/certificates/intermediate/etcd-ca/etcd-ca-key.pem"  -config "{{ data_path }}/certificates/intermediate/intermediate_to_end.json"  -profile client  "{{ data_path }}/certificates/end/{{item}}/{{item}}-csr.json" | cfssljson -bare "{{ data_path }}/certificates/end/{{item}}/{{item}}"'
   args:
     creates: "{{ data_path }}/certificates/end/{{ item }}/{{ item }}-key.pem"
   with_items:

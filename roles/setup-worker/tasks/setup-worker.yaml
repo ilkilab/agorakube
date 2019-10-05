@@ -31,7 +31,7 @@
     state: directory
 - name: Create kubelet kubeconfig file
   copy:
-    src: "{{ data_path }}/certificates/configs/kubelet/{{ ansible_hostname }}/kubelet.config "
+    src: "{{ data_path }}/certificates/configs/kubelet/{{ ansible_hostname }}/kubelet.config"
     dest: /etc/kubernetes/manifests/kubelet.conf
   notify:
     - restart kubelet
