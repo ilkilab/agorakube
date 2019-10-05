@@ -5,7 +5,7 @@
     state: directory
 - name: Download Kubernetes server binaries
   unarchive:
-    src: https://dl.k8s.io/{{kubernetes_release}}/kubernetes-server-linux-amd64.tar.gz 
+    src: https://dl.k8s.io/{{kubernetes_release}}/kubernetes-server-linux-amd64.tar.gz
     dest: /usr/local/bin
     remote_src: yes
     creates: /usr/local/bin/kubernetes/server/bin/kube-apiserver
@@ -31,7 +31,7 @@
     - Reload daemons
 - name: Import controller-manager.conf kubeconfig
   copy:
-    src: "{{ data_path }}"/certificates/configs/controller-manager/controller-manager.conf
+    src: "{{ data_path }}/certificates/configs/controller-manager/controller-manager.conf"
     dest: /etc/kubernetes/manifests/kube-controller-manager.yaml
   notify:
     - Restart kube-controller-manager service
@@ -49,7 +49,7 @@
     - Restart kube-scheduler service
 - name: Import /etc/kubernetes/manifests/kube-scheduler.yaml
   copy:
-    src: "{{ data_path }}"/certificates/configs/scheduler/scheduler.conf
+    src: "{{ data_path }}/certificates/configs/scheduler/scheduler.conf"
     dest: /etc/kubernetes/manifests/kube-scheduler.yaml
   notify:
     - Restart kube-scheduler service

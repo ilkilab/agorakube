@@ -2,8 +2,8 @@
 - name: Generate CoreDNS resources file
   template:
     src: coredns.yaml.j2
-    dest: "{{ data_path }}"/coredns.yaml
+    dest: "{{ data_path }}/coredns.yaml"
 - name: Deploy CoreDNS to K8S Cluster
-  shell: kubectl create -f "{{ data_path }}"/coredns.yaml  && touch "{{ data_path }}"/flags/coredns
+  shell: kubectl create -f "{{ data_path }}/coredns.yaml"  && touch "{{ data_path }}/flags/coredns"
   args:
-    creates: "{{ data_path }}"/flags/coredns
+    creates: "{{ data_path }}/flags/coredns"

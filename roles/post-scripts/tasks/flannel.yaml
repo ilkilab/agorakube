@@ -1,5 +1,5 @@
 ---
 - name: Deploy Flannel Pods
-  shell: 'kubectl apply -f https://raw.githubusercontent.com/coreos/flannel/v0.11.0/Documentation/kube-flannel.yml  && touch "{{ data_path }}"/flags/flannel'
+  shell: 'kubectl apply -f https://raw.githubusercontent.com/coreos/flannel/v0.11.0/Documentation/kube-flannel.yml  && touch "{{ data_path }}/flags/flannel"'
   args:
-    creates: "{{ data_path }}"/flags/flannel
+    creates: "{{ data_path }}/flags/flannel"
