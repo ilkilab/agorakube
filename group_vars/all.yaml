@@ -13,7 +13,7 @@ etcd_release: v3.3.15
 kubernetes_release: v1.15.3
 
 # IPs-CIDR Configurations
- 
+
 cluster_cidr: 10.244.0.0/16
 service_cluster_ip_range: 10.32.0.0/24
 kubernetes_service: 10.32.0.1
@@ -34,4 +34,6 @@ update_certs: false
 
 encrypt_key_etcd: 1fJcKt6vBxMt+AkBanoaxFF2O6ytHIkETNgQWv4b/+Q=
 
+# Data Directory
 
+data_path: "/var/agorakube"

@@ -7,7 +7,7 @@
 
 - name: Download Kubernetes node binaries
   unarchive:
-    src: https://dl.k8s.io/{{kubernetes_release}}/kubernetes-node-linux-amd64.tar.gz 
+    src: https://dl.k8s.io/{{kubernetes_release}}/kubernetes-node-linux-amd64.tar.gz
     dest: /usr/local/bin
     remote_src: yes
     creates: /usr/local/bin/kubernetes/node/bin/kubelet
@@ -24,14 +24,14 @@
     src: kubelet-config.yaml.j2
     dest: /etc/kubernetes/kubelet-config.yaml
   notify:
-    - restart kubelet 
+    - restart kubelet
 - name: Create /etc/kubernetes/manifests directory
   file:
     path: /etc/kubernetes/manifests
     state: directory
 - name: Create kubelet kubeconfig file
   copy:
-    src: /var/agorakube/certificates/configs/kubelet/{{ ansible_hostname }}/kubelet.config
+    src: "{{ data_path }}/certificates/configs/kubelet/{{ ansible_hostname }}/kubelet.config "
     dest: /etc/kubernetes/manifests/kubelet.conf
   notify:
     - restart kubelet
@@ -50,7 +50,7 @@
     - restart kube-proxy
 - name: Inporte proxier kubeconfig
   copy:
-    src: /var/agorakube/certificates/configs/proxier/proxier.conf
+    src: "{{ data_path }}/certificates/configs/proxier/proxier.conf"
     dest: /etc/kubernetes/manifests/proxier.conf
   notify:
     - restart kube-proxy

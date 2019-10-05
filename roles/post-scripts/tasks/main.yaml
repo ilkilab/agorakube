@@ -1,7 +1,7 @@
 ---
 - name: Create flag directory
   file:
-    path: /var/agorakube/flags
+    path: "{{ data_path }}/flags"
     state: directory
 - name: Include Tasks Flannel
   include_tasks: flannel.yaml
@@ -17,4 +17,4 @@
   when: ingress_controller == 'traefik'
 - name: Install K8S Default Dashboard
   include_tasks: default_dashboard.yaml
-  when: k8s_dashboard 
+  when: k8s_dashboard

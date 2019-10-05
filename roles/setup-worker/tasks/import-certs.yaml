@@ -9,19 +9,19 @@
 
 - name: Import kubernetes ca.key
   copy:
-    src: /var/agorakube/certificates/intermediate/kubernetes-ca/signed/kubernetes-ca.pem
+    src: "{{ data_path }}/certificates/intermediate/kubernetes-ca/signed/kubernetes-ca.pem"
     dest: /etc/kubernetes/pki/ca.crt
   notify:
     - restart kubelet
 - name: Import apiserver-kubelet-client.crt
   copy:
-    src: /var/agorakube/certificates/end/kube-apiserver-kubelet-client/kube-apiserver-kubelet-client.pem
+    src: "{{ data_path }}/certificates/end/kube-apiserver-kubelet-client/kube-apiserver-kubelet-client.pem"
     dest: /etc/kubernetes/pki/apiserver-kubelet-client.crt
   notify:
     - restart kubelet
 - name: Import apiserver-kubelet-client.key
   copy:
-    src: /var/agorakube/certificates/end/kube-apiserver-kubelet-client/kube-apiserver-kubelet-client-key.pem
+    src: "{{ data_path }}/certificates/end/kube-apiserver-kubelet-client/kube-apiserver-kubelet-client-key.pem"
     dest: /etc/kubernetes/pki/apiserver-kubelet-client.key
   notify:
     - restart kubelet
