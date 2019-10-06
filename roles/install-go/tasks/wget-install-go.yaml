@@ -1,0 +1,24 @@
+---
+- name: Download file with check (sha256)
+  get_url:
+    url: https://dl.google.com/go/go1.13.1.linux-amd64.tar.gz
+    dest: /tmp
+    checksum: sha256:94f874037b82ea5353f4061e543681a0e79657f787437974214629af8407d124
+- name: unarchive
+  unarchive:
+    src: /tmp/go1.13.1.linux-amd64.tar.gz
+    dest: /usr/local
+    remote_src: yes
+- name: modify .profile
+  blockinfile:
+    dest: "$HOME/.profile"
+    block: |
+      export GOPATH=/usr/local
+      export GOBIN=$GOPATH/bin
+      export PATH=$GOBIN:$PATH:/usr/local/go/bin
+  register: modify
+- name: Set GOPATH
+  when: modify.changed
+  shell: source $HOME/.profile
+  args:
+    executable: /bin/bash
