@@ -14,18 +14,15 @@
 - hosts: etcd
   become: true
   roles:
-    - install-go
     - setup-etcd
 - hosts: masters
   become: true
   roles:
-    - install-go
     - setup-master
     - configure-kubeconfig
 - hosts: workers
   become: true
   roles:
-  - install-go
   - install-runtimes
   - setup-worker
 - hosts: deploy
