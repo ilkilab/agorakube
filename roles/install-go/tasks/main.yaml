@@ -1,12 +1,3 @@
 ---
-- name: Install apt repo longsleep/golang-backports
-  apt_repository:
-    repo: 'ppa:longsleep/golang-backports'
-    state: present
-
-- name: Install go
-  apt:
-    name: golang-go
-    state: present
-    update_cache: yes
-
+- name: Import Go install
+  include_tasks: wget-install-go.yaml

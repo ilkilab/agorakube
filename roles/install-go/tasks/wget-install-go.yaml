@@ -11,7 +11,7 @@
     remote_src: yes
 - name: modify .profile
   blockinfile:
-    dest: "$HOME/.profile"
+    dest: '/etc/profile'
     block: |
       export GOPATH=/usr/local
       export GOBIN=$GOPATH/bin
@@ -19,6 +19,6 @@
   register: modify
 - name: Set GOPATH
   when: modify.changed
-  shell: source $HOME/.profile
+  shell: source /etc/profile
   args:
     executable: /bin/bash
