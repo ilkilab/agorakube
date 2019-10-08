@@ -146,13 +146,17 @@ service_node_port_range: 30000-32767
 # Custom features
 
 runtime: containerd  # Supported values are : containerd (default), and docker
-network_cni_plugin: flannel
+network_cni_plugin: flannel  # Supported values are: flannel (default), and calico
 ingress_controller: traefik
 dns_server_soft: coredns
 label_workers: true
 populate_etc_hosts: yes
 k8s_dashboard: true
 update_certs: false
+
+# Calico
+calico_mtu: 1440  # If using calico you might want to change the MTU to suit 
+                  # cloud-based setups, e.g. to 1400
 
 # Security
 
