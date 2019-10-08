@@ -1,0 +1,26 @@
+---
+- name: Create tempdir
+  tempfile:
+    state: directory
+    suffix: calico
+  register: calico_tempdir
+  changed_when: false
+
+- name: Render templates
+  template:
+    dest: "{{ calico_tempdir.path }}/calico.yaml"
+    src: "../templates/calico.yaml.j2"
+  changed_when: false
+
+- name: Apply templates
+  command: kubectl apply -f {{ calico_tempdir.path }}/calico.yaml
+  register: apply_calico
+  changed_when: >
+    apply_calico.stdout is search("created")
+    or apply_calico.stdout is search("configured")
+
+- name: Cleanup tempdir
+  file:
+    state: absent
+    path: "{{ calico_tempdir.path }}"
+  changed_when: false
