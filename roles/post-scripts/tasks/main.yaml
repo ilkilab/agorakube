@@ -6,6 +6,9 @@
 - name: Include Tasks Flannel
   include_tasks: flannel.yaml
   when: network_cni_plugin == 'flannel'
+- name: Include Tasks Calico
+  include_tasks: calico.yaml
+  when: network_cni_plugin == 'calico'
 - name: Include label workers
   include_tasks: label-workers.yaml
   when: label_workers
