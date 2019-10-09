@@ -1,5 +1,26 @@
 ---
-- name: Deploy Flannel Pods
-  shell: 'kubectl apply -f https://raw.githubusercontent.com/coreos/flannel/v0.11.0/Documentation/kube-flannel.yml  && touch "{{ data_path }}/flags/flannel"'
-  args:
-    creates: "{{ data_path }}/flags/flannel"
+- name: Create tempdir
+  tempfile:
+    state: directory
+    suffix: flannel
+  register: flannel_tempdir
+  changed_when: false
+
+- name: Render templates
+  template:
+    dest: "{{ flannel_tempdir.path }}/flannel.yaml"
+    src: "../templates/flannel.yaml.j2"
+  changed_when: false
+
+- name: Apply templates
+  command: kubectl apply -f {{ flannel_tempdir.path }}/flannel.yaml
+  register: apply_flannel
+  changed_when: >
+    apply_flannel.stdout is search("created")
+    or apply_flannel.stdout is search("configured")
+
+- name: Cleanup tempdir
+  file:
+    state: absent
+    path: "{{ flannel_tempdir.path }}"
+  changed_when: false
