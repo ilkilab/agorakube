@@ -17,6 +17,7 @@ Feedback is very welcome via the
 as issues or pull (merge) requests.
 
 
+[![asciicast](https://asciinema.org/a/q57CRgY3PwbFpZzonkK8b15Pm.svg)](https://asciinema.org/a/q57CRgY3PwbFpZzonkK8b15Pm)
 
 ## Summary
 
