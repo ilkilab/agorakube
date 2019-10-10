@@ -6,13 +6,22 @@ metadata:
   namespace: kube-system
 ---
 kind: DaemonSet
+{% if 'v1.16' in kubernetes_release %}
+apiVersion: apps/v1
+{% else %}
 apiVersion: extensions/v1beta1
+{% endif %}
 metadata:
   name: traefik-ingress-controller
   namespace: kube-system
   labels:
     k8s-app: traefik-ingress-lb
 spec:
+{% if 'v1.16' in kubernetes_release %}
+  selector:
+    matchLabels:
+      name: traefik-ingress-lb
+{% endif %}
   template:
     metadata:
       labels:
