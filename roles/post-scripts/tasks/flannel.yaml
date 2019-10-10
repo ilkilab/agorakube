@@ -17,7 +17,6 @@
   register: apply_flannel
   changed_when: >
     apply_flannel.stdout is search("created")
-    or apply_flannel.stdout is search("configured")
 
 - name: Cleanup tempdir
   file:
