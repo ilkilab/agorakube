@@ -1,5 +1,20 @@
 ---
-- name: Deploy Default Dashboard to K8S Cluster
-  shell: "kubectl apply -f https://raw.githubusercontent.com/kubernetes/dashboard/v2.0.0-beta1/aio/deploy/recommended.yaml && touch {{ data_path }}/flags/dashboard"
-  args:
-    creates: "{{ data_path }}/flags/dashboard"
+- name: Create tempdir
+  tempfile:
+    state: directory
+    suffix: dashboard
+  register: dashboard_tempdir
+  changed_when: false
+
+- name: Apply templates
+  command: kubectl apply -f https://raw.githubusercontent.com/kubernetes/dashboard/v2.0.0-beta1/aio/deploy/recommended.yaml
+  register: apply_dashboard
+  changed_when: >
+    apply_dashboard.stdout is search("created")
+    or apply_dashboard.stdout is search("configured")
+
+- name: Cleanup tempdir
+  file:
+    state: absent
+    path: "{{ dashboard_tempdir.path }}"
+  changed_when: false
