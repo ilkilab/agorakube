@@ -1,6 +1,27 @@
+#---
+#- name: Label Workers nodes as workers
+#  shell: "kubectl label node {{item}}  node-role.kubernetes.io/worker=  && touch {{ data_path }}/flags/label-{{item}}"
+#  args:
+#    creates: "{{ data_path }}/flags/label-{{item}}"
+#  with_items: "{{ groups['workers'] }}"
+
 ---
-- name: Label Workers nodes as workers
-  shell: "kubectl label node {{item}}  node-role.kubernetes.io/worker=  && touch {{ data_path }}/flags/label-{{item}}"
-  args:
-    creates: "{{ data_path }}/flags/label-{{item}}"
+- name: Create tempdir
+  tempfile:
+    state: directory
+    suffix: label
+  register: label_tempdir
+  changed_when: false
+
+- name: Apply templates
+  command: "kubectl label node {{item}}  node-role.kubernetes.io/worker="
+  register: apply_label
+  changed_when: >
+    apply_label.stdout is search("created")
+    or apply_label.stdout is search("configured")
   with_items: "{{ groups['workers'] }}"
+- name: Cleanup tempdir
+  file:
+    state: absent
+    path: "{{ label_tempdir.path }}"
+  changed_when: false

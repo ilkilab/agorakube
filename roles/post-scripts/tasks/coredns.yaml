@@ -1,9 +1,26 @@
 ---
-- name: Generate CoreDNS resources file
+- name: Create tempdir
+  tempfile:
+    state: directory
+    suffix: coredns
+  register: coredns_tempdir
+  changed_when: false
+
+- name: Render templates
   template:
-    src: coredns.yaml.j2
-    dest: "{{ data_path }}/coredns.yaml"
-- name: Deploy CoreDNS to K8S Cluster
-  shell: kubectl create -f "{{ data_path }}/coredns.yaml"  && touch "{{ data_path }}/flags/coredns"
-  args:
-    creates: "{{ data_path }}/flags/coredns"
+    dest: "{{ coredns_tempdir.path }}/coredns.yaml"
+    src: "../templates/coredns.yaml.j2"
+  changed_when: false
+
+- name: Apply templates
+  command: kubectl apply -f {{ coredns_tempdir.path }}/coredns.yaml
+  register: apply_coredns
+  changed_when: >
+    apply_coredns.stdout is search("created")
+    or apply_coredns.stdout is search("configured")
+
+- name: Cleanup tempdir
+  file:
+    state: absent
+    path: "{{ coredns_tempdir.path }}"
+  changed_when: false
