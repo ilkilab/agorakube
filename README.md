@@ -16,6 +16,8 @@ Feedback is very welcome via the
 [GitHub site](https://github.com/ilkilab/agorakube)
 as issues or pull (merge) requests.
 
+Master branch is stable.
+
 
 [![asciicast](https://asciinema.org/a/q57CRgY3PwbFpZzonkK8b15Pm.svg)](https://asciinema.org/a/q57CRgY3PwbFpZzonkK8b15Pm)
 
