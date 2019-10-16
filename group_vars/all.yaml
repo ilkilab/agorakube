@@ -9,8 +9,8 @@ expiry: 87600h
 
 
 # Components version
-etcd_release: v3.4.1
-kubernetes_release: v1.16.1
+etcd_release: v3.3.17
+kubernetes_release: v1.16.2
 
 # IPs-CIDR Configurations
 
