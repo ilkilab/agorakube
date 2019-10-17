@@ -19,6 +19,7 @@
   changed_when: >
     apply_label.stdout is search("created")
     or apply_label.stdout is search("configured")
+  ignore_errors: True
   with_items: "{{ groups['workers'] }}"
 - name: Cleanup tempdir
   file:
