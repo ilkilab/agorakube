@@ -14,12 +14,11 @@
   changed_when: false
 
 - name: Apply templates
-  command: "kubectl label node {{item}}  node-role.kubernetes.io/worker="
+  command: "kubectl label node {{item}}  node-role.kubernetes.io/worker= --overwrite"
   register: apply_label
   changed_when: >
     apply_label.stdout is search("created")
     or apply_label.stdout is search("configured")
-  ignore_errors: True
   with_items: "{{ groups['workers'] }}"
 - name: Cleanup tempdir
   file:
