@@ -17,3 +17,6 @@
 - name: Install K8S Default Dashboard
   include_tasks: default_dashboard.yaml
   when: k8s_dashboard
+- name: Install K8S Service Mesh
+  include_tasks: linkerd.yaml
+  when:  service_mesh  == 'linkerd'

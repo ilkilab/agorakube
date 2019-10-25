@@ -153,7 +153,8 @@ label_workers: true
 populate_etc_hosts: yes
 k8s_dashboard: true
 update_certs: false
-
+service_mesh: linkerd   # Supported values are: linkerd (default), and none
+linkerd_release: stable-2.6.0
 # Calico
 calico_mtu: 1440  # If using calico you might want to change the MTU to suit 
                   # cloud-based setups, e.g. to 1400
