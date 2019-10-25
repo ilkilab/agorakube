@@ -4,7 +4,7 @@ I'm really glad you're reading this, because we need volunteer developers to hel
 
 We want you working on things you're excited about.
 
-You can contact us by mail  pvillard@ilki.fr
+You can contact us by mail  agorakube@ilki.fr
 
 ## Testing
 
