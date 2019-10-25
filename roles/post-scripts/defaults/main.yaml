@@ -5,3 +5,5 @@ dns_server_soft: coredns
 cluster_dns_ip: 10.32.0.10 
 ingress_controller: traefik
 k8s_dashboard: true
+service_mesh: linkerd
+linkerd_release: stable-2.6.0
