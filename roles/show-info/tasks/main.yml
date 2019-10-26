@@ -1,0 +1,17 @@
+---
+- name: Store info file in /root
+  template:
+    src: info.j2
+    dest: /root/agorakube-info.txt
+    owner: root
+    group: root
+    mode: '0640'
+
+- name: Get file content to show to the user
+  command: cat /root/agorakube-info.txt
+  register: agora_info
+
+
+- name: Show informaiton to the user
+  debug:
+    var: agora_info.stdout_lines
