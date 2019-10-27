@@ -1,0 +1,38 @@
+
+
+#################################################################
+###            AgoreKube Installation Information             ###
+#################################################################
+
+
+Thank you for using AgoraKube to deploy and manage your Kubernetes installation.
+
+This file (agorakube-info.txt) is stored in root home directory for your reference.
+
+#############################################################
+
+##################
+# Kubectl config #
+##################
+Kubectl config file is located at: /root/.kube/config
+
+{% if k8s_dashboard is sameas true %}
+########################
+# Kubernetes Dashboard #
+########################
+Kubernetes dashboard can be accessed by following the steps below:
+
+1. Run follwoing command on deploy (ansible control) machine.
+# kubectl proxy
+
+2. Visit following URL on deploy machine.
+http://localhost:8001/api/v1/namespaces/kubernetes-dashboard/services/https:kubernetes-dashboard:/proxy/
+
+{% if k8s_dashboard_admin is sameas true %}
+3. The Admin token is stored in: /root/.kube/dashboardadmin
+{% endif %}
+{% endif %}
+
+
+   Run following command to see this information again anytime.
+   $ cat /root/agorakube-info.txt
