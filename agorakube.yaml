@@ -30,5 +30,6 @@
   roles:
     - install-kubectl
     - configure-kubeconfig
+    - install-helm
     - post-scripts
     - show-info

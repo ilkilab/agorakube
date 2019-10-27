@@ -1,0 +1,44 @@
+---
+- name: Install Helm
+  command: 'curl https://raw.githubusercontent.com/kubernetes/helm/master/scripts/get | bash'
+  args:
+    creates: /usr/local/bin/helm
+  when: install_helm
+
+- name: Check service account for Helm
+  command: kubectl get serviceaccounts -n kubernetes-dashboard agoratiller
+  register: check_helm_service_account
+  failed_when: check_helm_service_account.rc > 1
+  when: install_helm
+
+
+- name: Create service account for Helm
+  command: kubectl create serviceaccount agoratiller -n kube-system
+  register: create_helm_service_account
+  changed_when: >
+    create_helm_service_account.stdout is search("created")
+    or create_helm_service_account.stdout is search("configured")
+  when:
+    - install_helm
+    - check_helm_service_account.rc == 1
+
+- name: Check cluster role binding for Helm service account
+  command: kubectl get clusterrolebinding agora-tiller-role-binding
+  register: check_helm_account_role
+  failed_when: check_helm_account_role.rc > 1
+  when:
+    - install_helm
+
+- name: Create cluster role binding for Helm service account
+  command: kubectl create clusterrolebinding agora-tiller-role-binding  --clusterrole=cluster-admin  --serviceaccount=kube-system:agoratiller
+  register: create_helm_account_role
+  changed_when: >
+    create_helm_account_role.stdout is search("created")
+    or create_helm_account_role.stdout is search("configured")
+  when:
+    - install_helm
+    - check_helm_account_role.rc == 1
+
+- name: Initialize Helm
+  command: helm init --service-account agoratiller
+  when: init_helm

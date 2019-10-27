@@ -144,7 +144,8 @@ cluster_dns_ip: 10.32.0.10
 service_node_port_range: 30000-32767
 
 # Custom features
-
+install_helm: true # Install helm and create service accounts
+init_helm: true # Do the helm initialization after installation which deploys tiller, install_helm should be set to tru otherwise this will be ignored
 runtime: containerd  # Supported values are : containerd (default), and docker
 network_cni_plugin: flannel  # Supported values are: flannel (default), and calico
 ingress_controller: traefik
