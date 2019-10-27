@@ -31,7 +31,4 @@
     - install-kubectl
     - configure-kubeconfig
     - post-scripts
-- hosts: deploy
-  become: true
-  roles:
     - show-info
