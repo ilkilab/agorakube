@@ -152,6 +152,7 @@ dns_server_soft: coredns
 label_workers: true
 populate_etc_hosts: yes
 k8s_dashboard: true
+k8s_dashbaord_admin: true
 update_certs: false
 service_mesh: linkerd   # Supported values are: linkerd (default), and none
 linkerd_release: stable-2.6.0
