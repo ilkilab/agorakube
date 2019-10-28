@@ -1,4 +1,4 @@
 ---
 install_helm: true
 init_helm: true
-
+install_helm_version: v2.15.1
