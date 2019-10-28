@@ -1,4 +1,4 @@
-# Local AgoreKube Development Envionrment
+# Local AgoraKube Development Envionrment
 
 Local environment is supported using vagrant. The document below describes pre-requisites for local environment for agorakube and how you can start using them.
 
