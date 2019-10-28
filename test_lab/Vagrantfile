@@ -12,8 +12,8 @@ else
   apt-add-repository --yes --update ppa:ansible/ansible
   apt-get install -yqq ansible
 fi
-cd /vagrant
-ansible-playbook -i hosts.vagrant agorakube.yaml
+cd /agorakube
+ansible-playbook -i test_lab/hosts.vagrant agorakube.yaml
 if [ -f /root/agorakube-info.txt ]; then
   cat /root/agorakube-info.txt
 fi
@@ -54,4 +54,7 @@ Vagrant.configure("2") do |config|
       end
       deploy.vm.provision :shell, inline: $script
   end
+
+
+  config.vm.synced_folder "../", "/agorakube"
 end
