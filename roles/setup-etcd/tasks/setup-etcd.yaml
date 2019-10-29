@@ -22,3 +22,4 @@
     state: started
     daemon_reload: yes
     name: etcd
+    enabled: yes
