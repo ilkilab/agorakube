@@ -49,11 +49,6 @@
   notify:
     - restart docker
 
-- name: Start Runtime
-  systemd:
-    state: started
-    name: docker
-
 - name: Configure /etc/docker/daemon.json
   copy:
     dest: /etc/docker/daemon.json
