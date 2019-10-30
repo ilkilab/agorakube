@@ -116,7 +116,7 @@ The **all:vars** section contains information about how to connect to K8S nodes.
 
 ## Configuration file
 
-This [../group_vars/all.yaml](../group_vars/all.yaml) file contains all configuration variables that you can customize to make your K8S Cluster fit your needs.
+The [../group_vars/all.yaml](../group_vars/all.yaml) file contains all configuration variables that you can customize to make your K8S Cluster fit your needs.
 
 Sample file will deploy **containerd** as container runtime, **flannel** as CNI plugin and **coredns** as DNS service : 
 
