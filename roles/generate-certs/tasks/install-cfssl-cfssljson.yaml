@@ -1,7 +1,13 @@
 ---
 - name: Install gcc
-  apt:
+  package:
     name: gcc
+    state: latest
+
+# Git is required for the Install cfssl task, Centos does not come with git installed
+- name: Install gcc
+  package:
+    name: git
     state: latest
 - name: Install cfssl
   shell: source /etc/profile && go get -u github.com/cloudflare/cfssl/cmd/cfssl

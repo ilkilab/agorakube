@@ -1,9 +1,8 @@
 ---
 - name: Install packages [socat] [conntrack] [ipset]
-  apt:
+  package:
     name: ["socat", "conntrack", "ipset"]
     state: latest
-    update_cache: yes
 
 - name: Download Kubernetes node binaries
   unarchive:

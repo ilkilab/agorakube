@@ -6,3 +6,4 @@
   when: update_certs
 - name: generate certificates and configs
   include_tasks: gen-certs.yaml
+
