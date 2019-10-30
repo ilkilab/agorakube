@@ -1,29 +1,10 @@
 ---
-- name: Add the [overlay] and [br_netfilter]  modules
-  modprobe:
-    name: "{{ item }}"
-    state: present
-  with_items:
-    - overlay
-    - br_netfilter
-
-- name: Setup required sysctl params, these persist across reboots
-  sysctl:
-    name: "{{ item.name }}"
-    value: "{{ item.value }}"
-    state: present
-    reload: yes
-    sysctl_file: /etc/sysctl.d/99-kubernetes-cri.conf
-  with_items:
-    - { name: 'net.bridge.bridge-nf-call-iptables', value: '1' }
-    - { name: 'net.ipv4.ip_forward', value: '1' }
-    - { name: 'net.bridge.bridge-nf-call-ip6tables', value: '1' }
-
 - name: Install packages to allow apt to use a repository over HTTPS
   apt:
     name: ['apt-transport-https', 'ca-certificates', 'curl', 'software-properties-common']
     state: latest
     update_cache: yes
+
 - name: Add Docker’s official GPG key
   apt_key:
     url: https://download.docker.com/linux/ubuntu/gpg
@@ -35,36 +16,25 @@
     state: present
     update_cache: yes
 
-- name: Install containerd
+- name: Install docker
   apt:
-    name: containerd.io
-    state: latest
+    name: docker-ce=18.06.2~ce~3-0~ubuntu
+    state: present
     update_cache: yes
-
-- name: Create /etc/containerd directory
-  file:
-    path: /etc/containerd
-    state: directory
-
-- name: Configure containerd
-  copy:
-    src: config.toml
-    dest: /etc/containerd/config.toml
-  notify:
-    - restart containerd
 
 - name: Create /etc/cni/net.d/ directory
   file:
     path: /etc/cni/net.d
     state: directory
     recurse: yes
-
+    
 - name: Puch /etc/cni/net.d/99-loopback.conf
   copy:
     src: 99-loopback.conf
     dest: /etc/cni/net.d/99-loopback.conf
   notify:
-    - restart containerd
+    - restart docker
+  
 - name: Create /opt/cni/bin/ directory
   file:
     path: /opt/cni/bin/
@@ -77,29 +47,26 @@
     remote_src: yes
     creates: /opt/cni/bin/bridge
   notify:
-    - restart containerd
+    - restart docker
 
 - name: Start Runtime
   systemd:
     state: started
-    name: containerd
+    name: docker
 
-- name: Install docker
-  apt:
-    name: docker-ce=18.06.2~ce~3-0~ubuntu
-    state: present
-    update_cache: yes
 - name: Configure /etc/docker/daemon.json
   copy:
     dest: /etc/docker/daemon.json
     src: daemon.json
   notify:
     - Reload docker
+
 - name: create /etc/systemd/system/docker.service.d directory
   file:
     path: /etc/systemd/system/docker.service.d
     state: directory
     recurse: yes
+
 - name: Make sure docker is running
   systemd:
     state: started
