@@ -3,8 +3,10 @@ Description=Kubernetes Kubelet
 Documentation=https://github.com/kubernetes/kubernetes
 {% if runtime == 'docker' %}
 After=docker.service \
+Requires=docker.service \
 {% endif %}
 {% if runtime == 'containerd' %}
+After=containerd.service \
 Requires=containerd.service \
 {% endif %}
 
