@@ -1,5 +1,5 @@
 [Unit]
-Description=Kubernetes Kubelet
+Description=Kubernetes Kubelet {{ kubernetes_release }}
 Documentation=https://github.com/kubernetes/kubernetes
 {% if runtime == 'docker' %}
 After=docker.service \

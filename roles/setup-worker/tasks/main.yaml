@@ -3,5 +3,8 @@
   include_tasks: import-certs.yaml
 - name: Disable swap
   include_tasks: disable-swap.yaml
+- name: Clean previous K8S install
+  include_tasks: clean-previous-k8s-install.yaml
+  when: delete_previous_k8s_install
 - name: Setup Worker
   include_tasks: setup-worker.yaml

@@ -1,5 +1,5 @@
 [Unit]
-Description=Kubernetes API Server
+Description=Kubernetes API Server {{ kubernetes_release }}
 Documentation=https://github.com/kubernetes/kubernetes
 {% set etcd_servers = [] %}
 {% for host in groups['etcd']  %}
