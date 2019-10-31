@@ -47,7 +47,7 @@ The deployment node is an Ansible server which contains all Ansible roles and va
 
 - Connect to the deployment node and run the following command :
 ```
-bash <(curl -s https://raw.githubusercontent.com/ilkilab/agorakube/master/install.sh)
+bash <(curl -s https://raw.githubusercontent.com/ilkilab/agorakube/master/setup-deploy.sh)
 ```
 
 
@@ -61,7 +61,7 @@ The prerequisites are:
 
 You can run the following command to automatically install those packages :
 ```
-sudo apt update && sudo apt install -yqq openssh-server python
+bash <(curl -s https://raw.githubusercontent.com/ilkilab/agorakube/master/setup-hosts.sh)
 ```
 
 # K8S Cluster Configuration

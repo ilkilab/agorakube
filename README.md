@@ -52,12 +52,12 @@ We regularly use a machine to deploy every cluster. We only use it for deploymen
 #### On the "deployment" node
 Execute this command in order to install Ansible and clone the repository :
 ```
-bash <(curl -s https://raw.githubusercontent.com/ilkilab/agorakube/master/install.sh)
+bash <(curl -s https://raw.githubusercontent.com/ilkilab/agorakube/master/setup-deploy.sh)
 ```
 #### On the K8S nodes
 Execute this command on each node to update them and install the last version of Python : 
 ```
-sudo apt update && sudo apt install -yqq python openssh-server
+bash <(curl -s https://raw.githubusercontent.com/ilkilab/agorakube/master/setup-hosts.sh)
 ```
 
 ### Installation instructions
