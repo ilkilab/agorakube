@@ -18,7 +18,6 @@ This section explains what are the prerequisites to install AgoraKube in your en
 Below the OS currently supported on all the machines :
   - Ubuntu 18.04 (Bionic) - amd64
   - Centos 7 & 8 - amd64
-  - RedHat - amd64
   
 ## Node Sizing
 
