@@ -135,7 +135,7 @@ expiry: 87600h
 
 # Components version
 etcd_release: v3.3.15   # 3.3 or 3.4 releases are supported
-kubernetes_release: v1.15.3  #1.15 or 1.15 releases are supported
+kubernetes_release: v1.15.3  #1.15 or 1.16 releases are supported
 
 # IPs-CIDR Configurations
  
