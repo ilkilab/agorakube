@@ -22,7 +22,7 @@
     elif [[ $DISTRO == Ubuntu* ]]; then
         export DEBIAN_FRONTEND=noninteractive
         apt-get update
-        apt-get install -yqq git software-properties-common
+        apt-get install -yqq software-properties-common
         apt-get install -yqq openssh-server
         apt-get install -yqq python
     else
