@@ -3,7 +3,7 @@
   include_tasks: "repo-{{ ansible_distribution }}.yaml"
 
 - name: Install Docker for {{ ansible_distribution }}
-  include_tasks: "docker-{{ ansible_distribution }}"
+  include_tasks: "docker-{{ ansible_distribution }}.yaml"
 
 - name: Create /etc/cni/net.d/ directory
   file:
