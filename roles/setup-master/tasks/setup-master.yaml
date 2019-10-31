@@ -53,9 +53,9 @@
     dest: /etc/kubernetes/manifests/kube-scheduler.yaml
   notify:
     - Restart kube-scheduler service
-- name: Import service unit kube-scheduler
-  copy:
-    src: kube-scheduler.service
+- name: Import kube-scheduler.service
+  template:
+    src: kube-scheduler.service.j2
     dest: /etc/systemd/system/kube-scheduler.service
   notify:
     - Reload daemons

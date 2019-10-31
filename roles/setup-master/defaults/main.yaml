@@ -5,3 +5,4 @@ service_cluster_ip_range: 10.32.0.0/24
 populate_etc_hosts: yes
 service_node_port_range: 30000-32767
 encrypt_key_etcd: 1fJcKt6vBxMt+AkBanoaxFF2O6ytHIkETNgQWv4b/+Q=
+delete_previous_k8s_install: false

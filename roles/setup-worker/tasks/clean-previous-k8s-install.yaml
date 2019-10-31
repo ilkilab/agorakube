@@ -1,0 +1,5 @@
+---
+- name: Delete prevous k8s binaries
+  file:
+    state: absent
+    path: /usr/local/bin/kubernetes
