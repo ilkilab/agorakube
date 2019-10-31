@@ -17,3 +17,6 @@
   when: "'linkerd' not in linkerd_is_installed.stdout"
   args:
     executable: /bin/bash
+  environment:
+    PATH: /usr/local/bin:{{ ansible_env.PATH }}
+

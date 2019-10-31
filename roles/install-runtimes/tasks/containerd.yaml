@@ -19,27 +19,13 @@
     - { name: 'net.ipv4.ip_forward', value: '1' }
     - { name: 'net.bridge.bridge-nf-call-ip6tables', value: '1' }
 
-- name: Install packages to allow apt to use a repository over HTTPS
-  apt:
-    name: ['apt-transport-https', 'ca-certificates', 'curl', 'software-properties-common']
-    state: latest
-    update_cache: yes
-- name: Add Docker’s official GPG key
-  apt_key:
-    url: https://download.docker.com/linux/ubuntu/gpg
-    state: present
-
-- name: Add Docker apt repository
-  apt_repository:
-    repo: deb [arch=amd64] https://download.docker.com/linux/ubuntu {{ ansible_lsb.codename }} stable
-    state: present
-    update_cache: yes
+- name: Setup repo and install required packages for {{ ansible_distribution }}
+  include_tasks: "repo-{{ ansible_distribution }}.yaml"
 
 - name: Install containerd
-  apt:
+  package:
     name: containerd.io
     state: latest
-    update_cache: yes
 
 - name: Create /etc/containerd directory
   file:

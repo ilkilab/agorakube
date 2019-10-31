@@ -13,7 +13,9 @@ clusterDomain: "cluster.local"
 clusterDNS:
   - "{{cluster_dns_ip}}"
 podCIDR: "{{ pod_cidr }}"
+{% if ansible_distribution == "Ubuntu" %}
 resolvConf: "/run/systemd/resolve/resolv.conf"
+{% endif %}
 runtimeRequestTimeout: "15m"
 tlsCertFile: "/etc/kubernetes/pki/apiserver-kubelet-client.crt"
 tlsPrivateKeyFile: "/etc/kubernetes/pki/apiserver-kubelet-client.key"

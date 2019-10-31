@@ -1,19 +1,6 @@
 ---
-- name: Install apt-transport-https
-  apt:
-    name: apt-transport-https
-    state: present
-    update_cache: yes
-- name: Add apt key for kubectl
-  apt_key:
-    url: https://packages.cloud.google.com/apt/doc/apt-key.gpg
-    state: present
-- name: add repo [deb https://apt.kubernetes.io/ kubernetes-xenial main]
-  apt_repository:
-    repo: deb https://apt.kubernetes.io/ kubernetes-xenial main
-    state: present
-- name: Install Kubectl
-  apt:
-    name: kubectl
-    state: present
-    update_cache: yes
+- name: Setup kubectl's {{ ansible_distribution }} repo
+  include_tasks: "repo-{{ ansible_distribution }}.yaml"
+
+- name: Install kubectl
+  package: name=kubectl state=present
