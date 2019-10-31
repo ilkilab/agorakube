@@ -16,15 +16,15 @@
     unset UNAME
     echo "#$DISTRO#"
     if [[ $DISTRO == centos* ]]; then
-        killall -9 yum
-        yum install python -y
-        yum install openssh-server -y
+        sudo killall -9 yum
+        sudo yum install python -y
+        sudo yum install openssh-server -y
     elif [[ $DISTRO == Ubuntu* ]]; then
         export DEBIAN_FRONTEND=noninteractive
-        apt-get update
-        apt-get install -yqq software-properties-common
-        apt-get install -yqq openssh-server
-        apt-get install -yqq python
+        sudo apt-get update
+        sudo apt-get install -yqq software-properties-common
+        sudo apt-get install -yqq openssh-server
+        sudo apt-get install -yqq python
     else
         echo "Unsupported OS"
         exit
