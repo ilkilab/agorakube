@@ -16,21 +16,21 @@
     unset UNAME
     echo "#$DISTRO#"
     if [[ $DISTRO == centos* ]]; then
-        killall -9 yum
-        yum install epel-release -y
-        yum install ansible -y
-        yum install openssh-server -y
-        yum install git
+        sudo killall -9 yum
+        sudo yum install epel-release -y
+        sudo yum install ansible -y
+        sudo yum install openssh-server -y
+        sudo yum install git
         git clone https://github.com/ilkilab/agorakube.git
 
     elif [[ $DISTRO == Ubuntu* ]]; then
         export DEBIAN_FRONTEND=noninteractive
-        apt-get update
-        apt-get install -yqq git software-properties-common
-        apt-add-repository --yes --update ppa:ansible/ansible
-        apt-get install -yqq ansible
-        add-apt-repository --yes --remove ppa:PPA_Name/ppa
-        apt-get install -yqq  openssh-server
+        sudo apt-get update
+        sudo apt-get install -yqq git software-properties-common
+        sudo apt-add-repository --yes --update ppa:ansible/ansible
+        sudo apt-get install -yqq ansible
+        sudo add-apt-repository --yes --remove ppa:PPA_Name/ppa
+        sudo apt-get install -yqq  openssh-server
         git clone  https://github.com/ilkilab/agorakube.git
     else
         echo "Unsupported OS"
