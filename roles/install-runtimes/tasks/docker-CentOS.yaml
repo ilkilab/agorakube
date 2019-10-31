@@ -1,0 +1,6 @@
+---
+- name: Install docker
+  package:
+    name: docker-ce-18.06.2.ce
+    state: present
+    update_cache: yes
