@@ -8,7 +8,7 @@
 
 
 This project is aimed to provide the simplest way to install kubernetes on bare-metal, virtual & Cloud environments.
-Actually, only Ubuntu 18.04 (Bionic) amd64 is supported, but several other operating systems will be available soon.
+Actually, Ubuntu 18.04 (Bionic) amd64, Centos 7/8 and RH are supported, but several other operating systems will be available soon.
 
 
 This project is still under development. 
