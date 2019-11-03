@@ -29,6 +29,7 @@ This is a list of points that will be explained in this Readme file for the Agor
 - How to install
 - How to give feedback
 - How to contribute
+- Community
 - Licensing
 
 ## What is AgoraKube
@@ -80,6 +81,16 @@ Contributions are very welcome via the
 as issues or pull (merge) requests.
 
 See our [Code Of Conduct](https://github.com/ilkilab/agorakube/blob/master/CODE_OF_CONDUCT.md) and [CONTRIBUTING](https://github.com/ilkilab/agorakube/blob/master/docs/CONTRIBUTING.md) for more information.
+
+## Community
+
+Join Agorakube's community for discussion and ask questions : [Agorakube's Slack](http://slack.agorakube.ilkilabs.io/)
+
+Channels :
+- **#general** - For general purpose (news, events...)
+- **#developpers** - For people who contribute to Agorakube by developing features
+- **#end-users** - For end users who want to give us feedbacks
+- **#random** - As its name suggests, for random discussions :)
 
 ## Licensing
 
