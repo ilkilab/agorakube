@@ -6,6 +6,10 @@
 [![Build Status](https://travis-ci.org/ilkilab/agorakube.svg?branch=master)](https://travis-ci.org/ilkilab/agorakube)
 
 
+<p align="center">
+<img src="./images/agorakube-logo.svg" width="400" alt="Agorakube" title="Agorakube" />
+</p>
+
 
 This project is aimed to provide the simplest way to install kubernetes on bare-metal, virtual & Cloud environments.
 Actually, Ubuntu 18.04 (Bionic) amd64 and Centos 7/8  are supported, but several other operating systems will be available soon.
