@@ -1,26 +1,34 @@
-# Local AgoraKube Development Envionrment
+# Local AgoraKube Development Environment
 
-Local environment is supported using vagrant. The document below describes pre-requisites for local environment for agorakube and how you can start using them.
+You can create a local environment by using Vagrant. 
+The document below describes pre-requisites for Agorakube local environment and how you can start using them.
 
-## Pre Requisites
+## Pre-requisites
 
 * Vagrant
 * VirtualBox
 
 ## Environment customization
 
-There are two files which can be modified to customize how the local environment will be setup in terms of number of nodes. By default it works with single node which
-acts as deploy node for agorakube and as well as master and worker node for kubernetes. 
+There are two files which can be modified to customize the local environment, especially in terms of number of nodes. By default, it works with single node which acts as : 
+- Agorakube deployment node used to deploy all components
+- master and worker node for Kubernetes
 
-The configuration files for Vagrant based local environment are located in test_lab folder.
+The configuration files for Vagrant based local environment are located in [test_lab folder](/test_lab).
 
-Number of nodes can be changed by modifying the Vagrantfile and uncommenting node1 and node2 blocks, note please only uncomment the lines between *# Node[12] Block START* and *# Node[12] Block END*
+**Note :** First, you can choose the base OS (Ubuntu or CentOS) of you local environment by modifying [Vagrantfile](/test_lab/Vagrantfile). 
 
-After modifying the Vagrantfile please adjust hosts.vagrant accordingly and make sure to *update the advertise_ip_masters* to be same as the IP of either deploy node in case of 
-single node (default) local environment or to the ip of node1 in case of multi-node local environment.
+If you want to change the number of nodes :
+1. You can first modify the [Vagrantfile](/test_lab/Vagrantfile) by uncommenting blocks corresponding to node1 and node2.
+   - **Note :** Only uncomment the lines between *# Node[12] Block START* and *# Node[12] Block END*
+2. Next, adjust [hosts.vagrant](/test_lab/hosts.vagrant) file accordingly by uncommenting the desired lines.
+   - **Note :** Make sure to update the *advertise_ip_masters* :
+     - In case of a single node deployment (default), the IP must correspond to the deployment node IP
+     - In case of multi-node deployment, the IP must correspond to the node1 IP 
+    
 
 ## Start the environment
 
-Simply goto test_lab folder and run the following command:
+Simply open a terminal and goto test_lab folder and then run the following command:
 
 `vagrant up`
