@@ -215,7 +215,7 @@ This section is used to defined all custom features of your deployment.
 
 | Parameter | Description | Values |
 | --- | --- | --- |
-| `runtime` | Container runtime used in your deployment | <ul><li> **ContainerD** </li><br/><li>  **Docker** *(default)* </li></ul>|
+| `runtime` | Container runtime used in your deployment | <ul><li> **ContainerD** *(default)* </li><br/><li>  **Docker**  </li></ul>|
 | `network_cni_plugin` | CNI plugin used in your deployment | <ul><li> **Calico** </li><br/><li>  **Flannel** *(default)* </li></ul>|
 | `ingress_controller` | Ingress Controller used in your deployment | <ul><li> **Traefik** *(default)* </li></ul>|
 | `dns_server_soft` | DNS service used in your deployment | <ul><li> **CoreDNS** *(default)* </li></ul>|
