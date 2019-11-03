@@ -171,6 +171,84 @@ encrypt_key_etcd: 1fJcKt6vBxMt+AkBanoaxFF2O6ytHIkETNgQWv4b/+Q=
 
 **Note :** You can also modify the IPs-CIDR if you want.
 
+Below  you can find all the parameters you can use in this file, section by section.
+
+### Certificates section
+
+This section is used to custom certificates information.
+
+| Parameter | Description | Values |
+| --- | --- | --- |
+| `cn_root_ca` | Certificate authority name | <ul><li> **Depend on your deployment** </li><br/><li>  **ilkilabs** *(default)* </li></ul>|
+| `c` | Country where the certificate is issued | <ul><li> **Depend on your deployment** </li><br/><li>  **FR** *(default)* </li></ul>|
+| `st` | State where the certificate is issued | <ul><li> **Depend on your deployment** </li><br/><li>  **Ile-de-France** *(default)* </li></ul>|
+| `l` | City where the certificate is issued | <ul><li> **Depend on your deployment** </li><br/><li>  **Paris** *(default)* </li></ul>|
+| `expiry` | Certificate lifetime in hours | <ul><li> **Depend on your needs** </li><br/><li>  **87600h** *(default)* </li></ul>|
+
+### Components version section
+
+This section is used to custom the components version of your deployment.
+
+| Parameter | Description | Values |
+| --- | --- | --- |
+| `etcd_release` | Version of etcd component | <ul><li> **3.3.X** or **3.4.X** </li><br/><li>  **3.4.3** *(default)* </li></ul>|
+| `kubernetes_release` | Version of kubernetes components | <ul><li> **1.15.X** or **1.16.X** </li><br/><li>  **1.16.2** *(default)* </li></ul>|
+| `delete_previous_k8s_install` | Deletion of previous installations of Kubernetes | <ul><li> **true** </li><br/><li>  **false** *(default)* </li></ul>|
+
+### IPs-CIDR Configurations
+
+This section is used to custom network configurations of your deployment.
+
+**Note :** It will depend on the CNI plugin used.
+
+| Parameter | Description | Values |
+| --- | --- | --- |
+| `cluster_cidr` | CIDR used for all pods deployed in your cluster | <ul><li> **Depend on your deployment** </li><br/><li>  **10.33.0.0/16** *(default)* </li></ul>|
+| `service_cluster_ip_range` | CIDR used for all services deployed in your cluster | <ul><li> **Depend on your deployment** </li><br/><li>   **10.32.0.0/16** *(default)* </li></ul>|
+| `kubernetes_service` | IP used for Kubernetes service of your cluster | <ul><li> **Depend on your deployment** </li><br/><li>  **10.32.0.1** *(default)* </li></ul>|
+| `cluster_dns_ip` | IP used for DNS services deployed in your cluster | <ul><li> **Depend on your deployment** </li><br/><li>  **10.32.0.10** *(default)* </li></ul>|
+| `service_node_port_range` | Range of ports used for all NodePort services deployed in your cluster | <ul><li> **depend on your deployment** </li><br/><li>   **30000-32767** *(default)* </li></ul>|
+
+### Custom features section
+
+This section is used to defined all custom features of your deployment.
+
+| Parameter | Description | Values |
+| --- | --- | --- |
+| `runtime` | Container runtime used in your deployment | <ul><li> **ContainerD** *(default)* </li><br/><li>  **Docker**  </li></ul>|
+| `network_cni_plugin` | CNI plugin used in your deployment | <ul><li> **Calico** </li><br/><li>  **Flannel** *(default)* </li></ul>|
+| `ingress_controller` | Ingress Controller used in your deployment | <ul><li> **Traefik** *(default)* </li></ul>|
+| `dns_server_soft` | DNS service used in your deployment | <ul><li> **CoreDNS** *(default)* </li></ul>|
+| `label_workers` | Fixed the label *node-role.kubernetes.io/worker* to all workers in your cluster | <ul><li> **false** </li><br/><li>  **true** *(default)* </li></ul>|
+| `populate_etc_hosts` | Populate */etc/hosts* file of all your nodes in the cluster | <ul><li> **no** </li><br/><li>  **yes** *(default)* </li></ul>|
+| `k8s_dashboard` | Deploy Kubernetes dashboard in your cluster | <ul><li> **false** </li><br/><li>  **true** *(default)* </li></ul>|
+| `update_certs` | Update all the certificates of your cluster | <ul><li> **false** *(default)* </li><br/><li>  **true** </li></ul>|
+| `service_mesh` | Service mesh used in your cluster | <ul><li> **LinkerD** *(default)* </li><br/><li>  **none** </li></ul>|
+| `linkerd_release` | Version of LinkerD used in your cluster | <ul><li> **stable-2.6.0** *(default)* </li><br/><li>  **none** </li></ul>|
+| `install_helm` | Helm installation in your cluster | <ul><li> **true** *(default)* </li><br/><li>  **false** </li></ul>|
+| `init_helm` | Initialization of Helm | <ul><li> **true** *(default)* </li><br/><li>  **false** </li></ul>|
+
+### Other parameters sections
+
+Parameters for Calico CNI plugin :
+
+| Parameter | Description | Values |
+| --- | --- | --- |
+| `calico_mtu` | MTU size to used in your deployment | <ul><li> **Depend on your needs** </li><br/><li>  **1440** *(default)* </li></ul>|
+
+Parameters for etcd security :
+
+| Parameter | Description | Values |
+| --- | --- | --- |
+| `encrypt_key_etcd` | Encryption key to use for etcd datas | <ul><li> **Depend on your deployment** </li><br/><li>  **1fJcKt6vBxMt+AkBanoaxFF2O6ytHIkETNgQWv4b/+Q=** *(default)* </li></ul> |
+
+Parameters for Agorakube datas storage :
+
+| Parameter | Description | Values |
+| --- | --- | --- |
+| `data_path` | Path to Agorakube datas directory | <ul><li> **Depend on your deployment** </li><br/><li> **"/var/agorakube"** *(default)* </li></ul> |
+
+
 ## Kubernetes deployment
 
 Once all configuration files are set, run the following command to launch the Ansible playbook that will deploy the pre-configured Kubernetes cluster :
