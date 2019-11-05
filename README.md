@@ -7,7 +7,7 @@
 
 
 <p align="center">
-<img src="./images/agorakube-logo.svg" width="400" alt="Agorakube" title="Agorakube" />
+<img src="./images/agorakube-logo.svg" width="450" alt="Agorakube" title="Agorakube" />
 </p>
 
 
