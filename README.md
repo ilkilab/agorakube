@@ -9,10 +9,9 @@
 <p align="center">
 <img src="./images/agorakube-logo.svg" width="450" alt="Agorakube" title="Agorakube" />
 </p>
-
-
-<img src="./images/k8s-conformance-v1.16.svg">
-
+<p>
+<img src="https://raw.githubusercontent.com/cncf/artwork/master/projects/kubernetes/certified-kubernetes/1.16/color/certified-kubernetes-1.16-color.svg?sanitize=true" width="100" alt="k8s-conformance-v1.16" title="k8s-conformance-v1.16"/>
+</p>
 
 This project is aimed to provide the simplest way to install kubernetes on bare-metal, virtual & Cloud environments.
 Actually, Ubuntu 18.04 (Bionic) amd64 and Centos 7/8  are supported, but several other operating systems will be available soon.
