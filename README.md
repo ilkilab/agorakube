@@ -11,6 +11,9 @@
 </p>
 
 
+<img src="./images/k8s-conformance-v1.16.svg">
+
+
 This project is aimed to provide the simplest way to install kubernetes on bare-metal, virtual & Cloud environments.
 Actually, Ubuntu 18.04 (Bionic) amd64 and Centos 7/8  are supported, but several other operating systems will be available soon.
 
