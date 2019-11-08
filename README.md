@@ -25,6 +25,7 @@ as issues or pull (merge) requests.
 
 Master branch is stable.
 
+Since November 2019, Agorakube has been certified by the "Kubernetes Conformance Program" and is a project of [the cncf landscape](https://landscape.cncf.io/selected=agora-kube).
 
 [![asciicast](https://asciinema.org/a/Y58GrrJG3gPM6GvKsSMCZevbX.svg)](https://asciinema.org/a/Y58GrrJG3gPM6GvKsSMCZevbX)
 
