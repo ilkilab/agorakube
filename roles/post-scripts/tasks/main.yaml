@@ -2,21 +2,27 @@
 - name: Include Tasks Flannel
   include_tasks: flannel.yaml
   when: network_cni_plugin == 'flannel'
+
 - name: Include Tasks Calico
   include_tasks: calico.yaml
   when: network_cni_plugin == 'calico'
+
 - name: Include label workers
   include_tasks: label-workers.yaml
   when: label_workers
+
 - name: Deploy CoreDNS to K8S
   include_tasks: coredns.yaml
   when: dns_server_soft == 'coredns'
+
 - name: Install ingress
   include_tasks: traefik.yaml
   when: ingress_controller == 'traefik'
+
 - name: Install K8S Default Dashboard
   include_tasks: default_dashboard.yaml
   when: k8s_dashboard
+  
 - name: Install K8S Service Mesh
   include_tasks: linkerd.yaml
   when:  service_mesh  == 'linkerd'

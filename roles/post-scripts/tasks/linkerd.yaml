@@ -4,10 +4,12 @@
     url: "https://github.com/linkerd/linkerd2/releases/download/{{ linkerd_release }}/linkerd2-cli-{{ linkerd_release }}-linux"
     dest: /usr/local/bin/linkerd
     mode: '0751'
+
 - name: Get Linkerd Installation
   command: 'kubectl get namespaces'
   register: linkerd_is_installed
   changed_when: false
+  
 - name: Apply templates
   shell: 'linkerd install | kubectl apply -f -'
   register: apply_linkerd
