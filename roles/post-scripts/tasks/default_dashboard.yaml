@@ -13,7 +13,6 @@
   when:
     - k8s_dashboard_admin
 
-
 - name: Create dashboard admin user
   command: kubectl create serviceaccount dashboardadmin -n kubernetes-dashboard
   register: create_dashboard_admin

@@ -1,5 +1,5 @@
 ---
-- name: Creatopn dossiers /etc/kubernetes/pki /etc/kubernetes/pki/etcd
+- name: Folders creation /etc/kubernetes/pki /etc/kubernetes/pki/etcd
   file:
     path: "{{ item }}"
     state: directory
@@ -13,12 +13,14 @@
     dest: /etc/kubernetes/pki/ca.crt
   notify:
     - restart kubelet
+
 - name: Import apiserver-kubelet-client.crt
   copy:
     src: "{{ data_path }}/certificates/end/kube-apiserver-kubelet-client/kube-apiserver-kubelet-client.pem"
     dest: /etc/kubernetes/pki/apiserver-kubelet-client.crt
   notify:
     - restart kubelet
+    
 - name: Import apiserver-kubelet-client.key
   copy:
     src: "{{ data_path }}/certificates/end/kube-apiserver-kubelet-client/kube-apiserver-kubelet-client-key.pem"

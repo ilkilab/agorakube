@@ -13,7 +13,6 @@
   failed_when: check_helm_service_account.rc > 1
   when: install_helm
 
-
 - name: Create service account for Helm
   command: kubectl create serviceaccount agoratiller -n kube-system
   register: create_helm_service_account

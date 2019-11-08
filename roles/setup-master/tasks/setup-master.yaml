@@ -3,62 +3,73 @@
   file:
     path: /etc/kubernetes/manifests/
     state: directory
+
 - name: Download Kubernetes server binaries
   unarchive:
     src: https://dl.k8s.io/{{kubernetes_release}}/kubernetes-server-linux-amd64.tar.gz
     dest: /usr/local/bin
     remote_src: yes
     creates: /usr/local/bin/kubernetes/server/bin/kube-apiserver
+
 - name: Create /var/lib/kubernetes
   file:
     path: /var/lib/kubernetes
     state: directory
+
 - name: Create /etc/kubernetes/config
   file:
     path: /etc/kubernetes/config
     state: directory
+
 - name: Inject kube-encrypt config
   template:
     src: encryption-provider-config.yaml.j2
     dest: /var/lib/kubernetes/encryption-provider-config.yaml
   notify:
     - Restart kube-apiserver service
+
 - name: Import kube-apiserver.service
   template:
     src: kube-apiserver.service.j2
     dest: /etc/systemd/system/kube-apiserver.service
   notify:
     - Reload daemons
+
 - name: Import controller-manager.conf kubeconfig
   copy:
     src: "{{ data_path }}/certificates/configs/controller-manager/controller-manager.conf"
     dest: /etc/kubernetes/manifests/kube-controller-manager.yaml
   notify:
     - Restart kube-controller-manager service
+
 - name: Import kube-controller-manager.service
   template:
     src: kube-controller-manager.service.j2
     dest: /etc/systemd/system/kube-controller-manager.service
   notify:
     - Reload daemons
+
 - name: Import kube scheduler yaml file config
   copy:
     src: kube-scheduler.yaml
     dest: /etc/kubernetes/config/kube-scheduler.yaml
   notify:
     - Restart kube-scheduler service
+
 - name: Import /etc/kubernetes/manifests/kube-scheduler.yaml
   copy:
     src: "{{ data_path }}/certificates/configs/scheduler/scheduler.conf"
     dest: /etc/kubernetes/manifests/kube-scheduler.yaml
   notify:
     - Restart kube-scheduler service
+
 - name: Import kube-scheduler.service
   template:
     src: kube-scheduler.service.j2
     dest: /etc/systemd/system/kube-scheduler.service
   notify:
     - Reload daemons
+    
 - name: Load [kube-apiserver] [kube-controller-manager] [kube-scheduler]
   systemd:
     state: started
