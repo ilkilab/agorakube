@@ -27,12 +27,12 @@
     - "{{ data_path }}/certificates/configs/scheduler"
     - "{{ data_path }}/certificates/configs/proxier"
 
-- name: create ca_root_csr file
+- name: Create ca_root_csr file
   template:
     src: root_csr.json.j2
     dest: "{{ data_path }}/certificates/ca/ca-csr.json"
 
-- name: generate ca_root certificates
+- name: Generate ca_root certificates
   shell: 'cfssl gencert -initca "{{ data_path }}/certificates/ca/ca-csr.json" | cfssljson -bare "{{ data_path }}/certificates/ca/ca"'
   args:
     creates: "{{ data_path }}/certificates/ca/ca-key.pem"
@@ -49,7 +49,7 @@
     - kubernetes-ca
     - etcd-ca
 
-- name: Generation des certificats intermediaires
+- name: Generate intermediate certificates
   shell: 'cfssl gencert -initca "{{ data_path }}/certificates/intermediate/{{ item }}/{{ item }}-csr.json" | cfssljson -bare "{{ data_path }}/certificates/intermediate/{{ item }}/{{ item }}"'
   args:
     creates: "{{ data_path }}/certificates/intermediate/{{ item }}/{{ item }}-key.pem"
@@ -60,12 +60,12 @@
     - kubernetes-ca
     - etcd-ca
 
-- name: generation de la configuration des CA intermediaires
+- name: Generation of the intermediate CA configuration
   template:
     src: root_to_intermediate.json.j2
     dest: "{{ data_path }}/certificates/ca/root_to_intermediate.json"
 
-- name: signature des certificats intermediaires sur le CA_ROOT
+- name: Sign of intermediate certificates on CA_ROOT
   shell: 'cfssl sign -ca "{{ data_path }}/certificates/ca/ca.pem"  -ca-key "{{ data_path }}/certificates/ca/ca-key.pem"  -config "{{ data_path }}/certificates/ca/root_to_intermediate.json" "{{ data_path }}/certificates/intermediate/{{ item }}/{{ item }}.csr"   | cfssljson -bare "{{ data_path }}/certificates/intermediate/{{ item }}/signed/{{ item }}"'
   args:
     creates: "{{ data_path }}/certificates/intermediate/{{ item }}/signed/{{ item }}.pem"
@@ -76,7 +76,7 @@
     - kubernetes-ca
     - etcd-ca
 
-- name: generation de la configuration des CAs finaux 1
+- name: Generation of final CA configuration 1
   template:
     src: end_1.json
     dest: "{{ data_path }}/certificates/end/{{item.name}}/{{item.name}}-csr.json"
@@ -86,30 +86,30 @@
     - { name: 'kube-apiserver-kubelet-client', o: 'system:masters' }
     - { name: 'front-proxy-client', o: ''}
 
-- name: generation dossiers serveurs etcd dans "{{ data_path }}/certificates/end/kube-etcd-peer/[serveur_name]"
+- name: Generation of server folder etcd in "{{ data_path }}/certificates/end/kube-etcd-peer/[serveur_name]" Generation of server folder etcd in
   file:
     path: "{{ data_path }}/certificates/end/kube-etcd-peer/{{item}}"
     state: directory
   with_items: "{{ groups['etcd'] }}"
 
-- name: generation de la configuration du ca final kube-etcd-peer
+- name: Generation of final CA configuration kube-etcd-peer
   template:
     src: kube-etcd-peer-csr.json.j2
     dest : "{{ data_path }}/certificates/end/kube-etcd-peer/{{item}}/kube-etcd-peer-csr.json"
   with_items: "{{ groups['etcd'] }}"
 
-- name: generation de la configuration du ca final kube-etcd
+- name: Generation of final CA configuration kube-etcd
   template:
     src: kube-etcd-csr.json.j2
     dest : "{{ data_path }}/certificates/end/kube-etcd/kube-etcd-csr.json"
 
-- name: generation dossiers serveurs etcd dans "{{ data_path }}/certificates/end/kube-apiserver/[serveur_name]"
+- name: Generation of etcd server folder in "{{ data_path }}/certificates/end/kube-apiserver/[serveur_name]"
   file:
     path: "{{ data_path }}/certificates/end/kube-apiserver/{{item}}"
     state: directory
   with_items: "{{ groups['masters'] }}"
 
-- name: generation de la configuration du ca final kube-apiserver
+- name: Generation of final CA configuration of kube-apiserver
   template:
     src: kube-apiserver-csr.json.j2
     dest: "{{ data_path }}/certificates/end/kube-apiserver/{{item}}/kube-apiserver-csr.json"
@@ -120,7 +120,7 @@
     src: intermediate_to_end.json.j2
     dest: "{{ data_path }}/certificates/intermediate/intermediate_to_end.json"
 
-- name: generate certificates [kube-etcd-healthcheck-client] [kube-apiserver-etcd-client]
+- name: Generate certificates [kube-etcd-healthcheck-client] [kube-apiserver-etcd-client]
   shell: 'cfssl gencert -ca "{{ data_path }}/certificates/intermediate/etcd-ca/signed/etcd-ca.pem" -ca-key "{{ data_path }}/certificates/intermediate/etcd-ca/etcd-ca-key.pem"  -config "{{ data_path }}/certificates/intermediate/intermediate_to_end.json"  -profile client  "{{ data_path }}/certificates/end/{{item}}/{{item}}-csr.json" | cfssljson -bare "{{ data_path }}/certificates/end/{{item}}/{{item}}"'
   args:
     creates: "{{ data_path }}/certificates/end/{{ item }}/{{ item }}-key.pem"
@@ -129,7 +129,8 @@
   with_items:
     - kube-etcd-healthcheck-client
     - kube-apiserver-etcd-client
-- name: generate certificate [kube-etcd-peer]
+
+- name: Generate certificate [kube-etcd-peer]
   shell: 'cfssl gencert -ca "{{ data_path }}/certificates/intermediate/etcd-ca/signed/etcd-ca.pem" -ca-key "{{ data_path }}/certificates/intermediate/etcd-ca/etcd-ca-key.pem"  -config "{{ data_path }}/certificates/intermediate/intermediate_to_end.json" -profile client -profile server "{{ data_path }}/certificates/end/kube-etcd-peer/{{item}}/kube-etcd-peer-csr.json" | cfssljson -bare "{{ data_path }}/certificates/end/kube-etcd-peer/{{item}}/kube-etcd-peer"'
   args:
     creates: "{{ data_path }}/certificates/end/kube-etcd-peer/{{item}}/kube-etcd-peer-key.pem"
@@ -137,14 +138,14 @@
     PATH: /usr/local/bin:{{ ansible_env.PATH }}
   with_items: "{{ groups['etcd'] }}"
 
-- name: generate certificate [kube-etcd]
+- name: Generate certificate [kube-etcd]
   shell: 'cfssl gencert -ca "{{ data_path }}/certificates/intermediate/etcd-ca/signed/etcd-ca.pem" -ca-key "{{ data_path }}/certificates/intermediate/etcd-ca/etcd-ca-key.pem"  -config "{{ data_path }}/certificates/intermediate/intermediate_to_end.json" -profile client -profile server "{{ data_path }}/certificates/end/kube-etcd/kube-etcd-csr.json" | cfssljson -bare "{{ data_path }}/certificates/end/kube-etcd/kube-etcd"'
   args:
     creates: "{{ data_path }}/certificates/end/kube-etcd/kube-etcd-key.pem"
   environment:
     PATH: /usr/local/bin:{{ ansible_env.PATH }}
 
-- name : generate certificate [kube-apiserver]
+- name : Generate certificate [kube-apiserver]
   shell: 'cfssl gencert -ca "{{ data_path }}/certificates/intermediate/kubernetes-ca/signed/kubernetes-ca.pem" -ca-key "{{ data_path }}/certificates/intermediate/kubernetes-ca/kubernetes-ca-key.pem"  -config "{{ data_path }}/certificates/intermediate/intermediate_to_end.json" -profile server  "{{ data_path }}/certificates/end/kube-apiserver/{{ item }}/kube-apiserver-csr.json" | cfssljson -bare "{{ data_path }}/certificates/end/kube-apiserver/{{ item }}/kube-apiserver"'
   args:
     creates: "{{ data_path }}/certificates/end/kube-apiserver/{{ item }}/kube-apiserver-key.pem"
@@ -152,21 +153,21 @@
     PATH: /usr/local/bin:{{ ansible_env.PATH }}
   with_items: "{{ groups['masters'] }}"
 
-- name: generate certificate [kube-apiserver-kubelet-client]
+- name: Generate certificate [kube-apiserver-kubelet-client]
   shell: 'cfssl gencert -ca "{{ data_path }}/certificates/intermediate/kubernetes-ca/signed/kubernetes-ca.pem" -ca-key "{{ data_path }}/certificates/intermediate/kubernetes-ca/kubernetes-ca-key.pem"  -config "{{ data_path }}/certificates/intermediate/intermediate_to_end.json" -profile client  "{{ data_path }}/certificates/end/kube-apiserver-kubelet-client/kube-apiserver-kubelet-client-csr.json" | cfssljson -bare "{{ data_path }}/certificates/end/kube-apiserver-kubelet-client/kube-apiserver-kubelet-client"'
   args:
     creates: "{{ data_path }}/certificates/end/kube-apiserver-kubelet-client/kube-apiserver-kubelet-client-key.pem"
   environment:
     PATH: /usr/local/bin:{{ ansible_env.PATH }}
 
-- name: generate certificate [front-proxy-client]
+- name: Generate certificate [front-proxy-client]
   shell: 'cfssl gencert -ca "{{ data_path }}/certificates/intermediate/kubernetes-front-proxy-ca/signed/kubernetes-front-proxy-ca.pem" -ca-key "{{ data_path }}/certificates/intermediate/kubernetes-front-proxy-ca/kubernetes-front-proxy-ca-key.pem"  -config "{{ data_path }}/certificates/intermediate/intermediate_to_end.json" -profile client  "{{ data_path }}/certificates/end/front-proxy-client/front-proxy-client-csr.json" | cfssljson -bare "{{ data_path }}/certificates/end/front-proxy-client/front-proxy-client"'
   args:
     creates: "{{ data_path }}/certificates/end/front-proxy-client/front-proxy-client-key.pem"
   environment:
     PATH: /usr/local/bin:{{ ansible_env.PATH }}
 
-- name: create configuration files for config [admin] [controller-manager] [scheduler]
+- name: Create configuration files for config [admin] [controller-manager] [scheduler]
   template:
     src: certificates_for_users_classics.json.j2
     dest: "{{ data_path }}/certificates/configs/{{ item.name }}/{{ item.name }}-csr.json"
@@ -176,7 +177,7 @@
     - { name: 'scheduler', o: '', cname: 'system:kube-scheduler' }
     - { name: 'proxier', o: '', cname: 'system:kube-proxy' }
 
-- name: generation des certificats pour [admin] [controller-manager] [scheduler]
+- name: Generation of certificates for [admin] [controller-manager] [scheduler] 
   shell: 'cfssl gencert -ca "{{ data_path }}/certificates/intermediate/kubernetes-ca/signed/kubernetes-ca.pem" -ca-key "{{ data_path }}/certificates/intermediate/kubernetes-ca/kubernetes-ca-key.pem"  "{{ data_path }}/certificates/configs/{{ item }}/{{ item }}-csr.json" | cfssljson -bare "{{ data_path }}/certificates/configs/{{ item }}/{{ item }}"'
   args:
     creates: "{{ data_path }}/certificates/configs/{{ item }}/{{ item }}-key.pem"
@@ -188,25 +189,25 @@
     - scheduler
     - proxier
 
-- name: generate arbo kubelet for masters
+- name: Generate arbo kubelet for masters
   file:
     path: "{{ data_path }}/certificates/configs/kubelet/{{ item}}"
     state: directory
   with_items: "{{ groups['masters'] }}"
 
-- name: generate arbo kubelet for workers
+- name: Generate arbo kubelet for workers
   file:
     path: "{{ data_path }}/certificates/configs/kubelet/{{item}}"
     state: directory
   with_items: "{{ groups['workers'] }}"
 
-- name : generate configuration account kubelet masters
+- name : Generate configuration account kubelet masters
   template:
     src: config-kubelet-account.json.j2
     dest:  "{{ data_path }}/certificates/configs/kubelet/{{item}}/config-kubelet-account.json"
   with_items: "{{ groups['masters'] }}"
 
-- name: generation des certificats pour [kubelet] masters
+- name: Certificates generation for [kubelet] masters 
   shell: 'cfssl gencert -ca "{{ data_path }}/certificates/intermediate/kubernetes-ca/signed/kubernetes-ca.pem" -ca-key "{{ data_path }}/certificates/intermediate/kubernetes-ca/kubernetes-ca-key.pem"  "{{ data_path }}/certificates/configs/kubelet/{{ item }}/config-kubelet-account.json" | cfssljson -bare "{{ data_path }}/certificates/configs/kubelet/{{ item }}/kubelet"'
   args:
     creates: "{{ data_path }}/certificates/configs/kubelet/{{ item }}/kubelet-key.pem"
@@ -214,13 +215,13 @@
     PATH: /usr/local/bin:{{ ansible_env.PATH }}
   with_items: "{{ groups['masters'] }}"
 
-- name : generate configuration account kubelet workers
+- name : Generate configuration account kubelet workers
   template:
     src: config-kubelet-account.json.j2
     dest:  "{{ data_path }}/certificates/configs/kubelet/{{ item }}/config-kubelet-account.json"
   with_items: "{{ groups['workers'] }}"
 
-- name: generation des certificats pour [kubelet] workers
+- name: Certificates generation for [kubelet] workers 
   shell: 'cfssl gencert -ca "{{ data_path }}/certificates/intermediate/kubernetes-ca/signed/kubernetes-ca.pem" -ca-key "{{ data_path }}/certificates/intermediate/kubernetes-ca/kubernetes-ca-key.pem"  "{{ data_path }}/certificates/configs/kubelet/{{ item }}/config-kubelet-account.json" | cfssljson -bare "{{ data_path }}/certificates/configs/kubelet/{{ item }}/kubelet"'
   args:
     creates: "{{ data_path }}/certificates/configs/kubelet/{{ item }}/kubelet-key.pem"
@@ -228,7 +229,7 @@
     PATH: /usr/local/bin:{{ ansible_env.PATH }}
   with_items: "{{ groups['workers'] }}"
 
-- name: Generation fichier de configuration kubeconfig pour [proxier]
+- name: File generation of kubeconfig configuration for [proxier] 
   shell: "{{ item }}"
   args:
     creates: "{{ data_path }}/certificates/configs/proxier/proxier.flag"
@@ -241,7 +242,7 @@
     - KUBECONFIG="{{ data_path }}/certificates/configs/proxier/proxier.conf" kubectl config use-context default-system
     - touch "{{ data_path }}/certificates/configs/proxier/proxier.flag"
 
-- name: Generation fichier de configuration kubeconfig pour [admin]
+- name: Configuration file generation of kubeconfig for [admin] Configuration file generation of kubeconfig for
   shell: "{{ item }}"
   args:
     creates: "{{ data_path }}/certificates/configs/admin/admin.flag"
@@ -254,7 +255,7 @@
     - KUBECONFIG="{{ data_path }}/certificates/configs/admin/admin.conf" kubectl config use-context default-system
     - touch "{{ data_path }}/certificates/configs/admin/admin.flag"
 
-- name: Generation fichier de configuration kubeconfig pour [controller-manager]
+- name: Configuration file generation of kubeconfig for [controller-manager] 
   shell: "{{ item }}"
   args:
     creates: "{{ data_path }}/certificates/configs/controller-manager/controller-manager.flag"
@@ -267,7 +268,7 @@
     - KUBECONFIG="{{ data_path }}/certificates/configs/controller-manager/controller-manager.conf" kubectl config use-context default-system
     - touch "{{ data_path }}/certificates/configs/controller-manager/controller-manager.flag"
 
-- name: Generation fichier de configuration kubeconfig pour [scheduler]
+- name: Configuration file generation of kubeconfig for [scheduler]
   shell: "{{ item }}"
   args:
     creates: "{{ data_path }}/certificates/configs/scheduler/scheduler.flag"
@@ -280,7 +281,7 @@
     - KUBECONFIG="{{ data_path }}/certificates/configs/scheduler/scheduler.conf" kubectl config use-context default-system
     - touch "{{ data_path }}/certificates/configs/scheduler/scheduler.flag"
 
-- name: Generation fichier de configuration kubeconfig pour [kubelet] masters 1/4
+- name: Configuration file generation of kubeconfig for [kubelet] masters 1/4
   shell: KUBECONFIG="{{ data_path }}/certificates/configs/kubelet/{{item}}/kubelet.config" kubectl config set-cluster default-cluster --server=https://{{advertise_ip_masters}}:6443 --certificate-authority "{{ data_path }}/certificates/intermediate/kubernetes-ca/signed/kubernetes-ca.pem" --embed-certs
   args:
     creates: "{{ data_path }}/certificates/configs/kubelet/{{item}}/kubelet.flag"
@@ -288,7 +289,7 @@
     PATH: /usr/local/bin:{{ ansible_env.PATH }}
   with_items: "{{ groups['masters'] }}"
 
-- name: Generation fichier de configuration kubeconfig pour [kubelet] masters 2/4
+- name: Configuration file generation of kubeconfig for [kubelet] masters 2/4
   shell: KUBECONFIG="{{ data_path }}/certificates/configs/kubelet/{{item}}/kubelet.config" kubectl config set-credentials default-auth --client-key "{{ data_path }}/certificates/configs/kubelet/{{item}}/kubelet-key.pem" --client-certificate "{{ data_path }}/certificates/configs/kubelet/{{item}}/kubelet.pem" --embed-certs
   args:
     creates: "{{ data_path }}/certificates/configs/kubelet/{{item}}/kubelet.flag"
@@ -296,7 +297,7 @@
     PATH: /usr/local/bin:{{ ansible_env.PATH }}
   with_items: "{{ groups['masters'] }}"
 
-- name: Generation fichier de configuration kubeconfig pour [kubelet] masters 3/4
+- name: Configuration file generation of kubeconfig for [kubelet] masters 3/4
   shell: KUBECONFIG="{{ data_path }}/certificates/configs/kubelet/{{item}}/kubelet.config" kubectl config set-context default-system --cluster default-cluster --user default-auth
   args:
     creates: "{{ data_path }}/certificates/configs/kubelet/{{item}}/kubelet.flag"
@@ -304,7 +305,7 @@
     PATH: /usr/local/bin:{{ ansible_env.PATH }}
   with_items: "{{ groups['masters'] }}"
 
-- name: Generation fichier de configuration kubeconfig pour [kubelet] masters 4/4
+- name: Configuration file generation of kubeconfig for [kubelet] masters 4/4
   shell: KUBECONFIG="{{ data_path }}/certificates/configs/kubelet/{{item}}/kubelet.config" kubectl config use-context default-system
   args:
     creates: "{{ data_path }}/certificates/configs/kubelet/{{item}}/kubelet.flag"
@@ -319,7 +320,7 @@
   with_items: "{{ groups['masters'] }}"
 
 
-- name: Generation fichier de configuration kubeconfig pour [kubelet] workers 1/4
+- name: Configuration file generation of kubeconfig for [kubelet] workers 1/4
   shell: KUBECONFIG="{{ data_path }}/certificates/configs/kubelet/{{item}}/kubelet.config" kubectl config set-cluster default-cluster --server=https://{{advertise_ip_masters}}:6443 --certificate-authority "{{ data_path }}/certificates/intermediate/kubernetes-ca/signed/kubernetes-ca.pem" --embed-certs
   args:
     creates: "{{ data_path }}/certificates/configs/kubelet/{{item}}/kubelet.flag"
@@ -327,7 +328,7 @@
     PATH: /usr/local/bin:{{ ansible_env.PATH }}
   with_items: "{{ groups['workers'] }}"
 
-- name: Generation fichier de configuration kubeconfig pour [kubelet] workers 2/4
+- name: Configuration file generation of kubeconfig for [kubelet] workers 2/4
   shell: KUBECONFIG="{{ data_path }}/certificates/configs/kubelet/{{item}}/kubelet.config" kubectl config set-credentials default-auth --client-key "{{ data_path }}/certificates/configs/kubelet/{{item}}/kubelet-key.pem" --client-certificate "{{ data_path }}/certificates/configs/kubelet/{{item}}/kubelet.pem" --embed-certs
   args:
     creates: "{{ data_path }}/certificates/configs/kubelet/{{item}}/kubelet.flag"
@@ -335,7 +336,7 @@
     PATH: /usr/local/bin:{{ ansible_env.PATH }}
   with_items: "{{ groups['workers'] }}"
 
-- name: Generation fichier de configuration kubeconfig pour [kubelet] workers 3/4
+- name: Configuration file generation of kubeconfig for [kubelet] workers 3/4
   shell: KUBECONFIG="{{ data_path }}/certificates/configs/kubelet/{{item}}/kubelet.config" kubectl config set-context default-system --cluster default-cluster --user default-auth
   args:
     creates: "{{ data_path }}/certificates/configs/kubelet/{{item}}/kubelet.flag"
@@ -343,7 +344,7 @@
     PATH: /usr/local/bin:{{ ansible_env.PATH }}
   with_items: "{{ groups['workers'] }}"
 
-- name: Generation fichier de configuration kubeconfig pour [kubelet] workers 4/4
+- name: Configuration file generation of kubeconfig for [kubelet] workers 4/4
   shell: KUBECONFIG="{{ data_path }}/certificates/configs/kubelet/{{item}}/kubelet.config" kubectl config use-context default-system
   args:
     creates: "{{ data_path }}/certificates/configs/kubelet/{{item}}/kubelet.flag"
