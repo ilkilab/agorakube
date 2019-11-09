@@ -1,0 +1,11 @@
+---
+- name: Configure /etc/hosts
+  lineinfile:
+    path: /etc/hosts
+    line: "{{ hostvars[item].ansible_host }} {{ item }}"
+    create: yes
+  with_items:
+  - "{{ groups['workers'] }}"
+  - "{{ groups['masters'] }}"
+  - "{{ groups['etcd'] }}"
+  when: populate_etc_hosts

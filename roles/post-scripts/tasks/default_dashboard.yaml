@@ -1,20 +1,20 @@
 ---
 - name: Apply templates
-  command: kubectl apply -f https://raw.githubusercontent.com/kubernetes/dashboard/v2.0.0-beta1/aio/deploy/recommended.yaml
+  command: kubectl --kubeconfig {{ data_path }}/certificates/configs/admin/admin.conf apply -f https://raw.githubusercontent.com/kubernetes/dashboard/v2.0.0-beta1/aio/deploy/recommended.yaml
   register: apply_dashboard
   changed_when: >
     apply_dashboard.stdout is search("created")
     or apply_dashboard.stdout is search("configured")
 
 - name: Check dashboard admin user
-  command: kubectl get serviceaccounts -n kubernetes-dashboard dashboardadmin
+  command: kubectl --kubeconfig {{ data_path }}/certificates/configs/admin/admin.conf get serviceaccounts -n kubernetes-dashboard dashboardadmin
   register: check_dashboard_admin
   failed_when: check_dashboard_admin.rc > 1
   when:
     - k8s_dashboard_admin
 
 - name: Create dashboard admin user
-  command: kubectl create serviceaccount dashboardadmin -n kubernetes-dashboard
+  command: kubectl --kubeconfig {{ data_path }}/certificates/configs/admin/admin.conf create serviceaccount dashboardadmin -n kubernetes-dashboard
   register: create_dashboard_admin
   changed_when: >
     create_dashboard_admin.stdout is search("created")
@@ -24,14 +24,14 @@
     - check_dashboard_admin.stderr is search("NotFound")
 
 - name: Check cluster role binding for admin user
-  command: kubectl get clusterrolebinding agora-dashboard-admin-role-binding
+  command: kubectl --kubeconfig {{ data_path }}/certificates/configs/admin/admin.conf get clusterrolebinding agora-dashboard-admin-role-binding
   register: check_dashboard_admin_role
   failed_when: check_dashboard_admin_role.rc > 1
   when:
     - k8s_dashboard_admin
 
 - name: Create cluster role binding for admin user
-  command: kubectl create clusterrolebinding agora-dashboard-admin-role-binding  --clusterrole=cluster-admin  --serviceaccount=kubernetes-dashboard:dashboardadmin
+  command: kubectl --kubeconfig {{ data_path }}/certificates/configs/admin/admin.conf create clusterrolebinding agora-dashboard-admin-role-binding  --clusterrole=cluster-admin  --serviceaccount=kubernetes-dashboard:dashboardadmin
   register: create_dashboard_admin_role
   changed_when: >
     create_dashboard_admin_role.stdout is search("created")
@@ -41,14 +41,14 @@
     - check_dashboard_admin_role.stderr is search("NotFound")
 
 - name: Get the admin service account
-  command: 'kubectl get serviceaccount -n kubernetes-dashboard dashboardadmin -o jsonpath="{.secrets[0].name}"'
+  command: "kubectl --kubeconfig {{ data_path }}/certificates/configs/admin/admin.conf get serviceaccount -n kubernetes-dashboard dashboardadmin -o jsonpath=\"{.secrets[0].name}\""
   register: dashboard_admin_service_account
   when:
     - k8s_dashboard_admin
     - create_dashboard_admin.changed
 
 - name: Get the admin token
-  command: "kubectl get secret -n kubernetes-dashboard {{ dashboard_admin_service_account.stdout }}  -o jsonpath=\"{.data.token}\""
+  command: "kubectl --kubeconfig {{ data_path }}/certificates/configs/admin/admin.conf get secret -n kubernetes-dashboard {{ dashboard_admin_service_account.stdout }}  -o jsonpath=\"{.data.token}\""
   register: dashboard_admin_token
   when:
     - k8s_dashboard_admin
