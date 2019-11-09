@@ -13,7 +13,7 @@
   changed_when: false
 
 - name: Apply templates
-  command: kubectl apply -f {{ flannel_tempdir.path }}/flannel.yaml
+  command: kubectl --kubeconfig {{ data_path }}/certificates/configs/admin/admin.conf apply -f {{ flannel_tempdir.path }}/flannel.yaml
   register: apply_flannel
   changed_when: >
     apply_flannel.stdout is search("created")

@@ -8,13 +8,13 @@
   when: install_helm
 
 - name: Check service account for Helm
-  command: kubectl get serviceaccounts -n kube-system agoratiller
+  command: kubectl --kubeconfig {{ data_path }}/certificates/configs/admin/admin.conf get serviceaccounts -n kube-system agoratiller
   register: check_helm_service_account
   failed_when: check_helm_service_account.rc > 1
   when: install_helm
 
 - name: Create service account for Helm
-  command: kubectl create serviceaccount agoratiller -n kube-system
+  command: kubectl --kubeconfig {{ data_path }}/certificates/configs/admin/admin.conf create serviceaccount agoratiller -n kube-system
   register: create_helm_service_account
   changed_when: >
     create_helm_service_account.stdout is search("created")
@@ -24,14 +24,14 @@
     - check_helm_service_account.rc == 1
 
 - name: Check cluster role binding for Helm service account
-  command: kubectl get clusterrolebinding agora-tiller-role-binding
+  command: kubectl --kubeconfig {{ data_path }}/certificates/configs/admin/admin.conf get clusterrolebinding agora-tiller-role-binding
   register: check_helm_account_role
   failed_when: check_helm_account_role.rc > 1
   when:
     - install_helm
 
 - name: Create cluster role binding for Helm service account
-  command: kubectl create clusterrolebinding agora-tiller-role-binding  --clusterrole=cluster-admin  --serviceaccount=kube-system:agoratiller
+  command: kubectl --kubeconfig {{ data_path }}/certificates/configs/admin/admin.conf create clusterrolebinding agora-tiller-role-binding  --clusterrole=cluster-admin  --serviceaccount=kube-system:agoratiller
   register: create_helm_account_role
   changed_when: >
     create_helm_account_role.stdout is search("created")
@@ -41,5 +41,7 @@
     - check_helm_account_role.rc == 1
 
 - name: Initialize Helm
-  command: /usr/local/bin/linux-amd64/helm init --service-account agoratiller
-  when: init_helm
+  command: /usr/local/bin/linux-amd64/helm --kubeconfig {{ data_path }}/certificates/configs/admin/admin.conf init --service-account agoratiller
+  when: 
+    - init_helm
+    - install_helm

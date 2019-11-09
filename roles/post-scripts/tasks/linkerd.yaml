@@ -6,12 +6,12 @@
     mode: '0751'
 
 - name: Get Linkerd Installation
-  command: 'kubectl get namespaces'
+  command: 'kubectl --kubeconfig {{ data_path }}/certificates/configs/admin/admin.conf get namespaces'
   register: linkerd_is_installed
   changed_when: false
   
 - name: Apply templates
-  shell: 'linkerd install | kubectl apply -f -'
+  shell: 'linkerd --kubeconfig {{ data_path }}/certificates/configs/admin/admin.conf install | kubectl --kubeconfig {{ data_path }}/certificates/configs/admin/admin.conf apply -f -'
   register: apply_linkerd
   changed_when: >
     apply_linkerd.stdout is search("created")

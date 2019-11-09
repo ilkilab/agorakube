@@ -13,7 +13,7 @@
   changed_when: false
 
 - name: Apply templates
-  command: kubectl apply -f {{ traefik_tempdir.path }}/traefik.yaml
+  command: kubectl --kubeconfig {{ data_path }}/certificates/configs/admin/admin.conf apply -f {{ traefik_tempdir.path }}/traefik.yaml
   register: apply_traefik
   changed_when: >
     apply_traefik.stdout is search("created")

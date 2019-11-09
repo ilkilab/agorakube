@@ -13,7 +13,7 @@
   changed_when: false
 
 - name: Apply templates
-  command: kubectl apply -f {{ coredns_tempdir.path }}/coredns.yaml
+  command: kubectl --kubeconfig {{ data_path }}/certificates/configs/admin/admin.conf apply -f {{ coredns_tempdir.path }}/coredns.yaml
   register: apply_coredns
   changed_when: >
     apply_coredns.stdout is search("created")

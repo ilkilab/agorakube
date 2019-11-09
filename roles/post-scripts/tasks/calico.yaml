@@ -13,7 +13,7 @@
   changed_when: false
 
 - name: Apply templates
-  command: kubectl apply -f {{ calico_tempdir.path }}/calico.yaml
+  command: kubectl --kubeconfig {{ data_path }}/certificates/configs/admin/admin.conf apply -f {{ calico_tempdir.path }}/calico.yaml
   register: apply_calico
   changed_when: >
     apply_calico.stdout is search("created")
