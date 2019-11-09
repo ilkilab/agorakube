@@ -12,6 +12,6 @@
   register: agora_info
 
 
-- name: Show informaiton to the user
+- name: Show information to the user
   debug:
     var: agora_info.stdout_lines

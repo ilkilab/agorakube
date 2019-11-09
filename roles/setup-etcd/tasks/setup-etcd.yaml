@@ -17,6 +17,7 @@
   notify:
     - Reload daemons
     - Restart etcd    
+    
 - name: Run etcd
   systemd:
     state: started

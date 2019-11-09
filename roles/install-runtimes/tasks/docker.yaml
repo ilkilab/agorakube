@@ -11,7 +11,7 @@
     state: directory
     recurse: yes
     
-- name: Puch /etc/cni/net.d/99-loopback.conf
+- name: Push /etc/cni/net.d/99-loopback.conf
   copy:
     src: 99-loopback.conf
     dest: /etc/cni/net.d/99-loopback.conf
@@ -44,7 +44,7 @@
   notify:
     - Reload docker
 
-- name: create /etc/systemd/system/docker.service.d directory
+- name: Create /etc/systemd/system/docker.service.d directory
   file:
     path: /etc/systemd/system/docker.service.d
     state: directory
