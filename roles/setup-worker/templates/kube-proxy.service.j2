@@ -3,7 +3,11 @@ Description=Kubernetes Kube Proxy {{ kubernetes_release }}
 Documentation=https://github.com/kubernetes/kubernetes
 
 [Service]
-ExecStart=/usr/local/bin/kubernetes/node/bin/kube-proxy \
+{% if ansible_hostname in groups['masters'] %}
+ExecStart=/usr/local/bin/kubernetes/server/server/kube-proxy \\
+{% else %}
+ExecStart=/usr/local/bin/kubernetes/node/server/kube-proxy \\
+{% endif %}
   --config=/etc/kubernetes/kube-proxy-config.yaml
 Restart=on-failure
 RestartSec=5

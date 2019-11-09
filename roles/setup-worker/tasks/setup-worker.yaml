@@ -10,7 +10,7 @@
     dest: /usr/local/bin
     remote_src: yes
     creates: /usr/local/bin/kubernetes/node/bin/kubelet
-
+  when: ansible_hostname in groups['workers']
 - name: Create kubelet service
   template:
     src: kubelet.service.j2

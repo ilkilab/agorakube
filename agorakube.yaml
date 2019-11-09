@@ -21,6 +21,8 @@
   roles:
     - setup-master
     - configure-kubeconfig
+    - install-runtimes
+    - setup-worker
 - hosts: workers
   become: true
   roles:
