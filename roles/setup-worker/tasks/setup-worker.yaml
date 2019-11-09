@@ -10,7 +10,9 @@
     dest: /usr/local/bin
     remote_src: yes
     creates: /usr/local/bin/kubernetes/node/bin/kubelet
-
+  when: 
+  - ansible_hostname in groups['workers']
+  - ansible_hostname not in groups['masters']
 - name: Create kubelet service
   template:
     src: kubelet.service.j2
@@ -39,8 +41,8 @@
     - restart kubelet
 
 - name: Create kube-proxy service
-  copy:
-    src: kube-proxy.service
+  template:
+    src: kube-proxy.service.j2
     dest: /etc/systemd/system/kube-proxy.service
   notify:
     - Reload Daemons
