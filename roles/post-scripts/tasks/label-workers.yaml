@@ -14,7 +14,7 @@
   changed_when: false
 
 - name: Apply templates
-  command: "kubectl label node {{item}}  node-role.kubernetes.io/worker= --overwrite"
+  command: "kubectl --kubeconfig {{ data_path }}/certificates/configs/admin/admin.conf label node {{item}}  node-role.kubernetes.io/worker= --overwrite"
   register: apply_label
   changed_when: false
   with_items: "{{ groups['workers'] }}"

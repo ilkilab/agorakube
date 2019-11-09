@@ -27,7 +27,7 @@ ingress_controller: traefik
 dns_server_soft: coredns
 label_workers: true
 populate_etc_hosts: yes
-k8s_dashboard: true
+k8s_dashboard: false
 update_certs: false
 service_mesh: none
 linkerd_release: stable-2.6.0
