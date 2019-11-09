@@ -39,8 +39,8 @@
     - restart kubelet
 
 - name: Create kube-proxy service
-  copy:
-    src: kube-proxy.service
+  template:
+    src: kube-proxy.service.j2
     dest: /etc/systemd/system/kube-proxy.service
   notify:
     - Reload Daemons
