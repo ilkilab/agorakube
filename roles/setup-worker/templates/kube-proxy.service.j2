@@ -4,9 +4,9 @@ Documentation=https://github.com/kubernetes/kubernetes
 
 [Service]
 {% if ansible_hostname in groups['masters'] %}
-ExecStart=/usr/local/bin/kubernetes/server/server/kube-proxy \\
+ExecStart=/usr/local/bin/kubernetes/server/kube-proxy \\
 {% else %}
-ExecStart=/usr/local/bin/kubernetes/node/server/kube-proxy \\
+ExecStart=/usr/local/bin/kubernetes/node/kube-proxy \\
 {% endif %}
   --config=/etc/kubernetes/kube-proxy-config.yaml
 Restart=on-failure
