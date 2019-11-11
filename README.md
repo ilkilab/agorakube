@@ -18,11 +18,6 @@ This project is aimed to provide the simplest way to install kubernetes on bare-
 Actually, Ubuntu 18.04 (Bionic) amd64 and Centos 7/8  are supported, but several other operating systems will be available soon.
 
 
-This project is still under development. 
-Feedback is very welcome via the
-[GitHub site](https://github.com/ilkilab/agorakube)
-as issues or pull (merge) requests.
-
 Master branch is stable.
 
 Since November 2019, Agorakube has been certified by the "Kubernetes Conformance Program" and is a project of [the cncf landscape](https://landscape.cncf.io/selected=agora-kube).
@@ -75,18 +70,12 @@ To deploy your K8S cluster follow these [instructions](docs/instructions.md).
 
 ## How to give feedback
 
-This project is still under development. 
 Every feedback is very welcome via the
 [GitHub site](https://github.com/ilkilab/agorakube)
 as issues or pull (merge) requests.
 
 You can also give use vulnerability reports by this way.
 ## How to contribute
-
-This project is still under development. 
-Contributions are very welcome via the
-[GitHub site](https://github.com/ilkilab/agorakube)
-as issues or pull (merge) requests.
 
 See our [Code Of Conduct](https://github.com/ilkilab/agorakube/blob/master/CODE_OF_CONDUCT.md) and [CONTRIBUTING](https://github.com/ilkilab/agorakube/blob/master/docs/CONTRIBUTING.md) for more information.
 
