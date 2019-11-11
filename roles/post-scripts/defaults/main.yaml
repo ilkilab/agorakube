@@ -1,6 +1,5 @@
 ---
 network-cni-plugin: flannel
-label_workers: true
 dns_server_soft: coredns
 cluster_dns_ip: 10.32.0.10 
 ingress_controller: traefik
