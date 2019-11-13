@@ -1,0 +1,13 @@
+---
+- name: Check number of MASTER(S)
+  fail:
+    msg: "There is {{ MASTER_NUM }} masters - Number of masters MUST be 1,3,5 or 7, and SHOULD be 3 or 5."
+  when: MASTER_NUM not in ['1','3','5','7']
+- name: Check number of ETCD
+  fail:
+    msg: "There is {{ ETCD_NUM }} etcd servers- Number of etcd MUST be 1,3,5 or 7, and SHOULD be 3 or 5."
+  when: ETCD_NUM not in ['1','3','5','7']
+- name: Check number of WORKER(S)
+  fail:
+    msg: "There is {{ WORKER_NUM }} workers - You MUST have at least 1 worker."
+  when: WORKER_NUM == '0'
