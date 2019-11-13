@@ -11,7 +11,7 @@ expiry: 87600h
 # Components version
 etcd_release: v3.4.3
 kubernetes_release: v1.16.2
-delete_previous_k8s_install: False
+delete_previous_k8s_install: false
 
 # IPs-CIDR Configurations
 cluster_cidr: 10.33.0.0/16
@@ -25,13 +25,13 @@ runtime: containerd
 network_cni_plugin: flannel
 ingress_controller: traefik
 dns_server_soft: coredns
-populate_etc_hosts: True
-k8s_dashboard: False
-update_certs: False
+populate_etc_hosts: yes
+k8s_dashboard: true
+update_certs: false
 service_mesh: linkerd
 linkerd_release: stable-2.6.0
-install_helm: False
-init_helm: True
+install_helm: false
+init_helm: true
 
 # Calico
 calico_mtu: 1440
