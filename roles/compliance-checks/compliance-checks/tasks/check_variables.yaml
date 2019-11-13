@@ -1,0 +1,91 @@
+---
+- name: Check delete_previous_k8s_install variable
+  fail:
+    msg: "Variable delete_previous_k8s_install is set to {{ delete_previous_k8s_install }} ! Supported values are : True, False"
+  when: (delete_previous_k8s_install | string) not in ['True','False']
+
+- name: Check runtime variable
+  fail:
+    msg: "Runtime {{ runtime }} is not supported ! Supported values are : docker, containerd, none, false"
+  when: runtime not in ['docker','containerd','false','none']
+
+- name: Check CNI Pluging variable
+  fail:
+    msg: "Network CNI plugin {{ network_cni_plugin }} is not supported ! Supported values are : flannel, calico, none"
+  when: network_cni_plugin not in ['flannel','calico','none']
+
+- name: check Ingress Controller
+  fail:
+    msg: "Ingress Controller {{ ingress_controller }} is not supported ! Supported values are : none, traefik"
+  when: ingress_controller not in ['none','traefik']
+
+- name: Check DNS Service
+  fail:
+    msg: "DNS Service {{ dns_server_soft }} is not supported ! Supported values are : none, coredns"
+  when: dns_server_soft not in ['none','coredns']
+
+- name: Check Populate /etc/hosts
+  fail:
+    msg: "Populate /etc/hosts variable is set to : {{ populate_etc_hosts }} ! Supported values are : True, False"
+  when: (populate_etc_hosts | string)  not in ['True','False']
+
+- name: Check k8s_dashboard
+  fail:
+    msg: "Variable k8s_dashboard is set to {{ k8s_dashboard }} ! Supported values are : True, False"
+  when: (k8s_dashboard | string) not in ['True','False']
+
+- name: Check update_certs
+  fail:
+    msg: "Variable update_certs is set to {{ update_certs }} ! Supported values are : True, False"
+  when: (update_certs | string) not in ['True','False']
+
+- name: Check service_mesh
+  fail:
+    msg: "Variable service_mesh is set to {{ service_mesh }} ! Supported values are : none, linkerd "
+  when: service_mesh not in ['none','linkerd']
+
+- name: Check install_helm
+  fail:
+    msg: "Variable install_helm is set to {{ install_helm }} ! Supported values are : True, False"
+  when: (install_helm | string) not in ['True','False']
+
+- name: Check init_helm
+  fail:
+    msg: "Variable init_helm is set to {{ init_helm }} ! Supported values are : True, False"
+  when: (init_helm | string) not in ['True','False']
+
+- name: Check data_directory
+  fail:
+    msg: "Variable data_path must be a directory !"
+  when: data_path is not directory
+
+
+- name: Check cluster_cidr
+  fail:
+    msg: "Variable cluster_cidr must be an IP adresse CIDR !"
+  when: cluster_cidr is not regex("^([0-9]{1,3}\.){3}[0-9]{1,3}(\/([0-9]|[1-2][0-9]|3[0-2]))?$")
+
+- name: Check service_cluster_ip_range
+  fail:
+    msg: "Variable service_cluster_ip_range must be an IP adresse CIDR !"
+  when: service_cluster_ip_range is not regex("^([0-9]{1,3}\.){3}[0-9]{1,3}(\/([0-9]|[1-2][0-9]|3[0-2]))?$")
+
+- name: Check kubernetes_service
+  fail:
+    msg: "Variable kubernetes_service must be an IP adresse from service_cluster_ip_range !"
+  when: kubernetes_service is not regex("^([0-9]{1,3}\.){3}[0-9]{1,3}(\/([0-9]|[1-2][0-9]|3[0-2]))?$")
+
+- name: Check cluster_dns_ip
+  fail:
+    msg: "Variable cluster_dns_ip must be an IP adresse from service_cluster_ip_range "
+  when: cluster_dns_ip is not regex("^([0-9]{1,3}\.){3}[0-9]{1,3}(\/([0-9]|[1-2][0-9]|3[0-2]))?$")
+
+- name: Check Node Port Range
+  fail:
+    msg: "Variable must be INT-INT => sample : 30000-32767"
+  when: service_node_port_range is not regex("(?:[+-]?(?:[0-9]+))-(?:[+-]?(?:[0-9]+))")
+
+- name: Check calico_mtu variable
+  fail:
+    msg: "Variable calico_mtu must be an integer !"
+  when: calico_mtu is not regex("(?:[+-]?(?:[0-9]+))")

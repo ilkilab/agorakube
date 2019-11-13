@@ -1,0 +1,5 @@
+---
+- name: Check Host compliance
+  include_tasks: infra_compliance.yaml
+- name: Check Host compliance
+  include_tasks: check_variables.yaml
