@@ -18,7 +18,6 @@
     src: kubelet.service.j2
     dest: /etc/systemd/system/kubelet.service
   notify:
-    - Reload Daemons
     - restart kubelet
 
 - name: Create kubelet config file
@@ -45,7 +44,6 @@
     src: kube-proxy.service.j2
     dest: /etc/systemd/system/kube-proxy.service
   notify:
-    - Reload Daemons
     - restart kube-proxy
 
 - name: Create kube-proxy config file
