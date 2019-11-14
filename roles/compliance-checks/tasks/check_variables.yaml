@@ -83,3 +83,8 @@
   fail:
     msg: "Variable calico_mtu must be an integer !"
   when: calico_mtu is not regex("(?:[+-]?(?:[0-9]+))")
+  
+- name: Check data_path variable
+  fail:
+    msg: "Variable data_path must be a linux path ! Get {{ data_path }}"
+  when: data_path is not regex("^(\/[^\/ ]*)+\/?$")
