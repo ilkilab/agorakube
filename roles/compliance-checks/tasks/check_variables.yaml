@@ -54,12 +54,6 @@
     msg: "Variable init_helm is set to {{ init_helm }} ! Supported values are : True, False"
   when: (init_helm | string) not in ['True','False']
 
-- name: Check data_directory
-  fail:
-    msg: "Variable data_path must be a directory !"
-  when: data_path is not directory
-
-
 - name: Check cluster_cidr
   fail:
     msg: "Variable cluster_cidr must be an IP adresse CIDR !"
