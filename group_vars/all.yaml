@@ -10,8 +10,8 @@ expiry: 87600h
 
 # Components version
 etcd_release: v3.4.3
-kubernetes_release: v1.16.2
-delete_previous_k8s_install: false
+kubernetes_release: v1.16.3
+delete_previous_k8s_install: False
 
 # IPs-CIDR Configurations
 cluster_cidr: 10.33.0.0/16

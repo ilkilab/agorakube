@@ -33,7 +33,7 @@
     src: kube-apiserver.service.j2
     dest: /etc/systemd/system/kube-apiserver.service
   notify:
-    - Reload daemons
+    - Restart kube-apiserver service
 
 - name: Import controller-manager.conf kubeconfig
   copy:
@@ -47,7 +47,7 @@
     src: kube-controller-manager.service.j2
     dest: /etc/systemd/system/kube-controller-manager.service
   notify:
-    - Reload daemons
+    - Restart kube-controller-manager service
 
 - name: Import kube scheduler yaml file config
   copy:
@@ -68,7 +68,7 @@
     src: kube-scheduler.service.j2
     dest: /etc/systemd/system/kube-scheduler.service
   notify:
-    - Reload daemons
+    - Restart kube-scheduler service
     
 - name: Load [kube-apiserver] [kube-controller-manager] [kube-scheduler]
   systemd:
