@@ -17,7 +17,7 @@
 - name: check Ingress Controller
   fail:
     msg: "Ingress Controller {{ ingress_controller }} is not supported ! Supported values are : none, traefik"
-  when: ingress_controller not in ['none','traefik']
+  when: ingress_controller not in ['none','traefik', 'haproxy']
 
 - name: Check DNS Service
   fail:

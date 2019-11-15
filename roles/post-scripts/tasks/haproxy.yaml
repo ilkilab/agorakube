@@ -1,0 +1,26 @@
+---
+- name: Create tempdir
+  tempfile:
+    state: directory
+    suffix: haproxy
+  register: haproxy_tempdir
+  changed_when: false
+
+- name: Render templates
+  template:
+    dest: "{{ haproxy_tempdir.path }}/haproxy.yaml"
+    src: "../templates/haproxy.yaml.j2"
+  changed_when: false
+
+- name: Apply templates
+  command: kubectl --kubeconfig {{ data_path }}/certificates/configs/admin/admin.conf apply -f {{ haproxy_tempdir.path }}/haproxy.yaml
+  register: apply_haproxy
+  changed_when: >
+    apply_haproxy.stdout is search("created")
+    or apply_haproxy.stdout is search("configured")
+
+- name: Cleanup tempdir
+  file:
+    state: absent
+    path: "{{ haproxy_tempdir.path }}"
+  changed_when: false
