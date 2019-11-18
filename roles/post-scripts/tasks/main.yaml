@@ -22,6 +22,10 @@
   include_tasks: haproxy.yaml
   when: ingress_controller == 'haproxy'
 
+- name: Install ingress (nginx)
+  include_tasks: nginx.yaml
+  when: ingress_controller == 'nginx'
+
 - name: Install K8S Default Dashboard
   include_tasks: default_dashboard.yaml
   when: k8s_dashboard
