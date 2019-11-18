@@ -217,7 +217,7 @@ This section is used to defined all custom features of your deployment.
 | --- | --- | --- |
 | `runtime` | Container runtime used in your deployment | <ul><li> **ContainerD** *(default)* </li><br/><li>  **Docker**  </li></ul>|
 | `network_cni_plugin` | CNI plugin used in your deployment | <ul><li> **Calico** </li><br/><li>  **Flannel** *(default)* </li></ul>|
-| `ingress_controller` | Ingress Controller used in your deployment | <ul><li> **Traefik** *(default)* </li><br/><li>  **HAProxy**  </li><li>  **nginx**  </li><li>  **none**  </li></ul>|
+| `ingress_controller` | Ingress Controller used in your deployment | <ul><li> **Traefik** *(default)* </li><br/><li>  **HAProxy**  </li><br/><li>  **nginx**  </li><br/><li>  **none**  </li></ul>|
 | `dns_server_soft` | DNS service used in your deployment | <ul><li> **CoreDNS** *(default)* </li></ul>|
 | `label_workers` | Fixed the label *node-role.kubernetes.io/worker* to all workers in your cluster | <ul><li> **false** </li><br/><li>  **true** *(default)* </li></ul>|
 | `populate_etc_hosts` | Populate */etc/hosts* file of all your nodes in the cluster | <ul><li> **no** </li><br/><li>  **yes** *(default)* </li></ul>|
