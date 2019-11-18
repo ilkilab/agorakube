@@ -150,7 +150,7 @@ install_helm: true # Install helm and create service accounts
 init_helm: true # Do the helm initialization after installation which deploys tiller, install_helm should be set to tru otherwise this will be ignored
 runtime: containerd  # Supported values are : containerd (default), and docker
 network_cni_plugin: flannel  # Supported values are: flannel (default), and calico
-ingress_controller: traefik  # Supported values are: traefik (default), and haproxy
+ingress_controller: traefik  # Supported values are: traefik (default), haproxy, nginx and none
 dns_server_soft: coredns
 label_workers: true
 populate_etc_hosts: yes
@@ -217,7 +217,7 @@ This section is used to defined all custom features of your deployment.
 | --- | --- | --- |
 | `runtime` | Container runtime used in your deployment | <ul><li> **ContainerD** *(default)* </li><br/><li>  **Docker**  </li></ul>|
 | `network_cni_plugin` | CNI plugin used in your deployment | <ul><li> **Calico** </li><br/><li>  **Flannel** *(default)* </li></ul>|
-| `ingress_controller` | Ingress Controller used in your deployment | <ul><li> **Traefik** *(default)* </li><br/><li>  **HAProxy**  </li></ul>|
+| `ingress_controller` | Ingress Controller used in your deployment | <ul><li> **Traefik** *(default)* </li><br/><li>  **HAProxy**  </li><li>  **nginx**  </li><li>  **none**  </li></ul>|
 | `dns_server_soft` | DNS service used in your deployment | <ul><li> **CoreDNS** *(default)* </li></ul>|
 | `label_workers` | Fixed the label *node-role.kubernetes.io/worker* to all workers in your cluster | <ul><li> **false** </li><br/><li>  **true** *(default)* </li></ul>|
 | `populate_etc_hosts` | Populate */etc/hosts* file of all your nodes in the cluster | <ul><li> **no** </li><br/><li>  **yes** *(default)* </li></ul>|
