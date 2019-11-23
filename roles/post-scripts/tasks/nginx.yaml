@@ -1,0 +1,25 @@
+---
+- name: Create tempdir
+  tempfile:
+    state: directory
+    suffix: nginx
+  register: nginx_tempdir
+  changed_when: false
+
+- name: Render templates
+  template:
+    dest: "{{ nginx_tempdir.path }}/nginx.yaml"
+    src: "../templates/nginx.yaml.j2"
+  changed_when: false
+
+- name: Apply templates
+  command: kubectl --kubeconfig {{ data_path }}/certificates/configs/admin/admin.conf apply -f {{ nginx_tempdir.path }}/nginx.yaml
+  register: apply_nginx
+  changed_when: >
+    apply_nginx.stdout is search("created")
+    or apply_nginx.stdout is search("configured")
+- name: Cleanup tempdir
+  file:
+    state: absent
+    path: "{{ nginx_tempdir.path }}"
+  changed_when: false
