@@ -23,13 +23,13 @@ service_node_port_range: 30000-32767
 # Custom features
 runtime: containerd
 network_cni_plugin: flannel
-flannel_iface: eth1
+flannel_iface: default
 ingress_controller: traefik
 dns_server_soft: coredns
 populate_etc_hosts: yes
 k8s_dashboard: true
 update_certs: false
-service_mesh: none
+service_mesh: linkerd
 linkerd_release: stable-2.6.0
 install_helm: false
 init_helm: true
