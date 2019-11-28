@@ -7,3 +7,4 @@ k8s_dashboard: true
 k8s_dashboard_admin: true
 service_mesh: linkerd
 linkerd_release: stable-2.6.0
+flannel_iface: default

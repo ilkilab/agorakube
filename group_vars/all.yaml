@@ -23,6 +23,7 @@ service_node_port_range: 30000-32767
 # Custom features
 runtime: containerd
 network_cni_plugin: flannel
+flannel_iface: default
 ingress_controller: traefik
 dns_server_soft: coredns
 populate_etc_hosts: yes
