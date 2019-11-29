@@ -1,0 +1,26 @@
+{
+    "CN": "kube-apiserver-kubelet-client",
+    "hosts": [
+{% for host in groups['workers'] %}
+        "{{ hostvars[host].ansible_host}}",
+        "{{ host }}",
+{% endfor %}
+{% for host in groups['masters'] %}
+        "{{ hostvars[host].ansible_host}}",
+        "{{ host }}",
+{% endfor %}
+        "127.0.0.1"
+    ],
+    "key": {
+        "algo": "rsa",
+        "size": 2048
+    },
+    "names": [
+        {
+            "C": "{{ c }}",
+            "ST": "{{ st }}",
+            "O": "system:masters",
+            "L": "{{ l }}"
+        }
+    ]
+}
