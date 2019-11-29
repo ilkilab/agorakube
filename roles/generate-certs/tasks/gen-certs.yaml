@@ -83,8 +83,12 @@
   with_items:
     - { name: 'kube-etcd-healthcheck-client', o: ''}
     - { name: 'kube-apiserver-etcd-client',  o: 'system:masters' }
-    - { name: 'kube-apiserver-kubelet-client', o: 'system:masters' }
     - { name: 'front-proxy-client', o: ''}
+
+- name: Generation of final CSR configuration for kubelet
+  template:
+    src: end_kubelet_client_csr.json
+    dest: "{{ data_path }}/certificates/end/kube-apiserver-kubelet-client/kube-apiserver-kubelet-client-csr.json"
 
 - name: Generation of server folder etcd in "{{ data_path }}/certificates/end/kube-etcd-peer/[serveur_name]" Generation of server folder etcd in
   file:
