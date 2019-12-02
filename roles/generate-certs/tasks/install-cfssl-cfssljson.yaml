@@ -5,7 +5,7 @@
     state: latest
 
 # Git is required for the Install cfssl task, Centos does not come with git installed
-- name: Install gcc
+- name: Install git
   package:
     name: git
     state: latest
