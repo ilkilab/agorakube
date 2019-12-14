@@ -45,7 +45,7 @@ AgoraKube is based on Ansible scripts that install and configure Kubernetes comp
 
 This distribution is also adaptive by offering the opportunity to customize your deployment and fit to your needs : OS (default : Ubuntu 18.04 (Bionic) - amd64), DNS Service (default : CoreDNS), Ingress Controller (default : Traefik), Container Runtime (Default : Containerd), certificats, Service-Mesh (available: Linkerd)...
 
-This project is actually under development so other customizable options will be added soon.
+This project is actually under active development so other customizable options will be added soon.
 
 ## How to install
 
