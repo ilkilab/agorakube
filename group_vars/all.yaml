@@ -10,7 +10,7 @@ expiry: 87600h
 
 # Components version
 etcd_release: v3.4.3
-kubernetes_release: v1.16.4
+kubernetes_release: v1.17.0
 delete_previous_k8s_install: False
 
 # IPs-CIDR Configurations
@@ -33,6 +33,7 @@ service_mesh: linkerd
 linkerd_release: stable-2.6.0
 install_helm: false
 init_helm: true
+install_kubeapps: false
 
 # Calico
 calico_mtu: 1440

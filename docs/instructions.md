@@ -192,7 +192,7 @@ This section is used to custom the components version of your deployment.
 | Parameter | Description | Values |
 | --- | --- | --- |
 | `etcd_release` | Version of etcd component | <ul><li> **3.3.X** or **3.4.X** </li><br/><li>  **3.4.3** *(default)* </li></ul>|
-| `kubernetes_release` | Version of kubernetes components | <ul><li> **1.15.X** or **1.16.X** </li><br/><li>  **1.16.2** *(default)* </li></ul>|
+| `kubernetes_release` | Version of kubernetes components | <ul><li> **1.15.X**, **1.16.X** or **1.17.X** </li><br/><li>  **1.17.0** *(default)* </li></ul>|
 | `delete_previous_k8s_install` | Deletion of previous installations of Kubernetes | <ul><li> **true** </li><br/><li>  **false** *(default)* </li></ul>|
 
 ### IPs-CIDR Configurations
@@ -226,8 +226,9 @@ This section is used to defined all custom features of your deployment.
 | `update_certs` | Update all the certificates of your cluster | <ul><li> **false** *(default)* </li><br/><li>  **true** </li></ul>|
 | `service_mesh` | Service mesh used in your cluster | <ul><li> **LinkerD** *(default)* </li><br/><li>  **none** </li></ul>|
 | `linkerd_release` | Version of LinkerD used in your cluster | <ul><li> **stable-2.6.0** *(default)* </li><br/><li>  **none** </li></ul>|
-| `install_helm` | Helm installation in your cluster | <ul><li> **true** *(default)* </li><br/><li>  **false** </li></ul>|
+| `install_helm` | Helm installation in your cluster | <ul><li> **false** *(default)* </li><br/><li>  **true** </li></ul>|
 | `init_helm` | Initialization of Helm | <ul><li> **true** *(default)* </li><br/><li>  **false** </li></ul>|
+| `install_kubeapps` | Installation of Kubeapps - **install_helm** and **init_helm** have to be **true** also. | <ul><li> **false** *(default)* </li><br/><li>  **true** </li></ul>|
 
 ### Other parameters sections
 
