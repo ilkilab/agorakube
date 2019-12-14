@@ -35,4 +35,5 @@
     - configure-kubeconfig
     - post-scripts
     - install-helm
+    - deploy-kubeapps
     - show-info

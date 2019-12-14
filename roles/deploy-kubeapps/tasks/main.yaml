@@ -1,0 +1,7 @@
+---
+- name: Install Kubeapps
+  import_tasks: deploy-kubeapps.yaml
+  when:
+  - install_kubeapps
+  - install_helm
+  - init_helm
