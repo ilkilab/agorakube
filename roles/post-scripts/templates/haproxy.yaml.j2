@@ -85,11 +85,7 @@ metadata:
 data:
 
 ---
-{% if 'v1.16' in kubernetes_release %}
 apiVersion: apps/v1
-{% else %}
-apiVersion: extensions/v1beta1
-{% endif %}
 kind: Deployment
 metadata:
   labels:
@@ -130,11 +126,7 @@ spec:
     targetPort: 8080
 
 ---
-{% if 'v1.16' in kubernetes_release %}
 apiVersion: apps/v1
-{% else %}
-apiVersion: extensions/v1beta1
-{% endif %}
 kind: Deployment
 metadata:
   labels:
