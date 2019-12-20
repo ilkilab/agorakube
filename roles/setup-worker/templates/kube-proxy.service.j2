@@ -8,6 +8,14 @@ ExecStart=/usr/local/bin/kubernetes/server/bin/kube-proxy \
 {% else %}
 ExecStart=/usr/local/bin/kubernetes/node/bin/kube-proxy \
 {% endif %}
+{% if kube_proxy_mode in ['userspace','iptables','ipvs'] %}
+  --proxy-mode={{kube_proxy_mode}} \
+{% endif %}
+{% if kube_proxy_mode == 'ipvs' %}
+{% if kube_proxy_ipvs_algotithm is defined %}
+  --ipvs-scheduler={{kube_proxy_ipvs_algotithm}} \
+{% endif %}
+{% endif %}
   --config=/etc/kubernetes/kube-proxy-config.yaml
 Restart=on-failure
 RestartSec=5
