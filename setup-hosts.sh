@@ -21,6 +21,7 @@
         sudo yum install openssh-server -y
     elif [[ $DISTRO == Ubuntu* ]]; then
         export DEBIAN_FRONTEND=noninteractive
+        sudo killall apt apt-get
         sudo apt-get update
         sudo apt-get install -yqq software-properties-common
         sudo apt-get install -yqq openssh-server
