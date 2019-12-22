@@ -77,33 +77,31 @@ The next Sample deploys K8S components in HA mode on 6 nodes (3 **etcd/masters**
 
 ```
 [deploy]
-deploy ansible_connection=local
+k8s-7.novalocal ansible_connection=local
 
 [masters]
-etcd-1 ansible_host=10.20.20.5
-etcd-2 ansible_host=10.20.20.4
-etcd-3 ansible_host=10.20.20.6
-
+k8s-1.novalocal  ansible_host=10.20.20.4
+k8s-2.novalocal  ansible_host=10.20.20.5
+k8s-3.novalocal  ansible_host=10.20.20.8
+#deploy.novalocal ansible_connection=local ip=10.20.20.8
 [etcd]
-etcd-1  ansible_host=10.20.20.5
-etcd-2  ansible_host=10.20.20.4
-etcd-3  ansible_host=10.20.20.6
-
+k8s-1.novalocal  ansible_host=10.20.20.4
+k8s-2.novalocal  ansible_host=10.20.20.5
+k8s-3.novalocal  ansible_host=10.20.20.8
+#deploy.novalocal ansible_connection=local ip=10.20.20.8
 [workers]
-worker-1  ansible_host=10.20.20.7
-worker-2  ansible_host=10.20.20.9
-worker-3  ansible_host=10.20.20.10
-
+k8s-4.novalocal  ansible_host=10.20.20.9
+k8s-5.novalocal  ansible_host=10.20.20.11
+k8s-6.novalocal  ansible_host=10.20.20.10
+#deploy.novalocal ansible_connection=local ip=10.20.20.8
 
 [all:vars]
-advertise_ip_masters: 84.39.42.43  # Should be the IP used to contact control plane Api Servers. 
+advertise_ip_masters=84.39.47.56
 
-
-# SSH Connection Settings
-
+# SSH connection settings
 ansible_ssh_extra_args='-o StrictHostKeyChecking=no'
 ansible_user=cloud
-ansible_ssh_private_key_file=/etc/ansible_keys/private.pem
+ansible_ssh_private_key_file=/tmp/private.pem
 ```
 
 The **deploy** section contains information about how to connect to the deployment machine.
