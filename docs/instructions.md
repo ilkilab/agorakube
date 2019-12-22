@@ -71,6 +71,8 @@ AgoraKube enables an easy way to deploy and manage customizable K8S clusters.
 
 The first file to modify is ["./hosts"](../hosts). This file contains all architecture information about your K8S Cluster.
 
+**All K8S servers names must be filled in by their FQDN.**
+
 The next Sample deploys K8S components in HA mode on 6 nodes (3 **etcd/masters** nodes and 3 **workers** nodes) :
 
 ```
