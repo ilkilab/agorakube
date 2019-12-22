@@ -1,0 +1,5 @@
+---
+- name: test node_name
+  assert:
+    that:
+      ansible_fqdn == inventory_hostname
