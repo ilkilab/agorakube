@@ -1,3 +1,4 @@
+
 ---
 - name: Creatopn dossiers /etc/kubernetes/pki /etc/kubernetes/pki/etcd
   file:
@@ -38,14 +39,14 @@
 
 - name: Import etcd/peer.key
   copy:
-    src: "{{ data_path }}/certificates/end/kube-etcd-peer/{{ ansible_hostname }}/kube-etcd-peer-key.pem"
+    src: "{{ data_path }}/certificates/end/kube-etcd-peer/{{ ansible_fqdn }}/kube-etcd-peer-key.pem"
     dest: /etc/kubernetes/pki/etcd/peer.key
   notify:
     - Restart etcd
 
 - name: Import etcd/peer.crt
   copy:
-    src: "{{ data_path }}/certificates/end/kube-etcd-peer/{{ ansible_hostname }}/kube-etcd-peer.pem"
+    src: "{{ data_path }}/certificates/end/kube-etcd-peer/{{ ansible_fqdn }}/kube-etcd-peer.pem"
     dest: /etc/kubernetes/pki/etcd/peer.crt
   notify:
     - Restart etcd

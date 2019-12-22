@@ -11,7 +11,7 @@ Requires=containerd.service \
 {% endif %}
 
 [Service]
-{% if ansible_hostname in groups['masters'] %}
+{% if ansible_fqdn in groups['masters'] %}
 ExecStart=/usr/local/bin/kubernetes/server/bin/kubelet \
 {% else %}
 ExecStart=/usr/local/bin/kubernetes/node/bin/kubelet \

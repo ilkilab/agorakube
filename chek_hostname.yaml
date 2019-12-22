@@ -1,0 +1,7 @@
+---
+- hosts: all
+  tasks:
+  - name: test hostname
+    assert:
+      that:
+        ansible_nodename == inventory_hostname

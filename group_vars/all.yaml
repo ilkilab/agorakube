@@ -35,7 +35,7 @@ update_certs: false
 service_mesh: linkerd
 linkerd_release: stable-2.6.0
 install_helm: false
-init_helm: true
+init_helm: false
 install_kubeapps: false
 
 # Calico
