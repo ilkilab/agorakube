@@ -133,40 +133,43 @@ expiry: 87600h
 
 
 # Components version
-etcd_release: v3.3.15   # 3.3 or 3.4 releases are supported
-kubernetes_release: v1.15.3  #1.15 or 1.16 releases are supported
-delete_previous_k8s_install: false
+etcd_release: v3.4.3
+kubernetes_release: v1.17.0
+delete_previous_k8s_install: False
 
 # IPs-CIDR Configurations
- 
-cluster_cidr: 10.244.0.0/16
+cluster_cidr: 10.33.0.0/16
 service_cluster_ip_range: 10.32.0.0/24
 kubernetes_service: 10.32.0.1
 cluster_dns_ip: 10.32.0.10
 service_node_port_range: 30000-32767
+kube_proxy_mode: ipvs
+kube_proxy_ipvs_algotithm: rr
+
 
 # Custom features
-install_helm: true # Install helm and create service accounts
-init_helm: true # Do the helm initialization after installation which deploys tiller, install_helm should be set to tru otherwise this will be ignored
-runtime: containerd  # Supported values are : containerd (default), and docker
-network_cni_plugin: flannel  # Supported values are: flannel (default), and calico
-ingress_controller: traefik  # Supported values are: traefik (default), haproxy, nginx and none
+runtime: containerd
+network_cni_plugin: flannel
+flannel_iface: default
+ingress_controller: traefik
 dns_server_soft: coredns
-label_workers: true
 populate_etc_hosts: yes
 k8s_dashboard: true
-k8s_dashbaord_admin: true
 update_certs: false
-service_mesh: linkerd   # Supported values are: linkerd (default), and none
+service_mesh: linkerd
 linkerd_release: stable-2.6.0
+install_helm: false
+init_helm: false
+install_kubeapps: false
 
 # Calico
-calico_mtu: 1440  # If using calico you might want to change the MTU to suit 
-                  # cloud-based setups, e.g. to 1400
+calico_mtu: 1440
 
 # Security
-
 encrypt_key_etcd: 1fJcKt6vBxMt+AkBanoaxFF2O6ytHIkETNgQWv4b/+Q=
+
+# Data Directory
+data_path: "/var/agorakube"
 ```
 
 **Note :** You can also modify the IPs-CIDR if you want.
