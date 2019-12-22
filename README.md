@@ -28,12 +28,12 @@ Since November 2019, Agorakube has been certified by the "Kubernetes Conformance
 
 This is a list of points that will be explained in this Readme file for the AgoraKube project :
 
-- What is AgoraKube
-- How to install
-- How to give feedback
-- How to contribute
-- Community
-- Licensing
+- [What is AgoraKube](#what-is-agoraKube)
+- [How to install](#how-to-install)
+- [How to give feedback](#how-to-give-feedback)
+- [How to contribute](#how-to-contribute)
+- [Community](#community)
+- [Licensing](#licensing)
 
 ## What is AgoraKube
 
