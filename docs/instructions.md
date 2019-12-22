@@ -1,3 +1,13 @@
+This is a list of points that will be explained in this instructions file for the AgoraKube project :
+
+- [High-level Architecture](#high-level-architecture)
+- [Prerequisites](#prerequisites)
+- [Nodes Setup](#nodes-setup)
+- [K8S Cluster Configuration](#k8s-cluster-configuration)
+- [Agorakube Parameters](#agorakube-parameters)
+- [Kubernetes deployment](#kubernetes-deployment)
+
+
 # High-level Architecture
 
 Below a diagram of the high-level architecture deployed by AgoraKube :
@@ -174,6 +184,8 @@ data_path: "/var/agorakube"
 
 **Note :** You can also modify the IPs-CIDR if you want.
 
+# Agorakube Parameters
+
 Below  you can find all the parameters you can use in this file, section by section.
 
 ### Certificates section
@@ -256,7 +268,7 @@ Parameters for Agorakube datas storage :
 | `data_path` | Path to Agorakube datas directory | <ul><li> **Depend on your deployment** </li><br/><li> **"/var/agorakube"** *(default)* </li></ul> |
 
 
-## Kubernetes deployment
+# Kubernetes deployment
 
 Once all configuration files are set, run the following command to launch the Ansible playbook that will deploy the pre-configured Kubernetes cluster :
 
