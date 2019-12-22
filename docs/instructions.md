@@ -205,9 +205,11 @@ This section is used to custom network configurations of your deployment.
 | --- | --- | --- |
 | `cluster_cidr` | CIDR used for all pods deployed in your cluster | <ul><li> **Depend on your deployment** </li><br/><li>  **10.33.0.0/16** *(default)* </li></ul>|
 | `service_cluster_ip_range` | CIDR used for all services deployed in your cluster | <ul><li> **Depend on your deployment** </li><br/><li>   **10.32.0.0/16** *(default)* </li></ul>|
-| `kubernetes_service` | IP used for Kubernetes service of your cluster | <ul><li> **Depend on your deployment** </li><br/><li>  **10.32.0.1** *(default)* </li></ul>|
+| `kubernetes_service` | IP used for Kubernetes service of your cluster. **Must be** the first IP of your service CIDR ! | <ul><li> **Depend on your deployment** </li><br/><li>  **10.32.0.1** *(default)* </li></ul>|
 | `cluster_dns_ip` | IP used for DNS services deployed in your cluster | <ul><li> **Depend on your deployment** </li><br/><li>  **10.32.0.10** *(default)* </li></ul>|
 | `service_node_port_range` | Range of ports used for all NodePort services deployed in your cluster | <ul><li> **depend on your deployment** </li><br/><li>   **30000-32767** *(default)* </li></ul>|
+| `kube_proxy_mode` | Configure kube-proxy mode | <ul><li> **ipvs (default)** </li><br/><li>   **iptables** </li><br/><li>   **userspace**</li></ul>|
+| `kube_proxy_ipvs_algotithm` | Load Balancing algorithm for *IPVS Kube-proxy* mode | <ul><li> **rr** *(default - round-robin)*</li><br/><li>   **lc** (least connection) </li><br/><li>   **dh** *(destination hashing)* </li><br/><li>   **sh** *(source hashing)* </li><br/><li>   **sed** *(shortest expected delay)* </li><br/><li>   **nq** *(never queue)* </li></ul>|
 
 ### Custom features section
 

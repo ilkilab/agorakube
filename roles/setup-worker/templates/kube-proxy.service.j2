@@ -12,7 +12,7 @@ ExecStart=/usr/local/bin/kubernetes/node/bin/kube-proxy \
   --proxy-mode={{kube_proxy_mode}} \
 {% endif %}
 {% if kube_proxy_mode == 'ipvs' %}
-{% if kube_proxy_ipvs_algotithm is defined %}
+{% if kube_proxy_ipvs_algotithm in ['rr','lc','dh','sh','sed','nq'] %}
   --ipvs-scheduler={{kube_proxy_ipvs_algotithm}} \
 {% endif %}
 {% endif %}
