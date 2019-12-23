@@ -24,7 +24,7 @@ Since November 2019, Agorakube has been certified by the "Kubernetes Conformance
 
 [![asciicast](https://asciinema.org/a/Y58GrrJG3gPM6GvKsSMCZevbX.svg)](https://asciinema.org/a/Y58GrrJG3gPM6GvKsSMCZevbX)
 
-## Summary
+## Table of Contents
 
 This is a list of points that will be explained in this Readme file for the AgoraKube project :
 
