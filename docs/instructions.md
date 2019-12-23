@@ -1,3 +1,4 @@
+# Table of Contents
 This is a list of points that will be explained in this instructions file for the AgoraKube project :
 
 - [High-level Architecture](#high-level-architecture)
