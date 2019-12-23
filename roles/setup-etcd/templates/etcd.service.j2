@@ -23,7 +23,7 @@ ExecStart=/usr/bin/etcd-{{etcd_release}}-linux-amd64/etcd \
   --initial-cluster-token etcd-cluster-0 \
   --initial-cluster {{ etcd_initial_cluster|join(',') }} \
   --initial-cluster-state new \
-  --data-dir=/var/lib/etcd
+  --data-dir={{etcd_data_directory}}
 Restart=on-failure
 RestartSec=5
 
