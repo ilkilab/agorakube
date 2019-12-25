@@ -29,6 +29,18 @@ If you want to change the number of nodes :
 
 ## Start the environment
 
-Simply open a terminal and goto test_lab folder and then run the following command:
+1) Simply open a terminal and goto test_lab folder and then run the following command:
 
 `vagrant up`
+
+2) One Agorakube installation is finished, connect to the deploy manachine with the following command:
+
+`vagrant ssh deploy`
+
+3) Kubernetes CLI "kubectl" is configured for root user, so use the following command to become root:
+
+`sudo su`
+
+4) You can now enjoy your Agorakube/K8S fresh cluster ! Use the following command to print K8S version:
+
+`kubectl version`
