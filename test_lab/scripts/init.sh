@@ -25,6 +25,7 @@ else
         yum install ansible -y
     elif [[ $DISTRO == Ubuntu* ]]; then
         export DEBIAN_FRONTEND=noninteractive
+        sudo killall apt apt-get
         apt-get update
         apt-get install -yqq git software-properties-common
         apt-add-repository --yes --update ppa:ansible/ansible
@@ -36,6 +37,7 @@ else
     fi
 fi
 cd /agorakube
+sed -i -e "s/flannel_iface: default/flannel_iface: eth1/g" group_vars/all.yaml
 ansible-playbook -i test_lab/hosts.vagrant agorakube.yaml
 if [ -f /root/agorakube-info.txt ]; then
   cat /root/agorakube-info.txt
