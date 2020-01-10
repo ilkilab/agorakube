@@ -1,0 +1,26 @@
+name: agorakube-check
+
+on:
+  pull_request:
+    branches: 
+      - master
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v1
+    - name: Install Ansible
+      run: |
+        sudo apt update
+        sudo apt install software-properties-common git -yqq
+        sudo apt-add-repository --yes --update ppa:ansible/ansible
+        sudo apt install ansible -yqq
+        echo '################################'
+        echo '# Ansible in now installed !!  #'
+        echo '################################'
+    - name: Clone and test agorakube syntax
+      run: |
+        git clone https://github.com/pierreilki/agorakube.git
+        cd agorakube
+        ansible-playbook -i test/inventory ./agorakube.yaml --syntax-check
