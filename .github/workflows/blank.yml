@@ -9,7 +9,7 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@{{github.head_ref}}
+    - uses: actions/checkout@v1
     - name: Install Ansible
       run: |
         sudo apt update
