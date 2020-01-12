@@ -9,7 +9,7 @@
 - name: Render templates
   template:
     dest: "{{ flannel_tempdir.path }}/flannel.yaml"
-    src: "../templates/flannel.yaml.j2"
+    src: "flannel.yaml.j2"
   changed_when: false
 
 - name: Apply templates

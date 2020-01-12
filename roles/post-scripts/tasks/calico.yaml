@@ -9,7 +9,7 @@
 - name: Render templates
   template:
     dest: "{{ calico_tempdir.path }}/calico.yaml"
-    src: "../templates/calico.yaml.j2"
+    src: "calico.yaml.j2"
   changed_when: false
 
 - name: Apply templates

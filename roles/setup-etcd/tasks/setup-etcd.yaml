@@ -1,23 +1,23 @@
 ---
 - name: Download etcd binaries
   unarchive:
-    src: https://github.com/etcd-io/etcd/releases/download/{{etcd_release}}/etcd-{{etcd_release}}-linux-amd64.tar.gz
+    src: https://github.com/etcd-io/etcd/releases/download/{{ etcd_release }}/etcd-{{ etcd_release }}-linux-amd64.tar.gz
     dest: /usr/bin
     remote_src: yes
 
 - name: create folder /var/lib/etcd
-  file: 
+  file:
     path: /var/lib/etcd
     state: directory
 
 - name: Import etcd.service
   template:
-    src: etcd.service.j2 
+    src: etcd.service.j2
     dest: /etc/systemd/system/etcd.service
   notify:
     - Reload daemons
-    - Restart etcd    
-    
+    - Restart etcd
+
 - name: Run etcd
   systemd:
     state: started

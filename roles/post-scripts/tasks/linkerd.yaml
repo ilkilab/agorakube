@@ -9,7 +9,7 @@
   command: 'kubectl --kubeconfig {{ data_path }}/certificates/configs/admin/admin.conf get namespaces'
   register: linkerd_is_installed
   changed_when: false
-  
+
 - name: Apply templates
   shell: 'linkerd --kubeconfig {{ data_path }}/certificates/configs/admin/admin.conf install | kubectl --kubeconfig {{ data_path }}/certificates/configs/admin/admin.conf apply -f -'
   register: apply_linkerd

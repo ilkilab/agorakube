@@ -42,6 +42,6 @@
 
 - name: Initialize Helm
   command: /usr/local/bin/linux-amd64/helm --kubeconfig {{ data_path }}/certificates/configs/admin/admin.conf init --service-account agoratiller
-  when: 
+  when:
     - init_helm
     - install_helm

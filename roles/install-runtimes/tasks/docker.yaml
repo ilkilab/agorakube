@@ -10,14 +10,14 @@
     path: /etc/cni/net.d
     state: directory
     recurse: yes
-    
+
 - name: Push /etc/cni/net.d/99-loopback.conf
   copy:
     src: 99-loopback.conf
     dest: /etc/cni/net.d/99-loopback.conf
   notify:
     - restart docker
-  
+
 - name: Create /opt/cni/bin/ directory
   file:
     path: /opt/cni/bin/

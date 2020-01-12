@@ -9,7 +9,7 @@
 - name: Render templates
   template:
     dest: "{{ coredns_tempdir.path }}/coredns.yaml"
-    src: "../templates/coredns.yaml.j2"
+    src: "coredns.yaml.j2"
   changed_when: false
 
 - name: Apply templates

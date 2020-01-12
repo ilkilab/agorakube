@@ -4,7 +4,7 @@
     name: ['apt-transport-https', 'ca-certificates', 'curl', 'software-properties-common']
     state: latest
     update_cache: yes
-    
+
 - name: Add Docker’s official GPG key
   apt_key:
     url: https://download.docker.com/linux/ubuntu/gpg

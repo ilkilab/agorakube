@@ -6,11 +6,11 @@
 
 - name: Download Kubernetes node binaries
   unarchive:
-    src: https://dl.k8s.io/{{kubernetes_release}}/kubernetes-node-linux-amd64.tar.gz
+    src: https://dl.k8s.io/{{ kubernetes_release }}/kubernetes-node-linux-amd64.tar.gz
     dest: /usr/local/bin
     remote_src: yes
     creates: /usr/local/bin/kubernetes/node/bin/kubelet
-  when: 
+  when:
   - ansible_fqdn in groups['workers']
   - ansible_fqdn not in groups['masters']
 - name: Create kubelet service
@@ -59,7 +59,7 @@
     dest: /etc/kubernetes/manifests/proxier.conf
   notify:
     - restart kube-proxy
-    
+
 - name: Start kubelet and kube-proxy services
   systemd:
     state: started

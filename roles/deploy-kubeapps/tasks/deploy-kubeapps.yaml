@@ -2,7 +2,7 @@
 - name: Wait for Helm
   pause:
     seconds: 60
-- name: Check Helm repo bitnami 
+- name: Check Helm repo bitnami
   command: /usr/local/bin/linux-amd64/helm --kubeconfig {{ data_path }}/certificates/configs/admin/admin.conf repo list
   register: check_helm_repo
   changed_when: false

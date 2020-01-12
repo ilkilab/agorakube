@@ -5,7 +5,7 @@
     state: present
   with_items:
     - yum-utils
-    - device-mapper-persistent-data 
+    - device-mapper-persistent-data
     - lvm2
 
 - name: Add docker repository

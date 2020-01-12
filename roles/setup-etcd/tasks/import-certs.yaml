@@ -57,7 +57,7 @@
     dest: /etc/kubernetes/pki/etcd/healthcheck-client.key
   notify:
     - Restart etcd
-    
+
 - name: Import etcd/healthcheck-client.crt
   copy:
     src: "{{ data_path }}/certificates/end/kube-etcd-healthcheck-client/kube-etcd-healthcheck-client.pem"

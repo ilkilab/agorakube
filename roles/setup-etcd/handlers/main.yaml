@@ -4,7 +4,7 @@
     state: restarted
     daemon_reload: yes
     name: etcd
-    
+
 - name: Restart etcd
   systemd:
     state: restarted
