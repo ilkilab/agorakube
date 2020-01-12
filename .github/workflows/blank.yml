@@ -10,13 +10,9 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v1
+    - name: Lint Agorakube Playbooks and roles
     - name: Install Ansible
-      run: |
-        sudo apt update
-        sudo apt install software-properties-common git wget python-pip -yqq
-        sudo apt-add-repository --yes --update ppa:ansible/ansible
-        sudo apt install ansible -yqq
-    - name: Install ansible-lint and test agorakube code
-      run: |
-        pip install ansible-lint
-        ansible-lint -c ansible-lint.conf
+      uses: ansible/ansible-lint-action@master
+      with:
+        targets: ""
+        args: "-c ansible-lint.conf"
