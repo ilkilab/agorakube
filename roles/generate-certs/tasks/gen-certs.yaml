@@ -514,7 +514,9 @@
   with_items: "{{ groups['masters'] }}"
 
 - name: Configuration file generation of kubeconfig for [kubelet] masters 4/4
-  shell: KUBECONFIG="{{ data_path }}/certificates/configs/kubelet/{{ item }}/kubelet.config" kubectl config use-context default-system
+  shell: |
+    KUBECONFIG="{{ data_path }}/certificates/configs/kubelet/{{ item }}/kubelet.config" \
+    kubectl config use-context default-system
   args:
     creates: "{{ data_path }}/certificates/configs/kubelet/{{ item }}/kubelet.flag"
   environment:
@@ -563,7 +565,9 @@
   with_items: "{{ groups['workers'] }}"
 
 - name: Configuration file generation of kubeconfig for [kubelet] workers 4/4
-  shell: KUBECONFIG="{{ data_path }}/certificates/configs/kubelet/{{ item }}/kubelet.config" kubectl config use-context default-system
+  shell: |
+    KUBECONFIG="{{ data_path }}/certificates/configs/kubelet/{{ item }}/kubelet.config" \
+    kubectl config use-context default-system
   args:
     creates: "{{ data_path }}/certificates/configs/kubelet/{{ item }}/kubelet.flag"
   environment:
