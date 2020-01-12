@@ -13,14 +13,14 @@ jobs:
     - name: Install Ansible
       run: |
         sudo apt update
-        sudo apt install software-properties-common git -yqq
+        sudo apt install software-properties-common git wget python-pip -yqq
         sudo apt-add-repository --yes --update ppa:ansible/ansible
         sudo apt install ansible -yqq
-        echo '################################'
-        echo '# Ansible in now installed !!  #'
-        echo '################################'
+    - name: Install ansible-lint
+      run: |
+        pip install ansible-lint 
     - name: Clone and test agorakube syntax
       run: |
-        git clone https://github.com/pierreilki/agorakube.git
+        git clone https://github.com/ilkilab/agorakube.git
         cd agorakube
-        ansible-playbook -i test/inventory ./agorakube.yaml --syntax-check
+        ansible-lint -c ansible-lint.conf
