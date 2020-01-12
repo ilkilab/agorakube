@@ -33,7 +33,9 @@
     dest: "{{ data_path }}/certificates/ca/ca-csr.json"
 
 - name: Generate ca_root certificates
-  shell: 'cfssl gencert -initca "{{ data_path }}/certificates/ca/ca-csr.json" | cfssljson -bare "{{ data_path }}/certificates/ca/ca"'
+  shell: |
+    set -o pipefail
+    cfssl gencert -initca {{ data_path }}/certificates/ca/ca-csr.json | cfssljson -bare {{ data_path }}/certificates/ca/ca
   args:
     creates: "{{ data_path }}/certificates/ca/ca-key.pem"
     executable: /bin/bash
@@ -51,6 +53,7 @@
 
 - name: Generate intermediate certificates
   shell: |
+    set -o pipefail
     cfssl gencert -initca {{ data_path }}/certificates/intermediate/{{ item }}/{{ item }}-csr.json \
     | cfssljson -bare {{ data_path }}/certificates/intermediate/{{ item }}/{{ item }}
   args:
@@ -69,6 +72,7 @@
 
 - name: Sign of intermediate certificates on CA_ROOT
   shell: |
+    set -o pipefail
     cfssl sign -ca {{ data_path }}/certificates/ca/ca.pem  -ca-key {{ data_path }}/certificates/ca/ca-key.pem  \
     -config {{ data_path }}/certificates/ca/root_to_intermediate.json {{ data_path }}/certificates/intermediate/{{ item }}/{{ item }}.csr \
     | cfssljson -bare {{ data_path }}/certificates/intermediate/{{ item }}/signed/{{ item }}
@@ -131,6 +135,7 @@
 
 - name: Generate certificates [kube-etcd-healthcheck-client] [kube-apiserver-etcd-client]
   shell: |
+    set -o pipefail
     cfssl gencert -ca {{ data_path }}/certificates/intermediate/etcd-ca/signed/etcd-ca.pem \
     -ca-key {{ data_path }}/certificates/intermediate/etcd-ca/etcd-ca-key.pem  \
     -config {{ data_path }}/certificates/intermediate/intermediate_to_end.json \
@@ -146,6 +151,7 @@
 
 - name: Generate certificate [kube-etcd-peer]
   shell: |
+    set -o pipefail
     cfssl gencert -ca {{ data_path }}/certificates/intermediate/etcd-ca/signed/etcd-ca.pem \
     -ca-key {{ data_path }}/certificates/intermediate/etcd-ca/etcd-ca-key.pem \
     -config {{ data_path }}/certificates/intermediate/intermediate_to_end.json \
@@ -159,6 +165,7 @@
 
 - name: Generate certificate [kube-etcd]
   shell: |
+    set -o pipefail
     cfssl gencert -ca {{ data_path }}/certificates/intermediate/etcd-ca/signed/etcd-ca.pem \
     -ca-key {{ data_path }}/certificates/intermediate/etcd-ca/etcd-ca-key.pem \
     -config {{ data_path }}/certificates/intermediate/intermediate_to_end.json \
@@ -171,6 +178,7 @@
 
 - name : Generate certificate [kube-apiserver]
   shell: |
+    set -o pipefail
     cfssl gencert -ca {{ data_path }}/certificates/intermediate/kubernetes-ca/signed/kubernetes-ca.pem \
     -ca-key {{ data_path }}/certificates/intermediate/kubernetes-ca/kubernetes-ca-key.pem \
     -config {{ data_path }}/certificates/intermediate/intermediate_to_end.json \
@@ -184,6 +192,7 @@
 
 - name: Generate certificate [kube-apiserver-kubelet-client]
   shell: |
+    set -o pipefail
     cfssl gencert -ca {{ data_path }}/certificates/intermediate/kubernetes-ca/signed/kubernetes-ca.pem \
     -ca-key {{ data_path }}/certificates/intermediate/kubernetes-ca/kubernetes-ca-key.pem \
     -config {{ data_path }}/certificates/intermediate/intermediate_to_end.json \
@@ -196,6 +205,7 @@
 
 - name: Generate certificate [front-proxy-client]
   shell: |
+    set -o pipefail
     cfssl gencert -ca {{ data_path }}/certificates/intermediate/kubernetes-front-proxy-ca/signed/kubernetes-front-proxy-ca.pem \
     -ca-key {{ data_path }}/certificates/intermediate/kubernetes-front-proxy-ca/kubernetes-front-proxy-ca-key.pem \
     -config {{ data_path }}/certificates/intermediate/intermediate_to_end.json \
@@ -218,6 +228,7 @@
 
 - name: Generation of certificates for [admin] [controller-manager] [scheduler]
   shell: |
+    set -o pipefail
     cfssl gencert -ca {{ data_path }}/certificates/intermediate/kubernetes-ca/signed/kubernetes-ca.pem \
     -ca-key {{ data_path }}/certificates/intermediate/kubernetes-ca/kubernetes-ca-key.pem \
     {{ data_path }}/certificates/configs/{{ item }}/{{ item }}-csr.json \
@@ -252,6 +263,7 @@
 
 - name: Certificates generation for [kubelet] masters
   shell: |
+    set -o pipefail
     cfssl gencert -ca {{ data_path }}/certificates/intermediate/kubernetes-ca/signed/kubernetes-ca.pem \
     -ca-key {{ data_path }}/certificates/intermediate/kubernetes-ca/kubernetes-ca-key.pem \
     {{ data_path }}/certificates/configs/kubelet/{{ item }}/config-kubelet-account.json \
@@ -270,6 +282,7 @@
 
 - name: Certificates generation for [kubelet] workers
   shell: |
+    set -o pipefail
     cfssl gencert -ca {{ data_path }}/certificates/intermediate/kubernetes-ca/signed/kubernetes-ca.pem \
     -ca-key {{ data_path }}/certificates/intermediate/kubernetes-ca/kubernetes-ca-key.pem \
     {{ data_path }}/certificates/configs/kubelet/{{ item }}/config-kubelet-account.json \
@@ -372,19 +385,6 @@
     modification_time: preserve
     access_time: preserve
 
-#- name: Configuration file generation of kubeconfig for [controller-manager]
-#  shell: "{{ item }}"
-#  args:
-#    creates: "{{ data_path }}/certificates/configs/controller-manager/controller-manager.flag"
-#  environment:
-#    PATH: /usr/local/bin:{{ ansible_env.PATH }}
-#  with_items:
-#    - KUBECONFIG="{{ data_path }}/certificates/configs/controller-manager/controller-manager.conf" kubectl config set-cluster default-cluster --server=https://{{ advertise_ip_masters }}:6443 --certificate-authority "{{ data_path }}/certificates/intermediate/kubernetes-ca/signed/kubernetes-ca.pem" --embed-certs
-#    - KUBECONFIG="{{ data_path }}/certificates/configs/controller-manager/controller-manager.conf" kubectl config set-credentials default-controller-manager --client-key "{{ data_path }}/certificates/configs/controller-manager/controller-manager-key.pem" --client-certificate "{{ data_path }}/certificates/configs/controller-manager/controller-manager.pem" --embed-certs
-#    - KUBECONFIG="{{ data_path }}/certificates/configs/controller-manager/controller-manager.conf" kubectl config set-context default-system --cluster default-cluster --user default-controller-manager
-#    - KUBECONFIG="{{ data_path }}/certificates/configs/controller-manager/controller-manager.conf" kubectl config use-context default-system
-#    - touch "{{ data_path }}/certificates/configs/controller-manager/controller-manager.flag"
-
 - name: File generation of kubeconfig configuration for [controller-manager] 1/4
   shell: |
     KUBECONFIG="{{ data_path }}/certificates/configs/controller-manager/controller-manager.conf" \
@@ -433,19 +433,6 @@
     modification_time: preserve
     access_time: preserve
 
-#- name: Configuration file generation of kubeconfig for [scheduler]
-#  shell: "{{ item }}"
-#  args:
-#    creates: "{{ data_path }}/certificates/configs/scheduler/scheduler.flag"
-#  environment:
-#    PATH: /usr/local/bin:{{ ansible_env.PATH }}
-#  with_items:
-#    - KUBECONFIG="{{ data_path }}/certificates/configs/scheduler/scheduler.conf" kubectl config set-cluster default-cluster --server=https://{{ advertise_ip_masters }}:6443 --certificate-authority "{{ data_path }}/certificates/intermediate/kubernetes-ca/signed/kubernetes-ca.pem" --embed-certs
-#    - KUBECONFIG="{{ data_path }}/certificates/configs/scheduler/scheduler.conf" kubectl config set-credentials default-manager --client-key "{{ data_path }}/certificates/configs/scheduler/scheduler-key.pem" --client-certificate "{{ data_path }}/certificates/configs/scheduler/scheduler.pem" --embed-certs
-#    - KUBECONFIG="{{ data_path }}/certificates/configs/scheduler/scheduler.conf" kubectl config set-context default-system --cluster default-cluster --user default-manager
-#    - KUBECONFIG="{{ data_path }}/certificates/configs/scheduler/scheduler.conf" kubectl config use-context default-system
-#    - touch "{{ data_path }}/certificates/configs/scheduler/scheduler.flag"
-
 - name: File generation of kubeconfig configuration for [scheduler] 1/4
   shell: |
     KUBECONFIG="{{ data_path }}/certificates/configs/scheduler/scheduler.conf" \
@@ -487,13 +474,11 @@
 
 - name: Touch a flag file for scheduler kubeconfig generation statement
   file:
-    path: "{{ data_path }}/certificates/configs/controller-manager/controller-manager.flag"
+    path: "{{ data_path }}/certificates/configs/scheduler/scheduler.flag"
     state: touch
     modification_time: preserve
     access_time: preserve
-#
-#
-#
+
 - name: Configuration file generation of kubeconfig for [kubelet] masters 1/4
   shell: |
     KUBECONFIG="{{ data_path }}/certificates/configs/kubelet/{{ item }}/kubelet.config" \

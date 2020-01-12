@@ -12,6 +12,7 @@
 
 - name: Apply templates
   shell: |
+    set -o pipefail
     linkerd --kubeconfig {{ data_path }}/certificates/configs/admin/admin.conf install \
     | kubectl --kubeconfig {{ data_path }}/certificates/configs/admin/admin.conf apply -f -
   register: apply_linkerd
