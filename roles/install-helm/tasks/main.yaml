@@ -6,12 +6,13 @@
     remote_src: yes
     creates: /usr/local/bin/helm
   when: install_helm
-
+  
 - name: Check service account for Helm
   command: kubectl --kubeconfig {{ data_path }}/certificates/configs/admin/admin.conf get serviceaccounts -n kube-system agoratiller
   register: check_helm_service_account
   failed_when: check_helm_service_account.rc > 1
   when: install_helm
+  changed_when: False
 
 - name: Create service account for Helm
   command: kubectl --kubeconfig {{ data_path }}/certificates/configs/admin/admin.conf create serviceaccount agoratiller -n kube-system
@@ -29,6 +30,7 @@
   failed_when: check_helm_account_role.rc > 1
   when:
     - install_helm
+  changed_when: False
 
 - name: Create cluster role binding for Helm service account
   command: kubectl --kubeconfig {{ data_path }}/certificates/configs/admin/admin.conf create clusterrolebinding agora-tiller-role-binding  --clusterrole=cluster-admin  --serviceaccount=kube-system:agoratiller

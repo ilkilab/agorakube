@@ -10,6 +10,7 @@
 - name: Get file content to show to the user
   command: cat /root/agorakube-info.txt
   register: agora_info
+  changed_when: False
 
 - name: Show information to the user
   debug:
