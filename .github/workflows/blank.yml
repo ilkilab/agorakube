@@ -21,6 +21,5 @@ jobs:
         pip install ansible-lint 
     - name: Clone and test agorakube syntax
       run: |
-        git clone https://github.com/ilkilab/agorakube.git
         cd agorakube
         ansible-lint -c ansible-lint.conf
