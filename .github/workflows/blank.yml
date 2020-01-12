@@ -19,8 +19,3 @@ jobs:
         echo '################################'
         echo '# Ansible in now installed !!  #'
         echo '################################'
-    - name: Clone and test agorakube syntax
-      run: |
-        git clone https://github.com/pierreilki/agorakube.git
-        cd agorakube
-        ansible-playbook -i test/inventory ./agorakube.yaml --syntax-check
