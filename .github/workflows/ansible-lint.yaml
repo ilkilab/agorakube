@@ -15,4 +15,4 @@ jobs:
     - name: test ansible lint
       uses: ./actions/ansible-lint
       with:
-        lint-config-file: ' '
+        lint-config-file: ''
