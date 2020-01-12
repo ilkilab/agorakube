@@ -6,7 +6,7 @@
     remote_src: yes
     creates: /usr/local/bin/helm
   when: install_helm
-  
+
 - name: Check service account for Helm
   command: kubectl --kubeconfig {{ data_path }}/certificates/configs/admin/admin.conf get serviceaccounts -n kube-system agoratiller
   register: check_helm_service_account

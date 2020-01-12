@@ -19,9 +19,5 @@
       export GOBIN=$GOPATH/bin
       export PATH=$GOBIN:$PATH:/usr/local/go/bin
   register: modify
-
-- name: Set GOPATH
-  when: modify.changed
-  shell: source /etc/profile
-  args:
-    executable: /bin/bash
+  notify:
+    - Set GOPATH
