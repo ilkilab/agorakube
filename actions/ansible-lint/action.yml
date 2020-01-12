@@ -1,12 +1,5 @@
 name: 'Ansible lint for Agorakube'
 description: 'Lint Ansible Playbooks and roles. Used for Agorakube project check'
-inputs:
-  lint-config-file:
-    description: 'Configuration file for Ansible lint'
-    required: false
-    default: ''
 runs:
   using: 'docker'
   image: 'Dockerfile'
-  args:
-    - ${{ inputs.lint-config-file }}

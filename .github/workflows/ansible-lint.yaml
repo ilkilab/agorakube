@@ -14,5 +14,3 @@ jobs:
       uses: actions/checkout@v1
     - name: test ansible lint
       uses: ./actions/ansible-lint
-      with:
-        lint-config-file: ''
