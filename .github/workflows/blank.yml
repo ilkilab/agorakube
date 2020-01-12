@@ -14,4 +14,4 @@ jobs:
       uses: ansible/ansible-lint-action@v4.1.0
       with:
         targets: ""
-        args: "-c ansible-lint.conf"
+        args: ""
