@@ -33,7 +33,9 @@
   changed_when: False
 
 - name: Create cluster role binding for Helm service account
-  command: kubectl --kubeconfig {{ data_path }}/certificates/configs/admin/admin.conf create clusterrolebinding agora-tiller-role-binding  --clusterrole=cluster-admin  --serviceaccount=kube-system:agoratiller
+  command: |
+    kubectl --kubeconfig {{ data_path }}/certificates/configs/admin/admin.conf \
+    create clusterrolebinding agora-tiller-role-binding  --clusterrole=cluster-admin  --serviceaccount=kube-system:agoratiller
   register: create_helm_account_role
   changed_when: >
     create_helm_account_role.stdout is search("created")

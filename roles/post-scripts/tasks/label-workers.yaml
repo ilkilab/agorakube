@@ -17,7 +17,9 @@
   with_items: "{{ groups['masters'] }}"
 
 - name: Make hosts with only master role NoSchedulabe
-  command: "kubectl --kubeconfig {{ data_path }}/certificates/configs/admin/admin.conf taint nodes {{ item }} node-role.kubernetes.io/master=true:NoSchedule --overwrite"
+  command: |
+    kubectl --kubeconfig {{ data_path }}/certificates/configs/admin/admin.conf \
+    taint nodes {{ item }} node-role.kubernetes.io/master=true:NoSchedule --overwrite
   changed_when: false
   with_items: "{{ groups['masters'] }}"
   when:

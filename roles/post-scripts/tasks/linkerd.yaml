@@ -11,7 +11,9 @@
   changed_when: false
 
 - name: Apply templates
-  shell: 'linkerd --kubeconfig {{ data_path }}/certificates/configs/admin/admin.conf install | kubectl --kubeconfig {{ data_path }}/certificates/configs/admin/admin.conf apply -f -'
+  shell: |
+    linkerd --kubeconfig {{ data_path }}/certificates/configs/admin/admin.conf install \
+    | kubectl --kubeconfig {{ data_path }}/certificates/configs/admin/admin.conf apply -f -
   register: apply_linkerd
   changed_when: >
     apply_linkerd.stdout is search("created")
