@@ -280,18 +280,64 @@
     PATH: /usr/local/bin:{{ ansible_env.PATH }}
   with_items: "{{ groups['workers'] }}"
 
-- name: File generation of kubeconfig configuration for [proxier]
-  shell: "{{ item }}"
-  args:
-    creates: "{{ data_path }}/certificates/configs/proxier/proxier.flag"
+#- name: File generation of kubeconfig configuration for [proxier]
+#  shell: "{{ item }}"
+#  args:
+#    creates: "{{ data_path }}/certificates/configs/proxier/proxier.flag"
+#  environment:
+#    PATH: /usr/local/bin:{{ ansible_env.PATH }}
+#  with_items:
+#    - KUBECONFIG="{{ data_path }}/certificates/configs/proxier/proxier.conf" kubectl config set-cluster default-cluster --server=https://{{ advertise_ip_masters }}:6443 --certificate-authority "{{ data_path }}/certificates/intermediate/kubernetes-ca/signed/kubernetes-ca.pem" --embed-certs
+#    - KUBECONFIG="{{ data_path }}/certificates/configs/proxier/proxier.conf" kubectl config set-credentials system:kube-proxy --client-key "{{ data_path }}/certificates/configs/proxier/proxier-key.pem" --client-certificate "{{ data_path }}/certificates/configs/proxier/proxier.pem" --embed-certs
+#    - KUBECONFIG="{{ data_path }}/certificates/configs/proxier/proxier.conf" kubectl config set-context default-system --cluster default-cluster --user system:kube-proxy
+#    - KUBECONFIG="{{ data_path }}/certificates/configs/proxier/proxier.conf" kubectl config use-context default-system
+#    - touch "{{ data_path }}/certificates/configs/proxier/proxier.flag"
+
+- name: File generation of kubeconfig configuration for [proxier] 1/4
+  shell: |
+    KUBECONFIG="{{ data_path }}/certificates/configs/proxier/proxier.conf" \
+    kubectl config set-cluster default-cluster --server=https://{{ advertise_ip_masters }}:6443 \
+    --certificate-authority "{{ data_path }}/certificates/intermediate/kubernetes-ca/signed/kubernetes-ca.pem" \
+    --embed-certs
   environment:
     PATH: /usr/local/bin:{{ ansible_env.PATH }}
-  with_items:
-    - KUBECONFIG="{{ data_path }}/certificates/configs/proxier/proxier.conf" kubectl config set-cluster default-cluster --server=https://{{ advertise_ip_masters }}:6443 --certificate-authority "{{ data_path }}/certificates/intermediate/kubernetes-ca/signed/kubernetes-ca.pem" --embed-certs
-    - KUBECONFIG="{{ data_path }}/certificates/configs/proxier/proxier.conf" kubectl config set-credentials system:kube-proxy --client-key "{{ data_path }}/certificates/configs/proxier/proxier-key.pem" --client-certificate "{{ data_path }}/certificates/configs/proxier/proxier.pem" --embed-certs
-    - KUBECONFIG="{{ data_path }}/certificates/configs/proxier/proxier.conf" kubectl config set-context default-system --cluster default-cluster --user system:kube-proxy
-    - KUBECONFIG="{{ data_path }}/certificates/configs/proxier/proxier.conf" kubectl config use-context default-system
-    - touch "{{ data_path }}/certificates/configs/proxier/proxier.flag"
+  args:
+    creates: "{{ data_path }}/certificates/configs/proxier/proxier.flag"
+
+- name: File generation of kubeconfig configuration for [proxier] 2/4
+  shell: |
+    KUBECONFIG="{{ data_path }}/certificates/configs/proxier/proxier.conf" \
+    kubectl config set-credentials system:kube-proxy --client-key "{{ data_path }}/certificates/configs/proxier/proxier-key.pem" \
+    --client-certificate "{{ data_path }}/certificates/configs/proxier/proxier.pem" \
+    --embed-certs
+  environment:
+    PATH: /usr/local/bin:{{ ansible_env.PATH }}
+  args:
+    creates: "{{ data_path }}/certificates/configs/proxier/proxier.flag"
+
+- name: File generation of kubeconfig configuration for [proxier] 3/4
+  shell: |
+    KUBECONFIG="{{ data_path }}/certificates/configs/proxier/proxier.conf" \
+    kubectl config set-context default-system --cluster default-cluster --user system:kube-proxy
+  environment:
+    PATH: /usr/local/bin:{{ ansible_env.PATH }}
+  args:
+    creates: "{{ data_path }}/certificates/configs/proxier/proxier.flag"
+
+- name: File generation of kubeconfig configuration for [proxier] 4/4
+  shell: |
+    KUBECONFIG="{{ data_path }}/certificates/configs/proxier/proxier.conf" kubectl config use-context default-system
+  environment:
+    PATH: /usr/local/bin:{{ ansible_env.PATH }}
+  args:
+    creates: "{{ data_path }}/certificates/configs/proxier/proxier.flag"
+
+- name: Touch a flag file for Proxier kubeconfig generation statement
+  file:
+    path: "{{ data_path }}/certificates/configs/proxier/proxier.flag"
+    state: touch
+    modification_time: preserve
+    access_time: preserve
 
 - name: Configuration file generation of kubeconfig for [admin] Configuration file generation of kubeconfig for
   shell: "{{ item }}"
