@@ -18,6 +18,5 @@ jobs:
         sudo apt install ansible -yqq
     - name: Install ansible-lint and test agorakube code
       run: |
-        cd agorakube
         pip install ansible-lint
         ansible-lint -c ansible-lint.conf
