@@ -348,7 +348,7 @@
   args:
     creates: "{{ data_path }}/certificates/configs/admin/admin.flag"
 
-- name: File generation of kubeconfig configuration for [admin] 1/4
+- name: File generation of kubeconfig configuration for [admin] 3/4
   shell: |
     KUBECONFIG="{{ data_path }}/certificates/configs/admin/admin.conf" \
     kubectl config set-context default-system --cluster default-cluster --user default-admin
@@ -357,7 +357,7 @@
   args:
     creates: "{{ data_path }}/certificates/configs/admin/admin.flag"
 
-- name: File generation of kubeconfig configuration for [admin] 1/4
+- name: File generation of kubeconfig configuration for [admin] 4/4
   shell: |
     KUBECONFIG="{{ data_path }}/certificates/configs/admin/admin.conf" kubectl config use-context default-system
   environment:
@@ -372,32 +372,128 @@
     modification_time: preserve
     access_time: preserve
 
-- name: Configuration file generation of kubeconfig for [controller-manager]
-  shell: "{{ item }}"
+#- name: Configuration file generation of kubeconfig for [controller-manager]
+#  shell: "{{ item }}"
+#  args:
+#    creates: "{{ data_path }}/certificates/configs/controller-manager/controller-manager.flag"
+#  environment:
+#    PATH: /usr/local/bin:{{ ansible_env.PATH }}
+#  with_items:
+#    - KUBECONFIG="{{ data_path }}/certificates/configs/controller-manager/controller-manager.conf" kubectl config set-cluster default-cluster --server=https://{{ advertise_ip_masters }}:6443 --certificate-authority "{{ data_path }}/certificates/intermediate/kubernetes-ca/signed/kubernetes-ca.pem" --embed-certs
+#    - KUBECONFIG="{{ data_path }}/certificates/configs/controller-manager/controller-manager.conf" kubectl config set-credentials default-controller-manager --client-key "{{ data_path }}/certificates/configs/controller-manager/controller-manager-key.pem" --client-certificate "{{ data_path }}/certificates/configs/controller-manager/controller-manager.pem" --embed-certs
+#    - KUBECONFIG="{{ data_path }}/certificates/configs/controller-manager/controller-manager.conf" kubectl config set-context default-system --cluster default-cluster --user default-controller-manager
+#    - KUBECONFIG="{{ data_path }}/certificates/configs/controller-manager/controller-manager.conf" kubectl config use-context default-system
+#    - touch "{{ data_path }}/certificates/configs/controller-manager/controller-manager.flag"
+
+- name: File generation of kubeconfig configuration for [controller-manager] 1/4
+  shell: |
+    KUBECONFIG="{{ data_path }}/certificates/configs/controller-manager/controller-manager.conf" \
+    kubectl config set-cluster default-cluster --server=https://{{ advertise_ip_masters }}:6443 \
+    --certificate-authority "{{ data_path }}/certificates/intermediate/kubernetes-ca/signed/kubernetes-ca.pem" \
+    --embed-certs
+  environment:
+    PATH: /usr/local/bin:{{ ansible_env.PATH }}
   args:
     creates: "{{ data_path }}/certificates/configs/controller-manager/controller-manager.flag"
+
+- name: File generation of kubeconfig configuration for [controller-manager] 2/4
+  shell: |
+    KUBECONFIG="{{ data_path }}/certificates/configs/controller-manager/controller-manager.conf" \
+    kubectl config set-credentials default-controller-manager \
+    --client-key "{{ data_path }}/certificates/configs/controller-manager/controller-manager-key.pem" \
+    --client-certificate "{{ data_path }}/certificates/configs/controller-manager/controller-manager.pem" \
+    --embed-certs
   environment:
     PATH: /usr/local/bin:{{ ansible_env.PATH }}
-  with_items:
-    - KUBECONFIG="{{ data_path }}/certificates/configs/controller-manager/controller-manager.conf" kubectl config set-cluster default-cluster --server=https://{{ advertise_ip_masters }}:6443 --certificate-authority "{{ data_path }}/certificates/intermediate/kubernetes-ca/signed/kubernetes-ca.pem" --embed-certs
-    - KUBECONFIG="{{ data_path }}/certificates/configs/controller-manager/controller-manager.conf" kubectl config set-credentials default-controller-manager --client-key "{{ data_path }}/certificates/configs/controller-manager/controller-manager-key.pem" --client-certificate "{{ data_path }}/certificates/configs/controller-manager/controller-manager.pem" --embed-certs
-    - KUBECONFIG="{{ data_path }}/certificates/configs/controller-manager/controller-manager.conf" kubectl config set-context default-system --cluster default-cluster --user default-controller-manager
-    - KUBECONFIG="{{ data_path }}/certificates/configs/controller-manager/controller-manager.conf" kubectl config use-context default-system
-    - touch "{{ data_path }}/certificates/configs/controller-manager/controller-manager.flag"
+  args:
+    creates: "{{ data_path }}/certificates/configs/controller-manager/controller-manager.flag"
 
-- name: Configuration file generation of kubeconfig for [scheduler]
-  shell: "{{ item }}"
+- name: File generation of kubeconfig configuration for [controller-manager] 3/4
+  shell: |
+    KUBECONFIG="{{ data_path }}/certificates/configs/controller-manager/controller-manager.conf" \
+    kubectl config set-context default-system --cluster default-cluster --user default-controller-manager
+  environment:
+    PATH: /usr/local/bin:{{ ansible_env.PATH }}
+  args:
+    creates: "{{ data_path }}/certificates/configs/controller-manager/controller-manager.flag"
+
+- name: File generation of kubeconfig configuration for [controller-manager] 4/4
+  shell: |
+    KUBECONFIG="{{ data_path }}/certificates/configs/controller-manager/controller-manager.conf" \
+    kubectl config use-context default-system
+  environment:
+    PATH: /usr/local/bin:{{ ansible_env.PATH }}
+  args:
+    creates: "{{ data_path }}/certificates/configs/controller-manager/controller-manager.flag"
+
+- name: Touch a flag file for controller-manager kubeconfig generation statement
+  file:
+    path: "{{ data_path }}/certificates/configs/controller-manager/controller-manager.flag"
+    state: touch
+    modification_time: preserve
+    access_time: preserve
+
+#- name: Configuration file generation of kubeconfig for [scheduler]
+#  shell: "{{ item }}"
+#  args:
+#    creates: "{{ data_path }}/certificates/configs/scheduler/scheduler.flag"
+#  environment:
+#    PATH: /usr/local/bin:{{ ansible_env.PATH }}
+#  with_items:
+#    - KUBECONFIG="{{ data_path }}/certificates/configs/scheduler/scheduler.conf" kubectl config set-cluster default-cluster --server=https://{{ advertise_ip_masters }}:6443 --certificate-authority "{{ data_path }}/certificates/intermediate/kubernetes-ca/signed/kubernetes-ca.pem" --embed-certs
+#    - KUBECONFIG="{{ data_path }}/certificates/configs/scheduler/scheduler.conf" kubectl config set-credentials default-manager --client-key "{{ data_path }}/certificates/configs/scheduler/scheduler-key.pem" --client-certificate "{{ data_path }}/certificates/configs/scheduler/scheduler.pem" --embed-certs
+#    - KUBECONFIG="{{ data_path }}/certificates/configs/scheduler/scheduler.conf" kubectl config set-context default-system --cluster default-cluster --user default-manager
+#    - KUBECONFIG="{{ data_path }}/certificates/configs/scheduler/scheduler.conf" kubectl config use-context default-system
+#    - touch "{{ data_path }}/certificates/configs/scheduler/scheduler.flag"
+
+- name: File generation of kubeconfig configuration for [scheduler] 1/4
+  shell: |
+    KUBECONFIG="{{ data_path }}/certificates/configs/scheduler/scheduler.conf" \
+    kubectl config set-cluster default-cluster --server=https://{{ advertise_ip_masters }}:6443 \
+    --certificate-authority "{{ data_path }}/certificates/intermediate/kubernetes-ca/signed/kubernetes-ca.pem" \
+    --embed-certs
+  environment:
+    PATH: /usr/local/bin:{{ ansible_env.PATH }}
   args:
     creates: "{{ data_path }}/certificates/configs/scheduler/scheduler.flag"
+
+- name: File generation of kubeconfig configuration for [scheduler] 2/4
+  shell: |
+    KUBECONFIG="{{ data_path }}/certificates/configs/scheduler/scheduler.conf" \
+    kubectl config set-credentials default-manager --client-key "{{ data_path }}/certificates/configs/scheduler/scheduler-key.pem" \
+    --client-certificate "{{ data_path }}/certificates/configs/scheduler/scheduler.pem" \
+    --embed-certs
   environment:
     PATH: /usr/local/bin:{{ ansible_env.PATH }}
-  with_items:
-    - KUBECONFIG="{{ data_path }}/certificates/configs/scheduler/scheduler.conf" kubectl config set-cluster default-cluster --server=https://{{ advertise_ip_masters }}:6443 --certificate-authority "{{ data_path }}/certificates/intermediate/kubernetes-ca/signed/kubernetes-ca.pem" --embed-certs
-    - KUBECONFIG="{{ data_path }}/certificates/configs/scheduler/scheduler.conf" kubectl config set-credentials default-manager --client-key "{{ data_path }}/certificates/configs/scheduler/scheduler-key.pem" --client-certificate "{{ data_path }}/certificates/configs/scheduler/scheduler.pem" --embed-certs
-    - KUBECONFIG="{{ data_path }}/certificates/configs/scheduler/scheduler.conf" kubectl config set-context default-system --cluster default-cluster --user default-manager
-    - KUBECONFIG="{{ data_path }}/certificates/configs/scheduler/scheduler.conf" kubectl config use-context default-system
-    - touch "{{ data_path }}/certificates/configs/scheduler/scheduler.flag"
+  args:
+    creates: "{{ data_path }}/certificates/configs/scheduler/scheduler.flag"
 
+- name: File generation of kubeconfig configuration for [scheduler] 3/4
+  shell: |
+    KUBECONFIG="{{ data_path }}/certificates/configs/scheduler/scheduler.conf" \
+    kubectl config set-context default-system --cluster default-cluster --user default-manager
+  environment:
+    PATH: /usr/local/bin:{{ ansible_env.PATH }}
+  args:
+    creates: "{{ data_path }}/certificates/configs/scheduler/scheduler.flag"
+
+- name: File generation of kubeconfig configuration for [scheduler] 4/4
+  shell: |
+    KUBECONFIG="{{ data_path }}/certificates/configs/scheduler/scheduler.conf" kubectl config use-context default-system
+  environment:
+    PATH: /usr/local/bin:{{ ansible_env.PATH }}
+  args:
+    creates: "{{ data_path }}/certificates/configs/scheduler/scheduler.flag"
+
+- name: Touch a flag file for scheduler kubeconfig generation statement
+  file:
+    path: "{{ data_path }}/certificates/configs/controller-manager/controller-manager.flag"
+    state: touch
+    modification_time: preserve
+    access_time: preserve
+#
+#
+#
 - name: Configuration file generation of kubeconfig for [kubelet] masters 1/4
   shell: |
     KUBECONFIG="{{ data_path }}/certificates/configs/kubelet/{{ item }}/kubelet.config" \
