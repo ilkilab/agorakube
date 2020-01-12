@@ -16,10 +16,8 @@ jobs:
         sudo apt install software-properties-common git wget python-pip -yqq
         sudo apt-add-repository --yes --update ppa:ansible/ansible
         sudo apt install ansible -yqq
-    - name: Install ansible-lint
-      run: |
-        pip install ansible-lint 
-    - name: Clone and test agorakube syntax
+    - name: Install ansible-lint and test agorakube code
       run: |
         cd agorakube
+        pip install ansible-lint
         ansible-lint -c ansible-lint.conf
