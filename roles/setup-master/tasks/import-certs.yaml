@@ -74,7 +74,7 @@
   copy:
     src: "{{ data_path }}/certificates/end/front-proxy-client/front-proxy-client.pem"
     dest: "/etc/kubernetes/pki/proxy/front-proxy-client.crt"
-    
+
 - name: Import apiextention client certificate
   copy:
     src: "{{ data_path }}/certificates/end/front-proxy-client/front-proxy-client-key.pem"

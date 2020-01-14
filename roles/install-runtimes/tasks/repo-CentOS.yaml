@@ -5,11 +5,11 @@
     state: present
   with_items:
     - yum-utils
-    - device-mapper-persistent-data 
+    - device-mapper-persistent-data
     - lvm2
 
 - name: Add docker repository
-  shell: yum-config-manager  --add-repo  https://download.docker.com/linux/centos/docker-ce.repo
+  command: yum-config-manager  --add-repo  https://download.docker.com/linux/centos/docker-ce.repo
   args:
     creates: /etc/yum.repos.d/docker-ce.repo
 

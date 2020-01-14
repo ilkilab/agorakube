@@ -9,7 +9,7 @@
 - name: Render templates
   template:
     dest: "{{ nginx_tempdir.path }}/nginx.yaml"
-    src: "../templates/nginx.yaml.j2"
+    src: "nginx.yaml.j2"
   changed_when: false
 
 - name: Apply templates

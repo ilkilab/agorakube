@@ -2,53 +2,78 @@
 - name: Wait for Helm
   pause:
     seconds: 60
-- name: Check Helm repo bitnami 
-  command: /usr/local/bin/linux-amd64/helm --kubeconfig {{ data_path }}/certificates/configs/admin/admin.conf repo list
+- name: Check Helm repo bitnami
+  command: |
+    /usr/local/bin/linux-amd64/helm --kubeconfig \
+    {{ data_path }}/certificates/configs/admin/admin.conf \
+     repo list
   register: check_helm_repo
   changed_when: false
 
 - name: Helm install repo bitnami
-  command: /usr/local/bin/linux-amd64/helm --kubeconfig {{ data_path }}/certificates/configs/admin/admin.conf repo add bitnami https://charts.bitnami.com/bitnami
+  command: |
+    /usr/local/bin/linux-amd64/helm --kubeconfig \
+    {{ data_path }}/certificates/configs/admin/admin.conf \
+    repo add bitnami https://charts.bitnami.com/bitnami
   when: >
     check_helm_repo.stdout is not search("bitnami")
 
 - name: Check Kubeapps Release
-  command: /usr/local/bin/linux-amd64/helm --kubeconfig {{ data_path }}/certificates/configs/admin/admin.conf list
+  command: |
+    /usr/local/bin/linux-amd64/helm --kubeconfig \
+    {{ data_path }}/certificates/configs/admin/admin.conf \
+    list
   register: check_kubeapps_release
   changed_when: false
 
 - name: Install Kubeapps Release
-  command: /usr/local/bin/linux-amd64/helm --kubeconfig {{ data_path }}/certificates/configs/admin/admin.conf install --name kubeapps --namespace kubeapps bitnami/kubeapps
+  command: /usr/local/bin/linux-amd64/helm --kubeconfig \
+    {{ data_path }}/certificates/configs/admin/admin.conf \
+    install --name kubeapps --namespace kubeapps bitnami/kubeapps
   when: >
     check_kubeapps_release.stdout is not search("kubeapps")
 
 - name: Check if kubeapps-operator service account is present
-  command: kubectl --kubeconfig {{ data_path }}/certificates/configs/admin/admin.conf get sa -n kubeapps
+  command: |
+    kubectl --kubeconfig \
+    {{ data_path }}/certificates/configs/admin/admin.conf \
+    get sa -n kubeapps
   register: check_kubeapps_admin_sa
   changed_when: false
 
 - name: Create kubeapps-operator Service Account
-  command: kubectl --kubeconfig {{ data_path }}/certificates/configs/admin/admin.conf create serviceaccount kubeapps-operator -n kubeapps
+  command: kubectl --kubeconfig \
+    {{ data_path }}/certificates/configs/admin/admin.conf \
+    create serviceaccount kubeapps-operator -n kubeapps
   when: >
     check_kubeapps_admin_sa.stdout is not search("kubeapps-operator")
 
 - name: Check if kubeapps-operator ClusterRoleBinding is present
-  command: kubectl --kubeconfig {{ data_path }}/certificates/configs/admin/admin.conf get clusterrolebinding -n kubeapps
+  command: kubectl --kubeconfig \
+    {{ data_path }}/certificates/configs/admin/admin.conf \
+    get clusterrolebinding -n kubeapps
   register: check_kubeapps_admin_clusterrolebinding
   changed_when: false
 
 - name: Create kubeapps-operator ClusterRoleBinding Service Account
-  command: kubectl --kubeconfig {{ data_path }}/certificates/configs/admin/admin.conf create clusterrolebinding kubeapps-operator --clusterrole=cluster-admin --serviceaccount=kubeapps:kubeapps-operator -n kubeapps
+  command: |
+    kubectl --kubeconfig \
+    {{ data_path }}/certificates/configs/admin/admin.conf \
+    create clusterrolebinding kubeapps-operator --clusterrole=cluster-admin --serviceaccount=kubeapps:kubeapps-operator -n kubeapps
   when: >
     check_kubeapps_admin_clusterrolebinding.stdout is not search("kubeapps-operator")
 
 - name: Get the kubeapps-operator service account
-  command: "kubectl --kubeconfig {{ data_path }}/certificates/configs/admin/admin.conf get serviceaccount -n kubeapps kubeapps-operator -o jsonpath=\"{.secrets[0].name}\""
+  command: |
+    kubectl --kubeconfig {{ data_path }}/certificates/configs/admin/admin.conf \
+    get serviceaccount -n kubeapps kubeapps-operator -o jsonpath={.secrets[0].name}
   register: kubeapps_admin_service_account
   changed_when: false
 
 - name: Get the kubeapps admin token
-  command: "kubectl --kubeconfig {{ data_path }}/certificates/configs/admin/admin.conf get secret -n kubeapps {{ kubeapps_admin_service_account.stdout }}  -o jsonpath=\"{.data.token}\""
+  command: |
+    kubectl --kubeconfig {{ data_path }}/certificates/configs/admin/admin.conf \
+    get secret -n kubeapps {{ kubeapps_admin_service_account.stdout }}  -o jsonpath={.data.token}
   register: kubeapps_admin_token
   changed_when: false
 

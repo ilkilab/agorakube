@@ -1,0 +1,5 @@
+- name: Set GOPATH
+  shell: |
+    source /etc/profile
+  args:
+    executable: /bin/bash

@@ -6,7 +6,7 @@
 
 - name: Download Kubernetes server binaries
   unarchive:
-    src: https://dl.k8s.io/{{kubernetes_release}}/kubernetes-server-linux-amd64.tar.gz
+    src: https://dl.k8s.io/{{ kubernetes_release }}/kubernetes-server-linux-amd64.tar.gz
     dest: /usr/local/bin
     remote_src: yes
     creates: /usr/local/bin/kubernetes/server/bin/kube-apiserver
@@ -69,7 +69,7 @@
     dest: /etc/systemd/system/kube-scheduler.service
   notify:
     - Restart kube-scheduler service
-    
+
 - name: Load [kube-apiserver] [kube-controller-manager] [kube-scheduler]
   systemd:
     state: started

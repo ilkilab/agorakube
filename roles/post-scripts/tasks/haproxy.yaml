@@ -9,7 +9,7 @@
 - name: Render templates
   template:
     dest: "{{ haproxy_tempdir.path }}/haproxy.yaml"
-    src: "../templates/haproxy.yaml.j2"
+    src: "haproxy.yaml.j2"
   changed_when: false
 
 - name: Apply templates

@@ -6,6 +6,6 @@
     create: yes
   with_items:
   - "{{ groups['all'] }}"
-  when: 
+  when:
   - populate_etc_hosts
   - hostvars[item].ansible_host is defined

@@ -7,17 +7,19 @@
 
 ---
 - name: Apply templates
-  command: "kubectl --kubeconfig {{ data_path }}/certificates/configs/admin/admin.conf label node {{item}}  node-role.kubernetes.io/worker= --overwrite"
+  command: "kubectl --kubeconfig {{ data_path }}/certificates/configs/admin/admin.conf label node {{ item }}  node-role.kubernetes.io/worker= --overwrite"
   changed_when: false
   with_items: "{{ groups['workers'] }}"
 
 - name: Apply templates
-  command: "kubectl --kubeconfig {{ data_path }}/certificates/configs/admin/admin.conf label node {{item}}  node-role.kubernetes.io/master= --overwrite"
+  command: "kubectl --kubeconfig {{ data_path }}/certificates/configs/admin/admin.conf label node {{ item }}  node-role.kubernetes.io/master= --overwrite"
   changed_when: false
   with_items: "{{ groups['masters'] }}"
 
 - name: Make hosts with only master role NoSchedulabe
-  command: "kubectl --kubeconfig {{ data_path }}/certificates/configs/admin/admin.conf taint nodes {{ item }} node-role.kubernetes.io/master=true:NoSchedule --overwrite"
+  command: |
+    kubectl --kubeconfig {{ data_path }}/certificates/configs/admin/admin.conf \
+    taint nodes {{ item }} node-role.kubernetes.io/master=true:NoSchedule --overwrite
   changed_when: false
   with_items: "{{ groups['masters'] }}"
   when:

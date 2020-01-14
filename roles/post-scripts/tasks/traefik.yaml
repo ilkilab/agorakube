@@ -9,7 +9,7 @@
 - name: Render templates
   template:
     dest: "{{ traefik_tempdir.path }}/traefik.yaml"
-    src: "../templates/traefik.yaml.j2"
+    src: "traefik.yaml.j2"
   changed_when: false
 
 - name: Apply templates

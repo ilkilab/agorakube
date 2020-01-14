@@ -14,7 +14,7 @@
     state: restarted
     daemon_reload: yes
     name: kube-scheduler
-    
+
 - name: Restart kube-controller-manager service
   systemd:
     state: restarted
