@@ -34,9 +34,9 @@ k8s_dashboard: true
 update_certs: false
 service_mesh: linkerd
 linkerd_release: stable-2.6.0
-install_helm: true
-init_helm: true
-install_kubeapps: true
+install_helm: false
+init_helm: false
+install_kubeapps: false
 
 # Calico
 calico_mtu: 1440
