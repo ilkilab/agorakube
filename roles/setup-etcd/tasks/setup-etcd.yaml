@@ -5,9 +5,9 @@
     dest: /usr/bin
     remote_src: yes
 
-- name: create folder /var/lib/etcd
+- name: create folder {{ etcd_data_directory }}
   file:
-    path: /var/lib/etcd
+    path: "{{ etcd_data_directory }}"
     state: directory
 
 - name: Import etcd.service
