@@ -268,6 +268,14 @@ Parameters for Agorakube datas storage :
 | --- | --- | --- |
 | `data_path` | Path to Agorakube datas directory | <ul><li> **Depend on your deployment** </li><br/><li> **"/var/agorakube"** *(default)* </li></ul> |
 
+Parameters for etcd data location, and backups
+
+| Parameter | Description | Values |
+| --- | --- | --- |
+| `etcd_data_directory` | Directory to store etcd data on **etcd members** | <ul><li> **/var/lib/etcd/** (default) </li><br/></ul> |
+| `custom_etcd_backup_dir` | Directory where etcd leader backups are stored on **deploy** node | <ul><li> **{{data_path}}/backups_etcd/** (default if not defined) </li><br/></ul> |
+| `restoration_snapshot_file` | Path to the etcd snapshot on **deploy** node | <ul><li> **not defined** (default) </li><br/></ul> |
+
 
 # Kubernetes deployment
 
