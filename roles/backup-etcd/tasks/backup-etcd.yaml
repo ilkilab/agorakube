@@ -1,0 +1,45 @@
+---
+- name: Download etcd binaries
+  unarchive:
+    src: https://github.com/etcd-io/etcd/releases/download/{{ etcd_release }}/etcd-{{ etcd_release }}-linux-amd64.tar.gz
+    dest: /usr/local/bin
+    remote_src: yes
+
+- name: Ensure backup directory exist
+  file:
+    path: "{{ data_path }}/backups_etcd"
+    state: directory
+  when: custom_etcd_backup_dir is not defined
+
+- name: Ensure backup directory exist
+  file:
+    path: "{{ custom_etcd_backup_dir }}"
+    state: directory
+  when: custom_etcd_backup_dir is defined
+
+- name: Create tempdir for backup etcd script
+  tempfile:
+    state: directory
+    suffix: backup_etcd
+  register: backup_etcd_tempdir
+  changed_when: false
+
+- name: Render templates
+  template:
+    dest: "{{ backup_etcd_tempdir.path }}/command_backup_etcd.sh"
+    src: "command_backup_etcd.sh.j2"
+    mode: 0777
+  changed_when: false
+
+- name: Backup ETCD
+  shell: |
+    "{{ backup_etcd_tempdir.path }}/command_backup_etcd.sh"
+  args:
+    executable: /bin/bash
+  when: backup_etcd
+
+- name: Cleanup tempdir
+  file:
+    state: absent
+    path: "{{ backup_etcd_tempdir.path }}"
+  changed_when: false

@@ -1,0 +1,4 @@
+---
+- name: Import backup_etcd tasks
+  include_tasks: backup-etcd.yaml
+  when: backup_etcd

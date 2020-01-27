@@ -1,0 +1,10 @@
+{% set etcd_initial_cluster = [] %}
+{% for host in groups['etcd']  %}
+{{ etcd_initial_cluster.append( "https://"+hostvars[host].ansible_host+":2379" ) }}
+{% endfor %}
+
+{% if custom_etcd_backup_dir is defined %}
+ETCDCTL_API=3 /usr/local/bin/etcd-{{etcd_release}}-linux-amd64/etcdctl --endpoints=$(ETCDCTL_API=3 /usr/local/bin/etcd-{{etcd_release}}-linux-amd64/etcdctl --endpoints={{ etcd_initial_cluster|join(',') }} --cacert={{data_path}}/certificates/intermediate/etcd-ca/signed/etcd-ca.pem --cert={{data_path}}/certificates/end/kube-etcd/kube-etcd.pem --key={{data_path}}/certificates/end/kube-etcd/kube-etcd-key.pem endpoint status | grep ', true, false,' | awk '{ print $1}' | sed 's/,//g') --cacert={{data_path}}/certificates/intermediate/etcd-ca/signed/etcd-ca.pem --cert={{data_path}}/certificates/end/kube-etcd/kube-etcd.pem --key={{data_path}}/certificates/end/kube-etcd/kube-etcd-key.pem snapshot save {{custom_etcd_backup_dir}}/snapshot_etcd_cluster.`date +%m-%d-%y_%H-%M-%S`.db
+{% else %}
+ETCDCTL_API=3 /usr/local/bin/etcd-{{etcd_release}}-linux-amd64/etcdctl --endpoints=$(ETCDCTL_API=3 /usr/local/bin/etcd-{{etcd_release}}-linux-amd64/etcdctl --endpoints={{ etcd_initial_cluster|join(',') }} --cacert={{data_path}}/certificates/intermediate/etcd-ca/signed/etcd-ca.pem --cert={{data_path}}/certificates/end/kube-etcd/kube-etcd.pem --key={{data_path}}/certificates/end/kube-etcd/kube-etcd-key.pem endpoint status | grep ', true, false,' | awk '{ print $1}' | sed 's/,//g') --cacert={{data_path}}/certificates/intermediate/etcd-ca/signed/etcd-ca.pem --cert={{data_path}}/certificates/end/kube-etcd/kube-etcd.pem --key={{data_path}}/certificates/end/kube-etcd/kube-etcd-key.pem snapshot save {{data_path}}/backups_etcd/snapshot_etcd_cluster.`date +%m-%d-%y_%H-%M-%S`.db
+{% endif %}

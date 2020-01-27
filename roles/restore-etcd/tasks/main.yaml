@@ -1,0 +1,4 @@
+---
+- name: Include restore-etcd.yaml tasks
+  include_tasks: restore-etcd.yaml
+  when: restoration_snapshot_file is defined

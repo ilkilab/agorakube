@@ -1,0 +1,42 @@
+---
+- name: Stop etcd server
+  systemd:
+    name: etcd
+    state: stopped
+
+- name: Create tempdir
+  tempfile:
+    state: directory
+    suffix: backup_etcd
+  register: backup_etcd_tempdir
+
+- name: Import etcd backup file
+  copy:
+    src: "{{ restoration_snapshot_file }}"
+    dest: "{{ backup_etcd_tempdir.path }}/snapshot-etcd.db"
+
+- name: Delete previous etcd data
+  file:
+    path: "{{ etcd_data_directory }}"
+    state: absent
+
+- name: Render Restoration script
+  template:
+    src: restore.sh.j2
+    dest: "{{ backup_etcd_tempdir.path }}/restore.sh"
+    mode: u+rwx
+
+- name: Restore ETCD data from backup file with rendered script
+  shell: |
+    {{ backup_etcd_tempdir.path }}/restore.sh
+  when: restoration_snapshot_file is defined
+
+- name: delete tmp file
+  file:
+    path: "{{ backup_etcd_tempdir.path }}"
+    state: absent
+
+- name: Start etcd service
+  systemd:
+    name: etcd
+    state: started

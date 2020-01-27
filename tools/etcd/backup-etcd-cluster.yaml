@@ -1,0 +1,5 @@
+---
+- hosts: deploy
+  become: true
+  roles:
+    - backup-etcd

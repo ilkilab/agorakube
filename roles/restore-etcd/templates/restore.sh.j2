@@ -1,0 +1,14 @@
+#!/bin/bash
+
+{% set etcd_initial_cluster = [] %}
+{% for host in groups['etcd']  %}
+{{ etcd_initial_cluster.append( host+"=https://"+hostvars[host].ansible_host+":2380" ) }}
+{% endfor %}
+export RESET_EVENT_ETCD=true
+ETCDCTL_API=3 /usr/bin/etcd-{{etcd_release}}-linux-amd64/etcdctl \
+--name {{ ansible_fqdn }} \
+--initial-cluster {{ etcd_initial_cluster|join(',') }} \
+--initial-cluster-token etcd-cluster-0 \
+--initial-advertise-peer-urls https://{{ hostvars[ansible_fqdn].ansible_host}}:2380 \
+--data-dir {{ etcd_data_directory }} \
+snapshot restore {{ backup_etcd_tempdir.path }}/snapshot-etcd.db 

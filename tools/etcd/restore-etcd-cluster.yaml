@@ -1,0 +1,12 @@
+---
+- hosts: etcd
+  become: true
+  roles:
+    - restore-etcd
+- hosts: masters
+  become: true
+  tasks:
+  - name: Restart API server
+    service:
+      name: kube-apiserver
+      state: restarted
