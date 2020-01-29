@@ -7,6 +7,7 @@ This is a list of points that will be explained in this instructions file for th
 - [K8S Cluster Configuration](#k8s-cluster-configuration)
 - [Agorakube Parameters](#agorakube-parameters)
 - [Kubernetes deployment](#kubernetes-deployment)
+- [Manage ETCD Cluster](./manage_etcd.md)
 
 
 # High-level Architecture
