@@ -1,0 +1,7 @@
+---
+- name: Delete prevous etcd binaries
+  file:
+    state: absent
+    path: /usr/bin/etcd-{{ etcd_release }}-linux-amd64
+  with_fileglob:
+    - "/usr/bin/etcd-*-linux-amd64"

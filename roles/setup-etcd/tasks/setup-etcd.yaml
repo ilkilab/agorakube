@@ -4,6 +4,7 @@
     src: https://github.com/etcd-io/etcd/releases/download/{{ etcd_release }}/etcd-{{ etcd_release }}-linux-amd64.tar.gz
     dest: /usr/bin
     remote_src: yes
+    creates: /usr/bin/etcd-{{ etcd_release }}-linux-amd64/etcd
 
 - name: create folder {{ etcd_data_directory }}
   file:

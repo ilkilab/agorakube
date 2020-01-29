@@ -2,5 +2,9 @@
 - name: Import etcd certs
   include_tasks: import-certs.yaml
 
+- name: Delete previous ETCD install
+  include_tasks: clean-previous-etcd-install.yaml
+  when: delete_etcd_install
+
 - name: Setup etcd server
   include_tasks: setup-etcd.yaml
