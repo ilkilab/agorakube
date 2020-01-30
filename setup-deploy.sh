@@ -20,7 +20,7 @@
         sudo yum install epel-release -y
         sudo yum install ansible -y
         sudo yum install openssh-server -y
-        sudo yum install git
+        sudo yum install git -y
         git clone https://github.com/ilkilab/agorakube.git
 
     elif [[ $DISTRO == Ubuntu* ]]; then
