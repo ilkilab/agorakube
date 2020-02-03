@@ -20,6 +20,8 @@ Actuellement, Ubuntu 18.04 (Bionic) amd64 et Centos 7/8 sont pris en charge, mai
 
 La branche Master est stable.
 
+Lisez la documentation en [Anglais](https://github.com/ilkilab/agorakube/blob/master/README.md)
+
 Depuis novembre 2019, Agorakube est certifié par le "Kubernetes Conformance Program" et est un projet memebre du[cncf landscape](https://landscape.cncf.io/selected=agora-kube).
 
 [![asciicast](https://asciinema.org/a/Y58GrrJG3gPM6GvKsSMCZevbX.svg)](https://asciinema.org/a/Y58GrrJG3gPM6GvKsSMCZevbX)
