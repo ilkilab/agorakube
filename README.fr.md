@@ -26,12 +26,12 @@ Depuis novembre 2019, Agorakube est certifié par le "Kubernetes Conformance Pro
 
 Voici une liste des points présentés dans ce fichier Readme pour le projet Agorakube:
 
-- [Qu'est-ce qu'Agorakube](#qu'est-ce-qu'agorakube)
-- [Comment l'installer](#Comment-l'installer)
-- [Comment nous faire des retours](#Comment-nous-faire-des-retours)
-- [Comment contribuer](#Comment-contribuer)
-- [Communauté](#Communauté)
-- [Licences](#Licences)
+- [Qu'est-ce qu'Agorakube](#quest-ce-quagorakube)
+- [Comment l'installer](#comment-linstaller)
+- [Comment nous faire des retours](#comment-nous-faire-des-retours)
+- [Comment contribuer](#comment-contribuer)
+- [Communauté](#communauté)
+- [Licences](#licences)
 
 ## Qu'est-ce qu'Agorakube
 
