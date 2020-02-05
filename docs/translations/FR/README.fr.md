@@ -5,7 +5,7 @@
 [![Build Status](https://travis-ci.org/ilkilab/agorakube.svg?branch=master)](https://travis-ci.org/ilkilab/agorakube)
 
 <p align="center">
-<img src="./images/agorakube-logo.svg" width="450" alt="Agorakube" title="Agorakube" />
+<img src="../../../images/agorakube-logo.svg" width="450" alt="Agorakube" title="Agorakube" />
 </p>
 <p>
 <img src="https://raw.githubusercontent.com/cncf/artwork/master/projects/kubernetes/certified-kubernetes/versionless/color/certified-kubernetes-color.svg?sanitize=true" width="100" alt="k8s-conformance-v1.16" title="https://github.com/cncf/k8s-conformance/tree/master/v1.16/agorakube"/>
@@ -64,7 +64,7 @@ bash <(curl -s https://raw.githubusercontent.com/ilkilab/agorakube/master/setup-
 
 ### Guide d'installation
 
-Pour déployer votre cluster K8S, suivez ces [instructions](docs/instructions.md).
+Pour déployer votre cluster K8S, suivez ces [instructions](../../../instructions.md).
 
 ## Comment nous faire des retours
 
@@ -88,11 +88,11 @@ Channels :
 
 ## Licences
 
-Tout le contenu présent est délivré sous la [licence APACHE 2.0 ](./LICENSE).
+Tout le contenu présent est délivré sous la [licence APACHE 2.0 ](../../../../LICENSE).
 Tout contenu non exécutable, incluant tout texte quand il n'est pas exécuté est également délivré sous la licence APACHE 2.0.
 En termes SPDX, tout le contenu est sous licence APACHE 2.0;
 si ce contenu n'est pas exécutable, incluant le texte extrait du code, c'est "(APACHE 2.0)".
 
-Comme presque tout logiciel aujourd'hui, ce logiciel dépend d'autres composants ayant leurs propres licences. Les composants donc nous dépendont ne sont pas tous sous licence APACHE 2.0, mais tous les composants *requis* sont sous licence de type FLOSS. Nous prévenons les problèmes de licence à l'aide de différent processus (voir [Contribuer](./docs/CONTRIBUTING.md))
+Comme presque tout logiciel aujourd'hui, ce logiciel dépend d'autres composants ayant leurs propres licences. Les composants donc nous dépendont ne sont pas tous sous licence APACHE 2.0, mais tous les composants *requis* sont sous licence de type FLOSS. Nous prévenons les problèmes de licence à l'aide de différent processus (voir [Contribuer](../../../CONTRIBUTING.md))
 
 [![FOSSA Status](https://app.fossa.io/api/projects/git%2Bgithub.com%2Filkilab%2Fagorakube.svg?type=large)](https://app.fossa.io/projects/git%2Bgithub.com%2Filkilab%2Fagorakube?ref=badge_large)
