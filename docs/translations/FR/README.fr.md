@@ -64,7 +64,7 @@ bash <(curl -s https://raw.githubusercontent.com/ilkilab/agorakube/master/setup-
 
 ### Guide d'installation
 
-Pour déployer votre cluster K8S, suivez ces [instructions](docs/instructions.md).
+Pour déployer votre cluster K8S, suivez ces [instructions](../../instructions.md).
 
 ## Comment nous faire des retours
 
