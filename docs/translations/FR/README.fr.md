@@ -11,7 +11,7 @@
 <img src="https://raw.githubusercontent.com/cncf/artwork/master/projects/kubernetes/certified-kubernetes/versionless/color/certified-kubernetes-color.svg?sanitize=true" width="100" alt="k8s-conformance-v1.16" title="https://github.com/cncf/k8s-conformance/tree/master/v1.16/agorakube"/>
 <img src="https://raw.githubusercontent.com/cncf/artwork/master/other/cncf-landscape/stacked/color/cncf-landscape-stacked-color.svg?sanitize=true" width="100" alt="Agorakube is a cncf landscap project" title="Agorakube is a cncf landscap project"/>
 </p>
-Ce projet vise à fournir le moyen le plus simple d’installer des kubernetes sur des environnements bare-metal, virtuels et cloud.
+Ce projet vise à fournir le moyen le plus simple d’installer des Clusters kubernetes sur des environnements bare-metal, virtuels et cloud.
 Actuellement, Ubuntu 18.04 (Bionic) amd64 et Centos 7/8 sont pris en charge, mais plusieurs autres systèmes d’exploitation seront bientôt disponibles.
 
 La branche Master est stable.
