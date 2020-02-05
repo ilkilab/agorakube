@@ -20,7 +20,7 @@ Actually, Ubuntu 18.04 (Bionic) amd64 and Centos 7/8  are supported, but several
 
 Master branch is stable.
 
-Read this in [French](https://github.com/ilkilab/agorakube/blob/master/README.fr.md)
+Read this in [French](https://github.com/ilkilab/agorakube/blob/master/docs/translations/FR/README.fr.md)
 
 Since November 2019, Agorakube has been certified by the "Kubernetes Conformance Program" and is a project of [the cncf landscape](https://landscape.cncf.io/selected=agora-kube).
 
