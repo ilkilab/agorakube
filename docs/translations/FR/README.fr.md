@@ -88,11 +88,11 @@ Channels :
 
 ## Licences
 
-Tout le contenu présent est délivré sous la [licence APACHE 2.0 ](../../../../LICENSE).
+Tout le contenu présent est délivré sous la [licence APACHE 2.0 ](../../../LICENSE).
 Tout contenu non exécutable, incluant tout texte quand il n'est pas exécuté est également délivré sous la licence APACHE 2.0.
 En termes SPDX, tout le contenu est sous licence APACHE 2.0;
 si ce contenu n'est pas exécutable, incluant le texte extrait du code, c'est "(APACHE 2.0)".
 
-Comme presque tout logiciel aujourd'hui, ce logiciel dépend d'autres composants ayant leurs propres licences. Les composants donc nous dépendont ne sont pas tous sous licence APACHE 2.0, mais tous les composants *requis* sont sous licence de type FLOSS. Nous prévenons les problèmes de licence à l'aide de différent processus (voir [Contribuer](../../../CONTRIBUTING.md))
+Comme presque tout logiciel aujourd'hui, ce logiciel dépend d'autres composants ayant leurs propres licences. Les composants donc nous dépendont ne sont pas tous sous licence APACHE 2.0, mais tous les composants *requis* sont sous licence de type FLOSS. Nous prévenons les problèmes de licence à l'aide de différent processus (voir [Contribuer](../../CONTRIBUTING.md))
 
 [![FOSSA Status](https://app.fossa.io/api/projects/git%2Bgithub.com%2Filkilab%2Fagorakube.svg?type=large)](https://app.fossa.io/projects/git%2Bgithub.com%2Filkilab%2Fagorakube?ref=badge_large)
