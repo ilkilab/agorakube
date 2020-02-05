@@ -8,6 +8,7 @@
     - /etc/kubernetes/pki
     - /etc/kubernetes/pki/etcd
     - /etc/kubernetes/pki/proxy/
+    - /etc/kubernetes/pki/token_authentication_keys
 
 - name: Import kubernetes ca.crt
   copy:
@@ -24,6 +25,13 @@
   notify:
     - Restart kube-apiserver service
     - Restart kube-controller-manager service
+
+- name: Import new token authentication key
+  copy:
+    src: "{{ item }}"
+    dest: /etc/kubernetes/pki/token_authentication_keys/
+  with_fileglob:
+    - "{{ data_path }}/authentication_keys/*"
 
 - name: Import apiserver-kubelet-client.crt
   copy:

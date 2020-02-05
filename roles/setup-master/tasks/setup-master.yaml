@@ -28,6 +28,11 @@
   notify:
     - Restart kube-apiserver service
 
+- name: Retrive all keys to authenticat K8S service account tokens
+  find:
+    paths: /etc/kubernetes/pki/token_authentication_keys/
+  register: token_keys
+
 - name: Import kube-apiserver.service
   template:
     src: kube-apiserver.service.j2
