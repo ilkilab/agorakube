@@ -25,6 +25,23 @@
   notify:
     - Restart kube-apiserver service
     - Restart kube-controller-manager service
+####
+- name: Import kubernetes apiserver.crt
+  copy:
+    src: "{{ data_path }}/certificates/end/kube-apiserver/{{ ansible_fqdn }}/kube-apiserver.pem"
+    dest: /etc/kubernetes/pki/apiserver.crt
+  notify:
+    - Restart kube-apiserver service
+
+- name: Import kubernetes apiserver.key
+  copy:
+    src: "{{ data_path }}/certificates/end/kube-apiserver/{{ ansible_fqdn }}/kube-apiserver-key.pem"
+    dest: /etc/kubernetes/pki/apiserver.key
+  notify:
+    - Restart kube-apiserver service
+
+####
+
 
 - name: Import new token authentication key
   copy:
@@ -71,12 +88,7 @@
 - name: Import kubernetes-front-proxy-ca.crt
   copy:
     src: "{{ data_path }}/certificates/intermediate/kubernetes-front-proxy-ca/signed/kubernetes-front-proxy-ca.pem"
-    dest: "/etc/kubernetes/pki/kubernetes-front-proxy-ca.crt"
-
-- name: Import kubernetes-front-proxy-ca.key
-  copy:
-    src: "{{ data_path }}/certificates/intermediate/kubernetes-front-proxy-ca/kubernetes-front-proxy-ca-key.pem"
-    dest: "/etc/kubernetes/pki/kubernetes-front-proxy-ca.key"
+    dest: "/etc/kubernetes/pki/front-proxy-ca.crt"
 
 - name: Import apiextention client certificate
   copy:
