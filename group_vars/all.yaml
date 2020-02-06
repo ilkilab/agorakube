@@ -33,7 +33,6 @@ ingress_controller: traefik
 dns_server_soft: coredns
 populate_etc_hosts: yes
 k8s_dashboard: True
-update_certs: false
 service_mesh: tinkerd
 linkerd_release: stable-2.6.0
 install_helm: false
