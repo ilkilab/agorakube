@@ -10,30 +10,31 @@ expiry: 87600h
 
 # Components version
 etcd_release: v3.4.3
-kubernetes_release: v1.17.2
+kubernetes_release: v1.16.4
 delete_previous_k8s_install: False
 delete_etcd_install: False
 
 # IPs-CIDR Configurations
-cluster_cidr: 10.33.0.0/16
-service_cluster_ip_range: 10.32.0.0/24
-kubernetes_service: 10.32.0.1
-cluster_dns_ip: 10.32.0.10
+cluster_cidr: 10.160.0.0/16
+service_cluster_ip_range: 10.161.0.0/24
+kubernetes_service: 10.161.0.1
+cluster_dns_ip: 10.161.0.10
 service_node_port_range: 30000-32767
 kube_proxy_mode: ipvs
 kube_proxy_ipvs_algotithm: rr
 
 
 # Custom features
-runtime: containerd
+runtime: docker
 network_cni_plugin: flannel
-flannel_iface: default
+flannel_iface: eth1
 ingress_controller: traefik
 dns_server_soft: coredns
 populate_etc_hosts: yes
 k8s_dashboard: true
-update_certs: false
-service_mesh: linkerd
+rotate_certs_pki: true
+rotate_full_pki: false
+service_mesh: none
 linkerd_release: stable-2.6.0
 install_helm: false
 init_helm: false
