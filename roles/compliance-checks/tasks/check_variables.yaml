@@ -34,10 +34,10 @@
     msg: "Variable k8s_dashboard is set to {{ k8s_dashboard }} ! Supported values are : True, False"
   when: (k8s_dashboard | string) not in ['True','False']
 
-- name: Check update_certs
-  fail:
-    msg: "Variable update_certs is set to {{ update_certs }} ! Supported values are : True, False"
-  when: (update_certs | string) not in ['True','False']
+#- name: Check update_certs
+#  fail:
+#    msg: "Variable update_certs is set to {{ update_certs }} ! Supported values are : True, False"
+#  when: (update_certs | string) not in ['True','False']
 
 - name: Check service_mesh
   fail:

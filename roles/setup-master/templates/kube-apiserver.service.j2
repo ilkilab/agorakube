@@ -30,10 +30,13 @@ ExecStart=/usr/local/bin/kubernetes/server/bin/kube-apiserver \
   --runtime-config=api/all=true \
   --service-cluster-ip-range={{service_cluster_ip_range}} \
   --service-node-port-range={{service_node_port_range}} \
-  --tls-cert-file=/etc/kubernetes/pki/ca.crt \
-  --tls-private-key-file=/etc/kubernetes/pki/ca.key \
+  --tls-cert-file=/etc/kubernetes/pki/apiserver.crt \
+{% for key in token_keys.files %}
+  --service-account-key-file={{ key.path }} \
+{% endfor %}
+  --tls-private-key-file=/etc/kubernetes/pki/apiserver.key \
   --v=2 \
-  --requestheader-client-ca-file=/etc/kubernetes/pki/kubernetes-front-proxy-ca.crt \
+  --requestheader-client-ca-file=/etc/kubernetes/pki/front-proxy-ca.crt \
   --requestheader-allowed-names=front-proxy-client \
   --requestheader-extra-headers-prefix=X-Remote-Extra- \
   --requestheader-group-headers=X-Remote-Group \

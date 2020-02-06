@@ -6,7 +6,8 @@ c: FR
 st: Ile-De-France
 l: Paris
 expiry: 87600h
-
+rotate_certs_pki: false
+rotate_full_pki: false
 
 # Components version
 etcd_release: v3.4.3
@@ -31,8 +32,7 @@ flannel_iface: default
 ingress_controller: traefik
 dns_server_soft: coredns
 populate_etc_hosts: yes
-k8s_dashboard: true
-update_certs: false
+k8s_dashboard: True
 service_mesh: linkerd
 linkerd_release: stable-2.6.0
 install_helm: false

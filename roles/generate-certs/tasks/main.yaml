@@ -2,8 +2,11 @@
 - name: Install cfssl and cfssljson
   include_tasks: install-cfssl-cfssljson.yaml
 - name: clean certs
-  include_tasks: clean-certs.yaml
-  when: update_certs
+  include_tasks: clean-full-pki.yaml
+  when: rotate_full_pki
+- name: delete_old_certs
+  include_tasks: clean-old-certs.yaml
+  when: rotate_certs_pki
 - name: generate certificates and configs
   include_tasks: gen-certs.yaml
 

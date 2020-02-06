@@ -9,13 +9,6 @@
     - /etc/kubernetes/pki
     - /etc/kubernetes/pki/etcd
 
-- name: Import certificates etcd/ca.key
-  copy:
-    src: "{{ data_path }}/certificates/intermediate/etcd-ca/etcd-ca-key.pem"
-    dest: /etc/kubernetes/pki/etcd/ca.key
-  notify:
-    - Restart etcd
-
 - name: Import certificates etcd/ca.crt
   copy:
     src: "{{ data_path }}/certificates/intermediate/etcd-ca/signed/etcd-ca.pem"

@@ -3,6 +3,7 @@
     "hosts": [
         "{{ hostvars[item].ansible_host}}",
         "{{ item }}",
+        "{{ kubernetes_service }}",
         "{{ advertise_ip_masters }}",
         "kubernetes",
         "kubernetes.default",

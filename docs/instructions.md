@@ -201,7 +201,8 @@ This section is used to custom certificates information.
 | `st` | State where the certificate is issued | <ul><li> **Depend on your deployment** </li><br/><li>  **Ile-de-France** *(default)* </li></ul>|
 | `l` | City where the certificate is issued | <ul><li> **Depend on your deployment** </li><br/><li>  **Paris** *(default)* </li></ul>|
 | `expiry` | Certificate lifetime in hours | <ul><li> **Depend on your needs** </li><br/><li>  **87600h** *(default)* </li></ul>|
-
+| `rotate_full_pki` | Update all the PKI (crts, keys and crs) of your cluster. You will need to regenerate manually your Service Account Tokens, and relaunch all pods that are using them | <ul><li> **false** *(default)* </li><br/><li>  **true** </li></ul>|
+| `rotate_certs_pki` | Rotate certificates for your cluster | <ul><li> **false** *(default)* </li><br/><li>  **true** </li></ul>|
 ### Components version section
 
 This section is used to custom the components version of your deployment.
@@ -242,7 +243,6 @@ This section is used to defined all custom features of your deployment.
 | `label_workers` | Fixed the label *node-role.kubernetes.io/worker* to all workers in your cluster | <ul><li> **false** </li><br/><li>  **true** *(default)* </li></ul>|
 | `populate_etc_hosts` | Populate */etc/hosts* file of all your nodes in the cluster | <ul><li> **no** </li><br/><li>  **yes** *(default)* </li></ul>|
 | `k8s_dashboard` | Deploy Kubernetes dashboard in your cluster | <ul><li> **false** </li><br/><li>  **true** *(default)* </li></ul>|
-| `update_certs` | Update all the certificates of your cluster | <ul><li> **false** *(default)* </li><br/><li>  **true** </li></ul>|
 | `service_mesh` | Service mesh used in your cluster | <ul><li> **LinkerD** *(default)* </li><br/><li>  **none** </li></ul>|
 | `linkerd_release` | Version of LinkerD used in your cluster | <ul><li> **stable-2.6.0** *(default)* </li><br/><li>  **none** </li></ul>|
 | `install_helm` | Helm installation in your cluster | <ul><li> **false** *(default)* </li><br/><li>  **true** </li></ul>|
