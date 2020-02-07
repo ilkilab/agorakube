@@ -7,9 +7,9 @@
     creates: /usr/local/bin/helm
   when: install_helm
 
-- name: Rename downloaded folder to Helm
+- name: Set the binaries of helm
   file:
-    src: /usr/local/bin/linux-amd64
+    src: /usr/local/bin/linux-amd64/helm
     dest: /usr/local/bin/helm
     state: present
 
