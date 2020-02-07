@@ -51,7 +51,7 @@ This project is currently under active development so other customizable options
 
 ## How to install
 
-We regularly use a machine to deploy every cluster. We only use it for deployment and destroy it after.
+We regularly use a machine to deploy every cluster. We only use it for deployment.
 
 ### Setup
 
