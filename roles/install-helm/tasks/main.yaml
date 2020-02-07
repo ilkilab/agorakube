@@ -4,7 +4,7 @@
     src: https://get.helm.sh/helm-{{ install_helm_version }}-linux-amd64.tar.gz
     dest: /usr/local/bin
     remote_src: yes
-    creates: /usr/local/bin/helm
+    creates: /usr/local/bin/linux-amd64/helm
   when: install_helm
 
 - name: Check service account for Helm
