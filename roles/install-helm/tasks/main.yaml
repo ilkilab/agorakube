@@ -11,7 +11,7 @@
   file:
     src: /usr/local/bin/linux-amd64/helm
     dest: /usr/local/bin/helm
-    state: present
+    state: file
   when: install_helm
 
 - name: Check service account for Helm
