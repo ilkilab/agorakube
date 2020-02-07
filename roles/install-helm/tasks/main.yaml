@@ -12,7 +12,6 @@
     src: /usr/local/bin/linux-amd64/helm
     dest: /usr/local/bin/helm
   when: install_helm
-  
 
 - name: Check service account for Helm
   command: kubectl --kubeconfig {{ data_path }}/certificates/configs/admin/admin.conf get serviceaccounts -n kube-system agoratiller
