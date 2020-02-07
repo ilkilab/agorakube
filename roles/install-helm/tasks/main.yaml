@@ -7,6 +7,12 @@
     creates: /usr/local/bin/helm
   when: install_helm
 
+- name: Rename downloaded folder to Helm
+  file:
+    src: /usr/local/bin/linux-amd64
+    dest: /usr/local/bin/helm
+    state: present
+
 - name: Check service account for Helm
   command: kubectl --kubeconfig {{ data_path }}/certificates/configs/admin/admin.conf get serviceaccounts -n kube-system agoratiller
   register: check_helm_service_account
