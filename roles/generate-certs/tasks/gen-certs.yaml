@@ -70,6 +70,7 @@
   copy:
     src: "{{ data_path }}/certificates/intermediate/kubernetes-ca/kubernetes-ca-key.pem"
     dest: "{{ data_path }}/authentication_keys/kubernetes-ca-key-{{ ansible_date_time.iso8601_basic_short }}.pem"
+  when: rotate_certs_pki
 
 - name: Generation of the intermediate CA configuration
   template:
