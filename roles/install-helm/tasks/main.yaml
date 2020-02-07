@@ -8,11 +8,11 @@
   when: install_helm
 
 - name: Set the binaries of helm
-  file:
+  copy:
     src: /usr/local/bin/linux-amd64/helm
     dest: /usr/local/bin/helm
-    state: file
   when: install_helm
+  
 
 - name: Check service account for Helm
   command: kubectl --kubeconfig {{ data_path }}/certificates/configs/admin/admin.conf get serviceaccounts -n kube-system agoratiller
@@ -52,7 +52,7 @@
     - check_helm_account_role.rc == 1
 
 - name: Initialize Helm
-  command: /usr/local/bin/linux-amd64/helm --kubeconfig {{ data_path }}/certificates/configs/admin/admin.conf init --service-account agoratiller
+  command: /usr/local/bin/helm --kubeconfig {{ data_path }}/certificates/configs/admin/admin.conf init --service-account agoratiller
   when:
     - init_helm
     - install_helm
