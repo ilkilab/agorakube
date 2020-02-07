@@ -47,7 +47,7 @@ Ce projet est en cours de développement et d'autres options de customisation se
 
 ## Comment l'installer
 
-Nous utilisons habituellement une machine virtuelle pour déployer chaque cluster. Elle ne sert qu'au déploiement et est supprimée ensuite.
+Nous utilisons habituellement une machine virtuelle pour déployer chaque cluster. Elle ne sert qu'au déploiement et à l'administration du cluster.
 
 ### Mise en place
 
