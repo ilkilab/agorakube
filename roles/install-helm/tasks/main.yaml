@@ -11,7 +11,7 @@
   copy:
     src: /usr/local/bin/linux-amd64/helm
     dest: /usr/local/bin/helm
-    mode: '0777'
+    mode: '0755'
   when: install_helm
 
 - name: Check service account for Helm
