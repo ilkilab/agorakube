@@ -12,7 +12,7 @@
 <img src="https://raw.githubusercontent.com/cncf/artwork/master/other/cncf-landscape/stacked/color/cncf-landscape-stacked-color.svg?sanitize=true" width="100" alt="Agorakube is a cncf landscap project" title="Agorakube is a cncf landscap project"/>
 </p>
 Ce projet vise à fournir le moyen le plus simple d’installer des Clusters kubernetes sur des environnements bare-metal, virtuels et cloud.
-Actuellement, Ubuntu 18.04 (Bionic) amd64 et Centos 7/8 sont pris en charge, mais plusieurs autres systèmes d’exploitation seront bientôt disponibles.
+Actuellement, Ubuntu 18.04 (Bionic) amd64, debian buster et Centos 7/8 sont pris en charge, mais plusieurs autres systèmes d’exploitation seront bientôt disponibles.
 
 La branche Master est stable.
 
