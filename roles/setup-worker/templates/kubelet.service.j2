@@ -2,12 +2,12 @@
 Description=Kubernetes Kubelet {{ kubernetes_release }}
 Documentation=https://github.com/kubernetes/kubernetes
 {% if runtime == 'docker' %}
-After=docker.service \
-Requires=docker.service \
+After=docker.service
+Requires=docker.service
 {% endif %}
 {% if runtime == 'containerd' %}
-After=containerd.service \
-Requires=containerd.service \
+After=containerd.service
+Requires=containerd.service
 {% endif %}
 
 [Service]
