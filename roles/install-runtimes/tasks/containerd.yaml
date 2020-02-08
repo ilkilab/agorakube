@@ -75,3 +75,4 @@
   systemd:
     state: started
     name: containerd
+    enabled: yes
