@@ -25,6 +25,21 @@
   notify:
     - Restart kube-apiserver service
     - Restart kube-controller-manager service
+
+####
+- name: Import kubernetes sa.crt
+  copy:
+    src: "{{ data_path }}/certificates/intermediate/sa/signed/sa.pem"
+    dest: /etc/kubernetes/pki/sa.crt
+  notify:
+    - Restart kube-apiserver service
+
+- name: Import kubernetes sa.key
+  copy:
+    src: "{{ data_path }}/certificates/intermediate/sa/sa-key.pem"
+    dest: /etc/kubernetes/pki/sa.key
+  notify:
+    - Restart kube-controller-manager service
 ####
 - name: Import kubernetes apiserver.crt
   copy:
