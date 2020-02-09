@@ -13,6 +13,8 @@
     - "{{ data_path }}/certificates/intermediate/etcd-ca/signed"
     - "{{ data_path }}/certificates/intermediate/kubernetes-front-proxy-ca"
     - "{{ data_path }}/certificates/intermediate/kubernetes-front-proxy-ca/signed"
+    - "{{ data_path }}/certificates/intermediate/sa"
+    - "{{ data_path }}/certificates/intermediate/sa/signed"
     - "{{ data_path }}/certificates/end/kube-etcd"
     - "{{ data_path }}/certificates/end/kube-etcd-peer"
     - "{{ data_path }}/certificates/end/kube-etcd-healthcheck-client"
@@ -43,7 +45,7 @@
   environment:
     PATH: /usr/local/bin:{{ ansible_env.PATH }}
 
-- name: Generate intermediate certificates
+- name: Copy intermediate CSRs
   template:
     src: intermediate-csr.json.j2
     dest: "{{ data_path }}/certificates/intermediate/{{ item }}/{{ item }}-csr.json"
@@ -51,6 +53,7 @@
     - kubernetes-front-proxy-ca
     - kubernetes-ca
     - etcd-ca
+    - sa
 
 - name: Generate intermediate certificates
   shell: |
@@ -65,12 +68,13 @@
     - kubernetes-front-proxy-ca
     - kubernetes-ca
     - etcd-ca
+    - sa
 
-- name: Save autentication token key
-  copy:
-    src: "{{ data_path }}/certificates/intermediate/kubernetes-ca/kubernetes-ca-key.pem"
-    dest: "{{ data_path }}/authentication_keys/kubernetes-ca-key-{{ ansible_date_time.iso8601_basic_short }}.pem"
-  when: rotate_certs_pki
+#- name: Save autentication token key
+#  copy:
+#    src: "{{ data_path }}/certificates/intermediate/kubernetes-ca/kubernetes-ca-key.pem"
+#    dest: "{{ data_path }}/authentication_keys/kubernetes-ca-key-{{ ansible_date_time.iso8601_basic_short }}.pem"
+#  when: rotate_certs_pki
 
 - name: Generation of the intermediate CA configuration
   template:
@@ -91,6 +95,7 @@
     - kubernetes-front-proxy-ca
     - kubernetes-ca
     - etcd-ca
+    - sa
 
 - name: Generation of final CA configuration 1
   template:

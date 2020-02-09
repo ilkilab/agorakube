@@ -7,6 +7,19 @@
     - overlay
     - br_netfilter
 
+- name: Create activated kernel modules directory
+  file:
+    path: /etc/modules-load.d/
+    state: directory
+
+- name: Load kernel modules at boot
+  copy:
+    content: "{{ item }}"
+    dest: /etc/modules-load.d/{{ item }}.conf
+  with_items:
+    - overlay
+    - br_netfilter
+
 - name: Setup required sysctl params, these persist across reboots
   sysctl:
     name: "{{ item.name }}"
