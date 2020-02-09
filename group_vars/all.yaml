@@ -6,7 +6,7 @@ c: FR
 st: Ile-De-France
 l: Paris
 expiry: 87600h
-rotate_certs_pki: false
+rotate_certs_pki: true
 rotate_full_pki: false
 
 # Components version
@@ -28,12 +28,12 @@ kube_proxy_ipvs_algotithm: rr
 # Custom features
 runtime: containerd
 network_cni_plugin: flannel
-flannel_iface: default
+flannel_iface: eth1
 ingress_controller: traefik
 dns_server_soft: coredns
 populate_etc_hosts: yes
 k8s_dashboard: True
-service_mesh: linkerd
+service_mesh: none
 linkerd_release: stable-2.6.0
 install_helm: false
 init_helm: false

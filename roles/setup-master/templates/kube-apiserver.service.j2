@@ -31,6 +31,7 @@ ExecStart=/usr/local/bin/kubernetes/server/bin/kube-apiserver \
   --service-cluster-ip-range={{service_cluster_ip_range}} \
   --service-node-port-range={{service_node_port_range}} \
   --tls-cert-file=/etc/kubernetes/pki/apiserver.crt \
+  --service-account-key-file=/etc/kubernetes/pki/apiserver.key \
 {% for key in token_keys.files %}
   --service-account-key-file={{ key.path }} \
 {% endfor %}

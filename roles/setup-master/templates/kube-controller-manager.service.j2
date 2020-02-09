@@ -13,7 +13,10 @@ ExecStart=/usr/local/bin/kubernetes/server/bin/kube-controller-manager \
   --leader-elect=true \
   --root-ca-file=/etc/kubernetes/pki/ca.crt \
   --client-ca-file=/etc/kubernetes/pki/ca.crt \
-  --service-account-private-key-file=/etc/kubernetes/pki/apiserver.key \
+  --service-account-key-file=/etc/kubernetes/pki/apiserver.key \
+{% for key in token_keys.files %}
+  --service-account-key-file={{ key.path }} \
+{% endfor %}
   --service-cluster-ip-range={{ service_cluster_ip_range }} \
   --requestheader-client-ca-file=/etc/kubernetes/pki/front-proxy-ca.crt \
   --use-service-account-credentials=true \
