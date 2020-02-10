@@ -7,4 +7,4 @@ expiry: 87600h
 advertise_ip_masters: 1.2.3.4
 kubernetes_service: 1.2.3.4
 rotate_certs_pki: false
-rotate_ful_pki: false
+rotate_full_pki: false
