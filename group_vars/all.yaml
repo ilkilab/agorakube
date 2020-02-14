@@ -1,12 +1,10 @@
 ---
-http_proxy:  'http://10.64.238.83:3128'
-https_proxy: 'http://10.64.238.83:3128'
 
 # CERTIFICATES
-cn_root_ca: softice
-c: PL
-st: Mazowieckie
-l: Warsaw
+cn_root_ca: ilkilabs
+c: FR
+st: Ile-De-France
+l: Paris
 expiry: 87600h
 rotate_certs_pki: false
 rotate_full_pki: false
