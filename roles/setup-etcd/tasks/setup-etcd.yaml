@@ -5,6 +5,9 @@
     dest: /usr/bin
     remote_src: yes
     creates: /usr/bin/etcd-{{ etcd_release }}-linux-amd64/etcd
+  environment:
+    http_proxy:  "{{ http_proxy }}"
+    https_proxy: "{{ https_proxy }}"
 
 - name: create folder {{ etcd_data_directory }}
   file:
@@ -25,3 +28,6 @@
     daemon_reload: yes
     name: etcd
     enabled: yes
+
+- name: Force all notified handlers to run at this point, not waiting for normal sync points
+  meta: flush_handlers
