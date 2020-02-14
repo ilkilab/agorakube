@@ -1,0 +1,58 @@
+---
+- name: Verify if etcd cluster has successfully started
+  command: >-
+      /usr/bin/etcd-{{ etcd_release }}-linux-amd64/etcdctl member list -w=table
+      --endpoints=https://127.0.0.1:2379
+      --cacert=/etc/kubernetes/pki/etcd/ca.crt --cert=/etc/kubernetes/pki/etcd/server.crt --key=/etc/kubernetes/pki/etcd/server.key
+  environment:
+    ETCDCTL_API: 3
+  changed_when: false
+  register: etcd_memberlist
+  until: etcd_memberlist.stdout.find("started") != -1
+  retries: 5
+  delay: 10
+  run_once: true
+
+- name: Show etcd member list
+  debug:
+    msg: "{{ etcd_memberlist.stdout_lines }}"
+  run_once: true
+
+- name: Verify etcd cluster health
+  command: >-
+      /usr/bin/etcd-{{ etcd_release }}-linux-amd64/etcdctl endpoint health -w=table
+      --endpoints={% for item in groups['etcd'] %}https://{{ hostvars[item].ansible_host }}:2379{{ "," if not loop.last else "" }}{% endfor %}
+      --cacert=/etc/kubernetes/pki/etcd/ca.crt --cert=/etc/kubernetes/pki/etcd/server.crt --key=/etc/kubernetes/pki/etcd/server.key
+  environment:
+    ETCDCTL_API: 3
+  changed_when: false
+  register: etcd_clusterhealth
+  until: etcd_clusterhealth.stdout.find("true") != -1
+  retries: 5
+  delay: 10
+  run_once: true
+
+#- name: DEBUG
+#  debug:
+#     msg: "{{ etcd_clusterhealth }}"
+
+- name: Show etcd cluster health
+  debug:
+    msg: "{{ etcd_clusterhealth.stdout_lines }}"
+  run_once: true
+
+- name: Get etcd cluster status
+  command: >-
+      /usr/bin/etcd-{{ etcd_release }}-linux-amd64/etcdctl endpoint status -w=table
+      --endpoints={% for item in groups['etcd'] %}https://{{ hostvars[item].ansible_host }}:2379{{ "," if not loop.last else "" }}{% endfor %}
+      --cacert=/etc/kubernetes/pki/etcd/ca.crt --cert=/etc/kubernetes/pki/etcd/server.crt --key=/etc/kubernetes/pki/etcd/server.key
+  environment:
+    ETCDCTL_API: 3
+  changed_when: false
+  register: etcd_clusterstatus
+  run_once: true
+
+- name: Show etcd cluster status
+  debug:
+    msg: "{{ etcd_clusterstatus.stdout_lines }}"
+  run_once: true

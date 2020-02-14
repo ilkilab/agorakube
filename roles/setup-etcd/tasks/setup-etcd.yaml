@@ -25,3 +25,6 @@
     daemon_reload: yes
     name: etcd
     enabled: yes
+
+- name: Force all notified handlers to run at this point, not waiting for normal sync points
+  meta: flush_handlers
