@@ -5,7 +5,7 @@
   - name: Stop API server
     service:
       name: kube-apiserver
-      state: stoped
+      state: stopped
 - hosts: etcd
   become: true
   roles:
