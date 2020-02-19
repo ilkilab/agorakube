@@ -1,4 +1,11 @@
 ---
+- hosts: masters
+  become: true
+  tasks:
+  - name: Stop API server
+    service:
+      name: kube-apiserver
+      state: stopped
 - hosts: etcd
   become: true
   roles:
@@ -9,4 +16,4 @@
   - name: Restart API server
     service:
       name: kube-apiserver
-      state: restarted
+      state: started
