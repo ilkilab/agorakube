@@ -75,6 +75,23 @@ You can run the following command to automatically install those packages :
 bash <(curl -s https://raw.githubusercontent.com/ilkilab/agorakube/master/setup-hosts.sh)
 ```
 
+## SSH keys creation
+
+Agorakube is using Ansible to deploy Kubernetes. You have to configure SSH keys to ensure the communication between the deploy machine and the others.
+
+On the deploy machine, create the SSH keys :
+```
+ssh-keygen
+```
+You can let everything by default.
+
+When your keys are created, you have to copy the public key in the other machine in the folder /home/yourUser/.ssh/authorized_keys, or you can use the following commands to copy the key :
+```
+ssh-copy-id -i .ssh/id_rsa.pub yourUser@IP_OF_THE_HOST
+```
+You have to execute this command for each node of your cluster
+
+
 # K8S Cluster Configuration
 
 AgoraKube enables an easy way to deploy and manage customizable K8S clusters.
