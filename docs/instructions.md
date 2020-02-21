@@ -91,6 +91,7 @@ ssh-copy-id -i .ssh/id_rsa.pub yourUser@IP_OF_THE_HOST
 ```
 You have to execute this command for each node of your cluster
 
+Once your ssh keys have been pushed to all nodes, modify the file "agorakube/hosts" to add the user/ssh-key (in section **SSH Connection settings**) that Agorakube will use to connect to all nodes
 
 # K8S Cluster Configuration
 
@@ -143,6 +144,8 @@ The **workers** section contains information about the workers nodes (K8S Data P
 
 The **all:vars** section contains information about how to connect to K8S nodes.
 
+The **SSH Connection settings** section contain information about the SSH connexion. You have to modify the variable **ansible_ssh_private_key_file** with the path where your public key is stored.
+**ansible_user** User used as service account by Agorakube to connect to all nodes. **User must be sudoer**.
 
 ## Configuration file
 
