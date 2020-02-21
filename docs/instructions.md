@@ -143,6 +143,8 @@ The **workers** section contains information about the workers nodes (K8S Data P
 
 The **all:vars** section contains information about how to connect to K8S nodes.
 
+The **SSH Connection settings** section contain information about the SSH connexion. You have to modify the variable **ansible_ssh_private_key_file** with the path where your public key is stored.
+
 
 ## Configuration file
 
