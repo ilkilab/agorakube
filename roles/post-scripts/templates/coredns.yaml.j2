@@ -54,7 +54,6 @@ data:
   Corefile: |
     kubernetes cluster.local:53 {
         errors
-        health
         ready
         kubernetes cluster.local in-addr.arpa ip6.arpa {
           pods insecure
@@ -68,7 +67,8 @@ data:
         loadbalance
     }
     . {
-    forward . 8.8.8.8:53
+        forward . 8.8.8.8:53
+        health
     }
 ---
 apiVersion: apps/v1
