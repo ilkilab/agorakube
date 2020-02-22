@@ -52,9 +52,8 @@ metadata:
   namespace: kube-system
 data:
   Corefile: |
-    .:53 {
+    kubernetes cluster.local:53 {
         errors
-        health
         ready
         kubernetes cluster.local in-addr.arpa ip6.arpa {
           pods insecure
@@ -66,6 +65,10 @@ data:
         loop
         reload
         loadbalance
+    }
+    . {
+        forward . 8.8.8.8:53
+        health
     }
 ---
 apiVersion: apps/v1
