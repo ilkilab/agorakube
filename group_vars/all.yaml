@@ -17,10 +17,10 @@ delete_etcd_install: False
 check_etcd_install: True
 
 # IPs-CIDR Configurations
-cluster_cidr: 192.168.0.0/17
-service_cluster_ip_range: 192.168.128.0/17
-kubernetes_service: 192.168.128.1
-cluster_dns_ip: 192.168.128.10
+cluster_cidr: 10.33.0.0/16
+service_cluster_ip_range: 10.32.0.0/24
+kubernetes_service: 10.32.0.1
+cluster_dns_ip: 10.32.0.10
 service_node_port_range: 30000-32767
 kube_proxy_mode: ipvs
 kube_proxy_ipvs_algotithm: rr
@@ -28,7 +28,7 @@ kube_proxy_ipvs_algotithm: rr
 
 # Custom features
 runtime: containerd
-network_cni_plugin: calico
+network_cni_plugin: flannel
 flannel_iface: default
 ingress_controller: traefik
 dns_server_soft: coredns
