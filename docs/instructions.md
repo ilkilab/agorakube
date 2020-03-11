@@ -1,5 +1,5 @@
 # Table of Contents
-This is a list of points that will be explained in this instructions file for the AgoraKube project :
+This is a list of points that will be explained in this instructions file for the [AgoraKube](https://agorakube.ilkilabs.io/) project :
 
 - [High-level Architecture](#high-level-architecture)
 - [Prerequisites](#prerequisites)
@@ -12,7 +12,7 @@ This is a list of points that will be explained in this instructions file for th
 
 # High-level Architecture
 
-Below a diagram of the high-level architecture deployed by AgoraKube :
+Below a diagram of the high-level architecture deployed by [AgoraKube](https://agorakube.ilkilabs.io/) :
 ![Architecture](../images/AgoraKube_diagram.png)
 
 **Notes :** This distibution is aimed to be customizable so you can choose : 
@@ -23,7 +23,7 @@ Below a diagram of the high-level architecture deployed by AgoraKube :
  
  # Prerequisites
 
-This section explains what are the prerequisites to install AgoraKube in your environment.
+This section explains what are the prerequisites to install [AgoraKube](https://agorakube.ilkilabs.io/) in your environment.
 
 ## OS
 
@@ -50,11 +50,11 @@ Below the sizing prerequisites for the deployment machine :
 
 # Nodes Setup
 
-This section explains how to setup notes before deploying Kubernetes Clusters with AgoraKube.
+This section explains how to setup notes before deploying Kubernetes Clusters with [AgoraKube](https://agorakube.ilkilabs.io/).
 
 ## Deployment node
 
-The deployment node is an Ansible server which contains all Ansible roles and variables used to deploy and configure Kubernetes Clusters with AgoraKube distribution.
+The deployment node is an Ansible server which contains all Ansible roles and variables used to deploy and configure Kubernetes Clusters with [AgoraKube](https://agorakube.ilkilabs.io/) distribution.
 
 - Connect to the deployment node and run the following command :
 ```
@@ -77,7 +77,7 @@ bash <(curl -s https://raw.githubusercontent.com/ilkilab/agorakube/master/setup-
 
 ## SSH keys creation
 
-Agorakube is using Ansible to deploy Kubernetes. You have to configure SSH keys to ensure the communication between the deploy machine and the others.
+[Agorakube](https://agorakube.ilkilabs.io/) is using Ansible to deploy Kubernetes. You have to configure SSH keys to ensure the communication between the deploy machine and the others.
 
 On the deploy machine, create the SSH keys :
 ```
@@ -95,7 +95,7 @@ Once your ssh keys have been pushed to all nodes, modify the file "agorakube/hos
 
 # K8S Cluster Configuration
 
-AgoraKube enables an easy way to deploy and manage customizable K8S clusters.
+[AgoraKube](https://agorakube.ilkilabs.io/) enables an easy way to deploy and manage customizable K8S clusters.
 
 ## Inventory file
 
