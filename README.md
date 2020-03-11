@@ -17,18 +17,19 @@
 This project is aimed to provide the simplest way to install kubernetes on bare-metal, virtual & Cloud environments.
 Currently, Ubuntu 18.04 (Bionic) amd64 and Centos 7/8  are supported, but several other operating systems will be available soon.
 
+Official documentation is available at [Agorakube Website](https://agorakube.ilkilabs.io/)
 
 Master branch is stable.
 
 Read this in [French](https://github.com/ilkilab/agorakube/blob/master/docs/translations/FR/README.fr.md)
 
-Since November 2019, Agorakube has been certified by the "Kubernetes Conformance Program" and is a project of [the cncf landscape](https://landscape.cncf.io/selected=agora-kube).
+Since November 2019, [Agorakube](https://agorakube.ilkilabs.io/) has been certified by the "Kubernetes Conformance Program" and is a project of [the cncf landscape](https://landscape.cncf.io/selected=agora-kube).
 
 [![asciicast](https://asciinema.org/a/Y58GrrJG3gPM6GvKsSMCZevbX.svg)](https://asciinema.org/a/Y58GrrJG3gPM6GvKsSMCZevbX)
 
 ## Table of Contents
 
-This is a list of points that will be explained in this Readme file for the AgoraKube project :
+This is a list of points that will be explained in this Readme file for the [AgoraKube](https://agorakube.ilkilabs.io/) project :
 
 - [What is AgoraKube](#what-is-agoraKube)
 - [How to install](#how-to-install)
@@ -39,11 +40,11 @@ This is a list of points that will be explained in this Readme file for the Agor
 
 ## What is AgoraKube
 
-AgoraKube is an easy-to-use, stable Kubernetes distribution (Kubernetes v1.15, 1.16, 1.17).
+[AgoraKube](https://agorakube.ilkilabs.io/) is an easy-to-use, stable Kubernetes distribution (Kubernetes v1.15, 1.16, 1.17).
 
-By its symplicity, AgoraKube provide a good way to deploy and manage K8S Clusters.
+By its symplicity, [AgoraKube](https://agorakube.ilkilabs.io/) provide a good way to deploy and manage K8S Clusters.
 
-AgoraKube is based on Ansible scripts that install and configure Kubernetes components (control plane and data plane) quickly on bare-metal / VMs / Cloud Instances, as systemd services.
+[AgoraKube](https://agorakube.ilkilabs.io/) is based on Ansible scripts that install and configure Kubernetes components (control plane and data plane) quickly on bare-metal / VMs / Cloud Instances, as systemd services.
 
 This distribution is also adaptive by offering the opportunity to customize your deployment and fit to your needs : OS (default : Ubuntu 18.04 (Bionic) - amd64), DNS Service (default : CoreDNS), Ingress Controller (default : Traefik), Container Runtime (Default : Containerd), certificats, Service-Mesh (available: Linkerd)...
 
