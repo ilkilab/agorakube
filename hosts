@@ -1,26 +1,26 @@
 [deploy]
-master1 ansible_connection=local
+k8s-7.novalocal ansible_connection=local
 
 [masters]
-master1  ansible_host=10.10.20.3
-#k8s-2.novalocal  ansible_host=10.20.20.5
-#k8s-3.novalocal  ansible_host=10.20.20.8
+k8s-1.novalocal  ansible_host=10.20.20.4
+k8s-2.novalocal  ansible_host=10.20.20.5
+k8s-3.novalocal  ansible_host=10.20.20.8
 #deploy.novalocal ansible_connection=local ip=10.20.20.8
 [etcd]
-master1  ansible_host=10.10.20.3
-#k8s-2.novalocal  ansible_host=10.20.20.5
-#k8s-3.novalocal  ansible_host=10.20.20.8
+k8s-1.novalocal  ansible_host=10.20.20.4
+k8s-2.novalocal  ansible_host=10.20.20.5
+k8s-3.novalocal  ansible_host=10.20.20.8
 #deploy.novalocal ansible_connection=local ip=10.20.20.8
 [workers]
-worker1  ansible_host=10.10.20.4
-#k8s-5.novalocal  ansible_host=10.20.20.11
-#k8s-6.novalocal  ansible_host=10.20.20.10
+k8s-4.novalocal  ansible_host=10.20.20.9
+k8s-5.novalocal  ansible_host=10.20.20.11
+k8s-6.novalocal  ansible_host=10.20.20.10
 #deploy.novalocal ansible_connection=local ip=10.20.20.8
 
 [all:vars]
-advertise_ip_masters=10.10.20.3
+advertise_ip_masters=84.39.47.56
 
 # SSH connection settings
 ansible_ssh_extra_args='-o StrictHostKeyChecking=no'
-ansible_user=vagrant
-ansible_ssh_private_key_file=/home/vagrant/ssh-private-key.pem
+ansible_user=cloud
+ansible_ssh_private_key_file=/tmp/private.pem
