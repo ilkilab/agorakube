@@ -45,11 +45,8 @@ calico_mtu: 1440
 
 # Security
 encrypt_etcd_keys:
-# First key is used for encrypt and decrypt
+# First key is used for encrypt and decrypt. Others keys are used only for decrypt purpose
   key1:
-    secret: 1fJcKt6vBxMt+AkBanoaxFF2O6ytHIkETNgQWv4b/+Q=
-  # All others keys are used for decrypt only
-  key2:
     secret: 1fJcKt6vBxMt+AkBanoaxFF2O6ytHIkETNgQWv4b/+Q=
 
 # Data Directory
