@@ -29,12 +29,12 @@ kube_proxy_ipvs_algotithm: rr
 # Custom features
 runtime: containerd
 network_cni_plugin: flannel
-flannel_iface: eth1
+flannel_iface: default
 ingress_controller: traefik
 dns_server_soft: coredns
 populate_etc_hosts: yes
 k8s_dashboard: True
-service_mesh: none
+service_mesh: linkerd
 linkerd_release: stable-2.6.0
 install_helm: false
 init_helm: false
@@ -44,9 +44,11 @@ install_kubeapps: false
 calico_mtu: 1440
 
 # Security
-encrypt_etcd_keys: 
+encrypt_etcd_keys:
+# First key is used for encrypt and decrypt
   key1:
     secret: 1fJcKt6vBxMt+AkBanoaxFF2O6ytHIkETNgQWv4b/+Q=
+  # All others keys are used for decrypt only
   key2:
     secret: 1fJcKt6vBxMt+AkBanoaxFF2O6ytHIkETNgQWv4b/+Q=
 
