@@ -198,7 +198,9 @@ install_kubeapps: false
 calico_mtu: 1440
 
 # Security
-encrypt_key_etcd: 1fJcKt6vBxMt+AkBanoaxFF2O6ytHIkETNgQWv4b/+Q=
+encrypt_etcd_keys: 
+  key1:
+    secret: 1fJcKt6vBxMt+AkBanoaxFF2O6ytHIkETNgQWv4b/+Q=
 
 # Data Directory
 data_path: "/var/agorakube"
@@ -281,7 +283,7 @@ Parameters for etcd :
 
 | Parameter | Description | Values |
 | --- | --- | --- |
-| `encrypt_key_etcd` | Encryption key to use for etcd datas | <ul><li> **Depend on your deployment** </li><br/><li>  **1fJcKt6vBxMt+AkBanoaxFF2O6ytHIkETNgQWv4b/+Q=** *(default)* </li></ul> |
+| `encrypt_etcd_keys` | Encryption keys used for etcd - Dictionary format | <ul><li> **Depend on your deployment** </li><br/><li>  **1fJcKt6vBxMt+AkBanoaxFF2O6ytHIkETNgQWv4b/+Q=** *(default)* </li></ul> |
 | `check_etcd_install` | Display ETCD infos | <ul><li> **True** (Default) </li><br/><li>  False </li></ul> |
 
 Parameters for Agorakube datas storage :
