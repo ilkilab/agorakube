@@ -10,7 +10,7 @@ rotate_certs_pki: false
 rotate_full_pki: false
 
 # Components version
-etcd_release: v3.4.3
+etcd_release: v3.4.5
 kubernetes_release: v1.17.4
 delete_previous_k8s_install: False
 delete_etcd_install: False
