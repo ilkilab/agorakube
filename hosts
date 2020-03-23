@@ -15,13 +15,14 @@ master1  ansible_host=10.10.20.3
 [workers]
 worker1  ansible_host=10.10.20.4
 worker2  ansible_host=10.10.20.5
+worker3  ansible_host=10.10.20.6
 #k8s-6.novalocal  ansible_host=10.20.20.10
 #deploy.novalocal ansible_connection=local ip=10.20.20.8
 
 [storage]
 worker1 ansible_host=10.10.20.4
 worker2 ansible_host=10.10.20.5
-
+worker3 ansible_host=10.10.20.6
 [all:vars]
 advertise_ip_masters=10.10.20.3
 
