@@ -21,13 +21,11 @@
   changed_when: >
     apply_common.stdout is search("created")
 
-
-- name: Apply operator.yaml
-  command: kubectl --kubeconfig {{ data_path }}/certificates/configs/admin/admin.conf apply -f {{ rook_tempdir.path }}/operator.yaml                                                                     register: apply_common
+- name: Apply common.yaml
+  command: kubectl --kubeconfig {{ data_path }}/certificates/configs/admin/admin.conf apply -f {{ rook_tempdir.path }}/operator.yaml
   register: apply_operator
   changed_when: >
     apply_operator.stdout is search("created")
-
 
 - name: Verify if operator has successfully started
   command: kubectl --kubeconfig {{ data_path }}/certificates/configs/admin/admin.conf get deploy -n rook-ceph rook-ceph-operator
@@ -38,9 +36,20 @@
   delay: 10
   run_once: true
 
-
 - name: Render cluster-infra templates
   template:
     dest: "{{ rook_tempdir.path }}/cluster-infra.yaml"
     src: "cluster-infra.yaml.j2"
   changed_when: false
+
+- name: Apply common.yaml
+  command: kubectl --kubeconfig {{ data_path }}/certificates/configs/admin/admin.conf apply -f {{ rook_tempdir.path }}/cluster-infra.yaml
+  register: apply_cluster
+  changed_when: >
+    apply_cluster.stdout is search("created")
+
+- name: delete temp file
+  file:
+    path: "{{ rook_tempdir.path }}"
+    state: absent
+  changed_when: False
