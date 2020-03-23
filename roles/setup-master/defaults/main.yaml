@@ -5,3 +5,18 @@ service_cluster_ip_range: 10.32.0.0/24
 service_node_port_range: 30000-32767
 encrypt_key_etcd: 1fJcKt6vBxMt+AkBanoaxFF2O6ytHIkETNgQWv4b/+Q=
 delete_previous_k8s_install: false
+kube_apiserver_enable_admission_plugins:
+  - NamespaceLifecycle
+  - LimitRanger
+  - ServiceAccount
+  - TaintNodesByCondition
+  - PodNodeSelector
+  - Priority
+  - DefaultTolerationSeconds
+  - DefaultStorageClass
+  - StorageObjectInUseProtection
+  - PersistentVolumeClaimResize
+  - MutatingAdmissionWebhook
+  - ValidatingAdmissionWebhook
+  - RuntimeClass
+  - ResourceQuota
