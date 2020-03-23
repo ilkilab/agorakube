@@ -6,12 +6,17 @@
 #  with_items: "{{ groups['workers'] }}"
 
 ---
-- name: Apply templates
+- name: Label Woker Nodes
   command: "kubectl --kubeconfig {{ data_path }}/certificates/configs/admin/admin.conf label node {{ item }}  node-role.kubernetes.io/worker= --overwrite"
   changed_when: false
   with_items: "{{ groups['workers'] }}"
 
-- name: Apply templates
+- name: Label Storage Nodes
+  command: "kubectl --kubeconfig {{ data_path }}/certificates/configs/admin/admin.conf label node {{ item }} specific=storage --overwrite"
+  changed_when: false
+  with_items: "{{ groups['storage'] }}"
+
+- name: Label Master Nodes
   command: "kubectl --kubeconfig {{ data_path }}/certificates/configs/admin/admin.conf label node {{ item }}  node-role.kubernetes.io/master= --overwrite"
   changed_when: false
   with_items: "{{ groups['masters'] }}"
