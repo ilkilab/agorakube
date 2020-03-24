@@ -48,12 +48,6 @@
   changed_when: >
     apply_cluster.stdout is search("created")
 
-- name: delete temp file
-  file:
-    path: "{{ rook_tempdir.path }}"
-    state: absent
-  changed_when: False
-
 - name: Verify if operator has successfully started
   command: kubectl --kubeconfig {{ data_path }}/certificates/configs/admin/admin.conf get deploy -n rook-ceph rook-ceph-osd-0
   changed_when: false
@@ -62,3 +56,21 @@
   retries: 100
   delay: 10
   run_once: true
+
+- name: Copy pool-storageClass.yaml
+  copy:
+    src: pool-storageClass.yaml
+    dest: "{{ rook_tempdir.path }}/pool-storageClass.yaml"
+  changed_when: false
+
+- name: Apply common.yaml
+  command: kubectl --kubeconfig {{ data_path }}/certificates/configs/admin/admin.conf apply -f {{ rook_tempdir.path }}/pool-storageClass.yaml
+  register: apply_common
+  changed_when: >
+    apply_common.stdout is search("created")
+
+- name: delete temp file
+  file:
+    path: "{{ rook_tempdir.path }}"
+    state: absent
+  changed_when: False
