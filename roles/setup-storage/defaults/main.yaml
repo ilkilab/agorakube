@@ -1,2 +1,3 @@
 ---
 rook_dataDirHostPath: /var/lib/rook
+enable_rook: False
