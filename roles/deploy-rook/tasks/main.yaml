@@ -53,3 +53,12 @@
     path: "{{ rook_tempdir.path }}"
     state: absent
   changed_when: False
+
+- name: Verify if operator has successfully started
+  command: kubectl --kubeconfig {{ data_path }}/certificates/configs/admin/admin.conf get deploy -n rook-ceph rook-ceph-osd-0
+  changed_when: false
+  register: osd_deployment
+  until: osd_deployment.stdout.find("1/1") != -1
+  retries: 100
+  delay: 10
+  run_once: true
