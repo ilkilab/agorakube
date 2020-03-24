@@ -13,7 +13,7 @@ rotate_full_pki: false
 etcd_release: v3.4.5
 kubernetes_release: v1.18.0-rc.1
 delete_previous_k8s_install: False
-delete_etcd_install: True
+delete_etcd_install: False
 check_etcd_install: True
 
 # IPs-CIDR Configurations
@@ -77,5 +77,5 @@ kube_apiserver_enable_admission_plugins:
 
 
 # Rook Settings
-enable_rook: False
+enable_rook: True
 rook_dataDirHostPath: /data/rook
