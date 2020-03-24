@@ -63,7 +63,7 @@
     dest: "{{ rook_tempdir.path }}/pool-storageClass.yaml"
   changed_when: false
 
-- name: Apply common.yaml
+- name: Apply pool-storageClass.yaml
   command: kubectl --kubeconfig {{ data_path }}/certificates/configs/admin/admin.conf apply -f {{ rook_tempdir.path }}/pool-storageClass.yaml
   register: apply_common
   changed_when: >

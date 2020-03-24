@@ -1,8 +1,0 @@
-- hosts: storage
-  become: true
-  roles:
-  - setup-storage
-- hosts: deploy
-  become: true
-  roles:
-  - deploy-rook
