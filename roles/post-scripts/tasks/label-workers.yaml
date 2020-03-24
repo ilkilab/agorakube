@@ -1,10 +1,3 @@
-#---
-#- name: Label Workers nodes as workers
-#  shell: "kubectl label node {{item}}  node-role.kubernetes.io/worker=  && touch {{ data_path }}/flags/label-{{item}}"
-#  args:
-#    creates: "{{ data_path }}/flags/label-{{item}}"
-#  with_items: "{{ groups['workers'] }}"
-
 ---
 - name: Label Woker Nodes
   command: "kubectl --kubeconfig {{ data_path }}/certificates/configs/admin/admin.conf label node {{ item }}  node-role.kubernetes.io/worker= --overwrite"
@@ -12,7 +5,7 @@
   with_items: "{{ groups['workers'] }}"
 
 - name: Label Storage Nodes
-  command: "kubectl --kubeconfig {{ data_path }}/certificates/configs/admin/admin.conf label node {{ item }} specific=storage --overwrite"
+  command: "kubectl --kubeconfig {{ data_path }}/certificates/configs/admin/admin.conf label node {{ item }} node-role.kubernetes.io/storage= --overwrite"
   changed_when: false
   with_items: "{{ groups['storage'] }}"
 
@@ -30,3 +23,4 @@
   when:
     - item in groups['masters']
     - item not in groups['workers']
+    - item not in groups['storage']
