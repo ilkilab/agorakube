@@ -21,7 +21,7 @@
   changed_when: >
     apply_common.stdout is search("created")
 
-- name: Apply common.yaml
+- name: Apply operator.yaml
   command: kubectl --kubeconfig {{ data_path }}/certificates/configs/admin/admin.conf apply -f {{ rook_tempdir.path }}/operator.yaml
   register: apply_operator
   changed_when: >
@@ -42,13 +42,13 @@
     src: "cluster-infra.yaml.j2"
   changed_when: false
 
-- name: Apply common.yaml
+- name: Apply cluster-infra.yaml
   command: kubectl --kubeconfig {{ data_path }}/certificates/configs/admin/admin.conf apply -f {{ rook_tempdir.path }}/cluster-infra.yaml
   register: apply_cluster
   changed_when: >
     apply_cluster.stdout is search("created")
 
-- name: Verify if operator has successfully started
+- name: Verify if cluster-infra has successfully started
   command: kubectl --kubeconfig {{ data_path }}/certificates/configs/admin/admin.conf get deploy -n rook-ceph rook-ceph-osd-0
   changed_when: false
   register: osd_deployment
