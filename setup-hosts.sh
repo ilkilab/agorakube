@@ -20,7 +20,7 @@
         sudo killall -9 yum
         sudo yum install python -y
         sudo yum install openssh-server -y
-    elif [[ $DISTRO == Ubuntu* ]]; then
+    elif [[ $DISTRO == ubuntu* ]]; then
         export DEBIAN_FRONTEND=noninteractive
         sudo killall apt apt-get
         sudo apt-get update
