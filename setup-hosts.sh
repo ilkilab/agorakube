@@ -5,11 +5,12 @@
     if [ "$UNAME" == "linux" ]; then
         # If available, use LSB to identify distribution
         if [ -f /etc/lsb-release -o -d /etc/lsb-release.d ]; then
-            export DISTRO=$(lsb_release -i | cut -d: -f2 | sed s/'^\t'//)
+            DISTRO=$(lsb_release -i | cut -d: -f2 | sed s/'^\t'//)
         # Otherwise, use release info file
         else
-            export DISTRO=$(ls -d /etc/[A-Za-z]*[_-][rv]e[lr]* | grep -v "lsb" | cut -d'/' -f3 | cut -d'-' -f1 | cut -d'_' -f1)
+            DISTRO=$(ls -d /etc/[A-Za-z]*[_-][rv]e[lr]* | grep -v "lsb" | cut -d'/' -f3 | cut -d'-' -f1 | cut -d'_' -f1)
         fi
+        export DISTRO="${DISTRO,,}"
     fi
     # For everything else (or if above failed), just use generic identifier
     [ "$DISTRO" == "" ] && export DISTRO=$UNAME
@@ -19,7 +20,7 @@
         sudo killall -9 yum
         sudo yum install python -y
         sudo yum install openssh-server -y
-    elif [[ $DISTRO == Ubuntu* ]]; then
+    elif [[ $DISTRO == ubuntu* ]]; then
         export DEBIAN_FRONTEND=noninteractive
         sudo killall apt apt-get
         sudo apt-get update

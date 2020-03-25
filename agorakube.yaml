@@ -29,12 +29,17 @@
   roles:
   - install-runtimes
   - setup-worker
+- hosts: storage
+  become: true
+  roles:
+  - setup-storage
 - hosts: deploy
   become: true
   roles:
     - install-kubectl
     - configure-kubeconfig
     - post-scripts
+    - deploy-rook
     - install-helm
     - deploy-kubeapps
     - show-info

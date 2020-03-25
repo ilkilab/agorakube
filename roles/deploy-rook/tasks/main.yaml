@@ -1,0 +1,4 @@
+---
+- name: Install rook
+  include_tasks: install-rook.yaml
+  when: enable_rook
