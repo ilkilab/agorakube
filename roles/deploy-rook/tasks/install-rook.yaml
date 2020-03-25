@@ -9,7 +9,7 @@
 - name: Copy common.yaml and operator.yaml
   copy:
     src: "{{ item }}"
-    dest: "{{ rook_tempdir.path }}/{{ item }}" 
+    dest: "{{ rook_tempdir.path }}/{{ item }}"
   with_items:
     - common.yaml
     - operator.yaml
