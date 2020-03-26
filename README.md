@@ -46,7 +46,7 @@ By its symplicity, [AgoraKube](https://agorakube.ilkilabs.io/) provide a good wa
 
 [AgoraKube](https://agorakube.ilkilabs.io/) is based on Ansible scripts that install and configure Kubernetes components (control plane and data plane) quickly on bare-metal / VMs / Cloud Instances, as systemd services.
 
-This distribution is also adaptive by offering the opportunity to customize your deployment and fit to your needs : OS (default : Ubuntu 18.04 (Bionic) - amd64), DNS Service (default : CoreDNS), Ingress Controller (default : Traefik), Container Runtime (Default : Containerd), certificats, Service-Mesh (available: Linkerd)...
+This distribution is also adaptive by offering the opportunity to customize your deployment and fit to your needs : OS (default : Ubuntu 18.04 (Bionic) - amd64), DNS Service (default : CoreDNS), Ingress Controller (default : Traefik), Container Runtime (Default : Containerd), certificats, Service-Mesh (available: Linkerd), storage (Rook Ceph)...
 
 This project is currently under active development so other customizable options will be added soon.
 
