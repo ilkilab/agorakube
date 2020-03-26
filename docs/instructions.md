@@ -107,31 +107,37 @@ The next Sample deploys K8S components in HA mode on 6 nodes (3 **etcd/masters**
 
 ```
 [deploy]
-k8s-7.novalocal ansible_connection=local
+master1 ansible_connection=local
 
 [masters]
-k8s-1.novalocal  ansible_host=10.20.20.4
-k8s-2.novalocal  ansible_host=10.20.20.5
-k8s-3.novalocal  ansible_host=10.20.20.8
-#deploy.novalocal ansible_connection=local ip=10.20.20.8
+master1  ansible_host=10.10.20.3
+#k8s-2.novalocal  ansible_host=10.20.20.5
+#k8s-3.novalocal  ansible_host=10.20.20.8
+
 [etcd]
-k8s-1.novalocal  ansible_host=10.20.20.4
-k8s-2.novalocal  ansible_host=10.20.20.5
-k8s-3.novalocal  ansible_host=10.20.20.8
-#deploy.novalocal ansible_connection=local ip=10.20.20.8
+master1  ansible_host=10.10.20.3
+#k8s-1.novalocal  ansible_host=10.20.20.4
+#k8s-2.novalocal  ansible_host=10.20.20.5
+#k8s-3.novalocal  ansible_host=10.20.20.8
+
 [workers]
-k8s-4.novalocal  ansible_host=10.20.20.9
-k8s-5.novalocal  ansible_host=10.20.20.11
-k8s-6.novalocal  ansible_host=10.20.20.10
-#deploy.novalocal ansible_connection=local ip=10.20.20.8
+worker1  ansible_host=10.10.20.4
+worker2  ansible_host=10.10.20.5
+worker3  ansible_host=10.10.20.6
+
+
+[storage]
+worker1 ansible_host=10.10.20.4
+worker2 ansible_host=10.10.20.5
+worker3 ansible_host=10.10.20.6
 
 [all:vars]
-advertise_ip_masters=84.39.47.56
+advertise_ip_masters=10.10.20.3
 
 # SSH connection settings
 ansible_ssh_extra_args='-o StrictHostKeyChecking=no'
-ansible_user=cloud
-ansible_ssh_private_key_file=/tmp/private.pem
+ansible_user=vagrant
+ansible_ssh_private_key_file=/home/vagrant/ssh-private-key.pem
 ```
 
 The **deploy** section contains information about how to connect to the deployment machine.
