@@ -103,7 +103,7 @@ The first file to modify is ["./hosts"](../hosts). This file contains all archit
 
 **All K8S servers names must be filled in by their FQDN.**
 
-The next Sample deploys K8S components in HA mode on 6 nodes (3 **etcd/masters** nodes and 3 **workers** nodes) :
+The next Sample deploys K8S components in HA mode on 6 nodes (3 **etcd/masters** nodes, 3 **workers** nodes and 3 **storage** nodes) :
 
 ```
 [deploy]
@@ -111,14 +111,13 @@ master1 ansible_connection=local
 
 [masters]
 master1  ansible_host=10.10.20.3
-#k8s-2.novalocal  ansible_host=10.20.20.5
-#k8s-3.novalocal  ansible_host=10.20.20.8
+master2  ansible_host=10.10.20.13
+master3  ansible_host=10.10.20.23
 
 [etcd]
 master1  ansible_host=10.10.20.3
-#k8s-1.novalocal  ansible_host=10.20.20.4
-#k8s-2.novalocal  ansible_host=10.20.20.5
-#k8s-3.novalocal  ansible_host=10.20.20.8
+master2  ansible_host=10.10.20.13
+master3  ansible_host=10.10.20.23
 
 [workers]
 worker1  ansible_host=10.10.20.4
@@ -236,7 +235,7 @@ kube_apiserver_enable_admission_plugins:
 
 
 # Rook Settings
-enable_rook: False
+enable_rook: True
 rook_dataDirHostPath: /data/rook
 ```
 
