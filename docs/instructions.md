@@ -103,35 +103,40 @@ The first file to modify is ["./hosts"](../hosts). This file contains all archit
 
 **All K8S servers names must be filled in by their FQDN.**
 
-The next Sample deploys K8S components in HA mode on 6 nodes (3 **etcd/masters** nodes and 3 **workers** nodes) :
+The next Sample deploys K8S components in HA mode on 6 nodes (3 **etcd/masters** nodes, 3 **workers** nodes and 3 **storage** nodes) :
 
 ```
 [deploy]
-k8s-7.novalocal ansible_connection=local
+master1 ansible_connection=local
 
 [masters]
-k8s-1.novalocal  ansible_host=10.20.20.4
-k8s-2.novalocal  ansible_host=10.20.20.5
-k8s-3.novalocal  ansible_host=10.20.20.8
-#deploy.novalocal ansible_connection=local ip=10.20.20.8
+master1  ansible_host=10.10.20.3
+master2  ansible_host=10.10.20.13
+master3  ansible_host=10.10.20.23
+
 [etcd]
-k8s-1.novalocal  ansible_host=10.20.20.4
-k8s-2.novalocal  ansible_host=10.20.20.5
-k8s-3.novalocal  ansible_host=10.20.20.8
-#deploy.novalocal ansible_connection=local ip=10.20.20.8
+master1  ansible_host=10.10.20.3
+master2  ansible_host=10.10.20.13
+master3  ansible_host=10.10.20.23
+
 [workers]
-k8s-4.novalocal  ansible_host=10.20.20.9
-k8s-5.novalocal  ansible_host=10.20.20.11
-k8s-6.novalocal  ansible_host=10.20.20.10
-#deploy.novalocal ansible_connection=local ip=10.20.20.8
+worker1  ansible_host=10.10.20.4
+worker2  ansible_host=10.10.20.5
+worker3  ansible_host=10.10.20.6
+
+
+[storage]
+worker1 ansible_host=10.10.20.4
+worker2 ansible_host=10.10.20.5
+worker3 ansible_host=10.10.20.6
 
 [all:vars]
-advertise_ip_masters=84.39.47.56
+advertise_ip_masters=10.10.20.3
 
 # SSH connection settings
 ansible_ssh_extra_args='-o StrictHostKeyChecking=no'
-ansible_user=cloud
-ansible_ssh_private_key_file=/tmp/private.pem
+ansible_user=vagrant
+ansible_ssh_private_key_file=/home/vagrant/ssh-private-key.pem
 ```
 
 The **deploy** section contains information about how to connect to the deployment machine.
@@ -162,12 +167,15 @@ c: FR
 st: Ile-De-France
 l: Paris
 expiry: 87600h
-
+rotate_certs_pki: false
+rotate_full_pki: false
 
 # Components version
-etcd_release: v3.4.3
-kubernetes_release: v1.17.1
+etcd_release: v3.4.5
+kubernetes_release: v1.18.0
 delete_previous_k8s_install: False
+delete_etcd_install: False
+check_etcd_install: True
 
 # IPs-CIDR Configurations
 cluster_cidr: 10.33.0.0/16
@@ -186,8 +194,7 @@ flannel_iface: default
 ingress_controller: traefik
 dns_server_soft: coredns
 populate_etc_hosts: yes
-k8s_dashboard: true
-update_certs: false
+k8s_dashboard: True
 service_mesh: linkerd
 linkerd_release: stable-2.6.0
 install_helm: false
@@ -198,12 +205,38 @@ install_kubeapps: false
 calico_mtu: 1440
 
 # Security
-encrypt_etcd_keys: 
+encrypt_etcd_keys:
+# Warrning: If multiple keys are defined ONLY LAST KEY is used for encrypt and decrypt.
+# Other keys are used only for decrypt purpose
   key1:
     secret: 1fJcKt6vBxMt+AkBanoaxFF2O6ytHIkETNgQWv4b/+Q=
 
 # Data Directory
 data_path: "/var/agorakube"
+etcd_data_directory: "/var/lib/etcd"
+#restoration_snapshot_file: /path/snopshot/file Located on {{ etcd_data_directory }}
+
+# KUBE-APISERVER spec
+kube_apiserver_enable_admission_plugins:
+  - NamespaceLifecycle
+  - LimitRanger
+  - ServiceAccount
+  - TaintNodesByCondition
+  - PodNodeSelector
+  - Priority
+  - DefaultTolerationSeconds
+  - DefaultStorageClass
+  - StorageObjectInUseProtection
+  - PersistentVolumeClaimResize
+  - MutatingAdmissionWebhook
+  - ValidatingAdmissionWebhook
+  - RuntimeClass
+  - ResourceQuota
+
+
+# Rook Settings
+enable_rook: True
+rook_dataDirHostPath: /data/rook
 ```
 
 **Note :** You can also modify the IPs-CIDR if you want.
@@ -300,6 +333,12 @@ Parameters for etcd data location, and backups
 | `custom_etcd_backup_dir` | Directory where etcd leader backups are stored on **deploy** node | <ul><li> **{{data_path}}/backups_etcd/** (default if not defined) </li><br/></ul> |
 | `restoration_snapshot_file` | Path to the etcd snapshot on **deploy** node | <ul><li> **not defined** (default) </li><br/></ul> |
 
+Rook Settings
+
+| Parameter | Description | Values |
+| --- | --- | --- |
+| `enable_rook` | Deploy Rook Ceph cluster on on **storage members** | <ul><li> **False** (default) </li><br/><li>  **true** </li></ul> |
+| `rook_dataDirHostPath` | Directory where Rook data are stored on **Storage** nodes | <ul><li> **/data/rook** (default) </li><br/></ul> |
 
 # Kubernetes deployment
 
