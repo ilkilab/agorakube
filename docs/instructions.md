@@ -168,12 +168,15 @@ c: FR
 st: Ile-De-France
 l: Paris
 expiry: 87600h
-
+rotate_certs_pki: false
+rotate_full_pki: false
 
 # Components version
-etcd_release: v3.4.3
-kubernetes_release: v1.17.1
+etcd_release: v3.4.5
+kubernetes_release: v1.18.0
 delete_previous_k8s_install: False
+delete_etcd_install: False
+check_etcd_install: True
 
 # IPs-CIDR Configurations
 cluster_cidr: 10.33.0.0/16
@@ -192,8 +195,7 @@ flannel_iface: default
 ingress_controller: traefik
 dns_server_soft: coredns
 populate_etc_hosts: yes
-k8s_dashboard: true
-update_certs: false
+k8s_dashboard: True
 service_mesh: linkerd
 linkerd_release: stable-2.6.0
 install_helm: false
@@ -204,12 +206,38 @@ install_kubeapps: false
 calico_mtu: 1440
 
 # Security
-encrypt_etcd_keys: 
+encrypt_etcd_keys:
+# Warrning: If multiple keys are defined ONLY LAST KEY is used for encrypt and decrypt.
+# Other keys are used only for decrypt purpose
   key1:
     secret: 1fJcKt6vBxMt+AkBanoaxFF2O6ytHIkETNgQWv4b/+Q=
 
 # Data Directory
 data_path: "/var/agorakube"
+etcd_data_directory: "/var/lib/etcd"
+#restoration_snapshot_file: /path/snopshot/file Located on {{ etcd_data_directory }}
+
+# KUBE-APISERVER spec
+kube_apiserver_enable_admission_plugins:
+  - NamespaceLifecycle
+  - LimitRanger
+  - ServiceAccount
+  - TaintNodesByCondition
+  - PodNodeSelector
+  - Priority
+  - DefaultTolerationSeconds
+  - DefaultStorageClass
+  - StorageObjectInUseProtection
+  - PersistentVolumeClaimResize
+  - MutatingAdmissionWebhook
+  - ValidatingAdmissionWebhook
+  - RuntimeClass
+  - ResourceQuota
+
+
+# Rook Settings
+enable_rook: False
+rook_dataDirHostPath: /data/rook
 ```
 
 **Note :** You can also modify the IPs-CIDR if you want.
@@ -306,6 +334,12 @@ Parameters for etcd data location, and backups
 | `custom_etcd_backup_dir` | Directory where etcd leader backups are stored on **deploy** node | <ul><li> **{{data_path}}/backups_etcd/** (default if not defined) </li><br/></ul> |
 | `restoration_snapshot_file` | Path to the etcd snapshot on **deploy** node | <ul><li> **not defined** (default) </li><br/></ul> |
 
+Rook Settings
+
+| Parameter | Description | Values |
+| --- | --- | --- |
+| `enable_rook` | Deploy Rook Ceph cluster on on **storage members** | <ul><li> **False** (default) </li><br/><li>  **true** </li></ul> |
+| `rook_dataDirHostPath` | Directory where Rook data are stored on **Storage** nodes | <ul><li> **/data/rook** (default) </li><br/></ul> |
 
 # Kubernetes deployment
 
