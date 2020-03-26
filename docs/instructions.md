@@ -340,6 +340,12 @@ Rook Settings
 | `enable_rook` | Deploy Rook Ceph cluster on on **storage members** | <ul><li> **False** (default) </li><br/><li>  **true** </li></ul> |
 | `rook_dataDirHostPath` | Directory where Rook data are stored on **Storage** nodes | <ul><li> **/data/rook** (default) </li><br/></ul> |
 
+Others settings:
+
+| Parameter | Description | Values |
+| --- | --- | --- |
+| `kube_apiserver_enable_admission_plugins` | List of admission plugins to be enabled | <ul><li> **Depend on your deployment** </li><br/></ul> |
+
 # Kubernetes deployment
 
 Once all configuration files are set, run the following command to launch the Ansible playbook that will deploy the pre-configured Kubernetes cluster :
