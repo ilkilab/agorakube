@@ -1,7 +1,7 @@
 ---
-- name: Wait for Kubelet to start
-  pause:
-    seconds: 15
+#- name: Wait for Kubelet to start
+#  pause:
+#    seconds: 15
 - name: Include label workers
   include_tasks: label-workers.yaml
 

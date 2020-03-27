@@ -24,3 +24,12 @@
     state: absent
     path: "{{ coredns_tempdir.path }}"
   changed_when: false
+
+- name: Verify if coredns pods has successfully started
+  command: kubectl --kubeconfig {{ data_path }}/certificates/configs/admin/admin.conf get deploy -n kube-system coredns
+  changed_when: false
+  register: dashboard_deployment
+  until: dashboard_deployment.stdout.find("2/2") != -1
+  retries: 300
+  delay: 10
+  run_once: true

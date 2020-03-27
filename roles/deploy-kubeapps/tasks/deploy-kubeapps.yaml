@@ -1,7 +1,5 @@
 ---
-- name: Wait for Helm
-  pause:
-    seconds: 60
+
 - name: Check Helm repo bitnami
   command: |
     /usr/local/bin/linux-amd64/helm --kubeconfig \

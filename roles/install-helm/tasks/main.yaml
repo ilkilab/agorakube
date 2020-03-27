@@ -1,4 +1,5 @@
 ---
+
 - name: Install Helm
   unarchive:
     src: https://get.helm.sh/helm-{{ install_helm_version }}-linux-amd64.tar.gz
@@ -49,3 +50,12 @@
   when:
     - init_helm
     - install_helm
+
+- name: Verify if helm has successfully started
+  command: kubectl --kubeconfig {{ data_path }}/certificates/configs/admin/admin.conf get deploy -n kube-system tiller-deploy
+  changed_when: false
+  register: helm_deployment
+  until: helm_deployment.stdout.find("1/1") != -1
+  retries: 300
+  delay: 10
+  run_once: true
