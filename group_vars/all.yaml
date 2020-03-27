@@ -28,17 +28,17 @@ kube_proxy_ipvs_algotithm: rr
 
 # Custom features
 runtime: containerd
-network_cni_plugin: calico
+network_cni_plugin: flannel
 flannel_iface: default
 ingress_controller: traefik
 dns_server_soft: coredns
 populate_etc_hosts: yes
 k8s_dashboard: True
 service_mesh: linkerd
-linkerd_release: stable-2.7.0
-install_helm: True
-init_helm: True
-install_kubeapps: True
+linkerd_release: stable-2.6.0
+install_helm: false
+init_helm: false
+install_kubeapps: false
 
 # Calico
 calico_mtu: 1440
@@ -74,5 +74,5 @@ kube_apiserver_enable_admission_plugins:
 
 
 # Rook Settings
-enable_rook: True
+enable_rook: False
 rook_dataDirHostPath: /data/rook
