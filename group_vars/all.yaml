@@ -34,8 +34,8 @@ ingress_controller: traefik
 dns_server_soft: coredns
 populate_etc_hosts: yes
 k8s_dashboard: True
-service_mesh: none
-linkerd_release: stable-2.6.0
+service_mesh: linkerd
+linkerd_release: stable-2.7.0
 install_helm: True
 init_helm: True
 install_kubeapps: True
@@ -74,5 +74,5 @@ kube_apiserver_enable_admission_plugins:
 
 
 # Rook Settings
-enable_rook: False
+enable_rook: True
 rook_dataDirHostPath: /data/rook

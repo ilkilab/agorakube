@@ -25,3 +25,11 @@
   environment:
     PATH: /usr/local/bin:{{ ansible_env.PATH }}
 
+- name: Verify if helm has successfully started
+  command: kubectl --kubeconfig {{ data_path }}/certificates/configs/admin/admin.conf get deploy linkerd-controller -n linkerd
+  changed_when: false
+  register: linkerd_deployment
+  until: linkerd_deployment.stdout.find("1/1") != -1
+  retries: 300
+  delay: 10
+  run_once: true
