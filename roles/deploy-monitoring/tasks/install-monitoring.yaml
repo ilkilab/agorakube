@@ -1,4 +1,29 @@
 ---
+- name: Create tempdir
+  tempfile:
+    state: directory
+    suffix: monitoring
+  register: monitoring_tempdir
+  changed_when: false
+
+- name: Render config files
+  copy:
+    dest: "{{ monitoring_tempdir.path }}/agorakube-defaults-monitoring.yaml"
+    src: "agorakube-defaults-monitoring.yaml"
+  changed_when: false
+
+- name: Apply templates
+  command: kubectl --kubeconfig {{ data_path }}/certificates/configs/admin/admin.conf apply -f {{ monitoring_tempdir.path }}/agorakube-defaults-monitoring.yaml
+  register: apply_monitoring
+  changed_when: >
+    apply_calico.stdout is search("created")
+
+- name: Cleanup tempdir
+  file:
+    state: absent
+    path: "{{ monitoring_tempdir.path }}"
+  changed_when: false
+
 - name: Check Helm repo stable
   command: |
     /usr/local/bin/linux-amd64/helm --kubeconfig \
