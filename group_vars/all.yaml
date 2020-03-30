@@ -79,5 +79,5 @@ rook_dataDirHostPath: /data/rook
 
 
 
-# Monitoring
-enable_monitoring: True
+# Monitoring. Rook MUST be enabled to use monitoring (Monitoring use StorageClass to persist data)
+enable_monitoring: False
