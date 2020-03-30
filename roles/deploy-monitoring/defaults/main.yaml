@@ -1,0 +1,3 @@
+---
+enable_monitoring: False
+data_path: "/var/agorakube" 

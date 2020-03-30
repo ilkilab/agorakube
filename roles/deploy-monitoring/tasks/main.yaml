@@ -1,0 +1,4 @@
+---
+- name: Install monitoring tools
+  include_tasks: install-monitoring.yaml
+  when: enable_monitoring

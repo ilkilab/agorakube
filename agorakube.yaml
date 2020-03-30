@@ -42,4 +42,5 @@
     - deploy-rook
     - install-helm
     - deploy-kubeapps
+    - deploy-monitoring
     - show-info
