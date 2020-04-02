@@ -59,3 +59,4 @@
   retries: 300
   delay: 10
   run_once: true
+  when: install_helm
