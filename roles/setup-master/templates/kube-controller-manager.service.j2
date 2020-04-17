@@ -11,6 +11,7 @@ ExecStart=/usr/local/bin/kubernetes/server/bin/kube-controller-manager \
   --cluster-signing-key-file=/etc/kubernetes/pki/ca.key \
   --kubeconfig=/etc/kubernetes/manifests/kube-controller-manager.yaml \
   --leader-elect=true \
+  --profiling=false \
   --root-ca-file=/etc/kubernetes/pki/ca.crt \
   --client-ca-file=/etc/kubernetes/pki/ca.crt \
   --service-account-private-key-file=/etc/kubernetes/pki/sa.key \
