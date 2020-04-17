@@ -57,6 +57,7 @@ etcd_data_directory: "/var/lib/etcd"
 
 # KUBE-APISERVER spec
 kube_apiserver_enable_admission_plugins:
+  - AlwaysPullImages
   - NamespaceLifecycle
   - EventRateLimit
   - LimitRanger
