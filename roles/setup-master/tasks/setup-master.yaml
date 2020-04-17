@@ -3,6 +3,9 @@
   file:
     path: /etc/kubernetes/manifests/
     state: directory
+    owner: root
+    group: root
+    mode: '644'
 
 - name: Download Kubernetes server binaries
   unarchive:
@@ -15,16 +18,25 @@
   file:
     path: /var/lib/kubernetes
     state: directory
+    owner: root
+    group: root
+    mode: '644'
 
 - name: Create /etc/kubernetes/config
   file:
     path: /etc/kubernetes/config
     state: directory
+    owner: root
+    group: root
+    mode: '644'
 
 - name: Inject kube-encrypt config
   template:
     src: encryption-provider-config.yaml.j2
     dest: /var/lib/kubernetes/encryption-provider-config.yaml
+    owner: root
+    group: root
+    mode: '644'
   notify:
     - Restart kube-apiserver service
 
@@ -37,6 +49,9 @@
   template:
     src: kube-apiserver.service.j2
     dest: /etc/systemd/system/kube-apiserver.service
+    owner: root
+    group: root
+    mode: '644'
   notify:
     - Restart kube-apiserver service
 
@@ -51,6 +66,9 @@
   template:
     src: kube-controller-manager.service.j2
     dest: /etc/systemd/system/kube-controller-manager.service
+    owner: root
+    group: root
+    mode: '644'
   notify:
     - Restart kube-controller-manager service
 
@@ -58,6 +76,9 @@
   copy:
     src: kube-scheduler.yaml
     dest: /etc/kubernetes/config/kube-scheduler.yaml
+    owner: root
+    group: root
+    mode: '644'
   notify:
     - Restart kube-scheduler service
 
@@ -65,6 +86,9 @@
   copy:
     src: "{{ data_path }}/certificates/configs/scheduler/scheduler.conf"
     dest: /etc/kubernetes/manifests/kube-scheduler.yaml
+    owner: root
+    group: root
+    mode: '644'
   notify:
     - Restart kube-scheduler service
 
@@ -72,6 +96,9 @@
   template:
     src: kube-scheduler.service.j2
     dest: /etc/systemd/system/kube-scheduler.service
+    owner: root
+    group: root
+    mode: '644'
   notify:
     - Restart kube-scheduler service
 
