@@ -36,6 +36,15 @@
     path: "{{ backup_etcd_tempdir.path }}"
     state: absent
 
+- name: create folder {{ etcd_data_directory }}
+  file:
+    path: "{{ etcd_data_directory }}"
+    state: directory
+    recurse: yes
+    owner: etcd
+    group: etcd
+    mode: '0700'
+
 - name: Start etcd service
   systemd:
     name: etcd
