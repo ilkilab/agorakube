@@ -47,6 +47,7 @@ ExecStart=/usr/local/bin/kubernetes/server/bin/kube-apiserver \
   --requestheader-group-headers=X-Remote-Group \
   --requestheader-username-headers=X-Remote-User \
   --secure-port=6443 \
+  --profiling=false \
   --proxy-client-cert-file=/etc/kubernetes/pki/proxy/front-proxy-client.crt \
   --proxy-client-key-file=/etc/kubernetes/pki/proxy/front-proxy-client.key
 Restart=on-failure
