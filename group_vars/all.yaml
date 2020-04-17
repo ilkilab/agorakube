@@ -58,6 +58,7 @@ etcd_data_directory: "/var/lib/etcd"
 # KUBE-APISERVER spec
 kube_apiserver_enable_admission_plugins:
   - NamespaceLifecycle
+  - EventRateLimit
   - LimitRanger
   - ServiceAccount
   - TaintNodesByCondition
