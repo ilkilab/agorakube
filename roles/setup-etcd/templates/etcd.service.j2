@@ -16,7 +16,7 @@ ExecStart=/usr/bin/etcd-{{etcd_release}}-linux-amd64/etcd \
   --trusted-ca-file=/etc/kubernetes/pki/etcd/ca.crt \
   --peer-trusted-ca-file=/etc/kubernetes/pki/etcd/ca.crt \
   --peer-client-cert-auth \
-  --client-cert-auth \
+  --client-cert-auth="true" \
   --initial-advertise-peer-urls https://{{ hostvars[ansible_fqdn].ansible_host}}:2380 \
   --listen-peer-urls https://{{ hostvars[ansible_fqdn].ansible_host}}:2380 \
   --listen-client-urls https://{{ hostvars[ansible_fqdn].ansible_host}}:2379,https://127.0.0.1:2379 \
