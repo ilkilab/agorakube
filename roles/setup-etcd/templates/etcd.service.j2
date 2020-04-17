@@ -9,6 +9,7 @@ Documentation=https://github.com/coreos
 Type=notify
 ExecStart=/usr/bin/etcd-{{etcd_release}}-linux-amd64/etcd \
   --auto-tls=false \
+  --peer-auto-tls=false \
   --name {{ ansible_fqdn }} \
   --cert-file=/etc/kubernetes/pki/etcd/server.crt \
   --key-file=/etc/kubernetes/pki/etcd/server.key \
