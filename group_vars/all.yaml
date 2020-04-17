@@ -76,6 +76,7 @@ kube_apiserver_enable_admission_plugins:
   - ValidatingAdmissionWebhook
   - RuntimeClass
   - ResourceQuota
+  - SecurityContextDeny
 
 
 # Rook Settings
