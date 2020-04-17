@@ -11,8 +11,8 @@
     path: "{{ etcd_data_directory }}"
     state: directory
     recurse: yes
-    owner: etcd
-    group: etcd
+    owner: root
+    group: root
     mode: '0700'
 
 - name: Import etcd.service
