@@ -13,6 +13,7 @@ Documentation=https://github.com/kubernetes/kubernetes
 ExecStart=/usr/local/bin/kubernetes/server/bin/kube-apiserver \
   --advertise-address={{ hostvars[ansible_fqdn].ansible_host}} \
   --allow-privileged=true \
+  --anonymous-auth=false \
   --apiserver-count={{ groups['masters'] | length }} \
   --audit-log-maxage=30 \
   --audit-log-maxbackup=3 \
