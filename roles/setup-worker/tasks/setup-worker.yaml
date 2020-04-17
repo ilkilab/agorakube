@@ -13,10 +13,14 @@
   when:
   - ansible_fqdn in groups['workers']
   - ansible_fqdn not in groups['masters']
+
 - name: Create kubelet service
   template:
     src: kubelet.service.j2
     dest: /etc/systemd/system/kubelet.service
+    owner: root
+    group: root
+    mode: '644'
   notify:
     - restart kubelet
 
@@ -24,6 +28,9 @@
   template:
     src: kubelet-config.yaml.j2
     dest: /etc/kubernetes/kubelet-config.yaml
+    owner: root
+    group: root
+    mode: '644'
   notify:
     - restart kubelet
 
@@ -36,6 +43,9 @@
   copy:
     src: "{{ data_path }}/certificates/configs/kubelet/{{ ansible_fqdn }}/kubelet.config"
     dest: /etc/kubernetes/manifests/kubelet.conf
+    owner: root
+    group: root
+    mode: '644'
   notify:
     - restart kubelet
 
@@ -43,6 +53,9 @@
   template:
     src: kube-proxy.service.j2
     dest: /etc/systemd/system/kube-proxy.service
+    owner: root
+    group: root
+    mode: '644'
   notify:
     - restart kube-proxy
 
@@ -50,6 +63,9 @@
   template:
     src: kube-proxy-config.yaml.j2
     dest: /etc/kubernetes/kube-proxy-config.yaml
+    owner: root
+    group: root
+    mode: '644'
   notify:
     - restart kube-proxy
 
@@ -57,6 +73,9 @@
   copy:
     src: "{{ data_path }}/certificates/configs/proxier/proxier.conf"
     dest: /etc/kubernetes/manifests/proxier.conf
+    owner: root
+    group: root
+    mode: '644'
   notify:
     - restart kube-proxy
 
