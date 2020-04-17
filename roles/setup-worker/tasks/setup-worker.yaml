@@ -79,6 +79,22 @@
   notify:
     - restart kube-proxy
 
+- name: Set Kernel vm.overcommit_memory to 1
+  sysctl:
+    name: vm.overcommit_memory
+    value: '1'
+    sysctl_set: yes
+    state: present
+    reload: yes
+
+- name: Set Kernel kernel.panic to 10
+  sysctl:
+    name: kernel.panic
+    value: '10'
+    sysctl_set: yes
+    state: present
+    reload: yes
+
 - name: Start kubelet and kube-proxy services
   systemd:
     state: started
