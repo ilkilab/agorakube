@@ -73,6 +73,7 @@ kube_apiserver_enable_admission_plugins:
   - StorageObjectInUseProtection
   - PersistentVolumeClaimResize
   - MutatingAdmissionWebhook
+  - NodeRestriction
   - ValidatingAdmissionWebhook
   - RuntimeClass
   - ResourceQuota
