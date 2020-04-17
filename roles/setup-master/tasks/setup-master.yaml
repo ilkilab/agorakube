@@ -55,7 +55,7 @@
   notify:
     - Restart kube-apiserver service
 
-- name: Import kube-apiserver.service
+- name: Import kube-apiserver configuration files
   template:
     src: "{{ item }}"
     dest: /etc/kubernetes/config/{{ item }}
@@ -65,6 +65,7 @@
   with_items:
     - eventconfig.yaml
     - admission-control-config-file.yaml
+    - audit-policy.yaml
   notify:
     - Restart kube-apiserver service
 
