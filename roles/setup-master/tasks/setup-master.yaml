@@ -56,7 +56,7 @@
     - Restart kube-apiserver service
 
 - name: Import kube-apiserver configuration files
-  template:
+  copy:
     src: "{{ item }}"
     dest: /etc/kubernetes/config/{{ item }}
     owner: root
