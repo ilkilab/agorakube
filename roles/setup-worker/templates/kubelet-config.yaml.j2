@@ -12,6 +12,7 @@ authorization:
 clusterDomain: "cluster.local"
 clusterDNS:
   - "{{cluster_dns_ip}}"
+makeIPTablesUtilChains: true
 podCIDR: "{{ cluster_cidr }}"
 protectKernelDefaults: true
 readOnlyPort: 0
