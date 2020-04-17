@@ -59,6 +59,9 @@
   copy:
     src: "{{ data_path }}/certificates/configs/controller-manager/controller-manager.conf"
     dest: /etc/kubernetes/manifests/kube-controller-manager.yaml
+    owner: root
+    group: root
+    mode: '644'
   notify:
     - Restart kube-controller-manager service
 
