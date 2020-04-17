@@ -15,6 +15,7 @@ ExecStart=/usr/local/bin/kubernetes/server/bin/kube-controller-manager \
   --client-ca-file=/etc/kubernetes/pki/ca.crt \
   --service-account-private-key-file=/etc/kubernetes/pki/sa.key \
   --service-cluster-ip-range={{ service_cluster_ip_range }} \
+  --terminated-pod-gc-threshold=500 \
   --requestheader-client-ca-file=/etc/kubernetes/pki/front-proxy-ca.crt \
   --use-service-account-credentials=true \
   --allocate-node-cidrs=true \
