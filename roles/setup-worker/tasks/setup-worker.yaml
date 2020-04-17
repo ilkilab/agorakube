@@ -95,6 +95,14 @@
     state: present
     reload: yes
 
+- name: Set Kernel kernel.panic_on_oops to 1
+  sysctl:
+    name: kernel.panic_on_oops
+    value: '1'
+    sysctl_set: yes
+    state: present
+    reload: yes
+
 - name: Start kubelet and kube-proxy services
   systemd:
     state: started
