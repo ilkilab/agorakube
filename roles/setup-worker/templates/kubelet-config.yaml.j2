@@ -13,6 +13,7 @@ clusterDomain: "cluster.local"
 clusterDNS:
   - "{{cluster_dns_ip}}"
 podCIDR: "{{ cluster_cidr }}"
+readOnlyPort: 0
 {% if ansible_distribution == "Ubuntu" %}
 resolvConf: "/run/systemd/resolve/resolv.conf"
 {% endif %}
