@@ -5,6 +5,7 @@ Documentation=https://github.com/kubernetes/kubernetes
 [Service]
 ExecStart=/usr/local/bin/kubernetes/server/bin/kube-controller-manager \
   --address=0.0.0.0 \
+  --bind-address=127.0.0.1 \
   --cluster-cidr={{ cluster_cidr }} \
   --cluster-name=kubernetes \
   --cluster-signing-cert-file=/etc/kubernetes/pki/ca.crt \
