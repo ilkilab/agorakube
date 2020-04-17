@@ -48,6 +48,7 @@ ExecStart=/usr/local/bin/kubernetes/server/bin/kube-apiserver \
   --requestheader-username-headers=X-Remote-User \
   --request-timeout=60s \
   --secure-port=6443 \
+  --service-account-lookup=true \
   --profiling=false \
   --proxy-client-cert-file=/etc/kubernetes/pki/proxy/front-proxy-client.crt \
   --proxy-client-key-file=/etc/kubernetes/pki/proxy/front-proxy-client.key
