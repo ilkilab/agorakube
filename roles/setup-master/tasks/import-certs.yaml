@@ -3,6 +3,9 @@
   file:
     path: "{{ item }}"
     state: directory
+    owner: root
+    group: root
+    mode: '644'
   with_items:
     - /etc/kubernetes
     - /etc/kubernetes/pki
