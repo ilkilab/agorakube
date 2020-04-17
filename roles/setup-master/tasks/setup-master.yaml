@@ -55,6 +55,19 @@
   notify:
     - Restart kube-apiserver service
 
+- name: Import kube-apiserver.service
+  template:
+    src: "{{ item }}"
+    dest: /etc/kubernetes/config/{{ item }}
+    owner: root
+    group: root
+    mode: '644'
+  with_items:
+    - eventconfig.yaml
+    - admission-control-config-file.yaml
+  notify:
+    - Restart kube-apiserver service
+
 - name: Import controller-manager.conf kubeconfig
   copy:
     src: "{{ data_path }}/certificates/configs/controller-manager/controller-manager.conf"
