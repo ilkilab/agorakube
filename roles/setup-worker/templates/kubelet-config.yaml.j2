@@ -12,10 +12,15 @@ authorization:
 clusterDomain: "cluster.local"
 clusterDNS:
   - "{{cluster_dns_ip}}"
+eventRecordQPS: 5
+makeIPTablesUtilChains: true
 podCIDR: "{{ cluster_cidr }}"
+protectKernelDefaults: true
+readOnlyPort: 0
 {% if ansible_distribution == "Ubuntu" %}
 resolvConf: "/run/systemd/resolve/resolv.conf"
 {% endif %}
 runtimeRequestTimeout: "15m"
+streamingConnectionIdleTimeout: "5m"
 tlsCertFile: "/etc/kubernetes/pki/apiserver-kubelet-client.crt"
 tlsPrivateKeyFile: "/etc/kubernetes/pki/apiserver-kubelet-client.key"

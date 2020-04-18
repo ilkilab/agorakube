@@ -3,6 +3,9 @@
   file:
     path: "{{ item }}"
     state: directory
+    owner: root
+    group: root
+    mode: '644'
   with_items:
     - /etc/kubernetes
     - /etc/kubernetes/pki
@@ -14,6 +17,9 @@
   copy:
     src: "{{ data_path }}/certificates/intermediate/kubernetes-ca/signed/kubernetes-ca.pem"
     dest: /etc/kubernetes/pki/ca.crt
+    owner: root
+    group: root
+    mode: '644'
   notify:
     - Restart kube-apiserver service
     - Restart kube-controller-manager service
@@ -22,6 +28,9 @@
   copy:
     src: "{{ data_path }}/certificates/intermediate/kubernetes-ca/kubernetes-ca-key.pem"
     dest: /etc/kubernetes/pki/ca.key
+    owner: root
+    group: root
+    mode: '600'
   notify:
     - Restart kube-apiserver service
     - Restart kube-controller-manager service
@@ -31,6 +40,9 @@
   copy:
     src: "{{ data_path }}/certificates/intermediate/sa/signed/sa.pem"
     dest: /etc/kubernetes/pki/sa.crt
+    owner: root
+    group: root
+    mode: '644'
   notify:
     - Restart kube-apiserver service
 
@@ -38,6 +50,9 @@
   copy:
     src: "{{ data_path }}/certificates/intermediate/sa/sa-key.pem"
     dest: /etc/kubernetes/pki/sa.key
+    owner: root
+    group: root
+    mode: '600'
   notify:
     - Restart kube-controller-manager service
 ####
@@ -45,6 +60,9 @@
   copy:
     src: "{{ data_path }}/certificates/end/kube-apiserver/{{ ansible_fqdn }}/kube-apiserver.pem"
     dest: /etc/kubernetes/pki/apiserver.crt
+    owner: root
+    group: root
+    mode: '644'
   notify:
     - Restart kube-apiserver service
 
@@ -52,6 +70,9 @@
   copy:
     src: "{{ data_path }}/certificates/end/kube-apiserver/{{ ansible_fqdn }}/kube-apiserver-key.pem"
     dest: /etc/kubernetes/pki/apiserver.key
+    owner: root
+    group: root
+    mode: '600'
   notify:
     - Restart kube-apiserver service
 
@@ -62,6 +83,9 @@
   copy:
     src: "{{ item }}"
     dest: /etc/kubernetes/pki/token_authentication_keys/
+    owner: root
+    group: root
+    mode: '600'
   with_fileglob:
     - "{{ data_path }}/authentication_keys/*"
 
@@ -69,6 +93,9 @@
   copy:
     src: "{{ data_path }}/certificates/end/kube-apiserver-kubelet-client/kube-apiserver-kubelet-client.pem"
     dest: /etc/kubernetes/pki/apiserver-kubelet-client.crt
+    owner: root
+    group: root
+    mode: '644'
   notify:
     - Restart kube-apiserver service
 
@@ -76,6 +103,9 @@
   copy:
     src: "{{ data_path }}/certificates/end/kube-apiserver-kubelet-client/kube-apiserver-kubelet-client-key.pem"
     dest: /etc/kubernetes/pki/apiserver-kubelet-client.key
+    owner: root
+    group: root
+    mode: '600'
   notify:
     - Restart kube-apiserver service
 
@@ -83,6 +113,9 @@
   copy:
     src: "{{ data_path }}/certificates/end/kube-apiserver-etcd-client/kube-apiserver-etcd-client.pem"
     dest: /etc/kubernetes/pki/apiserver-etcd-client.crt
+    owner: root
+    group: root
+    mode: '644'
   notify:
     - Restart kube-apiserver service
 
@@ -90,6 +123,9 @@
   copy:
     src: "{{ data_path }}/certificates/end/kube-apiserver-etcd-client/kube-apiserver-etcd-client-key.pem"
     dest: /etc/kubernetes/pki/apiserver-etcd-client.key
+    owner: root
+    group: root
+    mode: '600'
   notify:
     - Restart kube-apiserver service
 
@@ -97,6 +133,9 @@
   copy:
     src: "{{ data_path }}/certificates/intermediate/etcd-ca/signed/etcd-ca.pem"
     dest: /etc/kubernetes/pki/etcd/ca.crt
+    owner: root
+    group: root
+    mode: '644'
   notify:
     - Restart kube-apiserver service
 
@@ -104,13 +143,22 @@
   copy:
     src: "{{ data_path }}/certificates/intermediate/kubernetes-front-proxy-ca/signed/kubernetes-front-proxy-ca.pem"
     dest: "/etc/kubernetes/pki/front-proxy-ca.crt"
+    owner: root
+    group: root
+    mode: '644'
 
 - name: Import apiextention client certificate
   copy:
     src: "{{ data_path }}/certificates/end/front-proxy-client/front-proxy-client.pem"
     dest: "/etc/kubernetes/pki/proxy/front-proxy-client.crt"
+    owner: root
+    group: root
+    mode: '644'
 
-- name: Import apiextention client certificate
+- name: Import apiextention client key
   copy:
     src: "{{ data_path }}/certificates/end/front-proxy-client/front-proxy-client-key.pem"
     dest: "/etc/kubernetes/pki/proxy/front-proxy-client.key"
+    owner: root
+    group: root
+    mode: '600'

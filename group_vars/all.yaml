@@ -57,7 +57,12 @@ etcd_data_directory: "/var/lib/etcd"
 
 # KUBE-APISERVER spec
 kube_apiserver_enable_admission_plugins:
+# plugin AlwaysPullImage can be deleted. Credentials would be required to pull the private images every time. 
+# Also, in trusted environments, this might increases load on network, registry, and decreases speed.
+#  - AlwaysPullImages
   - NamespaceLifecycle
+# ventRateLimit is used to limit DoS on API server in case of event Flooding
+  - EventRateLimit
   - LimitRanger
   - ServiceAccount
   - TaintNodesByCondition
@@ -68,9 +73,12 @@ kube_apiserver_enable_admission_plugins:
   - StorageObjectInUseProtection
   - PersistentVolumeClaimResize
   - MutatingAdmissionWebhook
+  - NodeRestriction
   - ValidatingAdmissionWebhook
   - RuntimeClass
   - ResourceQuota
+# SecurityContextDeny should be replaced by PodSecurityPolicy
+  - SecurityContextDeny
 
 
 # Rook Settings
