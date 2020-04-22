@@ -3,20 +3,14 @@
   file:
     path: "{{ item }}"
     state: directory
-    owner: root
-    group: root
-    mode: '644'
   with_items:
     - /etc/kubernetes
     - /etc/kubernetes/pki
 
-- name: Import kubernetes ca.crt
+- name: Import kubernetes ca.key
   copy:
     src: "{{ data_path }}/certificates/intermediate/kubernetes-ca/signed/kubernetes-ca.pem"
     dest: /etc/kubernetes/pki/ca.crt
-    owner: root
-    group: root
-    mode: '644'
   notify:
     - restart kubelet
 
@@ -24,9 +18,6 @@
   copy:
     src: "{{ data_path }}/certificates/end/kube-apiserver-kubelet-client/kube-apiserver-kubelet-client.pem"
     dest: /etc/kubernetes/pki/apiserver-kubelet-client.crt
-    owner: root
-    group: root
-    mode: '644'
   notify:
     - restart kubelet
 
@@ -34,8 +25,5 @@
   copy:
     src: "{{ data_path }}/certificates/end/kube-apiserver-kubelet-client/kube-apiserver-kubelet-client-key.pem"
     dest: /etc/kubernetes/pki/apiserver-kubelet-client.key
-    owner: root
-    group: root
-    mode: '600'
   notify:
     - restart kubelet

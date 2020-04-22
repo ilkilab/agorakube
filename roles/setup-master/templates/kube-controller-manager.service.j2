@@ -4,19 +4,17 @@ Documentation=https://github.com/kubernetes/kubernetes
 
 [Service]
 ExecStart=/usr/local/bin/kubernetes/server/bin/kube-controller-manager \
-  --bind-address=127.0.0.1 \
+  --address=0.0.0.0 \
   --cluster-cidr={{ cluster_cidr }} \
   --cluster-name=kubernetes \
   --cluster-signing-cert-file=/etc/kubernetes/pki/ca.crt \
   --cluster-signing-key-file=/etc/kubernetes/pki/ca.key \
   --kubeconfig=/etc/kubernetes/manifests/kube-controller-manager.yaml \
   --leader-elect=true \
-  --profiling=false \
   --root-ca-file=/etc/kubernetes/pki/ca.crt \
   --client-ca-file=/etc/kubernetes/pki/ca.crt \
   --service-account-private-key-file=/etc/kubernetes/pki/sa.key \
   --service-cluster-ip-range={{ service_cluster_ip_range }} \
-  --terminated-pod-gc-threshold=500 \
   --requestheader-client-ca-file=/etc/kubernetes/pki/front-proxy-ca.crt \
   --use-service-account-credentials=true \
   --allocate-node-cidrs=true \
