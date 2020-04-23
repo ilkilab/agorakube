@@ -1,3 +1,4 @@
+
 ---
 
 # CERTIFICATES
@@ -21,23 +22,23 @@ cluster_cidr: 10.33.0.0/16
 service_cluster_ip_range: 10.32.0.0/24
 kubernetes_service: 10.32.0.1
 cluster_dns_ip: 10.32.0.10
-service_node_port_range: 30000-32767
+service_node_port_range: 30000-32000
 kube_proxy_mode: ipvs
 kube_proxy_ipvs_algotithm: rr
-
+cni_release: v0.8.5
 
 # Custom features
-runtime: containerd
+runtime: docker
 network_cni_plugin: flannel
-flannel_iface: default
+flannel_iface: eth1
 ingress_controller: traefik
 dns_server_soft: coredns
 populate_etc_hosts: yes
 k8s_dashboard: True
-service_mesh: linkerd
+service_mesh: none
 linkerd_release: stable-2.6.0
-install_helm: false
-init_helm: false
+install_helm: False
+init_helm: False
 install_kubeapps: false
 
 # Calico
@@ -61,7 +62,7 @@ kube_apiserver_enable_admission_plugins:
 # Also, in trusted environments, this might increases load on network, registry, and decreases speed.
 #  - AlwaysPullImages
   - NamespaceLifecycle
-# ventRateLimit is used to limit DoS on API server in case of event Flooding
+# EventRateLimit is used to limit DoS on API server in case of event Flooding
   - EventRateLimit
   - LimitRanger
   - ServiceAccount
@@ -89,3 +90,4 @@ rook_dataDirHostPath: /data/rook
 
 # Monitoring. Rook MUST be enabled to use monitoring (Monitoring use StorageClass to persist data)
 enable_monitoring: False
+

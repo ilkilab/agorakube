@@ -52,23 +52,17 @@ metadata:
   namespace: kube-system
 data:
   Corefile: |
-    kubernetes cluster.local:53 {
-        errors
-        ready
-        kubernetes cluster.local in-addr.arpa ip6.arpa {
-          pods insecure
-          fallthrough in-addr.arpa ip6.arpa
-        }
-        prometheus :9153
-        forward . /etc/resolv.conf
-        cache 30
-        loop
-        reload
-        loadbalance
-    }
-    . {
-        forward . 8.8.8.8:53
-        health
+    .:53 {
+      errors
+      log
+      health
+      ready
+      kubernetes cluster.local {{ service_cluster_ip_range }}
+      cache 30
+      forward . 8.8.8.8
+      loop
+      reload
+      loadbalance
     }
 ---
 apiVersion: apps/v1
@@ -102,7 +96,7 @@ spec:
         beta.kubernetes.io/os: linux
       containers:
       - name: coredns
-        image: coredns/coredns:1.5.0
+        image: coredns/coredns:1.6.9
         imagePullPolicy: IfNotPresent
         resources:
           limits:
