@@ -56,7 +56,6 @@
   file:
     path: /etc/cni/net.d
     state: directory
-    recurse: yes
     owner: root
     group: root
     mode: '644'
