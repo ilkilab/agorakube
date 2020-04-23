@@ -187,6 +187,9 @@ spec:
         command:
         - /opt/bin/flanneld
         args:
+{% if 'default' != flannel_iface %}
+        - --iface={{ flannel_iface }}
+{% endif %}
         - --ip-masq
         - --kube-subnet-mgr
         resources:
