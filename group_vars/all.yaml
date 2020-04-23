@@ -25,7 +25,7 @@ cluster_dns_ip: 10.32.0.10
 service_node_port_range: 30000-32000
 kube_proxy_mode: ipvs
 kube_proxy_ipvs_algotithm: rr
-cni_release: 0.8.5
+cni_release: "0.8.5"
 
 # Custom features
 runtime: docker
