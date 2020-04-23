@@ -22,7 +22,6 @@
   file:
     path: /opt/cni/bin/
     state: directory
-    recurse: yes
     owner: root
     group: root
     mode: '644'
