@@ -57,7 +57,11 @@ data:
       log
       health
       ready
-      kubernetes cluster.local {{ service_cluster_ip_range }}
+      kubernetes cluster.local {{ service_cluster_ip_range }} {{ cluster_cidr }} {
+        pods insecure
+        fallthrough in-addr.arpa ip6.arpa
+        ttl 30
+      }
       cache 30
       forward . 8.8.8.8
       loop
