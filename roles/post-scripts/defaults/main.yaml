@@ -8,3 +8,6 @@ k8s_dashboard_admin: true
 service_mesh: linkerd
 linkerd_release: stable-2.6.0
 flannel_iface: default
+service_cluster_ip_range: 10.32.0.0/24
+cni_release: 0.8.5
+cluster_cidr: 10.33.0.0/16

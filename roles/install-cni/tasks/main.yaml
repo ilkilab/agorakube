@@ -1,0 +1,30 @@
+---
+
+- name: Create /etc/cni/net.d/ directory
+  file:
+    path: /etc/cni/net.d
+    state: directory
+    owner: root
+    group: root
+    mode: '644'
+    recurse: yes
+
+- name: Push /etc/cni/net.d/99-loopback.conf
+  template:
+    src: 99-loopback.conf.j2
+    dest: /etc/cni/net.d/99-loopback.conf
+
+- name: Create /opt/cni/bin/ directory
+  file:
+    path: /opt/cni/bin/
+    state: directory
+    owner: root
+    group: root
+    mode: '644'
+
+- name: Download CNI
+  unarchive:
+    src: https://github.com/containernetworking/plugins/releases/download/v{{ cni_release }}/cni-plugins-linux-amd64-v{{ cni_release }}.tgz
+    dest: /opt/cni/bin/
+    remote_src: yes
+    creates: /opt/cni/bin/bridge
