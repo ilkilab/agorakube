@@ -79,7 +79,7 @@ kube_apiserver_enable_admission_plugins:
   - RuntimeClass
   - ResourceQuota
 # SecurityContextDeny should be replaced by PodSecurityPolicy
-  - SecurityContextDeny
+#  - SecurityContextDeny
 
 
 # Rook Settings
