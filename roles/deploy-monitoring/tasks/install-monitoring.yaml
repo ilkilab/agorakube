@@ -16,7 +16,7 @@
   command: kubectl --kubeconfig {{ data_path }}/certificates/configs/admin/admin.conf apply -f {{ monitoring_tempdir.path }}/agorakube-defaults-monitoring.yaml
   register: apply_monitoring
   changed_when: >
-    apply_calico.stdout is search("created")
+    apply_monitoring.stdout is search("created")
 
 - name: Cleanup tempdir
   file:
