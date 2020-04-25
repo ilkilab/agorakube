@@ -11,8 +11,8 @@
 
 - name: Check CNI Pluging variable
   fail:
-    msg: "Network CNI plugin {{ network_cni_plugin }} is not supported ! Supported values are : flannel, calico, none"
-  when: network_cni_plugin not in ['flannel','calico','none']
+    msg: "Network CNI plugin {{ network_cni_plugin }} is not supported ! Supported values are : flannel, calico, kube-router none"
+  when: network_cni_plugin not in ['flannel','calico','kube-router','none']
 
 - name: check Ingress Controller
   fail:

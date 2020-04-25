@@ -1,0 +1,25 @@
+---
+- name: Create tempdir
+  tempfile:
+    state: directory
+    suffix: kube_router
+  register: kube_router_tempdir
+  changed_when: false
+
+- name: Render templates
+  template:
+    dest: "{{ kube_router_tempdir.path }}/kube-router.yaml"
+    src: "kube-router.yaml.j2"
+  changed_when: false
+
+- name: Apply templates
+  command: kubectl --kubeconfig {{ data_path }}/certificates/configs/admin/admin.conf apply -f {{ kube_router_tempdir.path }}/kube-router.yaml
+  register: apply_kube_router
+  changed_when: >
+    apply_kube_router.stdout is search("created")
+
+- name: Cleanup tempdir
+  file:
+    state: absent
+    path: "{{ kube_router_tempdir.path }}"
+  changed_when: false
