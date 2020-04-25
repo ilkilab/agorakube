@@ -16,7 +16,7 @@
   command: kubectl --kubeconfig {{ data_path }}/certificates/configs/admin/admin.conf apply -f {{ monitoring_tempdir.path }}/agorakube-defaults-monitoring.yaml
   register: apply_monitoring
   changed_when: >
-    apply_calico.stdout is search("created")
+    apply_monitoring.stdout is search("created")
 
 - name: Cleanup tempdir
   file:
@@ -84,7 +84,7 @@
   when: >
     check_agorakube_grafana_release.stdout is not search("agorakube-grafana")
 
-- name: Wait for agorakube_prometheus to be deployed
+- name: Wait for agorakube_grafana to be deployed
   command: kubectl --kubeconfig {{ data_path }}/certificates/configs/admin/admin.conf get deploy -n agorakube-monitoring agorakube-grafana
   changed_when: false
   register: agorakube_grafana_deployment
