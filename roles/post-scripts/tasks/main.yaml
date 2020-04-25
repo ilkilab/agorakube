@@ -13,6 +13,10 @@
   include_tasks: calico.yaml
   when: network_cni_plugin == 'calico'
 
+- name: Include Tasks Kube-router
+  include_tasks: calico.yaml
+  when: network_cni_plugin == 'kube-router'
+
 - name: Deploy CoreDNS to K8S
   include_tasks: coredns.yaml
   when: dns_server_soft == 'coredns'
