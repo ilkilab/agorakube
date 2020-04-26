@@ -30,16 +30,17 @@ cni_release: 0.8.5
 # Custom features
 runtime: containerd
 network_cni_plugin: flannel
-flannel_iface: default
+flannel_iface: eth1
 ingress_controller: traefik
 dns_server_soft: coredns
 populate_etc_hosts: yes
 k8s_dashboard: True
-service_mesh: linkerd
+service_mesh: none
 linkerd_release: stable-2.6.0
-install_helm: False
-init_helm: False
-install_kubeapps: false
+install_helm: True
+init_helm: True
+install_kubeapps: False
+install_harbor: True
 
 # Calico
 calico_mtu: 1440
@@ -83,7 +84,7 @@ kube_apiserver_enable_admission_plugins:
 
 
 # Rook Settings
-enable_rook: False
+enable_rook: True
 rook_dataDirHostPath: /data/rook
 
 
