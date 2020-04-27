@@ -18,7 +18,7 @@
   changed_when: >
     apply_harbor.stdout is search("created")
 
-- name: Wait for Calico to be deployed
+- name: Wait for Redis Cluster Pods to be deployed
   command: kubectl --kubeconfig {{ data_path }}/certificates/configs/admin/admin.conf get pod redis-cluster-harbor-5 -n harbor
   changed_when: false
   register: redis_ds
