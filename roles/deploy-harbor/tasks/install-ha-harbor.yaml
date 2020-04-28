@@ -157,3 +157,12 @@
     harbor/harbor
   when: >
     check_harbor_release.stdout is not search("harbor-postgresql")
+
+- name: Wait for Harbor to be deployed
+  command: kubectl --kubeconfig {{ data_path }}/certificates/configs/admin/admin.conf get deploy harbor-harbor-core -n harbor
+  changed_when: false
+  register: harbor_deployment
+  until: harbor_deployment.stdout.find("1/1") != -1
+  retries: 300
+  delay: 10
+  run_once: true
