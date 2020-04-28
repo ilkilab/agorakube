@@ -42,7 +42,6 @@
   delay: 10
   run_once: true
 
-
 - name: Check harbor-postgresql Release
   command: |
     /usr/local/bin/linux-amd64/helm --kubeconfig \
@@ -50,6 +49,40 @@
     list
   register: check_harbor_postgresql_release
   changed_when: false
+  
+- name: Create tempdir for harbor
+  tempfile:
+    state: directory
+    suffix: harbor
+  register: harbor_tempdir
+  changed_when: false
+  when: >
+    check_harbor_postgresql_release.stdout is not search("harbor-postgresql")
+
+- name: Render templates
+  copy:
+    dest: "{{ harbor_tempdir.path }}/initdb.yaml"
+    src: "initdb.yaml"
+  changed_when: false
+  when: >
+    check_harbor_postgresql_release.stdout is not search("harbor-postgresql")
+
+- name: Apply templates
+  command: kubectl --kubeconfig {{ data_path }}/certificates/configs/admin/admin.conf apply -f {{ harbor_tempdir.path }}/initdb.yaml
+  register: apply_harbor
+  changed_when: >
+    apply_harbor.stdout is search("created")
+    or apply_harbor.stdout is search("configured")
+  when: >
+    check_harbor_postgresql_release.stdout is not search("harbor-postgresql")
+
+- name: Cleanup tempdir
+  file:
+    state: absent
+    path: "{{ harbor_tempdir.path }}"
+  changed_when: false
+  when: >
+    check_harbor_postgresql_release.stdout is not search("harbor-postgresql")
 
 - name: Install harbor-postgresqsl Release
   command: /usr/local/bin/linux-amd64/helm --kubeconfig \
@@ -59,6 +92,7 @@
     --set persistence.size=8Gi --set replication.enabled=true \
     --set replication.slaveReplicas=2 --set replication.synchronousCommit=on \
     --set replication.numSynchronousReplicas=1 \
+    --set initdbScriptsConfigMap=postgresql-initdb \
     stable/postgresql
   when: >
     check_harbor_postgresql_release.stdout is not search("harbor-postgresql")
