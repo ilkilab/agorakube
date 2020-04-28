@@ -1,41 +1,43 @@
----
-- name: Create tempdir
-  tempfile:
-    state: directory
-    suffix: harbor
-  register: harbor_tempdir
+- name: Check Helm repo bitnami
+  command: |
+    /usr/local/bin/linux-amd64/helm --kubeconfig \
+    {{ data_path }}/certificates/configs/admin/admin.conf \
+     repo list
+  register: check_helm_repo_bitnami
   changed_when: false
 
-- name: Render configuration for HA Redis Cluster
-  copy:
-    dest: "{{ harbor_tempdir.path }}/harbor.yaml"
-    src: "redis-ha-harbor.yaml"
+- name: Helm install repo bitnami
+  command: |
+    /usr/local/bin/linux-amd64/helm --kubeconfig \
+    {{ data_path }}/certificates/configs/admin/admin.conf \
+    repo add bitnami https://charts.bitnami.com/bitnami
+  when: >
+    check_helm_repo_bitnami.stdout is not search("bitnami")
+
+- name: Check harbor-redis Release
+  command: |
+    /usr/local/bin/linux-amd64/helm --kubeconfig \
+    {{ data_path }}/certificates/configs/admin/admin.conf \
+    list
+  register: check_harbor_redis_release
   changed_when: false
 
-- name: Apply HA Redis Cluster
-  command: kubectl --kubeconfig {{ data_path }}/certificates/configs/admin/admin.conf apply -f {{ harbor_tempdir.path }}/harbor.yaml
-  register: apply_harbor
-  changed_when: >
-    apply_harbor.stdout is search("created")
+- name: Install harbor-redis Release
+  command: /usr/local/bin/linux-amd64/helm --kubeconfig \
+    {{ data_path }}/certificates/configs/admin/admin.conf \
+    install --name harbor-redis --namespace harbor \
+    --set master.persistence.enabled=true --set master.persistence.storageClass=rook-ceph-block \
+    --set slave.persistence.enabled=true --set slave.persistence.storageClass=rook-ceph-block \
+    --set cluster.enabled=true --set cluster.slaveCount=3 \
+    stable/redis
+  when: >
+    check_harbor_redis_release.stdout is not search("harbor-redis")
 
-- name: Wait for Redis Cluster Pods to be deployed
-  command: kubectl --kubeconfig {{ data_path }}/certificates/configs/admin/admin.conf get pod redis-cluster-harbor-5 -n harbor
+- name: Wait for Harbor-Redis HA Cluster to be deployed
+  command: kubectl --kubeconfig {{ data_path }}/certificates/configs/admin/admin.conf get pod -n harbor harbor-redis-slave-2
   changed_when: false
-  register: redis_ds
-  until: redis_ds.stdout.find("1/1") != -1
+  register: harbor_redis_cluster
+  until: harbor_redis_cluster.stdout.find("1/1") != -1
   retries: 300
   delay: 10
   run_once: true
-
-- name: Initialize Redis Cluster master/slaves
-  expect:
-    command: kubectl --kubeconfig {{ data_path }}/certificates/configs/admin/admin.conf exec -it redis-cluster-harbor-0 -n harbor -- redis-cli --cluster create --cluster-replicas 1 $(kubectl get pods -l app=redis-cluster-harbor -o jsonpath='{range.items[*]}{.status.podIP}:6379 ')
-    responses:
-      Question:
-        - yes
-
-- name: Cleanup tempdir
-  file:
-    state: absent
-    path: "{{ harbor_tempdir.path }}"
-  changed_when: false
