@@ -1,3 +1,4 @@
+---
 - name: Check Helm repo bitnami
   command: |
     /usr/local/bin/linux-amd64/helm --kubeconfig \
