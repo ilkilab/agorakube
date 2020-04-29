@@ -29,7 +29,7 @@ cni_release: 0.8.5
 
 # Custom features
 runtime: containerd
-network_cni_plugin: flannel
+network_cni_plugin: calico
 flannel_iface: eth1
 ingress_controller: traefik
 dns_server_soft: coredns

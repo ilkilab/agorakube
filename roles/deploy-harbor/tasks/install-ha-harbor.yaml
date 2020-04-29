@@ -64,7 +64,6 @@
   copy:
     dest: "{{ harbor_tempdir.path }}/initdb.yaml"
     src: "initdb.yaml"
-  changed_when: false
   when: >
     check_harbor_postgresql_release.stdout is not search("harbor-postgresql")
 
@@ -131,35 +130,42 @@
   register: check_harbor_release
   changed_when: false
 
-- name: Install harbor Release
-  command: /usr/local/bin/linux-amd64/helm --kubeconfig \
-    {{ data_path }}/certificates/configs/admin/admin.conf \
-    install --name harbor --namespace harbor \
-    --set persistence.enabled=true \
-    --set persistence.persistentVolumeClaim.registry.storageClass=rook-ceph-block \
-    --set persistence.persistentVolumeClaim.registry.size=5Gi \
-    --set persistence.persistentVolumeClaim.chartmuseum.storageClass=rook-ceph-block \
-    --set persistence.persistentVolumeClaim.chartmuseum.size=5Gi \
-    --set persistence.persistentVolumeClaim.jobservice.storageClass=rook-ceph-block \
-    --set persistence.persistentVolumeClaim.jobservice.size=1Gi \
-    --set harborAdminPassword=Harbor12345 \
-    --set expose.type=ingress \
-    --set database.type=external \
-    --set database.external.host=harbor-postgresql \
-    --set database.external.username=postgres \
-    --set database.external.password=$(kubectl --kubeconfig {{ data_path }}/certificates/configs/admin/admin.conf get secret --namespace harbor harbor-postgresql -o jsonpath="{.data.postgresql-password}" | base64 --decode) \
-    --set redis.type=external \
-    --set redis.external.host=harbor-redis-master \
-    --set redis.external.password=$(kubectl --kubeconfig {{ data_path }}/certificates/configs/admin/admin.conf get secret --namespace harbor harbor-redis -o jsonpath="{.data.redis-password}" | base64 --decode) \
-    --set externalURL=https://harbor.ilkilabs.io \
-    --set expose.ingress.hosts.core=core.ilkilabs.io \
-    --set expose.ingress.hosts.notary=notary.ilkilabs.io \
-    harbor/harbor
+- name: Create tempdir for harbor
+  tempfile:
+    state: directory
+    suffix: harbor_agora
+  register: harbor_agora_tempdir
+  changed_when: false
   when: >
-    check_harbor_release.stdout is not search("harbor-postgresql")
+    check_harbor_release.stdout is not search("harbor-agora")
+
+- name: Render templates
+  template:
+    dest: "{{ harbor_agora_tempdir.path }}/deploy-harbor.sh"
+    src: deploy-harbor.sh.j2
+    mode: 0755
+  when: >
+    check_harbor_release.stdout is not search("harbor-agora")
+
+- name: Apply templates
+  command: "{{ harbor_agora_tempdir.path }}/deploy-harbor.sh" 
+  register: apply_harbor_agora
+  changed_when: >
+    apply_harbor_agora.stdout is search("created")
+    or apply_harbor_agora.stdout is search("configured")
+  when: >
+    check_harbor_release.stdout is not search("harbor-agora")
+
+- name: Cleanup tempdir
+  file:
+    state: absent
+    path: "{{ harbor_agora_tempdir.path }}"
+  changed_when: false
+  when: >
+    check_harbor_release.stdout is not search("harbor-agora")
 
 - name: Wait for Harbor to be deployed
-  command: kubectl --kubeconfig {{ data_path }}/certificates/configs/admin/admin.conf get deploy harbor-harbor-core -n harbor
+  command: kubectl --kubeconfig {{ data_path }}/certificates/configs/admin/admin.conf get deploy harbor-agora-harbor-core -n harbor
   changed_when: false
   register: harbor_deployment
   until: harbor_deployment.stdout.find("1/1") != -1

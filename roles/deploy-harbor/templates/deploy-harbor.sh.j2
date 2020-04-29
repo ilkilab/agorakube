@@ -1,0 +1,24 @@
+#!/bin/bash
+/usr/local/bin/linux-amd64/helm --kubeconfig \
+    {{ data_path }}/certificates/configs/admin/admin.conf \
+    install --name harbor-agora --namespace harbor \
+    --set persistence.enabled=true \
+    --set persistence.persistentVolumeClaim.registry.storageClass=rook-ceph-block \
+    --set persistence.persistentVolumeClaim.registry.size=5Gi \
+    --set persistence.persistentVolumeClaim.chartmuseum.storageClass=rook-ceph-block \
+    --set persistence.persistentVolumeClaim.chartmuseum.size=5Gi \
+    --set persistence.persistentVolumeClaim.jobservice.storageClass=rook-ceph-block \
+    --set persistence.persistentVolumeClaim.jobservice.size=1Gi \
+    --set harborAdminPassword=Harbor12345 \
+    --set expose.type=ingress \
+    --set database.type=external \
+    --set database.external.host=harbor-postgresql \
+    --set database.external.username=postgres \
+    --set database.external.password=$(kubectl --kubeconfig {{ data_path }}/certificates/configs/admin/admin.conf get secret --namespace harbor harbor-postgresql -o jsonpath="{.data.postgresql-password}" | base64 --decode) \
+    --set redis.type=external \
+    --set redis.external.host=harbor-redis-master \
+    --set redis.external.password=$(kubectl --kubeconfig {{ data_path }}/certificates/configs/admin/admin.conf get secret --namespace harbor harbor-redis -o jsonpath="{.data.redis-password}" | base64 --decode) \
+    --set externalURL=https://harbor.ilkilabs.io \
+    --set expose.ingress.hosts.core=core.ilkilabs.io \
+    --set expose.ingress.hosts.notary=notary.ilkilabs.io \
+    harbor/harbor
