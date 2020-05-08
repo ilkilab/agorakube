@@ -1,4 +1,5 @@
 ---
 install_harbor: False
 harbor_external_url: "https://harbor.ilkilabs.io"
+notary_external_url: "https://notary.ilkilabs.io"
 harbor_admin_password: "ChangeMe!"
