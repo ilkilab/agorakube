@@ -148,7 +148,7 @@
     check_harbor_release.stdout is not search("harbor-agora")
 
 - name: Apply templates
-  command: "{{ harbor_agora_tempdir.path }}/deploy-harbor.sh" 
+  command: "{{ harbor_agora_tempdir.path }}/deploy-harbor.sh"
   register: apply_harbor_agora
   changed_when: >
     apply_harbor_agora.stdout is search("created")
