@@ -95,4 +95,4 @@ enable_monitoring: False
 install_harbor: False
 harbor_external_url: "https://harbor.ilkilabs.io"
 harbor_admin_password: "ChangeMe!"
-
+notary_external_url: "https://notary.ilkilabs.io"
