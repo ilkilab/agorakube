@@ -29,17 +29,21 @@ cni_release: 0.8.5
 
 # Custom features
 runtime: containerd
-network_cni_plugin: flannel
-flannel_iface: default
+network_cni_plugin: calico
+flannel_iface: eth1
 ingress_controller: traefik
 dns_server_soft: coredns
-populate_etc_hosts: True
+populate_etc_hosts: yes
 k8s_dashboard: True
-service_mesh: linkerd
+service_mesh: none
 linkerd_release: stable-2.6.0
 install_helm: True
-init_helm: False
+init_helm: True
 install_kubeapps: False
+install_harbor: True
+harbor_ingress_host: harbor.ilkilabs.io
+notary_ingress_host: notary.ilkilabs.io
+harbor_admin_password: ChangeMe!
 
 # Calico
 calico_mtu: 1440
@@ -83,7 +87,7 @@ kube_apiserver_enable_admission_plugins:
 
 
 # Rook Settings
-enable_rook: False
+enable_rook: True
 rook_dataDirHostPath: /data/rook
 
 
@@ -91,8 +95,3 @@ rook_dataDirHostPath: /data/rook
 # Monitoring. Rook MUST be enabled to use monitoring (Monitoring use StorageClass to persist data)
 enable_monitoring: False
 
-# Registry Harbor
-install_harbor: False
-harbor_external_url: "https://harbor.ilkilabs.io"
-harbor_admin_password: "ChangeMe!"
-notary_external_url: "https://notary.ilkilabs.io"
