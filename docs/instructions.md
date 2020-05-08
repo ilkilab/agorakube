@@ -359,6 +359,9 @@ Harbor Settings
 | Parameter | Description | Values |
 | --- | --- | --- |
 | `install_harbor` | Deploy Harbor Registry - Warrning : **Rook Must be enabled !** | <ul><li> **False** (default) </li><br/><li>  **true** </li></ul> |
+| `harbor_admin_password` | Admin password for Harbor UI | <ul><li> **ChangeMe!** (default) </li></ul> |
+| `harbor_ingress_host` | Host entry in Ingress. Harbor will be expose at **https://{{ harbor_ingress_host }}** (Depend on your ingress configuration) | <ul><li> harbor.ilkilabs.io (default) </li></ul> |
+| `notary_ingress_host` | Host entry in Ingress. Notary will be expose at **https://{{ notary.ilkilabs.io }}** (Depend on your ingress configuration) | <ul><li> **notary.ilkilabs.io** (default) </li></ul> |
 
 Monitoring Settings
 
