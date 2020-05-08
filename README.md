@@ -57,6 +57,8 @@ This distribution is also adaptive by offering the opportunity to customize your
 * Registry: Harbor full featured
 * Monitoring: Prometheus/Grafana
 * CNI plugin: Flannel, Calico, Kube-router
+* Packaging: Helm
+* Self service application portal: Kubeapps
 * ...
 
 This project is currently under active development so other customizable options will be added soon.
