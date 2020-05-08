@@ -29,7 +29,7 @@ This section explains what are the prerequisites to install [AgoraKube](https://
 
 Below the OS currently supported on all the machines :
   - Ubuntu 18.04 (Bionic) - amd64
-  - Centos 7 & 8 - amd64
+  - Centos 7 - amd64
   
 ## Node Sizing
 
@@ -339,6 +339,19 @@ Rook Settings
 | --- | --- | --- |
 | `enable_rook` | Deploy Rook Ceph cluster on on **storage members** | <ul><li> **False** (default) </li><br/><li>  **true** </li></ul> |
 | `rook_dataDirHostPath` | Directory where Rook data are stored on **Storage** nodes | <ul><li> **/data/rook** (default) </li><br/></ul> |
+
+Harbor Settings
+
+| Parameter | Description | Values |
+| --- | --- | --- |
+| `install_harbor` | Deploy Harbor Registry - Warrning : **Rook Must be enabled !** | <ul><li> **False** (default) </li><br/><li>  **true** </li></ul> |
+
+Monitoring Settings
+
+| Parameter | Description | Values |
+| --- | --- | --- |
+| `enable_monitoring` | Deploy monitoring - Warrning : **Rook Must be enabled !** | <ul><li> **False** (default) </li><br/><li>  **true** </li></ul> |
+
 
 Others settings:
 
