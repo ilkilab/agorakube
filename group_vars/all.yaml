@@ -40,7 +40,6 @@ linkerd_release: stable-2.6.0
 install_helm: True
 init_helm: False
 install_kubeapps: False
-install_harbor: False
 
 # Calico
 calico_mtu: 1440
@@ -91,4 +90,9 @@ rook_dataDirHostPath: /data/rook
 
 # Monitoring. Rook MUST be enabled to use monitoring (Monitoring use StorageClass to persist data)
 enable_monitoring: False
+
+# Registry Harbor
+install_harbor: False
+harbor_external_url: "https://harbor.ilkilabs.io"
+harbor_admin_password: "ChangeMe!"
 
