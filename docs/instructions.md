@@ -193,14 +193,13 @@ network_cni_plugin: flannel
 flannel_iface: default
 ingress_controller: traefik
 dns_server_soft: coredns
-populate_etc_hosts: True
+populate_etc_hosts: yes
 k8s_dashboard: True
 service_mesh: linkerd
 linkerd_release: stable-2.6.0
-install_helm: True
+install_helm: False
 init_helm: False
 install_kubeapps: False
-install_harbor: False
 
 # Calico
 calico_mtu: 1440
@@ -251,6 +250,15 @@ rook_dataDirHostPath: /data/rook
 
 # Monitoring. Rook MUST be enabled to use monitoring (Monitoring use StorageClass to persist data)
 enable_monitoring: False
+
+
+# Enable Harbor Registry - Contain Chartmuseum, notary, clair, registry.
+# Harbor will be expose by HTTPS with Ingress Resource.
+# Rook MUST be enabled to use Harbor (Harbor use StorageClass to persist data)
+install_harbor: False
+harbor_ingress_host: harbor.ilkilabs.io
+notary_ingress_host: notary.ilkilabs.io
+harbor_admin_password: ChangeMe!
 ```
 
 **Note :** You can also modify the IPs-CIDR if you want.
