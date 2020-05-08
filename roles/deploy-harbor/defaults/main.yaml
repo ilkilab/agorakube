@@ -1,3 +1,4 @@
 ---
 install_harbor: False
 harbor_external_url: "https://harbor.ilkilabs.io"
+harbor_admin_password: "ChangeMe!"
