@@ -1,2 +1,3 @@
 ---
 install_harbor: False
+external_url: "https://harbor.ilkilabs.io"
