@@ -50,7 +50,7 @@
     list
   register: check_harbor_postgresql_release
   changed_when: false
-  
+
 - name: Create tempdir for harbor
   tempfile:
     state: directory
