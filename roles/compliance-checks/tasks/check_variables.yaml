@@ -88,3 +88,26 @@
   fail:
     msg: "Variable data_path must be a linux path ! Get {{ data_path }}"
   when: data_path is not regex("^(\/[^\/ ]*)+\/?$")
+
+- name: Check enable_rook
+  fail:
+    msg: "Variable enable_rook is set to {{ enable_rook }} ! Supported values are : True, False"
+  when: (enable_rook | string) not in ['True','False']
+
+- name: Check rook_dataDirHostPath variable
+  fail:
+    msg: "Variable rook_dataDirHostPath must be a linux path ! Get {{ rook_dataDirHostPath }}"
+  when: rook_dataDirHostPath is not regex("^(\/[^\/ ]*)+\/?$")
+
+- name: Check install_harbor
+  fail:
+    msg: "Variable install_harbor is set to {{ install_harbor }} ! Supported values are : True, False"
+  when: (install_harbor | string) not in ['True','False']
+  
+- name: Ensure Persistent storage is enabled when Harbor is enabled
+  fail:
+    msg: "Variable enable_rook is set to {{ install_helm }} ! enable_rook must be set to true is harbor is enabled !
+  when:
+  - install_harbor
+  - not enable_rook
+
