@@ -106,7 +106,7 @@
   
 - name: Ensure Persistent storage is enabled when Harbor is enabled
   fail:
-    msg: "Variable enable_rook is set to {{ enable_rook }} ! enable_rook must be set to true is harbor is enabled !"
+    msg: "Variable enable_rook is set to {{ enable_rook }} ! enable_rook must be set to true if harbor is enabled !"
   when:
   - install_harbor
   - not enable_rook
