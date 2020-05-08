@@ -18,7 +18,7 @@
     --set redis.type=external \
     --set redis.external.host=harbor-redis-master \
     --set redis.external.password=$(kubectl --kubeconfig {{ data_path }}/certificates/configs/admin/admin.conf get secret --namespace harbor harbor-redis -o jsonpath="{.data.redis-password}" | base64 --decode) \
-    --set externalURL=https://harbor.ilkilabs.io \
+    --set externalURL={{ harbor_external_url }} \
     --set expose.ingress.hosts.core=core.ilkilabs.io \
     --set expose.ingress.hosts.notary=notary.ilkilabs.io \
     harbor/harbor
