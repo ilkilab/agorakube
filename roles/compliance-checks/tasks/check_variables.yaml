@@ -111,3 +111,9 @@
   - install_harbor
   - not enable_rook
 
+- name: Ensure Persistent storage is enabled when Monitoring is enabled
+  fail:
+    msg: "Variable enable_rook is set to {{ enable_rook }} ! enable_rook must be set to true if Monitoring is enabled !"
+  when:
+  - enable_monitoring
+  - not enable_rook
