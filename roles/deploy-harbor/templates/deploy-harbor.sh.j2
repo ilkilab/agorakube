@@ -9,7 +9,7 @@
     --set persistence.persistentVolumeClaim.chartmuseum.size=5Gi \
     --set persistence.persistentVolumeClaim.jobservice.storageClass=rook-ceph-block \
     --set persistence.persistentVolumeClaim.jobservice.size=1Gi \
-    --set harborAdminPassword=Harbor12345 \
+    --set harborAdminPassword={{ harbor_admin_password }} \
     --set expose.type=ingress \
     --set database.type=external \
     --set database.external.host=harbor-postgresql \
