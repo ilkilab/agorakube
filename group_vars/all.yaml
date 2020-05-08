@@ -29,16 +29,16 @@ cni_release: 0.8.5
 
 # Custom features
 runtime: containerd
-network_cni_plugin: calico
-flannel_iface: eth1
+network_cni_plugin: flannel
+flannel_iface: default
 ingress_controller: traefik
 dns_server_soft: coredns
 populate_etc_hosts: yes
 k8s_dashboard: True
-service_mesh: none
+service_mesh: linkerd
 linkerd_release: stable-2.6.0
-install_helm: True
-init_helm: True
+install_helm: False
+init_helm: False
 install_kubeapps: False
 
 # Calico
@@ -83,7 +83,7 @@ kube_apiserver_enable_admission_plugins:
 
 
 # Rook Settings
-enable_rook: True
+enable_rook: False
 rook_dataDirHostPath: /data/rook
 
 
@@ -94,7 +94,8 @@ enable_monitoring: False
 
 # Enable Harbor Registry - Contain Chartmuseum, notary, clair, registry.
 # Harbor will be expose by HTTPS with Ingress Resource.
-install_harbor: True
+# Rook MUST be enabled to use Harbor (Harbor use StorageClass to persist data)
+install_harbor: False
 harbor_ingress_host: harbor.ilkilabs.io
 notary_ingress_host: notary.ilkilabs.io
 harbor_admin_password: ChangeMe!
