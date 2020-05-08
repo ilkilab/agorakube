@@ -40,10 +40,6 @@ linkerd_release: stable-2.6.0
 install_helm: True
 init_helm: True
 install_kubeapps: False
-install_harbor: True
-harbor_ingress_host: harbor.ilkilabs.io
-notary_ingress_host: notary.ilkilabs.io
-harbor_admin_password: ChangeMe!
 
 # Calico
 calico_mtu: 1440
@@ -94,4 +90,12 @@ rook_dataDirHostPath: /data/rook
 
 # Monitoring. Rook MUST be enabled to use monitoring (Monitoring use StorageClass to persist data)
 enable_monitoring: False
+
+
+# Enable Harbor Registry - Contain Chartmuseum, notary, clair, registry.
+# Harbor will be expose by HTTPS with Ingress Resource.
+install_harbor: True
+harbor_ingress_host: harbor.ilkilabs.io
+notary_ingress_host: notary.ilkilabs.io
+harbor_admin_password: ChangeMe!
 
