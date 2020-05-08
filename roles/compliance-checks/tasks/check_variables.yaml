@@ -103,7 +103,7 @@
   fail:
     msg: "Variable install_harbor is set to {{ install_harbor }} ! Supported values are : True, False"
   when: (install_harbor | string) not in ['True','False']
-  
+
 - name: Ensure Persistent storage is enabled when Harbor is enabled
   fail:
     msg: "Variable enable_rook is set to {{ enable_rook }} ! enable_rook must be set to true if harbor is enabled !"
