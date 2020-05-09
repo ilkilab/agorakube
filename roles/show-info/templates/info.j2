@@ -98,6 +98,23 @@ Kubernetes dashboard can be accessed by following the steps below:
   - Password: {{ harbor_admin_password }}
 
 {% endif %}
+
+
+{% if enable_rook_minio  %}
+#############################################
+#      ACCESS MinIO infrastrucuture Cluster #
+#############################################
+Kubernetes dashboard can be accessed by following the steps below:
+
+1. Run follwoing command on your client machine (kubectl have to be configured)
+# kubectl port-forward service/minio-infra 9000:9000 -n rook-minio-infra
+
+2. Visit following URL on deploy machine.
+# http://127.0.0.1:9000/
+
+3. Login with "rook_minio_infra_access_key" and "rook_minio_infra_secret_key" variables.
+   Warning: "rook_minio_infra_access_key" and "rook_minio_infra_secret_key" are base64 encoded. You have to decode them before use.
+{% endif %}
 ################################################################################
 
    Run following command to see this information again anytime.
