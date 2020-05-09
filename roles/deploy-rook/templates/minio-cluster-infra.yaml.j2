@@ -58,6 +58,7 @@ spec:
     name: minio-infra-access-keys
     namespace: rook-minio-infra
   clusterDomain:
+{% if expose_minio_infra_nodeport  %}
 ---
 apiVersion: v1
 kind: Service
@@ -70,3 +71,4 @@ spec:
     - port: 9000
   selector:
     app: minio
+{% endif %}
