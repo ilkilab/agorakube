@@ -1,5 +1,0 @@
----
-- hosts: deploy
-  become: true
-  roles:
-    - deploy-rook
