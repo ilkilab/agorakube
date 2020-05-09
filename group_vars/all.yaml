@@ -87,7 +87,7 @@ enable_rook: True
 rook_dataDirHostPath: /data/rook
 
 # Minio Settings
-# Minio Key MUST BE Base64 encoded
+# Minio Key MUST BE Base64 encoded and Rook MUST be enabed.
 # VEVNUF9ERU1PX0FDQ0VTU19LRVk= : TEMP_DEMO_ACCESS_KEY
 # VEVNUF9ERU1PX1NFQ1JFVF9LRVk= : TEMP_DEMO_SECRET_KEY
 enable_rook_minio: True
