@@ -1,4 +1,8 @@
 ---
 - name: Install rook
-  include_tasks: install-rook.yaml
+  include_tasks: install-rook-ceph.yaml
   when: enable_rook
+
+- name: Install Rook MinIO
+  include_tasks: install-rook-minio.yaml
+  when: enable_rook_minio

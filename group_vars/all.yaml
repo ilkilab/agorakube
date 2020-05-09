@@ -1,3 +1,4 @@
+
 ---
 
 # CERTIFICATES
@@ -28,13 +29,13 @@ cni_release: 0.8.5
 
 # Custom features
 runtime: containerd
-network_cni_plugin: flannel
+network_cni_plugin: kube-router
 flannel_iface: default
-ingress_controller: traefik
+ingress_controller: nginx
 dns_server_soft: coredns
 populate_etc_hosts: yes
 k8s_dashboard: True
-service_mesh: linkerd
+service_mesh: none
 linkerd_release: stable-2.6.0
 install_helm: False
 init_helm: False
@@ -82,10 +83,11 @@ kube_apiserver_enable_admission_plugins:
 
 
 # Rook Settings
-enable_rook: False
+enable_rook: True
 rook_dataDirHostPath: /data/rook
-
-
+enable_rook_minio: True
+rook_minio_infra_access_key: VEVNUF9ERU1PX0FDQ0VTU19LRVk=
+rook_minio_infra_secret_key: VEVNUF9ERU1PX1NFQ1JFVF9LRVk=
 
 # Monitoring. Rook MUST be enabled to use monitoring (Monitoring use StorageClass to persist data)
 enable_monitoring: False
@@ -98,3 +100,4 @@ install_harbor: False
 harbor_ingress_host: harbor.ilkilabs.io
 notary_ingress_host: notary.ilkilabs.io
 harbor_admin_password: ChangeMe!
+
