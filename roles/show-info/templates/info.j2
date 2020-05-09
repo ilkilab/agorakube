@@ -89,7 +89,15 @@ Kubernetes dashboard can be accessed by following the steps below:
 3. Login with the password from step 1 and the username: admin
 
 {% endif %}
+{% if install_harbor  %}
+############################################
+#      ACCESS Harbor DASHBOARD             #
+############################################
+1. Harbor is available through Ingress Kubernetes Resource at : https://{{ harbor_ingress_host }} (Depend on your ingress - Port may change...)
+  - User: admin
+  - Password: {{ harbor_admin_password }}
 
+{% endif %}
 ################################################################################
 
    Run following command to see this information again anytime.

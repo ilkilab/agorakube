@@ -29,7 +29,7 @@ This section explains what are the prerequisites to install [AgoraKube](https://
 
 Below the OS currently supported on all the machines :
   - Ubuntu 18.04 (Bionic) - amd64
-  - Centos 7 & 8 - amd64
+  - Centos 7 - amd64
   
 ## Node Sizing
 
@@ -172,7 +172,7 @@ rotate_full_pki: false
 
 # Components version
 etcd_release: v3.4.5
-kubernetes_release: v1.18.0
+kubernetes_release: v1.18.2
 delete_previous_k8s_install: False
 delete_etcd_install: False
 check_etcd_install: True
@@ -182,10 +182,10 @@ cluster_cidr: 10.33.0.0/16
 service_cluster_ip_range: 10.32.0.0/24
 kubernetes_service: 10.32.0.1
 cluster_dns_ip: 10.32.0.10
-service_node_port_range: 30000-32767
+service_node_port_range: 30000-32000
 kube_proxy_mode: ipvs
 kube_proxy_ipvs_algotithm: rr
-
+cni_release: 0.8.5
 
 # Custom features
 runtime: containerd
@@ -197,9 +197,9 @@ populate_etc_hosts: yes
 k8s_dashboard: True
 service_mesh: linkerd
 linkerd_release: stable-2.6.0
-install_helm: false
-init_helm: false
-install_kubeapps: false
+install_helm: False
+init_helm: False
+install_kubeapps: False
 
 # Calico
 calico_mtu: 1440
@@ -218,7 +218,12 @@ etcd_data_directory: "/var/lib/etcd"
 
 # KUBE-APISERVER spec
 kube_apiserver_enable_admission_plugins:
+# plugin AlwaysPullImage can be deleted. Credentials would be required to pull the private images every time. 
+# Also, in trusted environments, this might increases load on network, registry, and decreases speed.
+#  - AlwaysPullImages
   - NamespaceLifecycle
+# EventRateLimit is used to limit DoS on API server in case of event Flooding
+  - EventRateLimit
   - LimitRanger
   - ServiceAccount
   - TaintNodesByCondition
@@ -229,14 +234,31 @@ kube_apiserver_enable_admission_plugins:
   - StorageObjectInUseProtection
   - PersistentVolumeClaimResize
   - MutatingAdmissionWebhook
+  - NodeRestriction
   - ValidatingAdmissionWebhook
   - RuntimeClass
   - ResourceQuota
+# SecurityContextDeny should be replaced by PodSecurityPolicy
+#  - SecurityContextDeny
 
 
 # Rook Settings
-enable_rook: True
+enable_rook: False
 rook_dataDirHostPath: /data/rook
+
+
+
+# Monitoring. Rook MUST be enabled to use monitoring (Monitoring use StorageClass to persist data)
+enable_monitoring: False
+
+
+# Enable Harbor Registry - Contain Chartmuseum, notary, clair, registry.
+# Harbor will be expose by HTTPS with Ingress Resource.
+# Rook MUST be enabled to use Harbor (Harbor use StorageClass to persist data)
+install_harbor: False
+harbor_ingress_host: harbor.ilkilabs.io
+notary_ingress_host: notary.ilkilabs.io
+harbor_admin_password: ChangeMe!
 ```
 
 **Note :** You can also modify the IPs-CIDR if you want.
@@ -339,6 +361,22 @@ Rook Settings
 | --- | --- | --- |
 | `enable_rook` | Deploy Rook Ceph cluster on on **storage members** | <ul><li> **False** (default) </li><br/><li>  **true** </li></ul> |
 | `rook_dataDirHostPath` | Directory where Rook data are stored on **Storage** nodes | <ul><li> **/data/rook** (default) </li><br/></ul> |
+
+Harbor Settings
+
+| Parameter | Description | Values |
+| --- | --- | --- |
+| `install_harbor` | Deploy Harbor Registry - Warrning : **Rook Must be enabled !** | <ul><li> **False** (default) </li><br/><li>  **true** </li></ul> |
+| `harbor_admin_password` | Admin password for Harbor UI | <ul><li> **ChangeMe!** (default) </li></ul> |
+| `harbor_ingress_host` | Host entry in Ingress. Harbor will be expose at **https://{{ harbor_ingress_host }}** (Depend on your ingress configuration) | <ul><li> harbor.ilkilabs.io (default) </li></ul> |
+| `notary_ingress_host` | Host entry in Ingress. Notary will be expose at **https://{{ notary.ilkilabs.io }}** (Depend on your ingress configuration) | <ul><li> **notary.ilkilabs.io** (default) </li></ul> |
+
+Monitoring Settings
+
+| Parameter | Description | Values |
+| --- | --- | --- |
+| `enable_monitoring` | Deploy monitoring - Warrning : **Rook Must be enabled !** | <ul><li> **False** (default) </li><br/><li>  **true** </li></ul> |
+
 
 Others settings:
 

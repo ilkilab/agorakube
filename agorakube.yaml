@@ -45,4 +45,5 @@
     - install-helm
     - deploy-kubeapps
     - deploy-monitoring
+    - deploy-harbor
     - show-info
