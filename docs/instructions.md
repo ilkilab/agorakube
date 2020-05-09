@@ -247,12 +247,10 @@ enable_rook: True
 rook_dataDirHostPath: /data/rook
 
 # Minio Settings
-# Minio Key MUST BE Base64 encoded and Rook MUST be enabed.
-# VEVNUF9ERU1PX0FDQ0VTU19LRVk= : TEMP_DEMO_ACCESS_KEY
-# VEVNUF9ERU1PX1NFQ1JFVF9LRVk= : TEMP_DEMO_SECRET_KEY
+# Rook MUST be enabed.
 enable_rook_minio: True
-rook_minio_infra_access_key: VEVNUF9ERU1PX0FDQ0VTU19LRVk=
-rook_minio_infra_secret_key: VEVNUF9ERU1PX1NFQ1JFVF9LRVk=
+rook_minio_infra_access_key: admin
+rook_minio_infra_secret_key: password
 
 # Monitoring. Rook MUST be enabled to use monitoring (Monitoring use StorageClass to persist data)
 enable_monitoring: False
@@ -368,8 +366,8 @@ Rook Settings
 | `enable_rook` | Deploy Rook Ceph cluster on **storage members** | <ul><li> **False** (default) </li><br/><li>  **True** </li></ul> |
 | `rook_dataDirHostPath` | Directory where Rook data are stored on **Storage** nodes | <ul><li> **/data/rook** (default) </li><br/></ul> |
 | `enable_rook_minio` | Deploy Rook MinIO cluster on **Rook Ceph Cluster** | <ul><li> **False** (default) </li><br/><li>  **True** </li></ul> |
-| `rook_minio_infra_access_key` | Base64 encoded MinIO Admin Access Key | <ul><li> **VEVNUF9ERU1PX0FDQ0VTU19LRVk=** (default: TEMP_DEMO_ACCESS_KEY) </li><br/></ul> |
-| `rook_minio_infra_secret_key` | Base64 encoded MinIO Admin Secret Key | <ul><li> **VEVNUF9ERU1PX1NFQ1JFVF9LRVk=** (default: TEMP_DEMO_SECRET_KEY) </li><br/></ul> |
+| `rook_minio_infra_access_key` | MinIO Admin Access Key | <ul><li> **admin_minio** (default) </li><br/></ul> |
+| `rook_minio_infra_secret_key` | MinIO Admin Secret Key | <ul><li> **password_minio** (default) </li><br/></ul> |
 
 
 Harbor Settings
