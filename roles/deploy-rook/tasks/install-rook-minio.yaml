@@ -39,7 +39,7 @@
   changed_when: >
     apply_cluster_minio.stdout is search("created")
 
-- name: Verify if MinIO operator has successfully started
+- name: Verify if MinIO Cluster for infra components has successfully started
   command: kubectl --kubeconfig {{ data_path }}/certificates/configs/admin/admin.conf get pod minio-infra-3 -n rook-minio-infra
   changed_when: false
   register: minio_cluster_deployment
