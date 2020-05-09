@@ -53,7 +53,7 @@ This distribution is also adaptive by offering the opportunity to customize your
 * Container Runtime: Containerd (Default) & Docker
 * Certificats: Self Signed PKI
 * Service-Mesh: available: Linkerd
-* Storage: Rook Ceph Block with StorageClass
+* Storage: Rook Ceph Block with StorageClass, and MinIO for Object Storage
 * Registry: Harbor full featured
 * Monitoring: Prometheus/Grafana
 * CNI plugin: Flannel, Calico, Kube-router

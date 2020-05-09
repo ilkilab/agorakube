@@ -1,3 +1,7 @@
 ---
 enable_rook: False
 rook_dataDirHostPath: /var/lib/rook
+enable_rook_minio: False
+rook_minio_infra_access_key: VEVNUF9ERU1PX0FDQ0VTU19LRVk=
+rook_minio_infra_secret_key: VEVNUF9ERU1PX1NFQ1JFVF9LRVk=
+expose_minio_infra_nodeport: True

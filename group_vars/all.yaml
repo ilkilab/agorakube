@@ -28,13 +28,13 @@ cni_release: 0.8.5
 
 # Custom features
 runtime: containerd
-network_cni_plugin: flannel
+network_cni_plugin: kube-router
 flannel_iface: default
 ingress_controller: traefik
 dns_server_soft: coredns
 populate_etc_hosts: yes
 k8s_dashboard: True
-service_mesh: linkerd
+service_mesh: none
 linkerd_release: stable-2.6.0
 install_helm: False
 init_helm: False
@@ -85,6 +85,11 @@ kube_apiserver_enable_admission_plugins:
 enable_rook: False
 rook_dataDirHostPath: /data/rook
 
+# Minio Settings
+# Minio Key MUST BE Base64 encoded and Rook MUST be enabed.
+enable_rook_minio: False
+rook_minio_infra_access_key: admin_minio
+rook_minio_infra_secret_key: password_minio
 
 
 # Monitoring. Rook MUST be enabled to use monitoring (Monitoring use StorageClass to persist data)

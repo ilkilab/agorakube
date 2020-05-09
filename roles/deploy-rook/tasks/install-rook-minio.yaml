@@ -1,0 +1,55 @@
+---
+- name: Create tempdir for rook
+  tempfile:
+    state: directory
+    suffix: minio
+  register: minio_tempdir
+  changed_when: false
+
+- name: Copy operator-rook-minio.yaml
+  copy:
+    src: "operator-rook-minio.yaml"
+    dest: "{{ minio_tempdir.path }}/operator-rook-minio.yaml"
+  changed_when: false
+
+- name: Apply operator.yaml
+  command: kubectl --kubeconfig {{ data_path }}/certificates/configs/admin/admin.conf apply -f {{ minio_tempdir.path }}/operator-rook-minio.yaml
+  register: apply_operator_minio
+  changed_when: >
+    apply_operator_minio.stdout is search("created")
+
+- name: Verify if MinIO operator has successfully started
+  command: kubectl --kubeconfig {{ data_path }}/certificates/configs/admin/admin.conf get deploy rook-minio-operator -n rook-minio-system
+  changed_when: false
+  register: minio_operator_deployment
+  until: minio_operator_deployment.stdout.find("1/1") != -1
+  retries: 100
+  delay: 10
+  run_once: true
+
+- name: Render minio-cluster-infra templates
+  template:
+    dest: "{{ minio_tempdir.path }}/minio-cluster-infra.yaml.j2"
+    src: "minio-cluster-infra.yaml.j2"
+  changed_when: false
+
+- name: Apply cluster-infra.yaml
+  command: kubectl --kubeconfig {{ data_path }}/certificates/configs/admin/admin.conf apply -f {{ minio_tempdir.path }}/minio-cluster-infra.yaml.j2
+  register: apply_cluster_minio
+  changed_when: >
+    apply_cluster_minio.stdout is search("created")
+
+- name: Verify if MinIO Cluster for infra components has successfully started
+  command: kubectl --kubeconfig {{ data_path }}/certificates/configs/admin/admin.conf get pod minio-infra-3 -n rook-minio-infra
+  changed_when: false
+  register: minio_cluster_deployment
+  until: minio_cluster_deployment.stdout.find("1/1") != -1
+  retries: 100
+  delay: 10
+  run_once: true
+
+- name: delete temp file
+  file:
+    path: "{{ minio_tempdir.path }}"
+    state: absent
+  changed_when: False
