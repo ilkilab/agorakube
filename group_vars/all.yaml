@@ -85,6 +85,11 @@ kube_apiserver_enable_admission_plugins:
 # Rook Settings
 enable_rook: True
 rook_dataDirHostPath: /data/rook
+
+# Minio Settings
+# Minio Key MUST BE Base64 encoded
+# VEVNUF9ERU1PX0FDQ0VTU19LRVk= : TEMP_DEMO_ACCESS_KEY
+# VEVNUF9ERU1PX1NFQ1JFVF9LRVk= : TEMP_DEMO_SECRET_KEY
 enable_rook_minio: True
 rook_minio_infra_access_key: VEVNUF9ERU1PX0FDQ0VTU19LRVk=
 rook_minio_infra_secret_key: VEVNUF9ERU1PX1NFQ1JFVF9LRVk=
