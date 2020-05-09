@@ -1,4 +1,3 @@
-
 ---
 
 # CERTIFICATES
@@ -105,4 +104,3 @@ install_harbor: False
 harbor_ingress_host: harbor.ilkilabs.io
 notary_ingress_host: notary.ilkilabs.io
 harbor_admin_password: ChangeMe!
-
