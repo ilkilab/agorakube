@@ -39,6 +39,15 @@
   changed_when: >
     apply_cluster_minio.stdout is search("created")
 
+- name: Verify if MinIO operator has successfully started
+  command: kubectl --kubeconfig {{ data_path }}/certificates/configs/admin/admin.conf get pod minio-infra-3 -n rook-minio-infra
+  changed_when: false
+  register: minio_cluster_deployment
+  until: minio_cluster_deployment.stdout.find("1/1") != -1
+  retries: 100
+  delay: 10
+  run_once: true
+
 - name: delete temp file
   file:
     path: "{{ minio_tempdir.path }}"
