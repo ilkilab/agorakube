@@ -82,7 +82,7 @@ kube_apiserver_enable_admission_plugins:
 
 
 # Rook Settings
-enable_rook: Fasle
+enable_rook: False
 rook_dataDirHostPath: /data/rook
 
 # Minio Settings
