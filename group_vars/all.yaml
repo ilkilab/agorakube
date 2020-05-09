@@ -30,7 +30,7 @@ cni_release: 0.8.5
 runtime: containerd
 network_cni_plugin: kube-router
 flannel_iface: default
-ingress_controller: nginx
+ingress_controller: traefik
 dns_server_soft: coredns
 populate_etc_hosts: yes
 k8s_dashboard: True
@@ -82,16 +82,18 @@ kube_apiserver_enable_admission_plugins:
 
 
 # Rook Settings
-enable_rook: True
+enable_rook: Fasle
 rook_dataDirHostPath: /data/rook
 
 # Minio Settings
 # Minio Key MUST BE Base64 encoded and Rook MUST be enabed.
 # VEVNUF9ERU1PX0FDQ0VTU19LRVk= : TEMP_DEMO_ACCESS_KEY
 # VEVNUF9ERU1PX1NFQ1JFVF9LRVk= : TEMP_DEMO_SECRET_KEY
-enable_rook_minio: True
+enable_rook_minio: False
 rook_minio_infra_access_key: VEVNUF9ERU1PX0FDQ0VTU19LRVk=
 rook_minio_infra_secret_key: VEVNUF9ERU1PX1NFQ1JFVF9LRVk=
+
+
 
 # Monitoring. Rook MUST be enabled to use monitoring (Monitoring use StorageClass to persist data)
 enable_monitoring: False
