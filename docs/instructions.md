@@ -318,15 +318,15 @@ This section is used to defined all custom features of your deployment.
 
 | Parameter | Description | Values |
 | --- | --- | --- |
-| `runtime` | Container runtime used in your deployment | <ul><li> **ContainerD** *(default)* </li><br/><li>  **Docker**  </li></ul>|
-| `network_cni_plugin` | CNI plugin used in your deployment | <ul><li> **Calico** </li><br/><li>  **Flannel** *(default)* </li></ul>|
+| `runtime` | Container runtime used in your deployment | <ul><li> **containerd** *(default)* </li><br/><li>  **docker**  </li></ul>|
+| `network_cni_plugin` | CNI plugin used in your deployment | <ul><li> **calico** </li><br/><li> **flannel** </li><br/><li>  **kube-router** *(default)* </li></ul>|
 | `flannel_iface` | Indicate to Flannel the specific iface to be binded | <ul><li> **default** *(default - take the first iface)* </li><br/><li>  **Specific Iface**</li></ul>|
-| `ingress_controller` | Ingress Controller used in your deployment | <ul><li> **Traefik** *(default)* </li><br/><li>  **HAProxy**  </li><br/><li>  **nginx**  </li><br/><li>  **none**  </li></ul>|
+| `ingress_controller` | Ingress Controller used in your deployment | <ul><li> **traefik** *(default)* </li><br/><li>  **ha-proxy**  </li><br/><li>  **nginx**  </li><br/><li>  **none**  </li></ul>|
 | `dns_server_soft` | DNS service used in your deployment | <ul><li> **CoreDNS** *(default)* </li></ul>|
 | `label_workers` | Fixed the label *node-role.kubernetes.io/worker* to all workers in your cluster | <ul><li> **false** </li><br/><li>  **true** *(default)* </li></ul>|
 | `populate_etc_hosts` | Populate */etc/hosts* file of all your nodes in the cluster | <ul><li> **no** </li><br/><li>  **yes** *(default)* </li></ul>|
 | `k8s_dashboard` | Deploy Kubernetes dashboard in your cluster | <ul><li> **false** </li><br/><li>  **true** *(default)* </li></ul>|
-| `service_mesh` | Service mesh used in your cluster | <ul><li> **LinkerD** *(default)* </li><br/><li>  **none** </li></ul>|
+| `service_mesh` | Service mesh used in your cluster | <ul><li> **none** *(default)* </li><br/><li>  **linkerd** </li></ul>|
 | `linkerd_release` | Version of LinkerD used in your cluster | <ul><li> **stable-2.6.0** *(default)* </li><br/><li>  **none** </li></ul>|
 | `install_helm` | Helm installation in your cluster | <ul><li> **false** *(default)* </li><br/><li>  **true** </li></ul>|
 | `init_helm` | Initialization of Helm | <ul><li> **false** *(default)* </li><br/><li>  **true** </li></ul>|
