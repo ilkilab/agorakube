@@ -171,7 +171,7 @@ rotate_certs_pki: false
 rotate_full_pki: false
 
 # Components version
-etcd_release: v3.4.5
+etcd_release: v3.4.7
 kubernetes_release: v1.18.2
 delete_previous_k8s_install: False
 delete_etcd_install: False
@@ -189,13 +189,13 @@ cni_release: 0.8.5
 
 # Custom features
 runtime: containerd
-network_cni_plugin: flannel
+network_cni_plugin: kube-router
 flannel_iface: default
-ingress_controller: traefik
+ingress_controller: nginx
 dns_server_soft: coredns
 populate_etc_hosts: yes
 k8s_dashboard: True
-service_mesh: linkerd
+service_mesh: none
 linkerd_release: stable-2.6.0
 install_helm: False
 init_helm: False
@@ -243,10 +243,16 @@ kube_apiserver_enable_admission_plugins:
 
 
 # Rook Settings
-enable_rook: False
+enable_rook: True
 rook_dataDirHostPath: /data/rook
 
-
+# Minio Settings
+# Minio Key MUST BE Base64 encoded and Rook MUST be enabed.
+# VEVNUF9ERU1PX0FDQ0VTU19LRVk= : TEMP_DEMO_ACCESS_KEY
+# VEVNUF9ERU1PX1NFQ1JFVF9LRVk= : TEMP_DEMO_SECRET_KEY
+enable_rook_minio: True
+rook_minio_infra_access_key: VEVNUF9ERU1PX0FDQ0VTU19LRVk=
+rook_minio_infra_secret_key: VEVNUF9ERU1PX1NFQ1JFVF9LRVk=
 
 # Monitoring. Rook MUST be enabled to use monitoring (Monitoring use StorageClass to persist data)
 enable_monitoring: False
@@ -359,8 +365,12 @@ Rook Settings
 
 | Parameter | Description | Values |
 | --- | --- | --- |
-| `enable_rook` | Deploy Rook Ceph cluster on on **storage members** | <ul><li> **False** (default) </li><br/><li>  **true** </li></ul> |
+| `enable_rook` | Deploy Rook Ceph cluster on **storage members** | <ul><li> **False** (default) </li><br/><li>  **True** </li></ul> |
 | `rook_dataDirHostPath` | Directory where Rook data are stored on **Storage** nodes | <ul><li> **/data/rook** (default) </li><br/></ul> |
+| `enable_rook_minio` | Deploy Rook MinIO cluster on **Rook Ceph Cluster** | <ul><li> **False** (default) </li><br/><li>  **True** </li></ul> |
+| `rook_minio_infra_access_key` | Base64 encoded MinIO Admin Access Key | <ul><li> **VEVNUF9ERU1PX0FDQ0VTU19LRVk=** (default: TEMP_DEMO_ACCESS_KEY) </li><br/></ul> |
+| `rook_minio_infra_secret_key` | Base64 encoded MinIO Admin Secret Key | <ul><li> **VEVNUF9ERU1PX1NFQ1JFVF9LRVk=** (default: TEMP_DEMO_SECRET_KEY) </li><br/></ul> |
+
 
 Harbor Settings
 
