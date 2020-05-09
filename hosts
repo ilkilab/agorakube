@@ -1,24 +1,28 @@
 [deploy]
-master1 ansible_connection=local
+deploynode ansible_connection=local
 
 [masters]
 master1  ansible_host=10.10.20.3
+master2  ansible_host=10.10.20.4
+master3  ansible_host=10.10.20.5
 
 [etcd]
-master1  ansible_host=10.10.20.3
+etcd1  ansible_host=10.10.20.6
+etcd2  ansible_host=10.10.20.7
+etcd3  ansible_host=10.10.20.8
 
 [workers]
-worker1  ansible_host=10.10.20.4
-worker2  ansible_host=10.10.20.5
-worker3  ansible_host=10.10.20.6
+worker1  ansible_host=10.10.20.9
+worker2  ansible_host=10.10.20.10
+worker3  ansible_host=10.10.20.11
 
 [storage]
-worker1 ansible_host=10.10.20.4
-worker2 ansible_host=10.10.20.5
-worker3 ansible_host=10.10.20.6
+storage1 ansible_host=10.10.20.12
+storage2 ansible_host=10.10.20.13
+storage3 ansible_host=10.10.20.14
 
 [all:vars]
-advertise_ip_masters=10.10.20.3
+advertise_ip_masters=10.10.20.30
 
 # SSH connection settings
 ansible_ssh_extra_args='-o StrictHostKeyChecking=no'
