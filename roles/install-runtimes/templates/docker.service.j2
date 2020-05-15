@@ -1,0 +1,10 @@
+[Unit]
+Description=Docker Service version {{ docker_release }}
+
+[Service]
+ExecStart=/usr/local/bin/dockerd
+Restart=on-failure
+RestartSec=5
+
+[Install]
+WantedBy=multi-user.target

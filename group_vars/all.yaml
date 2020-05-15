@@ -1,3 +1,4 @@
+
 ---
 
 # CERTIFICATES
@@ -27,10 +28,11 @@ kube_proxy_ipvs_algotithm: rr
 cni_release: 0.8.5
 
 # Custom features
-runtime: containerd
+runtime: docker
+docker_release: 19.03.5
 network_cni_plugin: kube-router
 flannel_iface: default
-ingress_controller: traefik
+ingress_controller: nginx
 dns_server_soft: coredns
 populate_etc_hosts: yes
 k8s_dashboard: True
@@ -57,7 +59,7 @@ etcd_data_directory: "/var/lib/etcd"
 
 # KUBE-APISERVER spec
 kube_apiserver_enable_admission_plugins:
-# plugin AlwaysPullImage can be deleted. Credentials would be required to pull the private images every time. 
+# plugin AlwaysPullImage can be deleted. Credentials would be required to pull the private images every time.
 # Also, in trusted environments, this might increases load on network, registry, and decreases speed.
 #  - AlwaysPullImages
   - NamespaceLifecycle
@@ -84,13 +86,9 @@ kube_apiserver_enable_admission_plugins:
 # Rook Settings
 enable_rook: False
 rook_dataDirHostPath: /data/rook
-
-# Minio Settings
-# Minio Key MUST BE Base64 encoded and Rook MUST be enabed.
 enable_rook_minio: False
-rook_minio_infra_access_key: admin_minio
-rook_minio_infra_secret_key: password_minio
-
+rook_minio_infra_access_key: VEVNUF9ERU1PX0FDQ0VTU19LRVk=
+rook_minio_infra_secret_key: VEVNUF9ERU1PX1NFQ1JFVF9LRVk=
 
 # Monitoring. Rook MUST be enabled to use monitoring (Monitoring use StorageClass to persist data)
 enable_monitoring: False
@@ -103,3 +101,4 @@ install_harbor: False
 harbor_ingress_host: harbor.ilkilabs.io
 notary_ingress_host: notary.ilkilabs.io
 harbor_admin_password: ChangeMe!
+

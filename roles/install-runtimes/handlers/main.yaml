@@ -4,13 +4,13 @@
     state: restarted
     name: containerd
 
-- name: Reload docker
+- name: Reload Docker
   systemd:
     state: restarted
     daemon_reload: yes
     name: docker
 
-- name: restart docker
+- name: Restart Docker
   systemd:
     state: restarted
     name: docker

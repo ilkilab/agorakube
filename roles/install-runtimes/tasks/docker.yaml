@@ -1,14 +1,32 @@
 ---
-- name: Add Docker repository for {{ ansible_distribution }}
-  include_tasks: "repo-{{ ansible_distribution }}.yaml"
+- name: Install Docker from binaries
+  unarchive:
+    src: https://download.docker.com/linux/static/stable/x86_64/docker-{{ docker_release }}.tgz
+    remote_src: yes
+    dest: /usr/local/bin
+    extra_opts: [--strip-components=1]
+  notify:
+    - Restart Docker
 
-- name: Install Docker for {{ ansible_distribution }}
-  include_tasks: "docker-{{ ansible_distribution }}.yaml"
+- name: Make sure /etc/systemd/system/docker dir exist
+  file:
+    path: /etc/systemd/system/docker
+    state: directory
 
-- name: Start Runtime
+- name: Make sure service file existe at /etc/systemd/system/docker.service
+  template:
+    src: docker.service.j2
+    dest: /etc/systemd/system/docker/docker.service
+  notify:
+    - Reload Docker
+  register: docker_servise_status
+
+- name: Reload Daemon if Docker Service Definition changed
   systemd:
     state: started
+    daemon_reload: yes
     name: docker
+  when: docker_servise_status.changed
 
 - name: Make sure /etc/docker existe
   file:
@@ -20,13 +38,7 @@
     dest: /etc/docker/daemon.json
     src: daemon-{{ ansible_distribution }}.json
   notify:
-    - Reload docker
-
-- name: Create /etc/systemd/system/docker.service.d directory
-  file:
-    path: /etc/systemd/system/docker.service.d
-    state: directory
-    recurse: yes
+    - Reload Docker
 
 - name: Make sure docker is running
   systemd:
