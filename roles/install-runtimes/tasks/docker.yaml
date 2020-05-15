@@ -16,7 +16,7 @@
 - name: Make sure service file existe at /etc/systemd/system/docker.service
   template:
     src: docker.service.j2
-    dest: /etc/systemd/system/docker/docker.service
+    dest: /etc/systemd/system/docker.service
   notify:
     - Reload Docker
   register: docker_servise_status
