@@ -29,7 +29,7 @@ cni_release: 0.8.5
 
 # Custom features
 runtime: docker
-docker_release: 19.03.5
+docker_release: 19.03.8
 network_cni_plugin: kube-router
 flannel_iface: default
 ingress_controller: nginx
