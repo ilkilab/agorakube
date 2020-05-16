@@ -1,10 +1,23 @@
 [Unit]
-Description=Containerd Service version {{ containerd_release }}
+Description=containerd container runtime version {{ containerd_release }}
+Documentation=https://containerd.io
+After=network.target local-fs.target
 
 [Service]
-ExecStart=/usr/local/bin/containerd/bin/containerd
-Restart=on-failure
-RestartSec=5
+ExecStartPre=-/sbin/modprobe overlay
+ExecStart=/usr/local/bin/containerd
+
+Delegate=yes
+KillMode=process
+Restart=always
+# Having non-zero Limit*s causes performance problems due to accounting overhead
+# in the kernel. We recommend using cgroups to do container-local accounting.
+LimitNPROC=infinity
+LimitCORE=infinity
+LimitNOFILE=1048576
+# Comment TasksMax if your systemd version does not supports it.
+# Only systemd 226 and above support this version.
+#TasksMax=infinity
 
 [Install]
 WantedBy=multi-user.target

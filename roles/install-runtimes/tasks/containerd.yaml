@@ -32,17 +32,12 @@
     - { name: 'net.ipv4.ip_forward', value: '1' }
     - { name: 'net.bridge.bridge-nf-call-ip6tables', value: '1' }
 
-- name: Create activated kernel modules directory
-  file:
-    path: /usr/local/bin/containerd
-    state: directory
-
 - name: Install Containerd from binaries
   unarchive:
     src: https://github.com/containerd/containerd/releases/download/v{{ containerd_release }}/containerd-{{ containerd_release }}.linux-amd64.tar.gz
     remote_src: yes
-    dest: /usr/local/bin/containerd
-#    extra_opts: [--strip-components=1]
+    dest: /usr/local/bin/
+    extra_opts: [--strip-components=1]
   notify:
     - Restart Containerd
 
