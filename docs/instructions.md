@@ -317,6 +317,7 @@ This section is used to defined all custom features of your deployment.
 | Parameter | Description | Values |
 | --- | --- | --- |
 | `runtime` | Container runtime used in your deployment | <ul><li> **containerd** *(default)* </li><br/><li>  **docker**  </li></ul>|
+| `docker_release` | Docker release to install in your deployment | <ul><li> **19.03.8** *(default)* </li></ul>|
 | `network_cni_plugin` | CNI plugin used in your deployment | <ul><li> **calico** </li><br/><li> **flannel** </li><br/><li>  **kube-router** *(default)* </li></ul>|
 | `flannel_iface` | Indicate to Flannel the specific iface to be binded | <ul><li> **default** *(default - take the first iface)* </li><br/><li>  **Specific Iface**</li></ul>|
 | `ingress_controller` | Ingress Controller used in your deployment | <ul><li> **traefik** *(default)* </li><br/><li>  **ha-proxy**  </li><br/><li>  **nginx**  </li><br/><li>  **none**  </li></ul>|
