@@ -49,6 +49,12 @@
     - Reload Containerd
   register: containerd_servise_status
 
+- name: Install Runc v1.0-RC10
+  get_url:
+    url: https://github.com/opencontainers/runc/releases/download/v1.0.0-rc10/runc.amd64
+    dest: /usr/local/bin/runc
+    mode: 0774
+
 - name: Start Runtime
   systemd:
     state: started
