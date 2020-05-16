@@ -1,7 +1,13 @@
 ---
-- name: restart containerd
+- name: Restart Containerd
   systemd:
     state: restarted
+    name: containerd
+
+- name: Reload Containerd
+  systemd:
+    state: restarted
+    daemon_reload: yes
     name: containerd
 
 - name: Reload Docker

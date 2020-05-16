@@ -28,11 +28,12 @@ kube_proxy_ipvs_algotithm: rr
 cni_release: 0.8.5
 
 # Custom features
-runtime: docker
+runtime: containerd
 docker_release: 19.03.8
+containerd_release: 1.3.4
 network_cni_plugin: kube-router
 flannel_iface: default
-ingress_controller: nginx
+ingress_controller: traefik
 dns_server_soft: coredns
 populate_etc_hosts: yes
 k8s_dashboard: True
@@ -101,4 +102,5 @@ install_harbor: False
 harbor_ingress_host: harbor.ilkilabs.io
 notary_ingress_host: notary.ilkilabs.io
 harbor_admin_password: ChangeMe!
+
 

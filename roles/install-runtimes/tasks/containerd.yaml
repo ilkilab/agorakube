@@ -32,13 +32,34 @@
     - { name: 'net.ipv4.ip_forward', value: '1' }
     - { name: 'net.bridge.bridge-nf-call-ip6tables', value: '1' }
 
-- name: Setup repo and install required packages for {{ ansible_distribution }}
-  include_tasks: "repo-{{ ansible_distribution }}.yaml"
+- name: Create activated kernel modules directory
+  file:
+    path: /usr/local/bin/containerd
+    state: directory
 
-- name: Install containerd
-  package:
-    name: containerd.io
-    state: latest
+- name: Install Containerd from binaries
+  unarchive:
+    src: https://github.com/containerd/containerd/releases/download/v{{ containerd_release }}/containerd-{{ containerd_release }}.linux-amd64.tar.gz
+    remote_src: yes
+    dest: /usr/local/bin/containerd
+#    extra_opts: [--strip-components=1]
+  notify:
+    - Restart Containerd
+
+- name: Make sure service file existe at /etc/systemd/system/docker.service
+  template:
+    src: containerd.service.j2
+    dest: /etc/systemd/system/containerd.service
+  notify:
+    - Reload Containerd
+  register: containerd_servise_status
+
+- name: Start Runtime
+  systemd:
+    state: started
+    name: containerd
+    enabled: yes
+  when: containerd_servise_status.changed
 
 - name: Create /etc/containerd directory
   file:
@@ -50,7 +71,7 @@
     src: config.toml
     dest: /etc/containerd/config.toml
   notify:
-    - restart containerd
+    - Restart Containerd
 
 - name: Start Runtime
   systemd:

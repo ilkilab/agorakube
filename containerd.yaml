@@ -1,0 +1,6 @@
+---
+- hosts: workers
+  become: true
+  roles:
+    - install-cni
+    - install-runtimes

@@ -1,0 +1,10 @@
+[Unit]
+Description=Containerd Service version {{ containerd_release }}
+
+[Service]
+ExecStart=/usr/local/bin/containerd/bin/containerd
+Restart=on-failure
+RestartSec=5
+
+[Install]
+WantedBy=multi-user.target
