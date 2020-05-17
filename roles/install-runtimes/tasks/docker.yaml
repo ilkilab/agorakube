@@ -10,10 +10,21 @@
   notify:
     - Restart Docker
 
-- name: Make sure /etc/systemd/system/docker dir exist
-  file:
-    path: /etc/systemd/system/docker
-    state: directory
+- name: Create Docker.socket file
+  copy:
+    src: docker.socket
+    dest: /etc/systemd/system/docker.socket
+    owner: root
+    group: root
+  notify:
+    - Reload Docker
+  register: docker_socket_status
+
+
+- name: Ensure group "docker" exists
+  group:
+    name: docker
+    state: present
 
 - name: Make sure service file existe at /etc/systemd/system/docker.service
   template:
@@ -28,7 +39,7 @@
     state: started
     daemon_reload: yes
     name: docker
-  when: docker_servise_status.changed
+  when: docker_servise_status.changed or docker_socket_status.changed
 
 - name: Make sure /etc/docker existe
   file:
