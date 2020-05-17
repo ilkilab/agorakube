@@ -37,6 +37,8 @@
     src: https://github.com/containerd/containerd/releases/download/v{{ containerd_release }}/containerd-{{ containerd_release }}.linux-amd64.tar.gz
     remote_src: yes
     dest: /usr/bin/
+    owner: root
+    group: root
     extra_opts: [--strip-components=1]
   notify:
     - Restart Containerd

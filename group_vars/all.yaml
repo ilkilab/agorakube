@@ -30,7 +30,7 @@ cni_release: 0.8.5
 # Custom features
 runtime: containerd
 docker_release: 19.03.8
-containerd_release: 1.3.3
+containerd_release: 1.3.4
 network_cni_plugin: kube-router
 flannel_iface: default
 ingress_controller: traefik
