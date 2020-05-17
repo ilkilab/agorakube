@@ -3,7 +3,7 @@
   unarchive:
     src: https://download.docker.com/linux/static/stable/x86_64/docker-{{ docker_release }}.tgz
     remote_src: yes
-    dest: /usr/local/bin
+    dest: /usr/bin
     extra_opts: [--strip-components=1]
   notify:
     - Restart Docker

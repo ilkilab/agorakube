@@ -36,7 +36,7 @@
   unarchive:
     src: https://github.com/containerd/containerd/releases/download/v{{ containerd_release }}/containerd-{{ containerd_release }}.linux-amd64.tar.gz
     remote_src: yes
-    dest: /usr/local/bin/
+    dest: /usr/bin/
     extra_opts: [--strip-components=1]
   notify:
     - Restart Containerd
@@ -52,7 +52,7 @@
 - name: Install Runc v1.0-RC10
   get_url:
     url: https://github.com/opencontainers/runc/releases/download/v1.0.0-rc10/runc.amd64
-    dest: /usr/local/bin/runc
+    dest: /usr/bin/runc
     mode: 0774
 
 - name: Start Runtime
