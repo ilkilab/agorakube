@@ -11,7 +11,7 @@ rotate_full_pki: false
 
 # Components version
 etcd_release: v3.4.7
-kubernetes_release: v1.18.2
+kubernetes_release: v1.18.3
 delete_previous_k8s_install: False
 delete_etcd_install: False
 check_etcd_install: True
