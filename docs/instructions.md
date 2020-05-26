@@ -20,6 +20,7 @@ Below a diagram of the high-level architecture deployed by [AgoraKube](https://a
  - The number of **master** nodes to deploy (from 1 to many)
  - The number of **etcd** nodes to deploy (from 1 to many)
  - The number of **worker** nodes to deploy (from 1 to many)
+ - The number of **storage** nodes to deploy (from 1 to many)
  
  # Prerequisites
 
