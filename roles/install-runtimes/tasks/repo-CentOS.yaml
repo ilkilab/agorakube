@@ -12,4 +12,4 @@
   yum_repository:
     name: docker-ce
     description: Docker YUM repo
-    baseurl: https://download.docker.com/linux/centos/docker-ce.repo
+    baseurl: https://download.docker.com/linux/{{ ansible_distribution | lower }}/docker-ce.repo
