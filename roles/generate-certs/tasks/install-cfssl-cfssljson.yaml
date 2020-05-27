@@ -1,25 +1,16 @@
 ---
-- name: Install gcc
-  package:
-    name: gcc
-    state: latest
+- name: Install CFSSL
+  get_url:
+    url: https://github.com/cloudflare/cfssl/releases/download/v1.4.1/cfssl_1.4.1_linux_amd64
+    dest: /usr/bin/cfssl
+    mode: 0777
+    owner: root
+    group: root
 
-# Git is required for the Install cfssl task, Centos does not come with git installed
-- name: Install git
-  package:
-    name: git
-    state: latest
-- name: Install cfssl
-  shell: source /etc/profile && go get -u github.com/cloudflare/cfssl/cmd/cfssl
-  args:
-    creates: /usr/local/bin/cfssl
-    executable: /bin/bash
-  environment:
-    GOPATH: /usr/local
-- name: Install cfssljson
-  shell: source /etc/profile && go get -u github.com/cloudflare/cfssl/cmd/cfssljson
-  args:
-    creates: /usr/local/bin/cfssljson
-    executable: /bin/bash
-  environment:
-    GOPATH: /usr/local
+- name: Install CFSSLJSON
+  get_url:
+    url: https://github.com/cloudflare/cfssl/releases/download/v1.4.1/cfssljson_1.4.1_linux_amd64
+    dest: /usr/bin/cfssljson
+    mode: 0777
+    owner: root
+    group: root
