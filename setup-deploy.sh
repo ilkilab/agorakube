@@ -31,7 +31,8 @@
         sudo apt-get install -yqq git software-properties-common
         sudo apt-add-repository --yes --update ppa:ansible/ansible
         sudo apt-get install -yqq ansible
-        sudo add-apt-repository --yes --remove ppa:PPA_Name/ppa
+        sudo add-apt-repository --yes --remove ppa:ansible/ansible
+        sudo apt-get update
         sudo apt-get install -yqq  openssh-server
         git clone  https://github.com/ilkilab/agorakube.git
     else
