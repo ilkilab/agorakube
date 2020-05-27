@@ -15,7 +15,7 @@
 </p>
 
 This project is aimed to provide the simplest way to install kubernetes on bare-metal, virtual & Cloud environments.
-Currently, Ubuntu 18.04 (Bionic) amd64 and Centos 7  are supported, but several other operating systems will be available soon.
+Currently, Ubuntu 18.04 & 20.04 amd64 and Centos 7  are supported, but several other operating systems will be available soon.
 
 Official documentation is available at [Agorakube Website](https://agorakube.ilkilabs.io/)
 
@@ -47,7 +47,7 @@ By its symplicity, [AgoraKube](https://agorakube.ilkilabs.io/) provide a good wa
 [AgoraKube](https://agorakube.ilkilabs.io/) is based on Ansible scripts that install and configure Kubernetes components (control plane and data plane) quickly on bare-metal / VMs / Cloud Instances, as systemd services.
 
 This distribution is also adaptive by offering the opportunity to customize your deployment and fit to your needs : 
-* OS : Ubuntu-18.04-amd64 and Centos 7.X-amd64 
+* OS : Ubuntu-18.04/20.04-amd64 and Centos 7.X-amd64 
 * DNS Service: CoreDNS
 * Ingress Controller Traefik (Default) & HA-Proxy & Nginx
 * Container Runtime: Containerd (Default) & Docker
