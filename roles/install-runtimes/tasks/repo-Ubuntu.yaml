@@ -1,7 +1,7 @@
 ---
 - name: Install packages to allow apt to use a repository over HTTPS
-  apt:
-    name: ['apt-transport-https', 'ca-certificates', 'curl', 'software-properties-common', 'gnupg2']
+  package:
+    name: ['apt-transport-https', 'ca-certificates', 'curl', 'software-properties-common', 'gnupg-agent']
     state: latest
     update_cache: yes
 
