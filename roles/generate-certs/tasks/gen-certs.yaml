@@ -42,8 +42,6 @@
   args:
     creates: "{{ data_path }}/certificates/ca/ca-key.pem"
     executable: /bin/bash
-  environment:
-    PATH: /usr/local/bin:{{ ansible_env.PATH }}
 
 - name: Copy intermediate CSRs
   template:
@@ -62,8 +60,6 @@
     | cfssljson -bare {{ data_path }}/certificates/intermediate/{{ item }}/{{ item }}
   args:
     creates: "{{ data_path }}/certificates/intermediate/{{ item }}/{{ item }}-key.pem"
-  environment:
-    PATH: /usr/local/bin:{{ ansible_env.PATH }}
   with_items:
     - kubernetes-front-proxy-ca
     - kubernetes-ca
@@ -89,8 +85,6 @@
     | cfssljson -bare {{ data_path }}/certificates/intermediate/{{ item }}/signed/{{ item }}
   args:
     creates: "{{ data_path }}/certificates/intermediate/{{ item }}/signed/{{ item }}.pem"
-  environment:
-    PATH: /usr/local/bin:{{ ansible_env.PATH }}
   with_items:
     - kubernetes-front-proxy-ca
     - kubernetes-ca
@@ -155,8 +149,6 @@
     | cfssljson -bare {{ data_path }}/certificates/end/{{ item }}/{{ item }}
   args:
     creates: "{{ data_path }}/certificates/end/{{ item }}/{{ item }}-key.pem"
-  environment:
-    PATH: /usr/local/bin:{{ ansible_env.PATH }}
   with_items:
     - kube-etcd-healthcheck-client
     - kube-apiserver-etcd-client
@@ -171,8 +163,6 @@
     | cfssljson -bare {{ data_path }}/certificates/end/kube-etcd-peer/{{ item }}/kube-etcd-peer
   args:
     creates: "{{ data_path }}/certificates/end/kube-etcd-peer/{{ item }}/kube-etcd-peer-key.pem"
-  environment:
-    PATH: /usr/local/bin:{{ ansible_env.PATH }}
   with_items: "{{ groups['etcd'] }}"
 
 - name: Generate certificate [kube-etcd]
@@ -185,8 +175,6 @@
     | cfssljson -bare {{ data_path }}/certificates/end/kube-etcd/kube-etcd
   args:
     creates: "{{ data_path }}/certificates/end/kube-etcd/kube-etcd-key.pem"
-  environment:
-    PATH: /usr/local/bin:{{ ansible_env.PATH }}
 
 - name : Generate certificate [kube-apiserver]
   shell: |
@@ -198,8 +186,6 @@
     | cfssljson -bare {{ data_path }}/certificates/end/kube-apiserver/{{ item }}/kube-apiserver
   args:
     creates: "{{ data_path }}/certificates/end/kube-apiserver/{{ item }}/kube-apiserver-key.pem"
-  environment:
-    PATH: /usr/local/bin:{{ ansible_env.PATH }}
   with_items: "{{ groups['masters'] }}"
 
 - name: Generate certificate [kube-apiserver-kubelet-client]
@@ -212,8 +198,6 @@
     | cfssljson -bare {{ data_path }}/certificates/end/kube-apiserver-kubelet-client/kube-apiserver-kubelet-client
   args:
     creates: "{{ data_path }}/certificates/end/kube-apiserver-kubelet-client/kube-apiserver-kubelet-client-key.pem"
-  environment:
-    PATH: /usr/local/bin:{{ ansible_env.PATH }}
 
 - name: Generate certificate [front-proxy-client]
   shell: |
@@ -225,8 +209,6 @@
     | cfssljson -bare {{ data_path }}/certificates/end/front-proxy-client/front-proxy-client
   args:
     creates: "{{ data_path }}/certificates/end/front-proxy-client/front-proxy-client-key.pem"
-  environment:
-    PATH: /usr/local/bin:{{ ansible_env.PATH }}
 
 - name: Create configuration files for config [admin] [controller-manager] [scheduler]
   template:
@@ -247,8 +229,6 @@
     | cfssljson -bare {{ data_path }}/certificates/configs/{{ item }}/{{ item }}
   args:
     creates: "{{ data_path }}/certificates/configs/{{ item }}/{{ item }}-key.pem"
-  environment:
-    PATH: /usr/local/bin:{{ ansible_env.PATH }}
   with_items:
     - admin
     - controller-manager
@@ -282,8 +262,6 @@
     | cfssljson -bare {{ data_path }}/certificates/configs/kubelet/{{ item }}/kubelet
   args:
     creates: "{{ data_path }}/certificates/configs/kubelet/{{ item }}/kubelet-key.pem"
-  environment:
-    PATH: /usr/local/bin:{{ ansible_env.PATH }}
   with_items: "{{ groups['masters'] }}"
 
 - name : Generate configuration account kubelet workers
@@ -301,8 +279,6 @@
     | cfssljson -bare {{ data_path }}/certificates/configs/kubelet/{{ item }}/kubelet
   args:
     creates: "{{ data_path }}/certificates/configs/kubelet/{{ item }}/kubelet-key.pem"
-  environment:
-    PATH: /usr/local/bin:{{ ansible_env.PATH }}
   with_items: "{{ groups['workers'] }}"
 
 - name: File generation of kubeconfig configuration for [proxier] 1/4
@@ -311,8 +287,6 @@
     kubectl config set-cluster default-cluster --server=https://{{ advertise_ip_masters }}:6443 \
     --certificate-authority "{{ data_path }}/certificates/intermediate/kubernetes-ca/signed/kubernetes-ca.pem" \
     --embed-certs
-  environment:
-    PATH: /usr/local/bin:{{ ansible_env.PATH }}
   args:
     creates: "{{ data_path }}/certificates/configs/proxier/proxier.flag"
 
@@ -322,8 +296,6 @@
     kubectl config set-credentials system:kube-proxy --client-key "{{ data_path }}/certificates/configs/proxier/proxier-key.pem" \
     --client-certificate "{{ data_path }}/certificates/configs/proxier/proxier.pem" \
     --embed-certs
-  environment:
-    PATH: /usr/local/bin:{{ ansible_env.PATH }}
   args:
     creates: "{{ data_path }}/certificates/configs/proxier/proxier.flag"
 
@@ -331,16 +303,12 @@
   shell: |
     KUBECONFIG="{{ data_path }}/certificates/configs/proxier/proxier.conf" \
     kubectl config set-context default-system --cluster default-cluster --user system:kube-proxy
-  environment:
-    PATH: /usr/local/bin:{{ ansible_env.PATH }}
   args:
     creates: "{{ data_path }}/certificates/configs/proxier/proxier.flag"
 
 - name: File generation of kubeconfig configuration for [proxier] 4/4
   shell: |
     KUBECONFIG="{{ data_path }}/certificates/configs/proxier/proxier.conf" kubectl config use-context default-system
-  environment:
-    PATH: /usr/local/bin:{{ ansible_env.PATH }}
   args:
     creates: "{{ data_path }}/certificates/configs/proxier/proxier.flag"
 
@@ -357,8 +325,6 @@
     kubectl config set-cluster default-cluster --server=https://{{ advertise_ip_masters }}:6443 \
     --certificate-authority "{{ data_path }}/certificates/intermediate/kubernetes-ca/signed/kubernetes-ca.pem" \
     --embed-certs
-  environment:
-    PATH: /usr/local/bin:{{ ansible_env.PATH }}
   args:
     creates: "{{ data_path }}/certificates/configs/admin/admin.flag"
 
@@ -368,8 +334,6 @@
     kubectl config set-credentials default-admin --client-key "{{ data_path }}/certificates/configs/admin/admin-key.pem" \
     --client-certificate "{{ data_path }}/certificates/configs/admin/admin.pem" \
     --embed-certs
-  environment:
-    PATH: /usr/local/bin:{{ ansible_env.PATH }}
   args:
     creates: "{{ data_path }}/certificates/configs/admin/admin.flag"
 
@@ -377,16 +341,12 @@
   shell: |
     KUBECONFIG="{{ data_path }}/certificates/configs/admin/admin.conf" \
     kubectl config set-context default-system --cluster default-cluster --user default-admin
-  environment:
-    PATH: /usr/local/bin:{{ ansible_env.PATH }}
   args:
     creates: "{{ data_path }}/certificates/configs/admin/admin.flag"
 
 - name: File generation of kubeconfig configuration for [admin] 4/4
   shell: |
     KUBECONFIG="{{ data_path }}/certificates/configs/admin/admin.conf" kubectl config use-context default-system
-  environment:
-    PATH: /usr/local/bin:{{ ansible_env.PATH }}
   args:
     creates: "{{ data_path }}/certificates/configs/admin/admin.flag"
 
@@ -403,8 +363,6 @@
     kubectl config set-cluster default-cluster --server=https://{{ advertise_ip_masters }}:6443 \
     --certificate-authority "{{ data_path }}/certificates/intermediate/kubernetes-ca/signed/kubernetes-ca.pem" \
     --embed-certs
-  environment:
-    PATH: /usr/local/bin:{{ ansible_env.PATH }}
   args:
     creates: "{{ data_path }}/certificates/configs/controller-manager/controller-manager.flag"
 
@@ -415,8 +373,6 @@
     --client-key "{{ data_path }}/certificates/configs/controller-manager/controller-manager-key.pem" \
     --client-certificate "{{ data_path }}/certificates/configs/controller-manager/controller-manager.pem" \
     --embed-certs
-  environment:
-    PATH: /usr/local/bin:{{ ansible_env.PATH }}
   args:
     creates: "{{ data_path }}/certificates/configs/controller-manager/controller-manager.flag"
 
@@ -424,8 +380,6 @@
   shell: |
     KUBECONFIG="{{ data_path }}/certificates/configs/controller-manager/controller-manager.conf" \
     kubectl config set-context default-system --cluster default-cluster --user default-controller-manager
-  environment:
-    PATH: /usr/local/bin:{{ ansible_env.PATH }}
   args:
     creates: "{{ data_path }}/certificates/configs/controller-manager/controller-manager.flag"
 
@@ -433,8 +387,6 @@
   shell: |
     KUBECONFIG="{{ data_path }}/certificates/configs/controller-manager/controller-manager.conf" \
     kubectl config use-context default-system
-  environment:
-    PATH: /usr/local/bin:{{ ansible_env.PATH }}
   args:
     creates: "{{ data_path }}/certificates/configs/controller-manager/controller-manager.flag"
 
@@ -451,8 +403,6 @@
     kubectl config set-cluster default-cluster --server=https://{{ advertise_ip_masters }}:6443 \
     --certificate-authority "{{ data_path }}/certificates/intermediate/kubernetes-ca/signed/kubernetes-ca.pem" \
     --embed-certs
-  environment:
-    PATH: /usr/local/bin:{{ ansible_env.PATH }}
   args:
     creates: "{{ data_path }}/certificates/configs/scheduler/scheduler.flag"
 
@@ -462,8 +412,6 @@
     kubectl config set-credentials default-manager --client-key "{{ data_path }}/certificates/configs/scheduler/scheduler-key.pem" \
     --client-certificate "{{ data_path }}/certificates/configs/scheduler/scheduler.pem" \
     --embed-certs
-  environment:
-    PATH: /usr/local/bin:{{ ansible_env.PATH }}
   args:
     creates: "{{ data_path }}/certificates/configs/scheduler/scheduler.flag"
 
@@ -471,16 +419,12 @@
   shell: |
     KUBECONFIG="{{ data_path }}/certificates/configs/scheduler/scheduler.conf" \
     kubectl config set-context default-system --cluster default-cluster --user default-manager
-  environment:
-    PATH: /usr/local/bin:{{ ansible_env.PATH }}
   args:
     creates: "{{ data_path }}/certificates/configs/scheduler/scheduler.flag"
 
 - name: File generation of kubeconfig configuration for [scheduler] 4/4
   shell: |
     KUBECONFIG="{{ data_path }}/certificates/configs/scheduler/scheduler.conf" kubectl config use-context default-system
-  environment:
-    PATH: /usr/local/bin:{{ ansible_env.PATH }}
   args:
     creates: "{{ data_path }}/certificates/configs/scheduler/scheduler.flag"
 
@@ -499,8 +443,6 @@
     --embed-certs
   args:
     creates: "{{ data_path }}/certificates/configs/kubelet/{{ item }}/kubelet.flag"
-  environment:
-    PATH: /usr/local/bin:{{ ansible_env.PATH }}
   with_items: "{{ groups['masters'] }}"
 
 - name: Configuration file generation of kubeconfig for [kubelet] masters 2/4
@@ -511,8 +453,6 @@
     --embed-certs
   args:
     creates: "{{ data_path }}/certificates/configs/kubelet/{{ item }}/kubelet.flag"
-  environment:
-    PATH: /usr/local/bin:{{ ansible_env.PATH }}
   with_items: "{{ groups['masters'] }}"
 
 - name: Configuration file generation of kubeconfig for [kubelet] masters 3/4
@@ -521,8 +461,6 @@
     kubectl config set-context default-system --cluster default-cluster --user default-auth
   args:
     creates: "{{ data_path }}/certificates/configs/kubelet/{{ item }}/kubelet.flag"
-  environment:
-    PATH: /usr/local/bin:{{ ansible_env.PATH }}
   with_items: "{{ groups['masters'] }}"
 
 - name: Configuration file generation of kubeconfig for [kubelet] masters 4/4
@@ -531,8 +469,6 @@
     kubectl config use-context default-system
   args:
     creates: "{{ data_path }}/certificates/configs/kubelet/{{ item }}/kubelet.flag"
-  environment:
-    PATH: /usr/local/bin:{{ ansible_env.PATH }}
   with_items: "{{ groups['masters'] }}"
 
 - name: Create flags [Modifier plus tard !!]
@@ -550,8 +486,6 @@
     --embed-certs
   args:
     creates: "{{ data_path }}/certificates/configs/kubelet/{{ item }}/kubelet.flag"
-  environment:
-    PATH: /usr/local/bin:{{ ansible_env.PATH }}
   with_items: "{{ groups['workers'] }}"
 
 - name: Configuration file generation of kubeconfig for [kubelet] workers 2/4
@@ -562,8 +496,6 @@
     --embed-certs
   args:
     creates: "{{ data_path }}/certificates/configs/kubelet/{{ item }}/kubelet.flag"
-  environment:
-    PATH: /usr/local/bin:{{ ansible_env.PATH }}
   with_items: "{{ groups['workers'] }}"
 
 - name: Configuration file generation of kubeconfig for [kubelet] workers 3/4
@@ -572,8 +504,6 @@
     kubectl config set-context default-system --cluster default-cluster --user default-auth
   args:
     creates: "{{ data_path }}/certificates/configs/kubelet/{{ item }}/kubelet.flag"
-  environment:
-    PATH: /usr/local/bin:{{ ansible_env.PATH }}
   with_items: "{{ groups['workers'] }}"
 
 - name: Configuration file generation of kubeconfig for [kubelet] workers 4/4
@@ -582,8 +512,6 @@
     kubectl config use-context default-system
   args:
     creates: "{{ data_path }}/certificates/configs/kubelet/{{ item }}/kubelet.flag"
-  environment:
-    PATH: /usr/local/bin:{{ ansible_env.PATH }}
   with_items: "{{ groups['workers'] }}"
 
 - name: Create flags [Modifier plus tard !!] workers
