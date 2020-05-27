@@ -8,9 +8,8 @@
     - device-mapper-persistent-data
     - lvm2
 
-- name: Add docker repository
-  command: yum-config-manager  --add-repo  https://download.docker.com/linux/centos/docker-ce.repo
-  args:
-    creates: /etc/yum.repos.d/docker-ce.repo
-
-
+- name: Add repository
+  yum_repository:
+    name: docker-ce
+    description: Docker YUM repo
+    baseurl: https://download.docker.com/linux/centos/docker-ce.repo
