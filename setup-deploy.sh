@@ -24,7 +24,7 @@
         sudo yum install git -y
         git clone https://github.com/ilkilab/agorakube.git
 
-    elif [[ $DISTRO == ubuntu* ] || [ $DISTRO == debian* ]]; then
+    elif [ $DISTRO == ubuntu* ] || [ $DISTRO == debian* ]; then
         export DEBIAN_FRONTEND=noninteractive
         sudo killall apt apt-get
         sudo apt-get update
