@@ -7,6 +7,16 @@
   include_tasks: "repo-centos-like.yaml"
   when: is_centos_like
 
+- name: Install package Iptables
+  package:
+    name: iptables
+    state: latest
+
+- name: Ensure Iptable mode selected is Legacy
+  alternatives:
+    name: iptables
+    path: /usr/sbin/iptables-legacy
+
 - name: Install Docker for Debian like distros
   include_tasks: "docker-debian-like.yaml"
   when: is_debian_like
