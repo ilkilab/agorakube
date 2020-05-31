@@ -24,7 +24,7 @@
         sudo yum install git -y
         git clone https://github.com/ilkilab/agorakube.git
 
-    elif [[ $DISTRO == ubuntu* ]]; then
+    elif [[ $DISTRO == ubuntu* ] || [ $DISTRO == debian* ]]; then
         export DEBIAN_FRONTEND=noninteractive
         sudo killall apt apt-get
         sudo apt-get update
@@ -35,8 +35,6 @@
         sudo apt-get update
         sudo apt-get install -yqq  openssh-server
         git clone  https://github.com/ilkilab/agorakube.git
-    elif [[ $DISTRO == debian* ]]; then
-        echo "Welcome on Debian !!"
     else
         echo "Unsupported OS"
         exit
