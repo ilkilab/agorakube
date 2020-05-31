@@ -28,7 +28,7 @@
 - name: Configure /etc/docker/daemon.json
   copy:
     dest: /etc/docker/daemon.json
-    src: daemon-{{ ansible_distribution }}.json
+    src: daemon.json
   notify:
     - Reload docker
 
