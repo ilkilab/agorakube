@@ -35,6 +35,8 @@
         sudo apt-get update
         sudo apt-get install -yqq  openssh-server
         git clone  https://github.com/ilkilab/agorakube.git
+    elif [[ $DISTRO == debian* ]]; then
+        echo "Welcome on Debian !!"
     else
         echo "Unsupported OS"
         exit
