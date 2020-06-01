@@ -16,6 +16,7 @@
     --set database.external.username=postgres \
     --set database.external.password=$(kubectl --kubeconfig {{ data_path }}/certificates/configs/admin/admin.conf get secret --namespace harbor harbor-postgresql -o jsonpath="{.data.postgresql-password}" | base64 --decode) \
     --set redis.type=external \
+    --set trivy.enabled=False \
     --set redis.external.host=harbor-redis-master \
     --set redis.external.password=$(kubectl --kubeconfig {{ data_path }}/certificates/configs/admin/admin.conf get secret --namespace harbor harbor-redis -o jsonpath="{.data.redis-password}" | base64 --decode) \
     --set externalURL=https://{{ harbor_ingress_host }} \

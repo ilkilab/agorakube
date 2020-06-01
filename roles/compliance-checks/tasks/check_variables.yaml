@@ -79,10 +79,10 @@
     msg: "Variable must be INT-INT => sample : 30000-32767"
   when: service_node_port_range is not regex("(?:[+-]?(?:[0-9]+))-(?:[+-]?(?:[0-9]+))")
 
-- name: Check calico_mtu variable
-  fail:
-    msg: "Variable calico_mtu must be an integer !"
-  when: calico_mtu is not regex("(?:[+-]?(?:[0-9]+))")
+#- name: Check calico_mtu variable
+#  fail:
+#    msg: "Variable calico_mtu must be an integer !"
+#  when: calico_mtu is not regex("(?:[+-]?(?:[0-9]+))")
 
 - name: Check data_path variable
   fail:

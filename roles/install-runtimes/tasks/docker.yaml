@@ -1,9 +1,30 @@
 ---
-- name: Add Docker repository for {{ ansible_distribution }}
-  include_tasks: "repo-{{ ansible_distribution }}.yaml"
+- name: Add Docker repository for Debian like distros
+  include_tasks: "repo-debian-like.yaml"
+  when: is_debian_like
 
-- name: Install Docker for {{ ansible_distribution }}
-  include_tasks: "docker-{{ ansible_distribution }}.yaml"
+- name: Add Docker repository for centos like distros
+  include_tasks: "repo-centos-like.yaml"
+  when: is_centos_like
+
+- name: Install package Iptables
+  package:
+    name: iptables
+    state: latest
+
+- name: Ensure Iptable mode selected is Legacy
+  alternatives:
+    name: iptables
+    path: /usr/sbin/iptables-legacy
+  when: ansible_distribution|lower == 'debian'
+
+- name: Install Docker for Debian like distros
+  include_tasks: "docker-debian-like.yaml"
+  when: is_debian_like
+
+- name: Install Docker for Centos like distros
+  include_tasks: "docker-centos-like.yaml"
+  when: is_centos_like
 
 - name: Start Runtime
   systemd:
@@ -18,15 +39,15 @@
 - name: Configure /etc/docker/daemon.json
   copy:
     dest: /etc/docker/daemon.json
-    src: daemon-{{ ansible_distribution }}.json
+    src: daemon.json
   notify:
     - Reload docker
 
-- name: Create /etc/systemd/system/docker.service.d directory
-  file:
-    path: /etc/systemd/system/docker.service.d
-    state: directory
-    recurse: yes
+#- name: Create /etc/systemd/system/docker.service.d directory
+#  file:
+#    path: /etc/systemd/system/docker.service.d
+#    state: directory
+#    recurse: yes
 
 - name: Make sure docker is running
   systemd:

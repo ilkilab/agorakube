@@ -31,6 +31,7 @@ This section explains what are the prerequisites to install [AgoraKube](https://
 Below the OS currently supported on all the machines :
   - Ubuntu 18.04 (Bionic) - amd64
   - Centos 7 - amd64
+  - Debian 10 - amd64
   
 ## Node Sizing
 
@@ -147,7 +148,7 @@ The **etcd** section contains information about the etcd machine(s) instances.
 The **masters** section contains information about the masters nodes (K8S Control Plane).
 
 The **workers** section contains information about the workers nodes (K8S Data Plane).
-
+The **storage** section contains information about the storage nodes (K8S storage Plane).
 The **all:vars** section contains information about how to connect to K8S nodes.
 
 The **SSH Connection settings** section contain information about the SSH connexion. You have to modify the variable **ansible_ssh_private_key_file** with the path where your public key is stored.

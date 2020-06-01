@@ -32,8 +32,13 @@
     - { name: 'net.ipv4.ip_forward', value: '1' }
     - { name: 'net.bridge.bridge-nf-call-ip6tables', value: '1' }
 
-- name: Setup repo and install required packages for {{ ansible_distribution }}
-  include_tasks: "repo-{{ ansible_distribution }}.yaml"
+- name: Add Docker repository for Debian like distros
+  include_tasks: "repo-debian-like.yaml"
+  when: is_debian_like
+
+- name: Add Docker repository for centos like distros
+  include_tasks: "repo-centos-like.yaml"
+  when: is_centos_like
 
 - name: Install containerd
   package:
