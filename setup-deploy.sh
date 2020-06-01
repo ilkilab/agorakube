@@ -16,7 +16,7 @@
     [ "$DISTRO" == "" ] && export DISTRO=$UNAME
     unset UNAME
     echo "#$DISTRO#"
-    if [[ $DISTRO == centos* ]]; then
+    if [[ $DISTRO == centos* ]] || [[ $DISTRO == fedora* ]]; then
         sudo killall -9 yum
         sudo yum install epel-release -y
         sudo yum install ansible -y
