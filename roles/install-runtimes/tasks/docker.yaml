@@ -16,6 +16,7 @@
   alternatives:
     name: iptables
     path: /usr/sbin/iptables-legacy
+  when: ansible_distribution|lower == 'debian'
 
 - name: Install Docker for Debian like distros
   include_tasks: "docker-debian-like.yaml"
