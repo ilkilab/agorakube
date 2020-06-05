@@ -30,7 +30,7 @@ See below Agorakube code architecture:
 * test_lab/* - Contains a test lab used for Agorakube development/test. This test lab used Vagrant/virtualBox
 * tools/* - Contains folders for some specific management actions
     * etcd - Contains some playbooks for ETCD management like backup/restore etcd
-* hosts - Inventory that define your Agorakube Cluster
+* hosts - Inventory file that define your Agorakube Cluster
 * agorakube.yaml - Ansible Playbook used to deploy Agorakube
 
 ## Set up a local test lab
