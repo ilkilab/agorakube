@@ -32,6 +32,7 @@ Below the OS currently supported on all the machines :
   - Ubuntu 18.04 (Bionic) - amd64
   - Centos 7 - amd64
   - Debian 10 - amd64
+  - Fedora 30/31 - amd64
   
 ## Node Sizing
 
