@@ -4,15 +4,34 @@ We are really glad you're reading this, because we need volunteer developers to 
 
 We want you working on things you're excited about.
 
-You can contact us by mail agorakube@ilki.fr.
-
-Or you can join Agorakube's community for discussion and ask questions : [Agorakube's Slack](http://slack.agorakube.ilkilabs.io/)
+You can contact us by mail agorakube@ilki.fr or you can join our Agorakube's Slack community for discussion and ask questions : [Agorakube's Slack](http://slack.agorakube.ilkilabs.io/)
 
 Channels :
 - **#general** - For general purpose (news, events...)
 - **#developpers** - For people who contribute to Agorakube by developing features
 - **#end-users** - For end users who want to give us feedbacks
 - **#random** - As its name suggests, for random discussions :)
+
+## Code Overview
+
+See below Agorakube code architecture:
+
+* .github/ - Contains all Github Configurations including:
+    * workflows/* - Contains 'GitHub Actions' workflows
+    * ISSUE_TEMPLATE/* - Contains all Isuues Templates display when we create Issues
+* actions/* - Contains a folder for each custom GitHubActions.
+    * ansible-lint/* - Contains all sources used for testing Anisble code in GithubAction using GitHub Actions
+* docs/* - Contains all the official Agorakube documentation.
+    * translations/* - Contains a transation in a specific language of the Agorakube documentation
+* group_vars/all.yaml - Contains all defaults parameters used in Agorakube Deployments
+* images/* - Contains images used in the Agorakube Doc
+* roles/* - Contains all the Ansible roles used to install Agorakube. Each role install/manage a specific component
+* test/inventory - Contains a test inventory file used by "test_lab"
+* test_lab/* - Contains a test lab used for Agorakube development/test. This test lab used Vagrant/virtualBox
+* tools/* - Contains folders for some specific management actions
+    * etcd - Contains some playbooks for ETCD management like backup/restore etcd
+* hosts - Inventory file that define your Agorakube Cluster
+* agorakube.yaml - Ansible Playbook used to deploy Agorakube
 
 ## Set up a local test lab
 
@@ -21,7 +40,7 @@ See [LOCAL_ENVIRONMENT](../LOCAL_ENVIRONMENT.md) for more details.
 
 ## Testing
 
-Tests are not automated yet.
+We use Ansible-lint with GithuActions to test Ansible code quality.
 
 
 ## Sample needs
