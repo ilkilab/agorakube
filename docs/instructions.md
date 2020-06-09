@@ -29,7 +29,7 @@ This section explains what are the prerequisites to install [AgoraKube](https://
 ## OS
 
 Below the OS currently supported on all the machines :
-  - Ubuntu 18.04 (Bionic) - amd64
+  - Ubuntu 18.04 & 20.04 - amd64
   - Centos 7 - amd64
   - Debian 10 - amd64
   
