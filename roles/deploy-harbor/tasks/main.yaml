@@ -1,4 +1,0 @@
----
-- name: Install Harbor
-  include_tasks: install-ha-harbor.yaml
-  when: install_harbor
