@@ -20,7 +20,6 @@ Below a diagram of the high-level architecture deployed by [AgoraKube](https://a
  - The number of **master** nodes to deploy (from 1 to many)
  - The number of **etcd** nodes to deploy (from 1 to many)
  - The number of **worker** nodes to deploy (from 1 to many)
- - The number of **storage** nodes to deploy (from 1 to many)
  
  # Prerequisites
 
@@ -60,7 +59,7 @@ The deployment node is an Ansible server which contains all Ansible roles and va
 
 - Connect to the deployment node and run the following command :
 ```
-bash <(curl -s https://raw.githubusercontent.com/ilkilab/agorakube/master/setup-deploy.sh)
+bash <(curl -s https://raw.githubusercontent.com/ilkilab/agorakube-core/master/setup-deploy.sh)
 ```
 
 
@@ -74,7 +73,7 @@ The prerequisites are:
 
 You can run the following command to automatically install those packages :
 ```
-bash <(curl -s https://raw.githubusercontent.com/ilkilab/agorakube/master/setup-hosts.sh)
+bash <(curl -s https://raw.githubusercontent.com/ilkilab/agorakube-core/master/setup-hosts.sh)
 ```
 
 ## SSH keys creation
@@ -105,7 +104,7 @@ The first file to modify is ["./hosts"](../hosts). This file contains all archit
 
 **All K8S servers names must be filled in by their FQDN.**
 
-The next Sample deploys K8S components in HA mode on 6 nodes (3 **etcd/masters** nodes, 3 **workers** nodes and 3 **storage** nodes) :
+The next Sample deploys K8S components in HA mode on 6 nodes (3 **etcd/masters** nodes, 3 **workers** nodes) :
 
 ```
 [deploy]
@@ -126,12 +125,6 @@ worker1  ansible_host=10.10.20.4
 worker2  ansible_host=10.10.20.5
 worker3  ansible_host=10.10.20.6
 
-
-[storage]
-worker1 ansible_host=10.10.20.4
-worker2 ansible_host=10.10.20.5
-worker3 ansible_host=10.10.20.6
-
 [all:vars]
 advertise_ip_masters=10.10.20.3
 
@@ -148,7 +141,7 @@ The **etcd** section contains information about the etcd machine(s) instances.
 The **masters** section contains information about the masters nodes (K8S Control Plane).
 
 The **workers** section contains information about the workers nodes (K8S Data Plane).
-The **storage** section contains information about the storage nodes (K8S storage Plane).
+
 The **all:vars** section contains information about how to connect to K8S nodes.
 
 The **SSH Connection settings** section contain information about the SSH connexion. You have to modify the variable **ansible_ssh_private_key_file** with the path where your public key is stored.
