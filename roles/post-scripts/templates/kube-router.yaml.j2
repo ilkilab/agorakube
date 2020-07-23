@@ -68,7 +68,7 @@ spec:
       serviceAccountName: kube-router
       containers:
       - name: kube-router
-        image: docker.io/cloudnativelabs/kube-router
+        image: docker.io/cloudnativelabs/kube-router:v1.0.0
         imagePullPolicy: Always
         args:
         - "--run-router=true"
@@ -109,7 +109,7 @@ spec:
           readOnly: false
       initContainers:
       - name: install-cni
-        image: busybox
+        image: busybox:1.32.0
         imagePullPolicy: Always
         command:
         - /bin/sh

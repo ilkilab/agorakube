@@ -100,11 +100,11 @@ spec:
         beta.kubernetes.io/os: linux
       containers:
       - name: coredns
-        image: coredns/coredns:1.6.9
+        image: coredns/coredns:1.7.0
         imagePullPolicy: IfNotPresent
         resources:
           limits:
-            memory: 170Mi
+            memory: 340Mi
           requests:
             cpu: 100m
             memory: 70Mi

@@ -16,7 +16,7 @@ ExecStart=/usr/local/bin/kubernetes/node/bin/kube-proxy \
   --ipvs-scheduler={{kube_proxy_ipvs_algotithm}} \
 {% endif %}
 {% endif %}
-  --config=/etc/kubernetes/kube-proxy-config.yaml
+  --config=/etc/kubernetes/manifests/kube-proxy-config.yaml
 Restart=on-failure
 RestartSec=5
 

@@ -13,7 +13,7 @@
   changed_when: false
 
 - name: Apply templates
-  command: kubectl --kubeconfig {{ data_path }}/certificates/configs/admin/admin.conf apply -f {{ haproxy_tempdir.path }}/haproxy.yaml
+  command: kubectl --kubeconfig {{ pki_path }}/kubeconfigs/admin/admin.conf apply -f {{ haproxy_tempdir.path }}/haproxy.yaml
   register: apply_haproxy
   changed_when: >
     apply_haproxy.stdout is search("created")

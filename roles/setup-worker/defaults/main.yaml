@@ -5,5 +5,4 @@ cluster_dns_ip: 10.32.0.10
 runtime: containerd
 delete_previous_k8s_install: false
 pod_cidr: 10.200.0.0/16
-kube_proxy_mode: iptables
-kube_proxy_ipvs_algotithm: rr
+enable_persistence: True

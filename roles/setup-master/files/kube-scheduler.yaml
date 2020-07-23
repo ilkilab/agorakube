@@ -6,7 +6,7 @@ clientConnection:
   acceptContentTypes: ""
   burst: 100
   contentType: application/vnd.kubernetes.protobuf
-  kubeconfig: /etc/kubernetes/manifests/kube-scheduler.yaml
+  kubeconfig: /etc/kubernetes/manifests/scheduler.conf
   qps: 50
 disablePreemption: false
 enableContentionProfiling: false

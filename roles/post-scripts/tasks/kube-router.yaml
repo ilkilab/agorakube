@@ -13,7 +13,7 @@
   changed_when: false
 
 - name: Apply templates
-  command: kubectl --kubeconfig {{ data_path }}/certificates/configs/admin/admin.conf apply -f {{ kube_router_tempdir.path }}/kube-router.yaml
+  command: kubectl --kubeconfig {{ pki_path }}/kubeconfigs/admin/admin.conf apply -f {{ kube_router_tempdir.path }}/kube-router.yaml
   register: apply_kube_router
   changed_when: >
     apply_kube_router.stdout is search("created")

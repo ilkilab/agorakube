@@ -2,5 +2,7 @@ kind: KubeProxyConfiguration
 apiVersion: kubeproxy.config.k8s.io/v1alpha1
 clientConnection:
   kubeconfig: "/etc/kubernetes/manifests/proxier.conf"
-mode: "iptables"
+mode: "ipvs"
 clusterCIDR: "{{ cluster_cidr }}"
+ipvs:
+  strictARP: true

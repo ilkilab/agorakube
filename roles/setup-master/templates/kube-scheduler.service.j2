@@ -5,7 +5,7 @@ Documentation=https://github.com/kubernetes/kubernetes
 [Service]
 ExecStart=/usr/local/bin/kubernetes/server/bin/kube-scheduler \
   --bind-address=127.0.0.1 \
-  --config=/etc/kubernetes/config/kube-scheduler.yaml \
+  --config=/etc/kubernetes/manifests/kube-scheduler.yaml \
   --profiling=false \
   --v=2
 Restart=on-failure

@@ -1,0 +1,16 @@
+apiVersion: storage.k8s.io/v1
+kind: StorageClass
+metadata:
+  annotations:
+    cas.openebs.io/config: |
+      - name: ReplicaCount
+        value: "{{ replicas_openebs }}"
+      - name: StoragePool
+        value: default
+    openebs.io/cas-type: jiva
+    manager: maya-apiserver
+    operation: Update
+  name: openebs-jiva-default
+provisioner: openebs.io/provisioner-iscsi
+reclaimPolicy: Delete
+volumeBindingMode: Immediate

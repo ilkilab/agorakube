@@ -18,7 +18,7 @@
     echo "#$DISTRO#"
     if [[ $DISTRO == centos* ]]; then
         sudo killall -9 yum
-        sudo yum install python -y
+        sudo yum install python libselinux-python -y
         sudo yum install openssh-server -y
     elif [[ $DISTRO == ubuntu* ]] || [[ $DISTRO == debian* ]]; then
         export DEBIAN_FRONTEND=noninteractive

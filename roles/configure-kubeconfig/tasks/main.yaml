@@ -5,5 +5,5 @@
     state: directory
 - name: Inject Kubeconfig
   copy:
-    src: "{{ data_path }}/certificates/configs/admin/admin.conf"
+    src: "{{ pki_path }}/kubeconfigs/admin/admin.conf"
     dest: /root/.kube/config
