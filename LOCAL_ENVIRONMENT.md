@@ -12,9 +12,9 @@ The document below describes pre-requisites for Agorakube local environment and 
 
 We use Vagrant and VirtualBox to deploy local environments.
 
-Test environments are located in [lab](./labs) folder
+Test environments are located in [labs](./labs) folder
 
-This [lab](./labs) folder contains a set of sub-folders for each configuration you may want to implement. Feel free to customize VagrantFiles according to your need !
+This [labs](./labs) folder contains a set of sub-folders for each configuration you may want to implement. Feel free to customize VagrantFiles according to your need !
     
 
 ## Start the environment
