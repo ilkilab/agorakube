@@ -45,17 +45,15 @@ By its symplicity, [AgoraKube](https://agorakube.ilkilabs.io/) provide a good wa
 This distribution is also adaptive by offering the opportunity to customize your deployment and fit to your needs : 
 * OS : Ubuntu-18.04/20.04-amd64 and Centos 7.X-amd64, Debian-10-amd64 
 * DNS Service: CoreDNS
-* Ingress Controller Traefik (Default) & HA-Proxy & Nginx
+* Ingress Controller Traefik v2 & HA-Proxy & Nginx (Default)
 * Container Runtime: Containerd (Default) & Docker
-* Certificats: Self Signed PKI
-* Service-Mesh: available: Linkerd
-* Storage: Rook Ceph Block with StorageClass, and MinIO for Object Storage
-* Registry: Harbor full featured
-* Monitoring: Prometheus/Grafana
-* CNI plugin: Flannel, Calico, Kube-router
-* Packaging: Helm
-* Self service application portal: Kubeapps
-* ...
+* Certificats: Self Signed PKI using OpenSSL
+* Storage: OpenEBS
+* Monitoring: Prometheus/Grafana/node-Exporter
+* CNI plugin: Kube-router, Calico (Alpha)
+* MetalLB (ARP mode for external LB)
+* Metrics-Server
+* Kubernetes-Dashboard
 
 This project is currently under active development so other customizable options will be added soon.
 
@@ -68,12 +66,12 @@ We regularly use a machine to deploy every cluster. We only use it for deploymen
 #### On the "deployment" node
 Execute this command in order to install Ansible and clone the repository :
 ```
-bash <(curl -s https://raw.githubusercontent.com/ilkilab/agorakube/master/setup-deploy.sh)
+bash <(curl -s https://raw.githubusercontent.com/ilkilab/agorakube-core/master/setup-deploy.sh)
 ```
 #### On the K8S nodes
 Execute this command on each node to update them and install the last version of Python : 
 ```
-bash <(curl -s https://raw.githubusercontent.com/ilkilab/agorakube/master/setup-hosts.sh)
+bash <(curl -s https://raw.githubusercontent.com/ilkilab/agorakube-core/master/setup-hosts.sh)
 ```
 
 ### Installation instructions
@@ -83,13 +81,13 @@ To deploy your K8S cluster follow these [instructions](docs/instructions.md).
 ## How to give feedback
 
 Every feedback is very welcome via the
-[GitHub site](https://github.com/ilkilab/agorakube)
+[GitHub site](https://github.com/ilkilab/agorakube-core)
 as issues or pull (merge) requests.
 
 You can also give use vulnerability reports by this way.
 ## How to contribute
 
-See our [Code Of Conduct](https://github.com/ilkilab/agorakube/blob/master/CODE_OF_CONDUCT.md) and [CONTRIBUTING](https://github.com/ilkilab/agorakube/blob/master/docs/CONTRIBUTING.md) for more information.
+See our [Code Of Conduct](https://github.com/ilkilab/agorakube-core/blob/master/CODE_OF_CONDUCT.md) and [CONTRIBUTING](https://github.com/ilkilab/agorakube-core/blob/master/docs/CONTRIBUTING.md) for more information.
 
 ## Community
 
