@@ -119,6 +119,7 @@ etcd_data_directory: "/var/lib/etcd"
 ' > /home/vagrant/agorakube-core/group_vars/all.yaml
 cd /home/vagrant/agorakube-core
 sudo ansible-playbook agorakube.yaml
+cp /root/.kube/config /var/kubeconfig/config
 SCRIPT
 
 
