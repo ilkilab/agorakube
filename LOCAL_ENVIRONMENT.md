@@ -19,7 +19,7 @@ This [labs](./labs) folder contains a set of sub-folders for each configuration 
 
 ## Start the environment
 
-1) Simply open a terminal and goto [lab/XX](./labs) folder where XX is the configuration you went to deploy.
+1) Simply open a terminal and goto [labs/XX](./labs) folder where XX is the configuration you went to deploy.
 
 2) Once you are located on the folder that contains your file "Vagrantfile", run the command:
 
