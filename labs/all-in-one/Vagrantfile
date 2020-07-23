@@ -58,7 +58,7 @@ advertise_ip_masters=10.20.20.4
 ansible_ssh_extra_args='-o StrictHostKeyChecking=no'
 ansible_user=vagrant
 ansible_ssh_private_key_file=/home/vagrant/ssh-private-key.pem
-' > /home/vagrant/agorakube-minimal/hosts
+' > /home/vagrant/agorakube-core/hosts
 
 echo '
 ---
@@ -115,8 +115,8 @@ data_path: "/var/agorakube"
 etcd_data_directory: "/var/lib/etcd"
 #restoration_snapshot_file: /path/snopshot/file Located on {{ etcd_data_directory }}
 
-' > /home/vagrant/agorakube-minimal/group_vars/all.yaml
-cd /home/vagrant/agorakube-minimal
+' > /home/vagrant/agorakube-core/group_vars/all.yaml
+cd /home/vagrant/agorakube-core
 sudo ansible-playbook agorakube.yaml
 cp /root/.kube/config /var/kubeconfig/config
 SCRIPT
