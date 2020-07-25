@@ -92,8 +92,6 @@
 - name: Generate Service Account Tokens private key
   openssl_privatekey:
     path: "{{ pki_path }}/sa/sa.key"
-    force: "{{ rotate_token_certificats }}"
-    backup: True
 
 - name: Generate an OpenSSL public key in PEM format for Service Account Tokens
   openssl_publickey:
