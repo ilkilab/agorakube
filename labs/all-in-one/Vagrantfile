@@ -71,7 +71,6 @@ expiry: "+3650d" # Default validity duration for PKI certificates.
 
 # PKI management parameters
 rotate_certificats: False # This parameter is used to renew K8S PKI certificats
-rotate_token_certificats: False # This parameter renew Service Account Token certs.
 
 # Components version
 etcd_release: v3.4.9
