@@ -10,4 +10,4 @@ expiry: "+3650d"
 data_path: "/var/agorakube"
 rotate_certificats: False
 rotate_private_keys: False
-rotate_token_certificats: False
+#rotate_token_certificats: False
