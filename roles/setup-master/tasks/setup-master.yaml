@@ -15,10 +15,10 @@
     remote_src: yes
     creates: /usr/local/bin/kubernetes/server/bin/kube-apiserver
 
-- name: Retrive all keys to authenticate K8S service account tokens
-  find:
-    paths: "{{ pki_path }}/sa"
-  register: token_keys
+#- name: Retrive all keys to authenticate K8S service account tokens
+#  find:
+#    paths: "{{ pki_path }}/sa"
+#  register: token_keys
 
 - name: Import kubernetes master services definitions in /etc/systemd/system/
   template:
