@@ -34,8 +34,8 @@ ingress_controller: nginx
 populate_etc_hosts: True
 k8s_dashboard: True
 enable_metrics_server: True
-enable_persistence: True
-enable_monitoring: True
+enable_persistence: False
+enable_monitoring: False
 dashboard_admin_user: administrator
 dashboard_admin_password: P@ssw0rd
 # Security
