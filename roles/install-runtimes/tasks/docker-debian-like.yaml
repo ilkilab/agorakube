@@ -1,5 +1,14 @@
+---
 - name: Install docker
-  apt:
-    name: docker-ce
+  package:
+    name: ["containerd.io","docker-ce","docker-ce-cli"]
     state: present
     update_cache: yes
+  when: docker_release|length == 0
+
+- name: Install docker
+  package:
+    name: ["containerd.io","docker-ce={{docker_release}}","docker-ce-cli={{docker_release}}"]
+    state: present
+    update_cache: yes
+  when: docker_release|length > 0

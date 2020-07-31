@@ -43,12 +43,6 @@
   notify:
     - Reload docker
 
-#- name: Create /etc/systemd/system/docker.service.d directory
-#  file:
-#    path: /etc/systemd/system/docker.service.d
-#    state: directory
-#    recurse: yes
-
 - name: Make sure docker is running
   systemd:
     state: started
