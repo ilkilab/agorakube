@@ -2,3 +2,6 @@
 cluster_cidr: 10.200.0.0/16
 pod_cidr:
 runtime: containerd
+docker_release: "" # By default install latest
+#docker_release: 19.03.2-3.el7 sample on Centos get with: yum list docker-ce --showduplicates | sort -r
+#docker_release: 5:18.09.1~3-0~ubuntu-xenial sample Ubuntu get with : apt-cache madison docker-ce
