@@ -8,7 +8,7 @@
 
 - name: Install docker in specific release
   package:
-    name: ["containerd.io","docker-ce-{{docker_release}}","docker-ce-cli-{{docker_release}}"]
+    name: ["containerd.io","docker-ce-{{ docker_release }}","docker-ce-cli-{{ docker_release }}"]
     state: present
     update_cache: yes
   when: docker_release|length > 0
