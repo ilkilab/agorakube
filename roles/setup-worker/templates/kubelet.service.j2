@@ -16,7 +16,7 @@ ExecStart=/usr/local/bin/kubernetes/server/bin/kubelet \
 {% else %}
 ExecStart=/usr/local/bin/kubernetes/node/bin/kubelet \
 {% endif %}
-  --config=/etc/kubernetes/kubelet-config.yaml \
+  --config=/etc/kubernetes/manifests/kubelet-config.yaml \
 {% if runtime == 'docker' %}
   --container-runtime=docker \
 {% endif %}

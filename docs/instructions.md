@@ -20,7 +20,6 @@ Below a diagram of the high-level architecture deployed by [AgoraKube](https://a
  - The number of **master** nodes to deploy (from 1 to many)
  - The number of **etcd** nodes to deploy (from 1 to many)
  - The number of **worker** nodes to deploy (from 1 to many)
- - The number of **storage** nodes to deploy (from 1 to many)
  
  # Prerequisites
 
@@ -60,7 +59,7 @@ The deployment node is an Ansible server which contains all Ansible roles and va
 
 - Connect to the deployment node and run the following command :
 ```
-bash <(curl -s https://raw.githubusercontent.com/ilkilab/agorakube/master/setup-deploy.sh)
+bash <(curl -s https://raw.githubusercontent.com/ilkilab/agorakube-core/master/setup-deploy.sh)
 ```
 
 
@@ -74,7 +73,7 @@ The prerequisites are:
 
 You can run the following command to automatically install those packages :
 ```
-bash <(curl -s https://raw.githubusercontent.com/ilkilab/agorakube/master/setup-hosts.sh)
+bash <(curl -s https://raw.githubusercontent.com/ilkilab/agorakube-core/master/setup-hosts.sh)
 ```
 
 ## SSH keys creation
@@ -105,7 +104,7 @@ The first file to modify is ["./hosts"](../hosts). This file contains all archit
 
 **All K8S servers names must be filled in by their FQDN.**
 
-The next Sample deploys K8S components in HA mode on 6 nodes (3 **etcd/masters** nodes, 3 **workers** nodes and 3 **storage** nodes) :
+The next Sample deploys K8S components in HA mode on 6 nodes (3 **etcd/masters** nodes, 3 **workers** nodes) :
 
 ```
 [deploy]
@@ -126,12 +125,6 @@ worker1  ansible_host=10.10.20.4
 worker2  ansible_host=10.10.20.5
 worker3  ansible_host=10.10.20.6
 
-
-[storage]
-worker1 ansible_host=10.10.20.4
-worker2 ansible_host=10.10.20.5
-worker3 ansible_host=10.10.20.6
-
 [all:vars]
 advertise_ip_masters=10.10.20.3
 
@@ -148,7 +141,7 @@ The **etcd** section contains information about the etcd machine(s) instances.
 The **masters** section contains information about the masters nodes (K8S Control Plane).
 
 The **workers** section contains information about the workers nodes (K8S Data Plane).
-The **storage** section contains information about the storage nodes (K8S storage Plane).
+
 The **all:vars** section contains information about how to connect to K8S nodes.
 
 The **SSH Connection settings** section contain information about the SSH connexion. You have to modify the variable **ansible_ssh_private_key_file** with the path where your public key is stored.
@@ -162,19 +155,20 @@ Sample file will deploy **containerd** as container runtime, **flannel** as CNI 
 
 ```
 ---
+# PKI info
+state_or_province_name: "Ile-De-France"
+locality_name: "Paris"
+country_name: "FR"
+root_ca_common_name: "kubernetes"
+expiry: "+3650d" # Default validity duration for PKI certificates.
 
-# CERTIFICATES
-cn_root_ca: ilkilabs
-c: FR
-st: Ile-De-France
-l: Paris
-expiry: 87600h
-rotate_certs_pki: false
-rotate_full_pki: false
+# PKI management parameters
+rotate_certificats: False # This parameter is used to renew K8S PKI certificats
+rotate_token_certificats: False # This parameter renew Service Account Token certs.
 
 # Components version
-etcd_release: v3.4.7
-kubernetes_release: v1.18.2
+etcd_release: v3.4.9
+kubernetes_release: v1.18.6
 delete_previous_k8s_install: False
 delete_etcd_install: False
 check_etcd_install: True
@@ -185,31 +179,26 @@ service_cluster_ip_range: 10.32.0.0/24
 kubernetes_service: 10.32.0.1
 cluster_dns_ip: 10.32.0.10
 service_node_port_range: 30000-32000
-kube_proxy_mode: ipvs
-kube_proxy_ipvs_algotithm: rr
-cni_release: 0.8.5
+cni_release: 0.8.6
+enable_metallb_layer2: True # If set to true, install metlab LB on your K8S cluster. This enable Service type LoadBalancer
+metallb_layer2_ips: 10.100.200.10-10.100.200.250 # Set Exeternal IP pool used by Service Type LoabBalancer "FistIP-LastIP"
+# metallb_secret_key is generated with command : openssl rand -base64 128
+metallb_secret_key: LGyt2l9XftOxEUIeFf2w0eCM7KjyQdkHform0gldYBKMORWkfQIsfXW0sQlo1VjJBB17shY5RtLg0klDNqNq4PAhNaub+olSka61LxV73KN2VaJY/snrZmHbdf/a7DfdzaeQ5pzP6D5O7zbUZwfb5ASOhNrG8aDMY3rkf4ZzHkc=
 
 # Custom features
 runtime: containerd
-network_cni_plugin: kube-router
-flannel_iface: default
 ingress_controller: nginx
-dns_server_soft: coredns
-populate_etc_hosts: yes
+populate_etc_hosts: True
 k8s_dashboard: True
-service_mesh: none
-linkerd_release: stable-2.6.0
-install_helm: False
-init_helm: False
-install_kubeapps: False
-
-# Calico
-calico_mtu: 1440
-
+enable_metrics_server: True
+enable_persistence: True
+enable_monitoring: True
+dashboard_admin_user: administrator
+dashboard_admin_password: P@ssw0rd
 # Security
 encrypt_etcd_keys:
 # Warrning: If multiple keys are defined ONLY LAST KEY is used for encrypt and decrypt.
-# Other keys are used only for decrypt purpose
+# Other keys are used only for decrypt purpose. Keys can be generated with command: head -c 32 /dev/urandom | base64
   key1:
     secret: 1fJcKt6vBxMt+AkBanoaxFF2O6ytHIkETNgQWv4b/+Q=
 
@@ -217,54 +206,6 @@ encrypt_etcd_keys:
 data_path: "/var/agorakube"
 etcd_data_directory: "/var/lib/etcd"
 #restoration_snapshot_file: /path/snopshot/file Located on {{ etcd_data_directory }}
-
-# KUBE-APISERVER spec
-kube_apiserver_enable_admission_plugins:
-# plugin AlwaysPullImage can be deleted. Credentials would be required to pull the private images every time. 
-# Also, in trusted environments, this might increases load on network, registry, and decreases speed.
-#  - AlwaysPullImages
-  - NamespaceLifecycle
-# EventRateLimit is used to limit DoS on API server in case of event Flooding
-  - EventRateLimit
-  - LimitRanger
-  - ServiceAccount
-  - TaintNodesByCondition
-  - PodNodeSelector
-  - Priority
-  - DefaultTolerationSeconds
-  - DefaultStorageClass
-  - StorageObjectInUseProtection
-  - PersistentVolumeClaimResize
-  - MutatingAdmissionWebhook
-  - NodeRestriction
-  - ValidatingAdmissionWebhook
-  - RuntimeClass
-  - ResourceQuota
-# SecurityContextDeny should be replaced by PodSecurityPolicy
-#  - SecurityContextDeny
-
-
-# Rook Settings
-enable_rook: True
-rook_dataDirHostPath: /data/rook
-
-# Minio Settings
-# Rook MUST be enabed.
-enable_rook_minio: True
-rook_minio_infra_access_key: admin
-rook_minio_infra_secret_key: password
-
-# Monitoring. Rook MUST be enabled to use monitoring (Monitoring use StorageClass to persist data)
-enable_monitoring: False
-
-
-# Enable Harbor Registry - Contain Chartmuseum, notary, clair, registry.
-# Harbor will be expose by HTTPS with Ingress Resource.
-# Rook MUST be enabled to use Harbor (Harbor use StorageClass to persist data)
-install_harbor: False
-harbor_ingress_host: harbor.ilkilabs.io
-notary_ingress_host: notary.ilkilabs.io
-harbor_admin_password: ChangeMe!
 ```
 
 **Note :** You can also modify the IPs-CIDR if you want.
@@ -279,22 +220,23 @@ This section is used to custom certificates information.
 
 | Parameter | Description | Values |
 | --- | --- | --- |
-| `cn_root_ca` | Certificate authority name | <ul><li> **Depend on your deployment** </li><br/><li>  **ilkilabs** *(default)* </li></ul>|
-| `c` | Country where the certificate is issued | <ul><li> **Depend on your deployment** </li><br/><li>  **FR** *(default)* </li></ul>|
-| `st` | State where the certificate is issued | <ul><li> **Depend on your deployment** </li><br/><li>  **Ile-de-France** *(default)* </li></ul>|
-| `l` | City where the certificate is issued | <ul><li> **Depend on your deployment** </li><br/><li>  **Paris** *(default)* </li></ul>|
+| `root_ca_common_name` | Certificate authority name | <ul><li> **Depend on your deployment** </li><br/><li>  **ilkilabs** *(default)* </li></ul>|
+| `country_name` | Country where the certificate is issued | <ul><li> **Depend on your deployment** </li><br/><li>  **FR** *(default)* </li></ul>|
+| `state_or_province_name` | State where the certificate is issued | <ul><li> **Depend on your deployment** </li><br/><li>  **Ile-de-France** *(default)* </li></ul>|
+| `locality_name` | City where the certificate is issued | <ul><li> **Depend on your deployment** </li><br/><li>  **Paris** *(default)* </li></ul>|
 | `expiry` | Certificate lifetime in hours | <ul><li> **Depend on your needs** </li><br/><li>  **87600h** *(default)* </li></ul>|
-| `rotate_full_pki` | Update all the PKI (crts, keys and crs) of your cluster. You will need to regenerate manually your Service Account Tokens, and relaunch all pods that are using them | <ul><li> **false** *(default)* </li><br/><li>  **true** </li></ul>|
-| `rotate_certs_pki` | Rotate certificates for your cluster | <ul><li> **false** *(default)* </li><br/><li>  **true** </li></ul>|
+| `rotate_certificats` | Rotate certificates for your cluster | <ul><li> **false** *(default)* </li><br/><li>  **true** </li></ul>|
 ### Components version section
 
 This section is used to custom the components version of your deployment.
 
 | Parameter | Description | Values |
 | --- | --- | --- |
-| `etcd_release` | Version of etcd component | <ul><li> **3.3.X** or **3.4.X** </li><br/><li>  **3.4.5** *(default)* </li></ul>|
-| `kubernetes_release` | Version of kubernetes components | <ul><li> **1.15.X**, **1.16.X**, **1.17.X** or **1.18.X** </li><br/><li>  **1.18.0** *(default)* </li></ul>|
+| `etcd_release` | Version of etcd component | <ul><li> **3.3.X** or **3.4.X** </li><br/><li>  **v3.4.10** *(default)* </li></ul>|
+| `kubernetes_release` | Version of kubernetes components | <ul><li> **1.15.X**, **1.16.X**, **1.17.X**, **1.18.X** or **1.19.X** </li><br/><li>  **1.19.0** *(default)* </li></ul>|
 | `delete_previous_k8s_install` | Deletion of previous installations of Kubernetes | <ul><li> **true** </li><br/><li>  **false** *(default)* </li></ul>|
+| `delete_etcd_install` | Deletion of previous installations of ETCD | <ul><li> **true** </li><br/><li>  **false** *(default)* </li></ul>|
+| `check_etcd_install` | Print ETCD Status | <ul><li> **true** </li><br/><li>  **false** *(default)* </li></ul>|
 
 ### IPs-CIDR Configurations
 
@@ -309,8 +251,10 @@ This section is used to custom network configurations of your deployment.
 | `kubernetes_service` | IP used for Kubernetes service of your cluster. **Must be** the first IP of your service CIDR ! | <ul><li> **Depend on your deployment** </li><br/><li>  **10.32.0.1** *(default)* </li></ul>|
 | `cluster_dns_ip` | IP used for DNS services deployed in your cluster | <ul><li> **Depend on your deployment** </li><br/><li>  **10.32.0.10** *(default)* </li></ul>|
 | `service_node_port_range` | Range of ports used for all NodePort services deployed in your cluster | <ul><li> **depend on your deployment** </li><br/><li>   **30000-32767** *(default)* </li></ul>|
-| `kube_proxy_mode` | Configure kube-proxy mode | <ul><li> **ipvs (default)** </li><br/><li>   **iptables** </li><br/><li>   **userspace**</li></ul>|
-| `kube_proxy_ipvs_algotithm` | Load Balancing algorithm for *IPVS Kube-proxy* mode | <ul><li> **rr** *(default - round-robin)*</li><br/><li>   **lc** (least connection) </li><br/><li>   **dh** *(destination hashing)* </li><br/><li>   **sh** *(source hashing)* </li><br/><li>   **sed** *(shortest expected delay)* </li><br/><li>   **nq** *(never queue)* </li></ul>|
+| `cni_release` | CNI release to use | <ul><li>  **0.8.6** *(default)* </li></ul>|
+| `enable_metallb_layer2` | Enable MetalLB. This add Service type LoadBalancer support to Kubernetes | <ul><li> **Depend on your deployment** </li><br/><li>  **True** *(default)* </li></ul>|
+| `metallb_layer2_ips` | IP range used by LoadBalancer Service  | <ul><li> **Depend on your deployment** </li><br/><li>  **10.100.200.10-10.100.200.250** *(default)* </li></ul>|
+| `metallb_secret_key` | metallb_secret_key is generated with command : openssl rand -base64 128 | <ul><li> **Depend on your deployment** </li></ul>|
 
 ### Custom features section
 
@@ -319,26 +263,13 @@ This section is used to defined all custom features of your deployment.
 | Parameter | Description | Values |
 | --- | --- | --- |
 | `runtime` | Container runtime used in your deployment | <ul><li> **containerd** *(default)* </li><br/><li>  **docker**  </li></ul>|
-| `network_cni_plugin` | CNI plugin used in your deployment | <ul><li> **calico** </li><br/><li> **flannel** </li><br/><li>  **kube-router** *(default)* </li></ul>|
-| `flannel_iface` | Indicate to Flannel the specific iface to be binded | <ul><li> **default** *(default - take the first iface)* </li><br/><li>  **Specific Iface**</li></ul>|
+| `network_cni_plugin` | CNI plugin used in your deployment | <ul><li> **calico** </li><br/><li>  **kube-router** *(default)* </li></ul>|
 | `ingress_controller` | Ingress Controller used in your deployment | <ul><li> **traefik** *(default)* </li><br/><li>  **ha-proxy**  </li><br/><li>  **nginx**  </li><br/><li>  **none**  </li></ul>|
-| `dns_server_soft` | DNS service used in your deployment | <ul><li> **CoreDNS** *(default)* </li></ul>|
-| `label_workers` | Fixed the label *node-role.kubernetes.io/worker* to all workers in your cluster | <ul><li> **false** </li><br/><li>  **true** *(default)* </li></ul>|
 | `populate_etc_hosts` | Populate */etc/hosts* file of all your nodes in the cluster | <ul><li> **no** </li><br/><li>  **yes** *(default)* </li></ul>|
 | `k8s_dashboard` | Deploy Kubernetes dashboard in your cluster | <ul><li> **false** </li><br/><li>  **true** *(default)* </li></ul>|
-| `service_mesh` | Service mesh used in your cluster | <ul><li> **none** *(default)* </li><br/><li>  **linkerd** </li></ul>|
-| `linkerd_release` | Version of LinkerD used in your cluster | <ul><li> **stable-2.6.0** *(default)* </li><br/><li>  **none** </li></ul>|
-| `install_helm` | Helm installation in your cluster | <ul><li> **false** *(default)* </li><br/><li>  **true** </li></ul>|
-| `init_helm` | Initialization of Helm | <ul><li> **false** *(default)* </li><br/><li>  **true** </li></ul>|
-| `install_kubeapps` | Installation of Kubeapps - **install_helm** and **init_helm** have to be **true** also. | <ul><li> **false** *(default)* </li><br/><li>  **true** </li></ul>|
+
 
 ### Other parameters sections
-
-Parameters for Calico CNI plugin :
-
-| Parameter | Description | Values |
-| --- | --- | --- |
-| `calico_mtu` | MTU size to used in your deployment | <ul><li> **Depend on your needs** </li><br/><li>  **1440** *(default)* </li></ul>|
 
 Parameters for etcd :
 
@@ -361,38 +292,12 @@ Parameters for etcd data location, and backups
 | `custom_etcd_backup_dir` | Directory where etcd leader backups are stored on **deploy** node | <ul><li> **{{data_path}}/backups_etcd/** (default if not defined) </li><br/></ul> |
 | `restoration_snapshot_file` | Path to the etcd snapshot on **deploy** node | <ul><li> **not defined** (default) </li><br/></ul> |
 
-Rook Settings
-
-| Parameter | Description | Values |
-| --- | --- | --- |
-| `enable_rook` | Deploy Rook Ceph cluster on **storage members** | <ul><li> **False** (default) </li><br/><li>  **True** </li></ul> |
-| `rook_dataDirHostPath` | Directory where Rook data are stored on **Storage** nodes | <ul><li> **/data/rook** (default) </li><br/></ul> |
-| `enable_rook_minio` | Deploy Rook MinIO cluster on **Rook Ceph Cluster** | <ul><li> **False** (default) </li><br/><li>  **True** </li></ul> |
-| `rook_minio_infra_access_key` | MinIO Admin Access Key | <ul><li> **admin_minio** (default) </li><br/></ul> |
-| `rook_minio_infra_secret_key` | MinIO Admin Secret Key | <ul><li> **password_minio** (default) </li><br/></ul> |
-
-
-Harbor Settings
-
-| Parameter | Description | Values |
-| --- | --- | --- |
-| `install_harbor` | Deploy Harbor Registry - Warrning : **Rook Must be enabled !** | <ul><li> **False** (default) </li><br/><li>  **true** </li></ul> |
-| `harbor_admin_password` | Admin password for Harbor UI | <ul><li> **ChangeMe!** (default) </li></ul> |
-| `harbor_ingress_host` | Host entry in Ingress. Harbor will be expose at **https://{{ harbor_ingress_host }}** (Depend on your ingress configuration) | <ul><li> harbor.ilkilabs.io (default) </li></ul> |
-| `notary_ingress_host` | Host entry in Ingress. Notary will be expose at **https://{{ notary.ilkilabs.io }}** (Depend on your ingress configuration) | <ul><li> **notary.ilkilabs.io** (default) </li></ul> |
 
 Monitoring Settings
 
 | Parameter | Description | Values |
 | --- | --- | --- |
 | `enable_monitoring` | Deploy monitoring - Warrning : **Rook Must be enabled !** | <ul><li> **False** (default) </li><br/><li>  **true** </li></ul> |
-
-
-Others settings:
-
-| Parameter | Description | Values |
-| --- | --- | --- |
-| `kube_apiserver_enable_admission_plugins` | List of admission plugins to be enabled | <ul><li> **Depend on your deployment** </li><br/></ul> |
 
 # Kubernetes deployment
 

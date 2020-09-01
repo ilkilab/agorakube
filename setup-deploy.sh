@@ -18,23 +18,25 @@
     echo "#$DISTRO#"
     if [[ $DISTRO == centos* ]]; then
         sudo killall -9 yum
-        sudo yum install epel-release -y
-        sudo yum install ansible -y
+        sudo yum install epel-release python libselinux-python curl -y
+        curl https://bootstrap.pypa.io/get-pip.py -o get-pip.py
+        python get-pip.py
+        pip install ansible
         sudo yum install openssh-server -y
         sudo yum install git -y
-        git clone https://github.com/ilkilab/agorakube.git
+        git clone https://github.com/ilkilab/agorakube-core.git
 
     elif [[ $DISTRO == ubuntu* ]] || [[ $DISTRO == debian* ]]; then
         export DEBIAN_FRONTEND=noninteractive
         sudo killall apt apt-get
         sudo apt-get update
-        sudo apt-get install -yqq git software-properties-common
-        sudo apt-add-repository --yes --update ppa:ansible/ansible
-        sudo apt-get install -yqq ansible
-        sudo add-apt-repository --yes --remove ppa:ansible/ansible
+        sudo apt-get install -yqq git software-properties-common python curl
+        curl https://bootstrap.pypa.io/get-pip.py -o get-pip.py
+        python get-pip.py
+        pip install ansible
         sudo apt-get update
         sudo apt-get install -yqq  openssh-server
-        git clone  https://github.com/ilkilab/agorakube.git
+        git clone  https://github.com/ilkilab/agorakube-core.git
     else
         echo "Unsupported OS"
         exit

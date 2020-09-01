@@ -13,7 +13,7 @@
   changed_when: false
 
 - name: Apply templates
-  command: kubectl --kubeconfig {{ data_path }}/certificates/configs/admin/admin.conf apply -f {{ nginx_tempdir.path }}/nginx.yaml
+  command: kubectl --kubeconfig {{ pki_path }}/kubeconfigs/admin/admin.conf apply -f {{ nginx_tempdir.path }}/nginx.yaml
   register: apply_nginx
   changed_when: >
     apply_nginx.stdout is search("created")
@@ -23,3 +23,12 @@
     state: absent
     path: "{{ nginx_tempdir.path }}"
   changed_when: false
+
+- name: Verify if nginx-ingress-controller pods has successfully started
+  command: kubectl --kubeconfig {{ pki_path }}/kubeconfigs/admin/admin.conf get deploy -n ingress-nginx ingress-nginx-controller
+  changed_when: false
+  register: nginx_deployment
+  until: nginx_deployment.stdout.find("1/1") != -1
+  retries: 300
+  delay: 10
+  run_once: true

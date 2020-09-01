@@ -1,0 +1,3 @@
+---
+pki_path: "{{ data_path }}/pki"
+replicas_openebs: "{{ groups['workers'] | length }}"

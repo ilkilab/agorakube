@@ -1,13 +1,6 @@
 ---
-#- name: Wait for Kubelet to start
-#  pause:
-#    seconds: 15
 - name: Include label workers
   include_tasks: label-workers.yaml
-
-- name: Include Tasks Flannel
-  include_tasks: flannel.yaml
-  when: network_cni_plugin == 'flannel'
 
 - name: Include Tasks Calico
   include_tasks: calico.yaml
@@ -19,7 +12,6 @@
 
 - name: Deploy CoreDNS to K8S
   include_tasks: coredns.yaml
-  when: dns_server_soft == 'coredns'
 
 - name: Install ingress (traefik)
   include_tasks: traefik.yaml
@@ -33,10 +25,22 @@
   include_tasks: nginx.yaml
   when: ingress_controller == 'nginx'
 
+- name: Install MetalLB Layer2
+  include_tasks: metallb_l2.yaml
+  when: enable_metallb_layer2
+
 - name: Install K8S Default Dashboard
   include_tasks: default_dashboard.yaml
   when: k8s_dashboard
 
-- name: Install K8S Service Mesh
-  include_tasks: linkerd.yaml
-  when:  service_mesh  == 'linkerd'
+- name: Install Metrics-Server
+  include_tasks: metrics-server.yaml
+  when: enable_metrics_server
+
+- name: Install openebs for persistence
+  include_tasks: openebs.yaml
+  when: enable_persistence
+
+- name: Install Monitoring
+  include_tasks: monitoring.yaml
+  when: enable_monitoring

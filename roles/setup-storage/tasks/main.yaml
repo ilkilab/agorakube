@@ -1,6 +1,0 @@
----
-- name: Create Rook DataDirPath
-  file:
-    path: "{{ rook_dataDirHostPath }}"
-    state: directory
-  when: enable_rook

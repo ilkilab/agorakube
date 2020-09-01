@@ -1,9 +1,5 @@
-# AgoraKube
+# AgoraKube Core
 
-[![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
-[![FOSSA Status](https://app.fossa.com/api/projects/git%2Bgithub.com%2Filkilab%2Fagorakube.svg?type=shield)](https://app.fossa.com/projects/git%2Bgithub.com%2Filkilab%2Fagorakube?ref=badge_shield)
-[![CII Best Practices](https://bestpractices.coreinfrastructure.org/projects/3104/badge)](https://bestpractices.coreinfrastructure.org/projects/3104)
-[![Build Status](https://travis-ci.org/ilkilab/agorakube.svg?branch=master)](https://travis-ci.org/ilkilab/agorakube)
 
 
 <p align="center">
@@ -40,7 +36,7 @@ This is a list of points that will be explained in this Readme file for the [Ago
 
 ## What is AgoraKube
 
-[AgoraKube](https://agorakube.ilkilabs.io/) is an easy-to-use, stable Kubernetes distribution (Kubernetes v1.15, 1.16, 1.17, 1.18).
+[AgoraKube](https://agorakube.ilkilabs.io/) is an easy-to-use, stable Kubernetes distribution (Kubernetes v1.15, 1.16, 1.17, 1.18, 1.19).
 
 By its symplicity, [AgoraKube](https://agorakube.ilkilabs.io/) provide a good way to deploy and manage K8S Clusters.
 
@@ -49,17 +45,15 @@ By its symplicity, [AgoraKube](https://agorakube.ilkilabs.io/) provide a good wa
 This distribution is also adaptive by offering the opportunity to customize your deployment and fit to your needs : 
 * OS : Ubuntu-18.04/20.04-amd64 and Centos 7.X-amd64, Debian-10-amd64 
 * DNS Service: CoreDNS
-* Ingress Controller Traefik (Default) & HA-Proxy & Nginx
+* Ingress Controller Traefik v2 & HA-Proxy & Nginx (Default)
 * Container Runtime: Containerd (Default) & Docker
-* Certificats: Self Signed PKI
-* Service-Mesh: available: Linkerd
-* Storage: Rook Ceph Block with StorageClass, and MinIO for Object Storage
-* Registry: Harbor full featured
-* Monitoring: Prometheus/Grafana
-* CNI plugin: Flannel, Calico, Kube-router
-* Packaging: Helm
-* Self service application portal: Kubeapps
-* ...
+* Certificats: Self Signed PKI using OpenSSL
+* Storage: OpenEBS
+* Monitoring: Prometheus/Grafana/node-Exporter
+* CNI plugin: Kube-router, Calico (Alpha)
+* MetalLB (ARP mode for external LB)
+* Metrics-Server
+* Kubernetes-Dashboard
 
 This project is currently under active development so other customizable options will be added soon.
 
@@ -72,12 +66,12 @@ We regularly use a machine to deploy every cluster. We only use it for deploymen
 #### On the "deployment" node
 Execute this command in order to install Ansible and clone the repository :
 ```
-bash <(curl -s https://raw.githubusercontent.com/ilkilab/agorakube/master/setup-deploy.sh)
+bash <(curl -s https://raw.githubusercontent.com/ilkilab/agorakube-core/master/setup-deploy.sh)
 ```
 #### On the K8S nodes
 Execute this command on each node to update them and install the last version of Python : 
 ```
-bash <(curl -s https://raw.githubusercontent.com/ilkilab/agorakube/master/setup-hosts.sh)
+bash <(curl -s https://raw.githubusercontent.com/ilkilab/agorakube-core/master/setup-hosts.sh)
 ```
 
 ### Installation instructions
@@ -87,13 +81,13 @@ To deploy your K8S cluster follow these [instructions](docs/instructions.md).
 ## How to give feedback
 
 Every feedback is very welcome via the
-[GitHub site](https://github.com/ilkilab/agorakube)
+[GitHub site](https://github.com/ilkilab/agorakube-core)
 as issues or pull (merge) requests.
 
 You can also give use vulnerability reports by this way.
 ## How to contribute
 
-See our [Code Of Conduct](https://github.com/ilkilab/agorakube/blob/master/CODE_OF_CONDUCT.md) and [CONTRIBUTING](https://github.com/ilkilab/agorakube/blob/master/docs/CONTRIBUTING.md) for more information.
+See our [Code Of Conduct](https://github.com/ilkilab/agorakube-core/blob/master/CODE_OF_CONDUCT.md) and [CONTRIBUTING](https://github.com/ilkilab/agorakube-core/blob/master/docs/CONTRIBUTING.md) for more information.
 
 ## Community
 
@@ -119,6 +113,3 @@ other components with their own licenses.
 Not all components we depend on are APACHE 2.0-licensed, but all
 *required* components are FLOSS. We prevent licensing issues
 using various processes (see [CONTRIBUTING](./docs/CONTRIBUTING.md)).
-
-
-[![FOSSA Status](https://app.fossa.io/api/projects/git%2Bgithub.com%2Filkilab%2Fagorakube.svg?type=large)](https://app.fossa.io/projects/git%2Bgithub.com%2Filkilab%2Fagorakube?ref=badge_large)

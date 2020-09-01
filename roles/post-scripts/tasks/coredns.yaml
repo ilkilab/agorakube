@@ -13,7 +13,7 @@
   changed_when: false
 
 - name: Apply templates
-  command: kubectl --kubeconfig {{ data_path }}/certificates/configs/admin/admin.conf apply -f {{ coredns_tempdir.path }}/coredns.yaml
+  command: kubectl --kubeconfig {{ pki_path }}/kubeconfigs/admin/admin.conf apply -f {{ coredns_tempdir.path }}/coredns.yaml
   register: apply_coredns
   changed_when: >
     apply_coredns.stdout is search("created")
@@ -26,7 +26,7 @@
   changed_when: false
 
 - name: Verify if coredns pods has successfully started
-  command: kubectl --kubeconfig {{ data_path }}/certificates/configs/admin/admin.conf get deploy -n kube-system coredns
+  command: kubectl --kubeconfig {{ pki_path }}/kubeconfigs/admin/admin.conf get deploy -n kube-system coredns
   changed_when: false
   register: dashboard_deployment
   until: dashboard_deployment.stdout.find("2/2") != -1

@@ -1,17 +1,17 @@
 ---
+# PKI info
+state_or_province_name: "Ile-De-France"
+locality_name: "Paris"
+country_name: "FR"
+root_ca_common_name: "kubernetes"
+expiry: "+3650d" # Default validity duration for PKI certificates.
 
-# CERTIFICATES
-cn_root_ca: ilkilabs
-c: FR
-st: Ile-De-France
-l: Paris
-expiry: 87600h
-rotate_certs_pki: false
-rotate_full_pki: false
+# PKI management parameters
+rotate_certificats: False # This parameter is used to renew K8S PKI certificats
 
 # Components version
 etcd_release: v3.4.10
-kubernetes_release: v1.18.8
+kubernetes_release: v1.19.0
 delete_previous_k8s_install: False
 delete_etcd_install: False
 check_etcd_install: True
@@ -22,31 +22,26 @@ service_cluster_ip_range: 10.32.0.0/24
 kubernetes_service: 10.32.0.1
 cluster_dns_ip: 10.32.0.10
 service_node_port_range: 30000-32000
-kube_proxy_mode: ipvs
-kube_proxy_ipvs_algotithm: rr
-cni_release: 0.8.5
+cni_release: 0.8.6
+enable_metallb_layer2: True # If set to true, install metlab LB on your K8S cluster. This enable Service type LoadBalancer
+metallb_layer2_ips: 10.100.200.10-10.100.200.250 # Set Exeternal IP pool used by Service Type LoabBalancer "FistIP-LastIP"
+# metallb_secret_key is generated with command : openssl rand -base64 128
+metallb_secret_key: LGyt2l9XftOxEUIeFf2w0eCM7KjyQdkHform0gldYBKMORWkfQIsfXW0sQlo1VjJBB17shY5RtLg0klDNqNq4PAhNaub+olSka61LxV73KN2VaJY/snrZmHbdf/a7DfdzaeQ5pzP6D5O7zbUZwfb5ASOhNrG8aDMY3rkf4ZzHkc=
 
 # Custom features
 runtime: containerd
-network_cni_plugin: kube-router
-flannel_iface: default
-ingress_controller: traefik
-dns_server_soft: coredns
-populate_etc_hosts: yes
+ingress_controller: nginx
+populate_etc_hosts: True
 k8s_dashboard: True
-service_mesh: none
-linkerd_release: stable-2.6.0
-install_helm: False
-init_helm: False
-install_kubeapps: False
-
-# Calico
-calico_mtu: 1440
-
+enable_metrics_server: True
+enable_persistence: False
+enable_monitoring: False
+dashboard_admin_user: administrator
+dashboard_admin_password: P@ssw0rd
 # Security
 encrypt_etcd_keys:
 # Warrning: If multiple keys are defined ONLY LAST KEY is used for encrypt and decrypt.
-# Other keys are used only for decrypt purpose
+# Other keys are used only for decrypt purpose. Keys can be generated with command: head -c 32 /dev/urandom | base64
   key1:
     secret: 1fJcKt6vBxMt+AkBanoaxFF2O6ytHIkETNgQWv4b/+Q=
 
@@ -54,52 +49,3 @@ encrypt_etcd_keys:
 data_path: "/var/agorakube"
 etcd_data_directory: "/var/lib/etcd"
 #restoration_snapshot_file: /path/snopshot/file Located on {{ etcd_data_directory }}
-
-# KUBE-APISERVER spec
-kube_apiserver_enable_admission_plugins:
-# plugin AlwaysPullImage can be deleted. Credentials would be required to pull the private images every time. 
-# Also, in trusted environments, this might increases load on network, registry, and decreases speed.
-#  - AlwaysPullImages
-  - NamespaceLifecycle
-# EventRateLimit is used to limit DoS on API server in case of event Flooding
-  - EventRateLimit
-  - LimitRanger
-  - ServiceAccount
-  - TaintNodesByCondition
-  - PodNodeSelector
-  - Priority
-  - DefaultTolerationSeconds
-  - DefaultStorageClass
-  - StorageObjectInUseProtection
-  - PersistentVolumeClaimResize
-  - MutatingAdmissionWebhook
-  - NodeRestriction
-  - ValidatingAdmissionWebhook
-  - RuntimeClass
-  - ResourceQuota
-# SecurityContextDeny should be replaced by PodSecurityPolicy
-#  - SecurityContextDeny
-
-
-# Rook Settings
-enable_rook: False
-rook_dataDirHostPath: /data/rook
-
-# Minio Settings
-# Minio Key MUST BE Base64 encoded and Rook MUST be enabed.
-enable_rook_minio: False
-rook_minio_infra_access_key: admin_minio
-rook_minio_infra_secret_key: password_minio
-
-
-# Monitoring. Rook MUST be enabled to use monitoring (Monitoring use StorageClass to persist data)
-enable_monitoring: False
-
-
-# Enable Harbor Registry - Contain Chartmuseum, notary, clair, registry.
-# Harbor will be expose by HTTPS with Ingress Resource.
-# Rook MUST be enabled to use Harbor (Harbor use StorageClass to persist data)
-install_harbor: False
-harbor_ingress_host: harbor.ilkilabs.io
-notary_ingress_host: notary.ilkilabs.io
-harbor_admin_password: ChangeMe!

@@ -27,7 +27,7 @@ See below Agorakube code architecture:
 * images/* - Contains images used in the Agorakube Doc
 * roles/* - Contains all the Ansible roles used to install Agorakube. Each role install/manage a specific component
 * test/inventory - Contains a test inventory file used by "test_lab"
-* test_lab/* - Contains a test lab used for Agorakube development/test. This test lab used Vagrant/virtualBox
+* labs/* - Contains test labs used for Agorakube development/test. This test labs use Vagrant/virtualBox
 * tools/* - Contains folders for some specific management actions
     * etcd - Contains some playbooks for ETCD management like backup/restore etcd
 * hosts - Inventory file that define your Agorakube Cluster

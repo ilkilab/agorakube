@@ -4,6 +4,27 @@
     name: ["socat", "conntrack", "ipset"]
     state: latest
 
+
+- name: install {{ iscsi_package_name }} package
+  package:
+    name: "{{ iscsi_package_name }}"
+    state: latest
+  when: enable_persistence
+
+- name: Ensure iscsid is running and enabled
+  systemd:
+    name: iscsid
+    state: started
+    enabled: yes
+    daemon_reload: yes
+  when: enable_persistence
+
+- name: Create /etc/kubernetes/manifests directory
+  file:
+    path: /etc/kubernetes/manifests
+    state: directory
+    recurse: True
+
 - name: Download Kubernetes node binaries
   unarchive:
     src: https://dl.k8s.io/{{ kubernetes_release }}/kubernetes-node-linux-amd64.tar.gz
@@ -27,27 +48,26 @@
 - name: Create kubelet config file
   template:
     src: kubelet-config.yaml.j2
-    dest: /etc/kubernetes/kubelet-config.yaml
+    dest: /etc/kubernetes/manifests/kubelet-config.yaml
     owner: root
     group: root
     mode: '644'
   notify:
     - restart kubelet
 
-- name: Create /etc/kubernetes/manifests directory
-  file:
-    path: /etc/kubernetes/manifests
-    state: directory
-
-- name: Create kubelet kubeconfig file
+- name: Import kubelet and kube-proxy kubeconfig files
   copy:
-    src: "{{ data_path }}/certificates/configs/kubelet/{{ ansible_fqdn }}/kubelet.config"
-    dest: /etc/kubernetes/manifests/kubelet.conf
+    src: "{{ pki_path }}/kubeconfigs/{{ item }}/{{ ansible_fqdn }}/{{ item }}.conf"
+    dest: /etc/kubernetes/manifests/{{ item }}.conf
     owner: root
     group: root
     mode: '644'
+  with_items:
+    - kubelet
+    - proxier
   notify:
     - restart kubelet
+    - restart kube-proxy
 
 - name: Create kube-proxy service
   template:
@@ -62,17 +82,7 @@
 - name: Create kube-proxy config file
   template:
     src: kube-proxy-config.yaml.j2
-    dest: /etc/kubernetes/kube-proxy-config.yaml
-    owner: root
-    group: root
-    mode: '644'
-  notify:
-    - restart kube-proxy
-
-- name: Import proxier kubeconfig
-  copy:
-    src: "{{ data_path }}/certificates/configs/proxier/proxier.conf"
-    dest: /etc/kubernetes/manifests/proxier.conf
+    dest: /etc/kubernetes/manifests/kube-proxy-config.yaml
     owner: root
     group: root
     mode: '644'
