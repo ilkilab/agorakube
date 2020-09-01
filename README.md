@@ -17,7 +17,7 @@ Official documentation is available at [Agorakube Website](https://agorakube.ilk
 
 Master branch is stable.
 
-Read this in [French](https://github.com/ilkilab/agorakube/blob/master/docs/translations/FR/README.fr.md)
+Read this in [French](https://github.com/ilkilab/agorakube/blob/core/docs/translations/FR/README.fr.md)
 
 Since November 2019, [Agorakube](https://agorakube.ilkilabs.io/) has been certified by the "Kubernetes Conformance Program" and is a project of [the cncf landscape](https://landscape.cncf.io/selected=agora-kube).
 
@@ -66,12 +66,12 @@ We regularly use a machine to deploy every cluster. We only use it for deploymen
 #### On the "deployment" node
 Execute this command in order to install Ansible and clone the repository :
 ```
-bash <(curl -s https://raw.githubusercontent.com/ilkilab/agorakube-core/master/setup-deploy.sh)
+bash <(curl -s https://raw.githubusercontent.com/ilkilab/agorakube/core/setup-deploy.sh)
 ```
 #### On the K8S nodes
 Execute this command on each node to update them and install the last version of Python : 
 ```
-bash <(curl -s https://raw.githubusercontent.com/ilkilab/agorakube-core/master/setup-hosts.sh)
+bash <(curl -s https://raw.githubusercontent.com/ilkilab/agorakube/core/setup-hosts.sh)
 ```
 
 ### Installation instructions
@@ -81,13 +81,14 @@ To deploy your K8S cluster follow these [instructions](docs/instructions.md).
 ## How to give feedback
 
 Every feedback is very welcome via the
-[GitHub site](https://github.com/ilkilab/agorakube-core)
+[GitHub site](https://github.com/ilkilab/agorakube)
 as issues or pull (merge) requests.
 
 You can also give use vulnerability reports by this way.
 ## How to contribute
 
-See our [Code Of Conduct](https://github.com/ilkilab/agorakube-core/blob/master/CODE_OF_CONDUCT.md) and [CONTRIBUTING](https://github.com/ilkilab/agorakube-core/blob/master/docs/CONTRIBUTING.md) for more information.
+
+See our [Code Of Conduct](https://github.com/ilkilab/agorakube/blob/core/CODE_OF_CONDUCT.md) and [CONTRIBUTING](https://github.com/ilkilab/agorakube/blob/core/docs/CONTRIBUTING.md) for more information.
 
 ## Community
 
