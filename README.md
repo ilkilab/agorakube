@@ -36,7 +36,7 @@ This is a list of points that will be explained in this Readme file for the [Ago
 
 ## What is AgoraKube
 
-[AgoraKube](https://agorakube.ilkilabs.io/) is an easy-to-use, stable Kubernetes distribution (Kubernetes v1.15, 1.16, 1.17, 1.18).
+[AgoraKube](https://agorakube.ilkilabs.io/) is an easy-to-use, stable Kubernetes distribution (Kubernetes v1.15, 1.16, 1.17, 1.18, 1.19).
 
 By its symplicity, [AgoraKube](https://agorakube.ilkilabs.io/) provide a good way to deploy and manage K8S Clusters.
 
