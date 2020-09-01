@@ -233,7 +233,7 @@ This section is used to custom the components version of your deployment.
 | Parameter | Description | Values |
 | --- | --- | --- |
 | `etcd_release` | Version of etcd component | <ul><li> **3.3.X** or **3.4.X** </li><br/><li>  **v3.4.10** *(default)* </li></ul>|
-| `kubernetes_release` | Version of kubernetes components | <ul><li> **1.15.X**, **1.16.X**, **1.17.X** or **1.18.X** </li><br/><li>  **1.18.6** *(default)* </li></ul>|
+| `kubernetes_release` | Version of kubernetes components | <ul><li> **1.15.X**, **1.16.X**, **1.17.X**, **1.18.X** or **1.19.X** </li><br/><li>  **1.19.0** *(default)* </li></ul>|
 | `delete_previous_k8s_install` | Deletion of previous installations of Kubernetes | <ul><li> **true** </li><br/><li>  **false** *(default)* </li></ul>|
 | `delete_etcd_install` | Deletion of previous installations of ETCD | <ul><li> **true** </li><br/><li>  **false** *(default)* </li></ul>|
 | `check_etcd_install` | Print ETCD Status | <ul><li> **true** </li><br/><li>  **false** *(default)* </li></ul>|
