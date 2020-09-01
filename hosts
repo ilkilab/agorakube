@@ -1,21 +1,20 @@
+
 [deploy]
-worker1 ansible_connection=local
+kubernetes ansible_connection=local
 
 [masters]
-worker1  ansible_host=10.10.20.4
+kubernetes  ansible_host=10.20.20.4
 
 [etcd]
-worker1  ansible_host=10.10.20.4
-
+kubernetes  ansible_host=10.20.20.4
 [workers]
-worker1  ansible_host=10.10.20.4
-worker2  ansible_host=10.10.20.5
-worker3  ansible_host=10.10.20.6
+kubernetes  ansible_host=10.20.20.4
 
 [all:vars]
-advertise_ip_masters=10.10.20.4
+advertise_ip_masters=10.20.20.4
 
 # SSH connection settings
 ansible_ssh_extra_args=-o StrictHostKeyChecking=no
 ansible_user=vagrant
 ansible_ssh_private_key_file=/home/vagrant/ssh-private-key.pem
+

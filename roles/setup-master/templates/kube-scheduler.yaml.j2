@@ -1,3 +1,4 @@
+{% if  (kubernetes_release | replace('v','')) is version('1.19.0', '<') %}
 algorithmSource:
   provider: DefaultProvider
 apiVersion: kubescheduler.config.k8s.io/v1alpha1
@@ -25,3 +26,24 @@ leaderElection:
 metricsBindAddress: 0.0.0.0:10251
 percentageOfNodesToScore: 0
 schedulerName: default-scheduler
+{% else %}
+apiVersion: kubescheduler.config.k8s.io/v1beta1
+kind: KubeSchedulerConfiguration
+clientConnection:
+  acceptContentTypes: ""
+  burst: 100
+  contentType: application/vnd.kubernetes.protobuf
+  kubeconfig: /etc/kubernetes/manifests/scheduler.conf
+  qps: 50
+healthzBindAddress: 0.0.0.0:10251
+leaderElection:
+  leaderElect: true
+  leaseDuration: 15s
+  resourceName: kube-scheduler
+  resourceNamespace: kube-system
+  renewDeadline: 10s
+  resourceLock: endpoints
+  retryPeriod: 2s
+metricsBindAddress: 0.0.0.0:10251
+percentageOfNodesToScore: 0
+{% endif %}

@@ -62,8 +62,8 @@
     - Restart kube-controller-manager service
 
 - name: Import kube scheduler yaml file config
-  copy:
-    src: kube-scheduler.yaml
+  template:
+    src: kube-scheduler.yaml.j2
     dest: /etc/kubernetes/manifests/kube-scheduler.yaml
     owner: root
     group: root

@@ -11,7 +11,7 @@ rotate_certificats: False # This parameter is used to renew K8S PKI certificats
 
 # Components version
 etcd_release: v3.4.10
-kubernetes_release: v1.18.8
+kubernetes_release: v1.19.0
 delete_previous_k8s_install: False
 delete_etcd_install: False
 check_etcd_install: True
