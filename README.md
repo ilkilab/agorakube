@@ -21,6 +21,8 @@ Official documentation is available at [Agorakube Website](https://agorakube.ilk
 
 Master branch is stable.
 
+**If you want to install Kubernetes V1.19+, please use the "core" branch.(Support v16 to v19)**
+
 Read this in [French](https://github.com/ilkilab/agorakube/blob/master/docs/translations/FR/README.fr.md)
 
 Since November 2019, [Agorakube](https://agorakube.ilkilabs.io/) has been certified by the "Kubernetes Conformance Program" and is a project of [the cncf landscape](https://landscape.cncf.io/selected=agora-kube).
