@@ -8,6 +8,7 @@ This is a list of points that will be explained in this instructions file for th
 - [Agorakube Parameters](#agorakube-parameters)
 - [Kubernetes deployment](#kubernetes-deployment)
 - [Manage ETCD Cluster](./manage_etcd.md)
+- [Create Pod](#create-pod)
 
 
 # High-level Architecture
@@ -306,3 +307,37 @@ Once all configuration files are set, run the following command to launch the An
 ```
 sudo ansible-playbook agorakube.yaml
 ```
+
+# Create pod<a name="create-pod" />
+
+After the pre-configured Kubernetes cluster is deployed, run the following command to deploy a sample Kubernetes pod with the busybox image:
+
+```
+cat <<EOF | kubectl apply -f -
+apiVersion: v1
+kind: Pod
+metadata:
+  name: busybox-sleep
+spec:
+  containers:
+  - name: busybox
+    image: busybox
+    args:
+    - sleep
+    - "1000"
+EOF
+```
+
+You should see an output similar to this:
+
+```
+pod/busybox-sleep created
+```
+
+Run the following command to verify if the deployed pod is running:
+
+```
+kubectl get pods
+```
+
+
