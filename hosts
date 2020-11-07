@@ -12,6 +12,7 @@ kubernetes  ansible_host=10.20.20.4
 
 [all:vars]
 advertise_masters=10.20.20.4
+#advertise_masters=k8s.localcluster.lan
 
 # SSH connection settings
 ansible_ssh_extra_args=-o StrictHostKeyChecking=no
@@ -20,4 +21,4 @@ ansible_ssh_private_key_file=/home/vagrant/ssh-private-key.pem
 
 # If advertise_masters is a DNS name and you want to provision /etc/hosts files of all your cluster hosts with IP resolution
 [etc_hosts]
-#k8s.pierre.localcluster.lan ansible_host=10.10.20.40
+#k8s.localcluster.lan ansible_host=10.10.20.4
