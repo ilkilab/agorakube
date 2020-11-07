@@ -22,6 +22,7 @@
         curl https://bootstrap.pypa.io/get-pip.py -o get-pip.py
         python get-pip.py
         pip install ansible
+        pip install netaddr
         sudo yum install openssh-server -y
         sudo yum install git -y
         git clone https://github.com/ilkilab/agorakube.git -b core
@@ -34,6 +35,7 @@
         curl https://bootstrap.pypa.io/get-pip.py -o get-pip.py
         python get-pip.py
         pip install ansible
+        pip install netaddr
         sudo apt-get update
         sudo apt-get install -yqq  openssh-server
         git clone  https://github.com/ilkilab/agorakube.git -b core
