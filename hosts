@@ -13,10 +13,14 @@ worker20  ansible_host=10.10.20.50
 worker30  ansible_host=10.10.20.60
 
 [all:vars]
-advertise_masters=k8s.pierre.lan
+advertise_masters=k8s.pierre.localcluster.lan
+
 
 # SSH connection settings
 ansible_ssh_extra_args=-o StrictHostKeyChecking=no
 ansible_user=vagrant
 ansible_ssh_private_key_file=/home/vagrant/ssh-private-key.pem
 
+# If advertise_masters is a DNS and you want to to provision /etc/hosts file of your cluster hosts:
+[etc_hosts]
+k8s.pierre.localcluster.lan ansible_host=10.10.20.40
