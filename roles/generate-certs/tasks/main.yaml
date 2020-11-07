@@ -336,7 +336,7 @@
 
 - name: File generation of kubeconfig configuration for [admin] 1/4
   shell: |
-    kubectl config set-cluster default-cluster --server=https://{{ advertise_ip_masters }}:6443 \
+    kubectl config set-cluster default-cluster --server=https://{{ advertise_masters }}:6443 \
     --certificate-authority "{{ pki_path }}/intermediate/ca.crt" \
     --embed-certs
   environment:
@@ -371,7 +371,7 @@
 
 - name: File generation of kubeconfig configuration for [controller-manager] 1/4
   shell: |
-    kubectl config set-cluster default-cluster --server=https://{{ advertise_ip_masters }}:6443 \
+    kubectl config set-cluster default-cluster --server=https://{{ advertise_masters }}:6443 \
     --certificate-authority "{{ pki_path }}/intermediate/ca.crt" \
     --embed-certs
   environment:
@@ -406,7 +406,7 @@
 
 - name: File generation of kubeconfig configuration for [scheduler] 1/4
   shell: |
-    kubectl config set-cluster default-cluster --server=https://{{ advertise_ip_masters }}:6443 \
+    kubectl config set-cluster default-cluster --server=https://{{ advertise_masters }}:6443 \
     --certificate-authority "{{ pki_path }}/intermediate/ca.crt" \
     --embed-certs
   environment:
@@ -484,7 +484,7 @@
 
 - name: File generation of kubeconfig configuration for [kubelets] 1/4
   shell: |
-    kubectl config set-cluster default-cluster --server=https://{{ advertise_ip_masters }}:6443 \
+    kubectl config set-cluster default-cluster --server=https://{{ advertise_masters }}:6443 \
     --certificate-authority "{{ pki_path }}/intermediate/ca.crt" \
     --embed-certs
   environment:
@@ -577,7 +577,7 @@
 
 - name: File generation of kubeconfig configuration for [kube-proxy] 1/4
   shell: |
-    kubectl config set-cluster default-cluster --server=https://{{ advertise_ip_masters }}:6443 \
+    kubectl config set-cluster default-cluster --server=https://{{ advertise_masters }}:6443 \
     --certificate-authority "{{ pki_path }}/intermediate/ca.crt" \
     --embed-certs
   environment:

@@ -1,5 +1,5 @@
 ---
-advertise_ip_masters: 10.10.0.3
+advertise_masters: 10.10.0.3
 
 
 

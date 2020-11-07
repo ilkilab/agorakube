@@ -13,7 +13,7 @@ worker20  ansible_host=10.10.20.50
 worker30  ansible_host=10.10.20.60
 
 [all:vars]
-advertise_ip_masters=k8s.pierre.lan
+advertise_masters=k8s.pierre.lan
 
 # SSH connection settings
 ansible_ssh_extra_args=-o StrictHostKeyChecking=no
