@@ -1,5 +1,8 @@
 ---
-advertise_ip_masters: 1.2.3.4
+advertise_masters: 10.10.0.3
+
+
+
 kubernetes_service: 1.2.3.4
 
 state_or_province_name: "Ile-De-France"
