@@ -1,17 +1,19 @@
 
 [deploy]
-kubernetes ansible_connection=local
+master ansible_connection=local
 
 [masters]
-kubernetes  ansible_host=10.20.20.4
+master  ansible_host=10.10.20.40
 
 [etcd]
-kubernetes  ansible_host=10.20.20.4
+master  ansible_host=10.10.20.40
+
 [workers]
-kubernetes  ansible_host=10.20.20.4
+worker20  ansible_host=10.10.20.50
+worker30  ansible_host=10.10.20.60
 
 [all:vars]
-advertise_ip_masters=10.20.20.4
+advertise_ip_masters=k8s.pierre.lan
 
 # SSH connection settings
 ansible_ssh_extra_args=-o StrictHostKeyChecking=no
