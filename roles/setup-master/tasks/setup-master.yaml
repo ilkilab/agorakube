@@ -14,7 +14,10 @@
     dest: /usr/local/bin
     remote_src: yes
     creates: /usr/local/bin/kubernetes/server/bin/kube-apiserver
-
+  notify:
+    - Restart kube-apiserver service
+    - Restart kube-controller-manager service
+    - Restart kube-scheduler service
 #- name: Retrive all keys to authenticate K8S service account tokens
 #  find:
 #    paths: "{{ pki_path }}/sa"
