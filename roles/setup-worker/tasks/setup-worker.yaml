@@ -31,6 +31,9 @@
     dest: /usr/local/bin
     remote_src: yes
     creates: /usr/local/bin/kubernetes/node/bin/kubelet
+  notify:
+    - restart kubelet
+    - restart kube-proxy
   when:
   - ansible_fqdn in groups['workers']
   - ansible_fqdn not in groups['masters']
