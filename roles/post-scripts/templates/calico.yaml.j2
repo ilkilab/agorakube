@@ -560,11 +560,11 @@ spec:
                   traffic that goes from a workload endpoint to the host itself (after
                   the traffic hits the endpoint egress policy). By default Calico
                   blocks traffic from workload endpoints to the host itself with an
-                  iptables â€œDROPâ€ action. If you want to allow some or all traffic
+                  iptables  action. If you want to allow some or all traffic
                   from endpoint to host, set this parameter to RETURN or ACCEPT. Use
-                  RETURN if you have your own rules in the iptables â€œINPUTâ€ chain;
-                  Calico will insert its rules at the top of that chain, then â€œRETURNâ€
-                  packets to the â€œINPUTâ€ chain once it has completed processing workload
+                  RETURN if you have your own rules in the iptables  chain;
+                  Calico will insert its rules at the top of that chain, then 
+                  packets to the  chain once it has completed processing workload
                   endpoint egress policy. Use ACCEPT to unconditionally accept packets
                   from workloads after processing workload endpoint egress policy.
                   [Default: Drop]'
@@ -598,7 +598,7 @@ spec:
                   accidentally cutting off a host with incorrect configuration. Each
                   port should be specified as tcp:<port-number> or udp:<port-number>.
                   For back-compatibility, if the protocol is not specified, it defaults
-                  to â€œtcpâ€. To disable all inbound host ports, use the value none.
+                  to . To disable all inbound host ports, use the value none.
                   The default value allows ssh access and DHCP. [Default: tcp:22,
                   udp:68, tcp:179, tcp:2379, tcp:2380, tcp:6443, tcp:6666, tcp:6667]'
                 items:
@@ -621,7 +621,7 @@ spec:
                   to avoid accidentally cutting off a host with incorrect configuration.
                   Each port should be specified as tcp:<port-number> or udp:<port-number>.
                   For back-compatibility, if the protocol is not specified, it defaults
-                  to â€œtcpâ€. To disable all outbound host ports, use the value none.
+                  to . To disable all outbound host ports, use the value none.
                   The default value opens etcd''s standard ports to ensure that Felix
                   does not get cut off from etcd as well as allowing DHCP and DNS.
                   [Default: tcp:179, tcp:2379, tcp:2380, tcp:6443, tcp:6666, tcp:6667,
@@ -1112,9 +1112,9 @@ spec:
                             One negates the set of matched endpoints, the other negates
                             the whole match: \n \tSelector = \"!has(my_label)\" matches
                             packets that are from other Calico-controlled \tendpoints
-                            that do not have the label â€œmy_labelâ€. \n \tNotSelector
+                            that do not have the label. \n \tNotSelector
                             = \"has(my_label)\" matches packets that are not from
-                            Calico-controlled \tendpoints that do have the label â€œmy_labelâ€.
+                            Calico-controlled \tendpoints that do have the label.
                             \n The effect is that the latter will accept packets from
                             non-Calico sources whereas the former is limited to packets
                             from Calico-controlled endpoints."
@@ -1317,9 +1317,9 @@ spec:
                             One negates the set of matched endpoints, the other negates
                             the whole match: \n \tSelector = \"!has(my_label)\" matches
                             packets that are from other Calico-controlled \tendpoints
-                            that do not have the label â€œmy_labelâ€. \n \tNotSelector
+                            that do not have the label . \n \tNotSelector
                             = \"has(my_label)\" matches packets that are not from
-                            Calico-controlled \tendpoints that do have the label â€œmy_labelâ€.
+                            Calico-controlled \tendpoints that do have the label .
                             \n The effect is that the latter will accept packets from
                             non-Calico sources whereas the former is limited to packets
                             from Calico-controlled endpoints."
@@ -1443,9 +1443,9 @@ spec:
                             One negates the set of matched endpoints, the other negates
                             the whole match: \n \tSelector = \"!has(my_label)\" matches
                             packets that are from other Calico-controlled \tendpoints
-                            that do not have the label â€œmy_labelâ€. \n \tNotSelector
+                            that do not have the label . \n \tNotSelector
                             = \"has(my_label)\" matches packets that are not from
-                            Calico-controlled \tendpoints that do have the label â€œmy_labelâ€.
+                            Calico-controlled \tendpoints that do have the label .
                             \n The effect is that the latter will accept packets from
                             non-Calico sources whereas the former is limited to packets
                             from Calico-controlled endpoints."
@@ -1648,9 +1648,9 @@ spec:
                             One negates the set of matched endpoints, the other negates
                             the whole match: \n \tSelector = \"!has(my_label)\" matches
                             packets that are from other Calico-controlled \tendpoints
-                            that do not have the label â€œmy_labelâ€. \n \tNotSelector
+                            that do not have the label . \n \tNotSelector
                             = \"has(my_label)\" matches packets that are not from
-                            Calico-controlled \tendpoints that do have the label â€œmy_labelâ€.
+                            Calico-controlled \tendpoints that do have the label .
                             \n The effect is that the latter will accept packets from
                             non-Calico sources whereas the former is limited to packets
                             from Calico-controlled endpoints."
@@ -1865,7 +1865,7 @@ spec:
                   is empty - through the specific interface that has one of the IPs
                   in ExpectedIPs. Therefore, when InterfaceName is empty, at least
                   one expected IP must be specified.  Only external interfaces (such
-                  as â€œeth0â€) are supported here; it isn't possible for a HostEndpoint
+                  as ) are supported here; it isn't possible for a HostEndpoint
                   to protect traffic through a specific local workload interface.
                   \n Note: Only some kinds of policy are implemented for \"*\" HostEndpoints;
                   initially just pre-DNAT policy.  Please check Calico documentation
@@ -2564,9 +2564,9 @@ spec:
                             One negates the set of matched endpoints, the other negates
                             the whole match: \n \tSelector = \"!has(my_label)\" matches
                             packets that are from other Calico-controlled \tendpoints
-                            that do not have the label â€œmy_labelâ€. \n \tNotSelector
+                            that do not have the label . \n \tNotSelector
                             = \"has(my_label)\" matches packets that are not from
-                            Calico-controlled \tendpoints that do have the label â€œmy_labelâ€.
+                            Calico-controlled \tendpoints that do have the label .
                             \n The effect is that the latter will accept packets from
                             non-Calico sources whereas the former is limited to packets
                             from Calico-controlled endpoints."
@@ -2769,9 +2769,9 @@ spec:
                             One negates the set of matched endpoints, the other negates
                             the whole match: \n \tSelector = \"!has(my_label)\" matches
                             packets that are from other Calico-controlled \tendpoints
-                            that do not have the label â€œmy_labelâ€. \n \tNotSelector
+                            that do not have the label . \n \tNotSelector
                             = \"has(my_label)\" matches packets that are not from
-                            Calico-controlled \tendpoints that do have the label â€œmy_labelâ€.
+                            Calico-controlled \tendpoints that do have the label .
                             \n The effect is that the latter will accept packets from
                             non-Calico sources whereas the former is limited to packets
                             from Calico-controlled endpoints."
@@ -2895,9 +2895,9 @@ spec:
                             One negates the set of matched endpoints, the other negates
                             the whole match: \n \tSelector = \"!has(my_label)\" matches
                             packets that are from other Calico-controlled \tendpoints
-                            that do not have the label â€œmy_labelâ€. \n \tNotSelector
+                            that do not have the label . \n \tNotSelector
                             = \"has(my_label)\" matches packets that are not from
-                            Calico-controlled \tendpoints that do have the label â€œmy_labelâ€.
+                            Calico-controlled \tendpoints that do have the label .
                             \n The effect is that the latter will accept packets from
                             non-Calico sources whereas the former is limited to packets
                             from Calico-controlled endpoints."
@@ -3100,9 +3100,9 @@ spec:
                             One negates the set of matched endpoints, the other negates
                             the whole match: \n \tSelector = \"!has(my_label)\" matches
                             packets that are from other Calico-controlled \tendpoints
-                            that do not have the label â€œmy_labelâ€. \n \tNotSelector
+                            that do not have the label . \n \tNotSelector
                             = \"has(my_label)\" matches packets that are not from
-                            Calico-controlled \tendpoints that do have the label â€œmy_labelâ€.
+                            Calico-controlled \tendpoints that do have the label .
                             \n The effect is that the latter will accept packets from
                             non-Calico sources whereas the former is limited to packets
                             from Calico-controlled endpoints."
@@ -3862,3 +3862,4 @@ spec:
   selector:
     matchLabels:
       k8s-app: calico-kube-controllers
+---
