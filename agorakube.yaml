@@ -1,5 +1,5 @@
 ---
-- hosts: all
+- hosts: workers,etcd,masters
   any_errors_fatal: true
   become: true
   roles:
