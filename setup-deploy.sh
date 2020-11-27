@@ -25,7 +25,7 @@
         pip install netaddr
         sudo yum install openssh-server -y
         sudo yum install git -y
-        git clone https://github.com/ilkilab/agorakube.git -b kubelet/registration
+        git clone https://github.com/ilkilab/agorakube.git -b core
 
     elif [[ $DISTRO == ubuntu* ]] || [[ $DISTRO == debian* ]]; then
         export DEBIAN_FRONTEND=noninteractive
@@ -38,7 +38,7 @@
         pip install netaddr
         sudo apt-get update
         sudo apt-get install -yqq  openssh-server
-        git clone  https://github.com/ilkilab/agorakube.git -b kubelet/registration
+        git clone  https://github.com/ilkilab/agorakube.git -b core
     else
         echo "Unsupported OS"
         exit
