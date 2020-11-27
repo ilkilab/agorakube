@@ -9,7 +9,9 @@ cni_release: 0.8.5
 cluster_cidr: 10.33.0.0/16
 enable_metrics_server: True
 # Calico
-calico_mtu: 1440
+#calico_mtu: 1440
+# calico_mtu: 0  = auto-detect MTU. Configure calico_mtu manually for better performances
+calico_mtu: 0
 enable_metallb_layer2: True
 metallb_layer2_ips: 10.100.200.10-10.100.200.250
 # metallb_secret_key is generated with command : openssl rand -base64 128
