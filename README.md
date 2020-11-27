@@ -53,8 +53,8 @@ This distribution is also adaptive by offering the opportunity to customize your
 * Certificats: Self Signed PKI using OpenSSL
 * Storage: OpenEBS
 * Monitoring: Prometheus/Grafana/node-Exporter
-* CNI plugin: Kube-router, Calico (Alpha)
-* MetalLB (ARP mode for external LB)
+* CNI plugin: Kube-router, Calico
+* MetalLB (L2/ARP mode for external LB)
 * Metrics-Server
 * Kubernetes-Dashboard
 
