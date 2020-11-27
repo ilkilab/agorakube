@@ -3,16 +3,16 @@
 state_or_province_name: "Ile-De-France"
 locality_name: "Paris"
 country_name: "FR"
-root_ca_common_name: "ilki"
+root_ca_common_name: "kubernetes"
 expiry: "+3650d" # Default validity duration for PKI certificates.
 
 # PKI management parameters
-rotate_certificats: True # This parameter is used to renew K8S PKI certificats
+rotate_certificats: False # This parameter is used to renew K8S PKI certificats
 
 # Components version
 etcd_release: v3.4.10
-kubernetes_release: v1.19.3
-delete_previous_k8s_install: True
+kubernetes_release: v1.19.4
+delete_previous_k8s_install: False
 delete_etcd_install: False
 check_etcd_install: True
 
@@ -23,7 +23,7 @@ kubernetes_service: 10.32.0.1
 cluster_dns_ip: 10.32.0.10
 service_node_port_range: 30000-32000
 cni_release: 0.8.6
-enable_metallb_layer2: False # If set to true, install metlab LB on your K8S cluster. This enable Service type LoadBalancer
+enable_metallb_layer2: True # If set to true, install metlab LB on your K8S cluster. This enable Service type LoadBalancer
 metallb_layer2_ips: 10.100.200.10-10.100.200.250 # Set Exeternal IP pool used by Service Type LoabBalancer "FistIP-LastIP"
 # metallb_secret_key is generated with command : openssl rand -base64 128
 metallb_secret_key: LGyt2l9XftOxEUIeFf2w0eCM7KjyQdkHform0gldYBKMORWkfQIsfXW0sQlo1VjJBB17shY5RtLg0klDNqNq4PAhNaub+olSka61LxV73KN2VaJY/snrZmHbdf/a7DfdzaeQ5pzP6D5O7zbUZwfb5ASOhNrG8aDMY3rkf4ZzHkc=
