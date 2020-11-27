@@ -3,7 +3,7 @@ Description=Kubernetes Kube Proxy {{ kubernetes_release }}
 Documentation=https://github.com/kubernetes/kubernetes
 
 [Service]
-{% if ansible_fqdn in groups['masters'] %}
+{% if ansible_hostname in groups['masters'] %}
 ExecStart=/usr/local/bin/kubernetes/server/bin/kube-proxy \
 {% else %}
 ExecStart=/usr/local/bin/kubernetes/node/bin/kube-proxy \

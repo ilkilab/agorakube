@@ -1,18 +1,18 @@
 
 [deploy]
-kubernetes ansible_connection=local
+ip-172-31-13-242 ansible_connection=local
 
 [masters]
-kubernetes  ansible_host=10.20.20.4
+ip-172-31-13-242 ansible_host=172.31.13.242
 
 [etcd]
-kubernetes  ansible_host=10.20.20.4
+ip-172-31-13-242 ansible_host=172.31.13.242
 [workers]
-kubernetes  ansible_host=10.20.20.4
+ip-172-31-13-242 ansible_host=172.31.13.242
 
 [all:vars]
-advertise_masters=10.20.20.4
-#advertise_masters=k8s.localcluster.lan
+#advertise_masters=
+advertise_masters=k8s.aws.cluster
 
 # SSH connection settings
 ansible_ssh_extra_args=-o StrictHostKeyChecking=no
@@ -21,4 +21,4 @@ ansible_ssh_private_key_file=/home/vagrant/ssh-private-key.pem
 
 # If advertise_masters is a DNS name and you want to provision /etc/hosts files of all your cluster hosts with IP resolution
 [etc_hosts]
-#k8s.localcluster.lan ansible_host=10.10.20.4
+k8s.aws.cluster ansible_host=172.31.13.242
