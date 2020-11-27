@@ -54,7 +54,7 @@ worker2  ansible_host=10.10.20.5
 worker3  ansible_host=10.10.20.6
 
 [all:vars]
-advertise_masters=10.20.20.4
+advertise_masters=10.10.20.4
 #advertise_masters=kubernetes.localcluster.lan
 
 # SSH connection settings
