@@ -17,6 +17,8 @@ delete_etcd_install: False
 check_etcd_install: True
 
 # IPs-CIDR Configurations
+network_cni_plugin: kube-router
+
 cluster_cidr: 10.33.0.0/16
 service_cluster_ip_range: 10.32.0.0/24
 kubernetes_service: 10.32.0.1
