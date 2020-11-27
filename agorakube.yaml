@@ -3,7 +3,7 @@
   any_errors_fatal: true
   become: true
   roles:
-#    - connexion-to-hosts
+    - connexion-to-hosts
     - check-hosts-names
     - populate_etc_hosts
 - hosts: deploy
