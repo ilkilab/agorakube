@@ -35,8 +35,8 @@
     - restart kubelet
     - restart kube-proxy
   when:
-  - ansible_fqdn in groups['workers']
-  - ansible_fqdn not in groups['masters']
+  - ansible_hostname in groups['workers']
+  - ansible_hostname not in groups['masters']
 
 - name: Create kubelet service
   template:
@@ -60,7 +60,7 @@
 
 - name: Import kubelet and kube-proxy kubeconfig files
   copy:
-    src: "{{ pki_path }}/kubeconfigs/{{ item }}/{{ ansible_fqdn }}/{{ item }}.conf"
+    src: "{{ pki_path }}/kubeconfigs/{{ item }}/{{ ansible_hostname }}/{{ item }}.conf"
     dest: /etc/kubernetes/manifests/{{ item }}.conf
     owner: root
     group: root

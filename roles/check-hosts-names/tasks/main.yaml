@@ -2,6 +2,6 @@
 - name: test node_name
   assert:
     that:
-      ansible_fqdn == inventory_hostname
+      ansible_hostname == inventory_hostname
   when:
   - inventory_hostname not in groups['etc_hosts']

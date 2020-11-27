@@ -11,7 +11,7 @@ Documentation=https://github.com/kubernetes/kubernetes
 {% endfor %}
 [Service]
 ExecStart=/usr/local/bin/kubernetes/server/bin/kube-apiserver \
-  --advertise-address={{ hostvars[ansible_fqdn].ansible_host}} \
+  --advertise-address={{ hostvars[ansible_hostname].ansible_host}} \
   --allow-privileged=true \
   --anonymous-auth=false \
   --apiserver-count={{ groups['masters'] | length }} \
