@@ -8,6 +8,7 @@ l: Paris
 expiry: 87600h
 rotate_certs_pki: false
 rotate_full_pki: false
+custom_dns_alt_name: ""
 
 # Components version
 etcd_release: v3.4.10

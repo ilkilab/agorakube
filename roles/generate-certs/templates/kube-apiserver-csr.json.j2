@@ -9,7 +9,9 @@
         "kubernetes.default",
         "kubernetes.default.svc",
         "kubernetes.default.svc.cluster",
-        "kubernetes.default.svc.cluster.local"
+        "kubernetes.default.svc.cluster.local"{%- if custom_dns_alt_name -%},
+        "{{ custom_dns_alt_name }}"
+        {% endif -%}
     ],
     "key": {
         "algo": "rsa",
