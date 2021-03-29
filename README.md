@@ -1,3 +1,9 @@
+# ⚠️ Repo Archive Notice
+
+As of Mars 2021, Agorakube code in this repo will no longer be updated/maintained.
+Please refer to ILKE project instead : https://github.com/ilkilabs/ilke
+
+
 # AgoraKube
 
 [![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
