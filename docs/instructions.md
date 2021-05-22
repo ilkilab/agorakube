@@ -98,7 +98,7 @@ Then clone or download the AGORAKUBE git branch / release you want to use.
 
 You can run the following command to automatically install those packages and clone the latest stable AGORAKUBE distribution:
 ```
-bash <(curl -s https://raw.githubusercontent.com/ilkilabs/agorakube/master/setup-deploy.sh)
+bash <(curl -s https://raw.githubusercontent.com/ilkilab/agorakube/master/setup-deploy.sh)
 ```
 
 ### Use Python Virtual Environment
@@ -161,7 +161,7 @@ The prerequisites are:
 
 You can run the following command to automatically install those packages :
 ```
-bash <(curl -s https://raw.githubusercontent.com/ilkilabs/agorakube/master/setup-hosts.sh)
+bash <(curl -s https://raw.githubusercontent.com/ilkilab/agorakube/master/setup-hosts.sh)
 ```
 
 ## SSH keys creation
