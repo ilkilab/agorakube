@@ -1,7 +1,7 @@
-# Local ILKE Development Environment
+# Local AGORAKUBE Development Environment
 
 You can create a local environment by using Vagrant. 
-The document below describes pre-requisites for ILKE local environment and how you can start using them.
+The document below describes pre-requisites for AGORAKUBE local environment and how you can start using them.
 
 ## Pre-requisites
 
@@ -25,7 +25,7 @@ This [labs](./labs) folder contains a set of sub-folders for each configuration 
 
 `vagrant up`
 
-3) Once ILKE installation is finished, a kubeconfig file ("config") is generated next to your Vagrantfile. You can use this file to manage your Kubernetes installation with [kubectl](https://kubernetes.io/docs/tasks/tools/install-kubectl/), or you can connect to the deploy machine with the following command:
+3) Once AGORAKUBE installation is finished, a kubeconfig file ("config") is generated next to your Vagrantfile. You can use this file to manage your Kubernetes installation with [kubectl](https://kubernetes.io/docs/tasks/tools/install-kubectl/), or you can connect to the deploy machine with the following command:
 
 `vagrant ssh deploy`
 
@@ -33,7 +33,7 @@ This [labs](./labs) folder contains a set of sub-folders for each configuration 
 
 `sudo su`
 
-5) You can now enjoy your ILKE/K8S fresh cluster ! Use the following command to print K8S version:
+5) You can now enjoy your AGORAKUBE/K8S fresh cluster ! Use the following command to print K8S version:
 
 `kubectl version`
 

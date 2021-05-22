@@ -1,25 +1,25 @@
 # Table of Contents
-This is a list of points that will be explained in this instructions file for the ILKE project :
+This is a list of points that will be explained in this instructions file for the AGORAKUBE project :
 
 - [High-level Architecture](#high-level-architecture)
 - [Prerequisites](#prerequisites)
 - [Nodes Setup](#nodes-setup)
 - [K8S Cluster Configuration](#k8s-cluster-configuration)
-- [ILKE Parameters](#agorakube-parameters)
+- [AGORAKUBE Parameters](#agorakube-parameters)
 - [Kubernetes deployment](#kubernetes-deployment)
 - [Manage ETCD Cluster](./manage_etcd.md)
 - [Create Pod](#create-pod)
 - [Storage Benchmark](#storage-benchmark)
 - [Upgrade OpenEBS Storage](#upgrade-openEBS-storage)
 - [How to use Reloader](#how-to-use-reloader)
-- [ILKE Log Architecture](#agorakube-log-architecture)
-- [Uninstall ILKE](#uninstall-agorakube)
+- [AGORAKUBE Log Architecture](#agorakube-log-architecture)
+- [Uninstall AGORAKUBE](#uninstall-agorakube)
 
 
 # High-level Architecture
 
-Below a diagram of the high-level architecture deployed by ILKE :
-![Architecture](../images/ILKE_diagram.png)
+Below a diagram of the high-level architecture deployed by AGORAKUBE :
+![Architecture](../images/AGORAKUBE_diagram.png)
 
 **Notes :** This distibution is aimed to be customizable so you can choose : 
  - Where the **etcd** will be deployed (with the master or not) 
@@ -30,7 +30,7 @@ Below a diagram of the high-level architecture deployed by ILKE :
  
  # Prerequisites
 
-This section explains what are the prerequisites to install ILKE in your environment.
+This section explains what are the prerequisites to install AGORAKUBE in your environment.
 
 ## OS
 
@@ -52,7 +52,7 @@ Node sizing indicated here is for production environment. You can custom it acco
 
 It is a best-practice to install ETCD and MASTERS on separate hosts.
 
-| ILKE Type | no HA or all-in-one | no-production | production |
+| AGORAKUBE Type | no HA or all-in-one | no-production | production |
 | --- | --- | --- | --- |
 | MASTER | 1 | 2 | 3+ |
 | ETCD | 1 | 3 | 5 |
@@ -81,11 +81,11 @@ We actually configure the proper VM size for your ETCD depending on the number o
 
 # Nodes Setup
 
-This section explains how to setup nodes before deploying Kubernetes Clusters with ILKE.
+This section explains how to setup nodes before deploying Kubernetes Clusters with AGORAKUBE.
 
 ## Deployment node
 
-The deployment node is an Ansible server which contains all Ansible roles and variables used to deploy and configure Kubernetes Clusters with ILKE distribution.
+The deployment node is an Ansible server which contains all Ansible roles and variables used to deploy and configure Kubernetes Clusters with AGORAKUBE distribution.
 
 The prerequisites are:
 - SSH Server (like openssh-server)
@@ -94,16 +94,16 @@ The prerequisites are:
 - curl
 - with pip3 : ansible, netaddr
 
-Then clone or download the ILKE git branch / release you want to use.
+Then clone or download the AGORAKUBE git branch / release you want to use.
 
-You can run the following command to automatically install those packages and clone the latest stable ILKE distribution:
+You can run the following command to automatically install those packages and clone the latest stable AGORAKUBE distribution:
 ```
 bash <(curl -s https://raw.githubusercontent.com/ilkilabs/agorakube/master/setup-deploy.sh)
 ```
 
 ### Use Python Virtual Environment
 
-Sometimes it is better to run Ansible and all its dependences into a specific *Python Virtual Environment*. This will make it easier for you to install Ansible and all its dependences needed by ILKE without take the risk to break your existing Python/Python3 installation.
+Sometimes it is better to run Ansible and all its dependences into a specific *Python Virtual Environment*. This will make it easier for you to install Ansible and all its dependences needed by AGORAKUBE without take the risk to break your existing Python/Python3 installation.
 
 
 You can create your own *Python Virtual Environment* from scratch by following:
@@ -126,12 +126,12 @@ source /usr/local/agorakube-env/bin/activate
 # Update PIP
 pip3 install --upgrade pip
 
-# Then install Ansible and Netaddr (needed by ILKE)
+# Then install Ansible and Netaddr (needed by AGORAKUBE)
 pip3 install ansible
 pip3 install netaddr
 pip3 install selinux
 
-# You can alternatively install packages with "agorakube/requirements.txt" file located on ILKE
+# You can alternatively install packages with "agorakube/requirements.txt" file located on AGORAKUBE
 pip3 install -r agorakube/requirements.txt
 
 # Validate ansible is installed and use your Python Virtual Environment
@@ -166,7 +166,7 @@ bash <(curl -s https://raw.githubusercontent.com/ilkilabs/agorakube/master/setup
 
 ## SSH keys creation
 
-ILKE is using Ansible to deploy Kubernetes. You have to configure SSH keys to ensure the communication between the deploy machine and the others.
+AGORAKUBE is using Ansible to deploy Kubernetes. You have to configure SSH keys to ensure the communication between the deploy machine and the others.
 
 On the deploy machine, create the SSH keys :
 ```
@@ -180,11 +180,11 @@ ssh-copy-id -i .ssh/id_rsa.pub yourUser@IP_OF_THE_HOST
 ```
 You have to execute this command for each node of your cluster
 
-Once your ssh keys have been pushed to all nodes, modify the file "agorakube/hosts" to add the user/ssh-key (in section **SSH Connection settings**) that ILKE will use to connect to all nodes
+Once your ssh keys have been pushed to all nodes, modify the file "agorakube/hosts" to add the user/ssh-key (in section **SSH Connection settings**) that AGORAKUBE will use to connect to all nodes
 
 # K8S Cluster Configuration
 
-ILKE enables an easy way to deploy and manage customizable K8S clusters.
+AGORAKUBE enables an easy way to deploy and manage customizable K8S clusters.
 
 ## ansible.cfg file
 
@@ -256,13 +256,13 @@ The **all:vars** section contains information about how to connect to K8S nodes.
 The **advertise_masters** parameter configure the Advertising IP of control Plane. Actually it is the IP of a frontal LB that expose Master nodes on port TCP/6443. It can also be a Master's IP if you don't have LB. In this case, HA is not enabled even if you got multiple Masters...
 
 The **SSH Connection settings** section contain information about the SSH connexion. You have to modify the variable **ansible_ssh_private_key_file** with the path where your public key is stored.
-**ansible_user** User used as service account by ILKE to connect to all nodes. **User must be sudoer**.
+**ansible_user** User used as service account by AGORAKUBE to connect to all nodes. **User must be sudoer**.
 
 ## Configuration file
 
 The [./group_vars/all.yaml](../group_vars/all.yaml) file contains all configuration variables that you can customize to make your K8S Cluster fit your needs.
 
-Sample file will deploy **containerd** as container runtime, **calico** as CNI plugin and enable all ILKE features (storage, dashboard, monitoring, LB, ingress, ....).
+Sample file will deploy **containerd** as container runtime, **calico** as CNI plugin and enable all AGORAKUBE features (storage, dashboard, monitoring, LB, ingress, ....).
 
 ```
 ---
@@ -379,17 +379,17 @@ agorakube_encrypt_etcd_keys:
 
 **Note :** You can also modify the IPs-CIDR if you want.
 
-# ILKE Parameters
+# AGORAKUBE Parameters
 
 Below  you can find all the parameters you can use in this file, section by section.
 
 ## Global Section
 
-This section is used to custom global ILKE settings.
+This section is used to custom global AGORAKUBE settings.
 
 | Parameter | Description | Values |
 | --- | --- | --- |
-| `agorakube.global.data_path` | Path where ILKE saves all config/pki/service files on deploy machine | **/var/agorakube/** *(default)* |
+| `agorakube.global.data_path` | Path where AGORAKUBE saves all config/pki/service files on deploy machine | **/var/agorakube/** *(default)* |
 
 ## Certificates & PKI section
 
@@ -469,7 +469,7 @@ This section allows you to configure your K8S cluster network settings.
 | `agorakube_network.kube_proxy.algorithm` | Default ClusterIP loadBalancing Algorithm : rr,lc,dh,sh,sed,nq. Only supported if IPVS | **rr** *(default Round-Robin)* |
 
 
-## ILKE features
+## AGORAKUBE features
 
 This section allows you to configure your K8S features.
 
@@ -496,12 +496,12 @@ This section allows you to configure your K8S features.
 | `agorakube_features.logrotate.day_retention` | Indicate how many days logs will be keep | **14** *(default)* |
 
 
-## ILKE other settings
+## AGORAKUBE other settings
 This section allows you to configure some other settings
 
 | Parameter | Description | Values |
 | --- | --- | --- |
-| `agorakube_populate_etc_hosts` | Add to all hostname/IPs of ILKE Cluster to /etc/hosts file of all hosts. Use it only if you don't have DNS server. | **False** *(default)* |
+| `agorakube_populate_etc_hosts` | Add to all hostname/IPs of AGORAKUBE Cluster to /etc/hosts file of all hosts. Use it only if you don't have DNS server. | **False** *(default)* |
 | `agorakube_encrypt_etcd_keys` | Array of keys/algorith used to crypt/decrypt data in etcd? Generate with : `head -c 32 /dev/urandom | base64` | **changeME !** *(default)* |
 | `restoration_snapshot_file` | ETCD backup path to be restored | **none** *(default)* |
 | `master_custom_alt_name`  | Optional DNS alt name to be added to kube-apiserver certificate | **""** *(default)* |
@@ -548,7 +548,7 @@ kubectl get pods
 ```
 # Storage Benchmark
 
-You can Benchmark your ILKE Storage Class as follow:
+You can Benchmark your AGORAKUBE Storage Class as follow:
 
 * Create a file named "benchmarkStorage.yaml" with the following content:
 
@@ -670,7 +670,7 @@ spec:
 
 Official Upgrade doc is available at https://github.com/openebs/openebs/blob/master/k8s/upgrades/README.md
 
-To upgrade OpenEBS Jiva volumes in your ILKE cluster, you have to follow the 2 next steps:
+To upgrade OpenEBS Jiva volumes in your AGORAKUBE cluster, you have to follow the 2 next steps:
   - Change in file *"./group_vars/all.yaml"* the variable **agorakube_features.storage.release** to the desired OpenEBS release (https://github.com/openebs/openebs/releases) and apply your changes to the cluster - This will only update the OpenEBS control plane
   - **Customize the following Job** and run it on your cluster:  (Exemple will upgrade listed PVs from OpenEBS 2.6.0 to 2.8.0) - This will upgrade data plane
 
@@ -857,9 +857,9 @@ metadata:
 spec:
   template: metadata:
 ```
-# ILKE Log Architecture
+# AGORAKUBE Log Architecture
 
-Actually, ILKE configure Kubernetes componants to write logs in "journalctl" an "/var/log/kubernetes/" directory.
+Actually, AGORAKUBE configure Kubernetes componants to write logs in "journalctl" an "/var/log/kubernetes/" directory.
 
 In "/var/log/kubernetes/" directory, log file size is limited to 1800 MB.
 
@@ -867,9 +867,9 @@ Pods logs are stored in "/var/log/pods" directory.
 
 ETCD logs are only present in "journalctl". Run the following command to get ETCD logs from an "ETCD" host : `journalctl -xeu etcd`
 
-# Uninstall ILKE
+# Uninstall AGORAKUBE
 
-To uninstall ILKE cluster, go to your ILKE source folder located on the deploy machine and run the following command:
+To uninstall AGORAKUBE cluster, go to your AGORAKUBE source folder located on the deploy machine and run the following command:
 
 ```
 ansible-playbook agorakube.yaml --tags uninstall
