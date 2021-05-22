@@ -167,7 +167,16 @@ agorakube_features:
     enabled: false
     crontab: "* 2 * * *"
     day_retention: 14
-
+  keycloak_oidc:
+    enabled: true
+    admin:
+      user: administrator
+      password: P@ssw0rd
+    auto_bootstrap:
+        bootstrap_keycloak: true
+        bootstrap_kube_apiserver: true
+        populate_etc_hosts: true
+        host: keycloak.local.lan
 agorakube_populate_etc_hosts: true
 
 # Security
