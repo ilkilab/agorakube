@@ -59,6 +59,8 @@ This distribution is also adaptive by offering the opportunity to customize your
 
 This project is currently under active development so other customizable options will be added soon.
 
+[![asciicast](https://asciinema.org/a/Y58GrrJG3gPM6GvKsSMCZevbX.svg)](https://asciinema.org/a/Y58GrrJG3gPM6GvKsSMCZevbX)
+
 ## How to install
 
 To deploy your K8S cluster follow these [instructions](docs/instructions.md).
