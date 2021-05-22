@@ -168,7 +168,7 @@ agorakube_features:
     crontab: "* 2 * * *"
     day_retention: 14
   keycloak_oidc:
-    enabled: true
+    enabled: false
     admin:
       user: administrator
       password: P@ssw0rd
