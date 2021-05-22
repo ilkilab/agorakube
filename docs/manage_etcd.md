@@ -38,3 +38,10 @@ restoration_snapshot_file: /path/to/the/backups/file/on/deploy/machine
 
 sudo ansible-playbook tools/etcd/restore-etcd-cluster.yaml
 ```
+
+## how to check the state of the etcd ?
+
+We can check the state of the etcd by typing the command below without forgetting to mention the ansible tag: ```check-etcd``` , which will 
+allow to play only the tasks dedicated to the check-etcd:
+
+```ansible-playbook agorakube.yaml --tags check-etcd```

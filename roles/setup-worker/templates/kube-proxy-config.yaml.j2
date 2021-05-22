@@ -2,5 +2,9 @@ kind: KubeProxyConfiguration
 apiVersion: kubeproxy.config.k8s.io/v1alpha1
 clientConnection:
   kubeconfig: "/etc/kubernetes/manifests/proxier.conf"
-mode: "iptables"
-clusterCIDR: "{{ cluster_cidr }}"
+mode: "{{ agorakube_network.kube_proxy.mode }}"
+clusterCIDR: "{{ agorakube_network.cidr.pod }}"
+{% if agorakube_network.kube_proxy.mode == 'ipvs' %}
+ipvs:
+  strictARP: true
+{% endif %}

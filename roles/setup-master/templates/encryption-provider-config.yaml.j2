@@ -6,7 +6,7 @@ resources:
     providers:
     - aescbc:
         keys:
-{% for key, value in encrypt_etcd_keys.items() %}
+{% for key, value in agorakube_encrypt_etcd_keys.items() %}
         - name: {{ key }}
           secret: {{ value.secret }}
 {% endfor %}

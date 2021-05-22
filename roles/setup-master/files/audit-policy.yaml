@@ -1,95 +1,53 @@
-apiVersion: audit.k8s.io/v1
+apiVersion: audit.k8s.io/v1beta1
 kind: Policy
 rules:
+  # Do not log from kube-system accounts
   - level: None
-    users: ["system:kube-proxy"]
-    verbs: ["watch"]
-    resources:
-      - group: ""
-        resources: ["endpoints", "services", "services/status"]
-  - level: None
-    users: ["system:unsecured"]
-    namespaces: ["kube-system"]
-    verbs: ["get"]
-    resources:
-      - group: ""
-        resources: ["configmaps"]
-  - level: None
-    users: ["kubelet"] # legacy kubelet identity
-    verbs: ["get"]
-    resources:
-      - group: ""
-        resources: ["nodes", "nodes/status"]
-  - level: None
-    userGroups: ["system:nodes"]
-    verbs: ["get"]
-    resources:
-      - group: ""
-        resources: ["nodes", "nodes/status"]
+    userGroups:
+    - system:serviceaccounts:kube-system
+
+  # Do not log from kubernetes service system accounts
   - level: None
     users:
-      - system:kube-controller-manager
-      - system:kube-scheduler
-      - system:serviceaccount:kube-system:endpoint-controller
-    verbs: ["get", "update"]
-    namespaces: ["kube-system"]
-    resources:
-      - group: ""
-        resources: ["endpoints"]
-  - level: None
-    users: ["system:apiserver"]
-    verbs: ["get"]
-    resources:
-      - group: ""
-        resources: ["namespaces", "namespaces/status", "namespaces/finalize"]
-  - level: None
-    users: ["cluster-autoscaler"]
-    verbs: ["get", "update"]
-    namespaces: ["kube-system"]
-    resources:
-      - group: ""
-        resources: ["configmaps", "endpoints"]
+    - system:apiserver
+    - system:kube-scheduler
+    - system:volume-scheduler
+    - system:kube-controller-manager
+    - system:node
+    - system:kube-proxy
+
+  # Do not log IKE components logs
   - level: None
     users:
-      - system:kube-controller-manager
-    verbs: ["get", "list"]
-    resources:
-      - group: "metrics.k8s.io"
+    - system:serviceaccount:ingress-nginx:ingress-nginx
+    - system:serviceaccount:kubernetes-dashboard:kubernetes-dashboard
+    - system:serviceaccount:monitoring:prometheus
+    - system:serviceaccount:openebs:openebs-maya-operator
+    - system:serviceaccount:metallb-system:speaker
+    - system:serviceaccount:metallb-system:controller
+    - system:serviceaccount:ingress-traefik:traefik-ingress-controller
+    - system:serviceaccount:monitoring:metrics-prometheus-server
+
+  # Do not log from collector
+  - level: None
+    users:
+    - system:serviceaccount:collectorforkubernetes:collectorforkubernetes
+  # Don't log nodes communications
+  - level: None
+    userGroups:
+    - system:nodes
+
+  # Don't log these read-only URLs.
   - level: None
     nonResourceURLs:
-      - /healthz*
-      - /version
-      - /swagger*
-  - level: None
-    resources:
-      - group: ""
-        resources: ["events"]
-  - level: Request
-    users: ["kubelet"]
-    verbs: ["update","patch"]
-    resources:
-      - group: ""
-        resources: ["nodes/status", "pods/status"]
-    omitStages:
-      - "RequestReceived"
-  - level: Request
-    userGroups: ["system:nodes"]
-    verbs: ["update","patch"]
-    resources:
-      - group: ""
-        resources: ["nodes/status", "pods/status"]
-    omitStages:
-      - "RequestReceived"
-  - level: Request
-    users: ["system:serviceaccount:kube-system:namespace-controller"]
-    verbs: ["deletecollection"]
-    omitStages:
-      - "RequestReceived"
+    - /healthz*
+    - /version
+    - /swagger*
+
+  # Log configmap and secret changes in all namespaces at the metadata level.
   - level: Metadata
     resources:
-      - group: ""
-        resources: ["secrets", "configmaps"]
-      - group: authentication.k8s.io
-        resources: ["tokenreviews"]
-    omitStages:
-      - "RequestReceived"
+    - resources: ["secrets", "configmaps"]
+
+  # A catch-all rule to log all other requests at the request level.
+  - level: Request

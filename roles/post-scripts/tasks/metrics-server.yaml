@@ -1,0 +1,34 @@
+---
+- name: Create tempdir
+  tempfile:
+    state: directory
+    suffix: metrics
+  register: metrics_tempdir
+  changed_when: false
+
+- name: Render templates
+  template:
+    dest: "{{ metrics_tempdir.path }}/metrics.yaml"
+    src: "metrics.yaml.j2"
+  changed_when: false
+
+- name: Apply templates
+  command: kubectl --kubeconfig {{ pki_path }}/kubeconfigs/admin/admin.conf apply -f {{ metrics_tempdir.path }}/metrics.yaml
+  register: apply_metrics
+  changed_when: >
+    apply_metrics.stdout is search("created")
+    or apply_metrics.stdout is search("configured")
+- name: Cleanup tempdir
+  file:
+    state: absent
+    path: "{{ metrics_tempdir.path }}"
+  changed_when: false
+
+- name: Verify if metrics-server pod has successfully started
+  command: kubectl --kubeconfig {{ pki_path }}/kubeconfigs/admin/admin.conf get deploy -n kube-system metrics-server
+  changed_when: false
+  register: metrics_deployment
+  until: metrics_deployment.stdout.find("1/1") != -1
+  retries: 300
+  delay: 10
+  run_once: true

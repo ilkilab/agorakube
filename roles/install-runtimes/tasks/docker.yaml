@@ -1,9 +1,9 @@
 ---
-- name: Add Docker repository for Debian like distros
+- name: Add Docker repository for Debian lagorakube distros
   include_tasks: "repo-debian-like.yaml"
   when: is_debian_like
 
-- name: Add Docker repository for centos like distros
+- name: Add Docker repository for centos lagorakube distros
   include_tasks: "repo-centos-like.yaml"
   when: is_centos_like
 
@@ -18,13 +18,14 @@
     path: /usr/sbin/iptables-legacy
   when: ansible_distribution|lower == 'debian'
 
-- name: Install Docker for Debian like distros
+- name: Install Docker for Debian lagorakube distros
   include_tasks: "docker-debian-like.yaml"
   when: is_debian_like
 
-- name: Install Docker for Centos like distros
+- name: Install Docker for Centos lagorakube distros
   include_tasks: "docker-centos-like.yaml"
   when: is_centos_like
+
 
 - name: Start Runtime
   systemd:
@@ -42,12 +43,6 @@
     src: daemon.json
   notify:
     - Reload docker
-
-#- name: Create /etc/systemd/system/docker.service.d directory
-#  file:
-#    path: /etc/systemd/system/docker.service.d
-#    state: directory
-#    recurse: yes
 
 - name: Make sure docker is running
   systemd:

@@ -1,4 +1,5 @@
 ---
 backup_etcd: true
-etcd_release: 3.4.3
+etcd_release: 3.4.10
 #custom_etcd_backup_dir:
+data_path: "/var/agorakube"

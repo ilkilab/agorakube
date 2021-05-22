@@ -1,0 +1,2 @@
+---
+pki_path: "{{ agorakube.global.data_path }}/pki"

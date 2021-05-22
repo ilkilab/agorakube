@@ -1,0 +1,81 @@
+---
+# Stop Runtime
+- name: Stop Runtime
+  systemd:
+    state: stopped
+    name: containerd
+  tags: ['never', 'uninstall']
+  ignore_errors: yes
+
+# Uninstall Containerd
+- name: Uninstall Containerd
+  package:
+    name: containerd.io
+    state: absent
+  tags: ['never', 'uninstall']
+
+# Delete Config Files and Data Directory
+- name: Delete Containerd Config Files and Data Directory
+  file:
+    path: /etc/containerd
+    state: absent
+  tags: ['never', 'uninstall']
+
+# Delete Data
+- name: Delete Data
+  file:
+    path: /var/lib/containerd
+    state: absent
+  tags: ['never', 'uninstall']
+
+# Delete all Container Network Interface (CNI) on the host
+- name: Delete /etc/cni
+  file:
+    path: /etc/cni
+    state: absent
+  tags: ['never', 'uninstall']
+
+- name: Delete /var/lib/cni
+  file:
+    path: /var/lib/cni
+    state: absent
+  tags: ['never', 'uninstall']
+
+- name: Make sure AWK is installed
+  package:
+    name: gawk
+    state: present
+  tags: ['never', 'uninstall']
+
+- name: get containerd mount points
+  shell: >
+    df -HT | grep '/run/containerd/' | awk '{print $7}'
+  register: containerd_volumes
+  tags: ['never', 'uninstall']
+
+- name: Unmount containerd volumes
+  mount:
+    path: "{{ item }}"
+    state: unmounted
+  tags: ['never', 'uninstall']
+  when: containerd_volumes.stdout != ""
+  with_items:
+    - "{{ containerd_volumes.stdout_lines }}"
+
+- name: Delete containerd data dir
+  file:
+    path: /run/containerd/
+    state: absent
+  tags: ['never', 'uninstall']
+
+- name: Delete /var/lib/containerd
+  file:
+    path: /var/lib/containerd
+    state: absent
+  tags: ['never', 'uninstall']
+
+- name: Delete /var/run/containerd
+  file:
+    path: /var/run/containerd
+    state: absent
+  tags: ['never', 'uninstall']

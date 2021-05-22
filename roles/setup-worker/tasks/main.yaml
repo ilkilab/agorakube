@@ -5,6 +5,9 @@
   include_tasks: disable-swap.yaml
 - name: Clean previous K8S install
   include_tasks: clean-previous-k8s-install.yaml
-  when: delete_previous_k8s_install
+  when: agorakube_base_components.kubernetes.upgrade | bool == True
 - name: Setup Worker
   include_tasks: setup-worker.yaml
+- name: Clear kubenetes components
+  include_tasks: delete-k8s-components.yaml
+  tags: ['never', 'uninstall']

@@ -7,5 +7,5 @@
   with_items:
   - "{{ groups['all'] }}"
   when:
-  - populate_etc_hosts
+  - agorakube_populate_etc_hosts
   - hostvars[item].ansible_host is defined

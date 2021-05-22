@@ -1,59 +1,29 @@
-
 ---
-- name: Creatopn dossiers /etc/kubernetes/pki /etc/kubernetes/pki/etcd
+- name: Create /etc/kubernetes/pki/etcd directory
   file:
-    path: "{{ item }}"
+    path: /etc/kubernetes/pki/etcd
     state: directory
+    recurse: True
+
+- name: Import etcd keys and certificates
+  copy:
+    src: "{{ pki_path }}/{{ item.src }}"
+    dest: /etc/kubernetes/pki/{{ item.dest }}
   with_items:
-    - /etc/kubernetes
-    - /etc/kubernetes/pki
-    - /etc/kubernetes/pki/etcd
-
-- name: Import certificates etcd/ca.crt
-  copy:
-    src: "{{ data_path }}/certificates/intermediate/etcd-ca/signed/etcd-ca.pem"
-    dest: /etc/kubernetes/pki/etcd/ca.crt
+    - { src: 'intermediate/etcd/ca.key', dest: 'etcd/ca.key' }
+    - { src: 'intermediate/etcd/ca.crt', dest: 'etcd/ca.crt' }
+    - { src: 'end/kube-etcd.key', dest: 'etcd/server.key' }
+    - { src: 'end/kube-etcd.crt', dest: 'etcd/server.crt' }
+    - { src: 'end/kube-etcd-peer.key', dest: 'etcd/peer.key' }
+    - { src: 'end/kube-etcd-peer.crt', dest: 'etcd/peer.crt' }
   notify:
     - Restart etcd
 
-- name: Import etcd/server.key
+- name: Import etcdctl keys and certificates
   copy:
-    src: "{{ data_path }}/certificates/end/kube-etcd/kube-etcd-key.pem"
-    dest: /etc/kubernetes/pki/etcd/server.key
-  notify:
-    - Restart etcd
-
-- name: Import etcd/server.crt
-  copy:
-    src: "{{ data_path }}/certificates/end/kube-etcd/kube-etcd.pem"
-    dest: /etc/kubernetes/pki/etcd/server.crt
-  notify:
-    - Restart etcd
-
-- name: Import etcd/peer.key
-  copy:
-    src: "{{ data_path }}/certificates/end/kube-etcd-peer/{{ ansible_fqdn }}/kube-etcd-peer-key.pem"
-    dest: /etc/kubernetes/pki/etcd/peer.key
-  notify:
-    - Restart etcd
-
-- name: Import etcd/peer.crt
-  copy:
-    src: "{{ data_path }}/certificates/end/kube-etcd-peer/{{ ansible_fqdn }}/kube-etcd-peer.pem"
-    dest: /etc/kubernetes/pki/etcd/peer.crt
-  notify:
-    - Restart etcd
-
-- name: Import etcd/healthcheck-client.key
-  copy:
-    src: "{{ data_path }}/certificates/end/kube-etcd-healthcheck-client/kube-etcd-healthcheck-client-key.pem"
-    dest: /etc/kubernetes/pki/etcd/healthcheck-client.key
-  notify:
-    - Restart etcd
-
-- name: Import etcd/healthcheck-client.crt
-  copy:
-    src: "{{ data_path }}/certificates/end/kube-etcd-healthcheck-client/kube-etcd-healthcheck-client.pem"
-    dest: /etc/kubernetes/pki/etcd/healthcheck-client.crt
-  notify:
-    - Restart etcd
+    src: "{{ pki_path }}/{{ item.src }}"
+    dest: /etc/kubernetes/pki/{{ item.dest }}
+  with_items:
+    - { src: 'end/kube-etcd-healthcheck-client.key', dest: 'etcd/healthcheck-client.key' }
+    - { src: 'end/kube-etcd-healthcheck-client.crt', dest: 'etcd/healthcheck-client.crt' }
+    - { src: 'intermediate/etcd/ca.crt', dest: 'etcd/ca.crt' }

@@ -1,0 +1,12 @@
+---
+- name: Delete Jiva
+  file:
+    path: "{{ agorakube_features.storage.jiva.data_path }}"
+    state: absent
+  tags: ['never', 'uninstall']
+
+- name: Delete HostPath
+  file:
+    path: "{{ agorakube_features.storage.hostpath.data_path }}"
+    state: absent
+  tags: ['never', 'uninstall']

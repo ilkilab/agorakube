@@ -17,7 +17,7 @@
 
 - name: Delete previous etcd data
   file:
-    path: "{{ etcd_data_directory }}"
+    path: "{{ agorakube_base_components.etcd.data_path }}"
     state: absent
 
 - name: Render Restoration script
@@ -36,9 +36,9 @@
     path: "{{ backup_etcd_tempdir.path }}"
     state: absent
 
-- name: create folder {{ etcd_data_directory }}
+- name: create folder {{ agorakube_base_components.etcd.data_path }}
   file:
-    path: "{{ etcd_data_directory }}"
+    path: "{{ agorakube_base_components.etcd.data_path }}"
     state: directory
     recurse: yes
     owner: root

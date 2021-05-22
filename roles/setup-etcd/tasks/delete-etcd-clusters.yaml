@@ -1,0 +1,36 @@
+---
+- name: Stop the etcd service
+  systemd:
+    name: etcd
+    state: stopped
+  tags: ['never', 'uninstall']
+  ignore_errors: yes
+
+- name: Uninstall and Delete Etcd PKI Files
+  file:
+    path: "/etc/kubernetes/pki"
+    state: absent
+  tags: ['never', 'uninstall']
+
+- name: Uninstall and delete ETCD Service Definition
+  file:
+    path: "/etc/systemd/system/etcd.service"
+    state: absent
+  tags: ['never', 'uninstall']
+
+- name: Reload daemons
+  systemd:
+    daemon_reload: yes
+  tags: ['never', 'uninstall']
+
+- name:  Uninstall and Delete ETCD Binaries
+  file:
+    path: "/usr/bin/etcd-{{ agorakube_base_components.etcd.release }}-linux-amd64"
+    state: absent
+  tags: ['never', 'uninstall']
+
+- name: Uninstall and delete ETCD data-dir
+  file:
+    path: "{{ agorakube_base_components.etcd.data_path }}"
+    state: absent
+  tags: ['never', 'uninstall']

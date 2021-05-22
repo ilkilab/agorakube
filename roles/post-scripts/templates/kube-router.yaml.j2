@@ -27,12 +27,12 @@ data:
   kubeconfig: |
     apiVersion: v1
     kind: Config
-    clusterCIDR: {{ cluster_cidr }}
+    clusterCIDR: {{ agorakube_network.cidr.pod }}
     clusters:
     - name: cluster
       cluster:
         certificate-authority: /var/run/secrets/kubernetes.io/serviceaccount/ca.crt
-        server: https://{{ kubernetes_service }}
+        server: https://{{ agorakube_network.service_ip.kubernetes }}
     users:
     - name: kube-router
       user:
@@ -68,7 +68,7 @@ spec:
       serviceAccountName: kube-router
       containers:
       - name: kube-router
-        image: docker.io/cloudnativelabs/kube-router
+        image: docker.io/cloudnativelabs/kube-router:v1.0.0
         imagePullPolicy: Always
         args:
         - "--run-router=true"
@@ -109,7 +109,7 @@ spec:
           readOnly: false
       initContainers:
       - name: install-cni
-        image: busybox
+        image: busybox:1.32.0
         imagePullPolicy: Always
         command:
         - /bin/sh
@@ -144,6 +144,9 @@ spec:
         operator: Exists
       - effect: NoSchedule
         key: node.kubernetes.io/not-ready
+        operator: Exists
+      - effect: NoSchedule
+        key: NoSchedulabe
         operator: Exists
       volumes:
       - name: lib-modules

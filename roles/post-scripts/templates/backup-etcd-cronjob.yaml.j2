@@ -1,0 +1,141 @@
+{% set etcd_initial_cluster = [] %}
+{% for host in groups['etcd']  %}
+{{ etcd_initial_cluster.append( "https://"+hostvars[host].ansible_host+":2379" ) }}
+{% endfor %}
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: script-backup-etcd
+  namespace: kube-system
+data:
+  backup-etcd.sh: |
+    #!/bin/sh
+    mkdir $BACKUP_ETCD_DIR -p
+    etcdctl \
+    --endpoints=$(etcdctl --endpoints={{ etcd_initial_cluster|join(',') }}   endpoint status | grep ', true, false,' | awk '{ print $1}' | sed 's/,//g') \
+    snapshot save $BACKUP_ETCD_DIR/snapshot_etcd_cluster.`date +%m-%d-%y_%H-%M-%S`.db
+---
+apiVersion: batch/v1beta1
+kind: CronJob
+metadata:
+  name: backup-etcd
+  namespace: kube-system
+spec:
+  schedule: "{{ agorakube_base_components.etcd.backup.crontab }}"
+  successfulJobsHistoryLimit: 1
+  failedJobsHistoryLimit: 3
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          tolerations:
+            # Make sure backup pod gets scheduled on all nodes.
+            - effect: NoSchedule
+              operator: Exists
+            # Mark the pod as a critical add-on for rescheduling.
+            - key: CriticalAddonsOnly
+              operator: Exists
+            - effect: NoExecute
+              operator: Exists
+{% if agorakube_base_components.etcd.backup.storage.enabled | bool == True %}
+{% if agorakube_base_components.etcd.backup.storage.type  == "hostpath" %}
+          nodeSelector:
+            kubernetes.io/hostname: {{ agorakube_base_components.etcd.backup.storage.hostpath.nodename }}
+{% endif %}
+{% endif %}
+          restartPolicy: Never
+          containers:
+          - name: backup-etcd
+            image: quay.io/coreos/etcd:{{ agorakube_base_components.etcd.release }}
+            command: ["/opt/backup_etcd/backup-etcd.sh"]
+            env:
+            - name: ETCDCTL_API
+              value: "3"
+            - name: ETCDCTL_CACERT
+              value: "/etc/agorakube/etcd/etcd-api.crt/ca.crt"
+            - name: ETCDCTL_CERT
+              value: "/etc/agorakube/etcd/etcdctl.crt/kube-etcd-healthcheck-client.crt"
+            - name: ETCDCTL_KEY
+              value: "/etc/agorakube/etcd/etcdctl.key/kube-etcd-healthcheck-client.key"
+            - name: BACKUP_ETCD_DIR
+              value: "/var/backup_etcd"
+            volumeMounts:
+              - name: etcd-api
+                mountPath: /etc/agorakube/etcd/etcd-api.crt
+                readOnly: true
+              - name: etcdctl-crt
+                mountPath: /etc/agorakube/etcd/etcdctl.crt
+                readOnly: true
+              - name: etcdctl-key
+                mountPath: /etc/agorakube/etcd/etcdctl.key
+                readOnly: true
+              - name: script-backup-etcd
+                mountPath: /opt/backup_etcd/
+                readOnly: false
+{% if agorakube_base_components.etcd.backup.storage.enabled | bool == True %}
+              - name: backup-etcd-dir
+                mountPath: /var/backup_etcd/
+{% endif %}
+          volumes:
+            - name: script-backup-etcd
+              configMap:
+                name: script-backup-etcd
+                defaultMode: 0700
+            - name: etcd-api
+              configMap:
+                name: etcd-ca.crt
+            - name: etcdctl-crt
+              configMap:
+                name: etcd-healthcheck-client.crt
+            - name: etcdctl-key
+              secret:
+                secretName: etcd-healthcheck-client.key
+{% if agorakube_base_components.etcd.backup.storage.enabled | bool == True %}
+            - name: backup-etcd-dir
+              persistentVolumeClaim:
+                claimName: backup-etcd
+{% endif %}
+{% if agorakube_base_components.etcd.backup.storage.enabled | bool == True %}
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: backup-etcd
+  namespace: kube-system
+spec:
+{% if agorakube_base_components.etcd.backup.storage.type  == "hostpath" %}
+  storageClassName: etcd-backup-hostpath
+{% endif %}
+{% if agorakube_base_components.etcd.backup.storage.type  == "storageclass" %}
+  storageClassName: "{{ agorakube_base_components.etcd.backup.storage.storageclass.name }}"
+{% endif %}
+{% if agorakube_base_components.etcd.backup.storage.type  == "persistentvolume" %}
+  storageClassName: "{{ agorakube_base_components.etcd.backup.storage.persistentvolume.storageclass }}"
+{% endif %}
+  resources:
+    requests:
+      storage: {{ agorakube_base_components.etcd.backup.storage.capacity }}
+  volumeMode: Filesystem
+  accessModes:
+    - ReadWriteOnce
+{% if agorakube_base_components.etcd.backup.storage.type  == "persistentvolume" %}
+  volumeName: "{{ agorakube_base_components.etcd.backup.storage.persistentvolume.name }}"
+{% endif %}
+---
+{% if agorakube_base_components.etcd.backup.storage.type  == "hostpath" %}
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: backup-etcd-hostpath
+  namespace: kube-system
+spec:
+  storageClassName: etcd-backup-hostpath
+  capacity:
+    storage: {{ agorakube_base_components.etcd.backup.storage.capacity  }}
+  accessModes:
+    - ReadWriteOnce
+  hostPath:
+    path: "{{ agorakube_base_components.etcd.backup.storage.hostpath.path  }}"
+{% endif %}
+{% endif %}

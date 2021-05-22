@@ -1,11 +1,11 @@
 
 
 #################################################################
-###            AgoreKube Installation Information             ###
+###    ILKI KUBERNETES ENGINE Installation Information        ###
 #################################################################
 
 
-Thank you for using AgoraKube to deploy and manage your Kubernetes installation.
+Thank you for using ILKI KUBERNETES ENGINE to deploy and manage your Kubernetes installation.
 
 This file (agorakube-info.txt) is stored in root home directory for your reference.
 
@@ -16,7 +16,7 @@ This file (agorakube-info.txt) is stored in root home directory for your referen
 ##################
 Kubectl config file is located at: /root/.kube/config
 
-{% if k8s_dashboard %}
+{% if agorakube_features.dashboard.enabled | bool == True %}
 ########################
 # Kubernetes Dashboard #
 ########################
@@ -28,92 +28,9 @@ Kubernetes dashboard can be accessed by following the steps below:
 2. Visit following URL on deploy machine.
 http://localhost:8001/api/v1/namespaces/kubernetes-dashboard/services/https:kubernetes-dashboard:/proxy/
 
-{% if k8s_dashboard_admin %}
+{% if agorakube_features.dashboard.generate_admin_token | bool == True %}
 3. The Admin token is stored in: /root/.kube/dashboardadmin
 {% endif %}
-{% endif %}
-{% if 'linkerd' == service_mesh %}
-########################
-#       Linkerd        #
-########################
-Linkerd dashboard can be accessed by following the steps below:
-1. Run follwoing command on your client machine to install Linkerd client (Warrning: Linkerd client is already installed on deploy machine).
-# curl -sL https://run.linkerd.io/install | sh
-2. Set up your environment variables.
-# export PATH=$PATH:$HOME/.linkerd2/bin
-3. Display linkerd version.
-# linkerd version
-4. Expose the Linkerd Dashboard locally.
-# linkerd dashboard &
-5. Visit following URL on your client machine.
-http://localhost:50750
-{% endif %}
-
-{% if install_kubeapps and init_helm and install_helm  %}
-
-#######################
-#      KubeApps       #
-#######################
-
-Kubernetes dashboard can be accessed by following the steps below:
-
-1. Run follwoing command on your client machine (kubectl have to be configured)
-# kubectl port-forward service/kubeapps 8080:80 -n kubeapps
-
-2. Visit following URL on deploy machine.
-# http://127.0.0.1:8080/
-
-3. The Admin token is stored in: /root/.kube/kubeappsadmin
-
-
-{% endif %}
-
-{% if enable_monitoring  %}
-############################################
-#      ACCESS MONITORING DASHBOARD         #
-############################################
-
-1. Get your 'admin' user password by running:
-
-   kubectl get secret --namespace agorakube-monitoring agorakube-grafana -o jsonpath="{.data.admin-password}" | base64 --decode ; echo
-
-2. The Grafana server can be accessed via port 80 on the following DNS name from within your cluster:
-
-   agorakube-grafana.agorakube-monitoring.svc.cluster.local
-
-   Get the Grafana URL to visit by running these commands in the same shell:
-
-     kubectl port-forward service/agorakube-grafana 3000:80 -n agorakube-monitoring
-     Open your browser at : http://127.0.0.1:3000/
-
-3. Login with the password from step 1 and the username: admin
-
-{% endif %}
-{% if install_harbor  %}
-############################################
-#      ACCESS Harbor DASHBOARD             #
-############################################
-1. Harbor is available through Ingress Kubernetes Resource at : https://{{ harbor_ingress_host }} (Depend on your ingress - Port may change...)
-  - User: admin
-  - Password: {{ harbor_admin_password }}
-
-{% endif %}
-
-
-{% if enable_rook_minio  %}
-#############################################
-#      ACCESS MinIO infrastrucuture Cluster #
-#############################################
-Kubernetes dashboard can be accessed by following the steps below:
-
-1. Run follwoing command on your client machine (kubectl have to be configured)
-# kubectl port-forward service/minio-infra 9000:9000 -n rook-minio-infra
-
-2. Visit following URL on deploy machine.
-# http://127.0.0.1:9000/
-
-3. Login with "rook_minio_infra_access_key" and "rook_minio_infra_secret_key" variables.
-   Warning: "rook_minio_infra_access_key" and "rook_minio_infra_secret_key" are base64 encoded. You have to decode them before use.
 {% endif %}
 ################################################################################
 

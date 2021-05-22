@@ -9,9 +9,9 @@
 
 - name: Get file content to show to the user
   command: cat /root/agorakube-info.txt
-  register: agora_info
+  register: agorakube_info
   changed_when: False
 
 - name: Show information to the user
   debug:
-    var: agora_info.stdout_lines
+    var: agorakube_info.stdout_lines

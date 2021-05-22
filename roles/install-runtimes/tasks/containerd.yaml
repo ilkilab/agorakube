@@ -32,11 +32,11 @@
     - { name: 'net.ipv4.ip_forward', value: '1' }
     - { name: 'net.bridge.bridge-nf-call-ip6tables', value: '1' }
 
-- name: Add Docker repository for Debian like distros
+- name: Add Docker repository for Debian lagorakube distros
   include_tasks: "repo-debian-like.yaml"
   when: is_debian_like
 
-- name: Add Docker repository for centos like distros
+- name: Add Docker repository for centos lagorakube distros
   include_tasks: "repo-centos-like.yaml"
   when: is_centos_like
 

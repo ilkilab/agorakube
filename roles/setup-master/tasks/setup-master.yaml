@@ -1,64 +1,55 @@
 ---
-- name: Create /etc/kubernetes/manifests/
+- name: Create master dir hierarchy
   file:
-    path: /etc/kubernetes/manifests/
+    path: /etc/kubernetes/manifests
     state: directory
     owner: root
     group: root
     mode: '644'
+    recurse: True
+
+- name: Create /var/logs/kubernetes dir
+  file:
+    path: /var/log/kubernetes
+    state: directory
+    recurse: True
 
 - name: Download Kubernetes server binaries
   unarchive:
-    src: https://dl.k8s.io/{{ kubernetes_release }}/kubernetes-server-linux-amd64.tar.gz
+    src: https://dl.k8s.io/{{ agorakube_base_components.kubernetes.release }}/kubernetes-server-linux-amd64.tar.gz
     dest: /usr/local/bin
     remote_src: yes
     creates: /usr/local/bin/kubernetes/server/bin/kube-apiserver
-
-- name: Create /var/lib/kubernetes
-  file:
-    path: /var/lib/kubernetes
-    state: directory
-    owner: root
-    group: root
-    mode: '644'
-
-- name: Create /etc/kubernetes/config
-  file:
-    path: /etc/kubernetes/config
-    state: directory
-    owner: root
-    group: root
-    mode: '644'
-
-- name: Inject kube-encrypt config
-  template:
-    src: encryption-provider-config.yaml.j2
-    dest: /var/lib/kubernetes/encryption-provider-config.yaml
-    owner: root
-    group: root
-    mode: '644'
   notify:
     - Restart kube-apiserver service
+    - Restart kube-controller-manager service
+    - Restart kube-scheduler service
+#- name: Retrive all keys to authenticate K8S service account tokens
+#  find:
+#    paths: "{{ pki_path }}/sa"
+#  register: token_keys
 
-- name: Retrive all keys to authenticat K8S service account tokens
-  find:
-    paths: /etc/kubernetes/pki/token_authentication_keys/
-  register: token_keys
-
-- name: Import kube-apiserver.service
+- name: Import kubernetes master services definitions in /etc/systemd/system/
   template:
-    src: kube-apiserver.service.j2
-    dest: /etc/systemd/system/kube-apiserver.service
+    src: "{{ item }}.j2"
+    dest: /etc/systemd/system/{{ item }}
     owner: root
     group: root
     mode: '644'
+  with_items:
+    - kube-apiserver.service
+    - kube-controller-manager.service
+    - kube-scheduler.service
   notify:
     - Restart kube-apiserver service
+    - Restart kube-controller-manager service
+    - Restart kube-scheduler service
+
 
 - name: Import kube-apiserver configuration files
   copy:
     src: "{{ item }}"
-    dest: /etc/kubernetes/config/{{ item }}
+    dest: /etc/kubernetes/manifests/{{ item }}
     owner: root
     group: root
     mode: '644'
@@ -71,18 +62,8 @@
 
 - name: Import controller-manager.conf kubeconfig
   copy:
-    src: "{{ data_path }}/certificates/configs/controller-manager/controller-manager.conf"
-    dest: /etc/kubernetes/manifests/kube-controller-manager.yaml
-    owner: root
-    group: root
-    mode: '644'
-  notify:
-    - Restart kube-controller-manager service
-
-- name: Import kube-controller-manager.service
-  template:
-    src: kube-controller-manager.service.j2
-    dest: /etc/systemd/system/kube-controller-manager.service
+    src: "{{ pki_path }}/kubeconfigs/controller-manager/controller-manager.conf"
+    dest: /etc/kubernetes/manifests/controller-manager.conf
     owner: root
     group: root
     mode: '644'
@@ -90,18 +71,8 @@
     - Restart kube-controller-manager service
 
 - name: Import kube scheduler yaml file config
-  copy:
-    src: kube-scheduler.yaml
-    dest: /etc/kubernetes/config/kube-scheduler.yaml
-    owner: root
-    group: root
-    mode: '644'
-  notify:
-    - Restart kube-scheduler service
-
-- name: Import /etc/kubernetes/manifests/kube-scheduler.yaml
-  copy:
-    src: "{{ data_path }}/certificates/configs/scheduler/scheduler.conf"
+  template:
+    src: kube-scheduler.yaml.j2
     dest: /etc/kubernetes/manifests/kube-scheduler.yaml
     owner: root
     group: root
@@ -109,15 +80,25 @@
   notify:
     - Restart kube-scheduler service
 
-- name: Import kube-scheduler.service
-  template:
-    src: kube-scheduler.service.j2
-    dest: /etc/systemd/system/kube-scheduler.service
+- name: Import /etc/kubernetes/manifests/scheduler.conf
+  copy:
+    src: "{{ pki_path }}/kubeconfigs/scheduler/scheduler.conf"
+    dest: /etc/kubernetes/manifests/scheduler.conf
     owner: root
     group: root
     mode: '644'
   notify:
     - Restart kube-scheduler service
+
+- name: Inject kube-encrypt config
+  template:
+    src: encryption-provider-config.yaml.j2
+    dest: /etc/kubernetes/manifests/encryption-provider-config.yaml
+    owner: root
+    group: root
+    mode: '644'
+  notify:
+    - Restart kube-apiserver service
 
 - name: Load [kube-apiserver] [kube-controller-manager] [kube-scheduler]
   systemd:

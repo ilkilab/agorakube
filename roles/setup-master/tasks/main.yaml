@@ -1,8 +1,14 @@
 ---
 - name: Import certs
   include_tasks: import-certs.yaml
+
 - name: Clean previous install of K8S
   include_tasks: clean-previous-k8s-install.yaml
-  when: delete_previous_k8s_install
+  when: agorakube_base_components.kubernetes.upgrade | bool == True
+
 - name: Include Setup
   include_tasks: setup-master.yaml
+
+- name: Clear kubernetes components
+  include_tasks: delete-k8s-components.yaml
+  tags: ['never', 'uninstall']

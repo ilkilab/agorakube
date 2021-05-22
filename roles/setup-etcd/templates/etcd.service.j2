@@ -7,7 +7,7 @@ Documentation=https://github.com/coreos
 {% endfor %}
 [Service]
 Type=notify
-ExecStart=/usr/bin/etcd-{{etcd_release}}-linux-amd64/etcd \
+ExecStart=/usr/bin/etcd-{{ agorakube_base_components.etcd.release }}-linux-amd64/etcd \
   --auto-tls=false \
   --peer-auto-tls=false \
   --name {{ ansible_fqdn }} \
@@ -26,7 +26,7 @@ ExecStart=/usr/bin/etcd-{{etcd_release}}-linux-amd64/etcd \
   --initial-cluster-token etcd-cluster-0 \
   --initial-cluster {{ etcd_initial_cluster|join(',') }} \
   --initial-cluster-state new \
-  --data-dir={{etcd_data_directory}}
+  --data-dir={{ agorakube_base_components.etcd.data_path }}
 Restart=on-failure
 RestartSec=5
 

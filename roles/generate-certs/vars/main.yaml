@@ -1,0 +1,10 @@
+---
+etcd_hosts_dns: "{{ groups['etcd'] | map('regex_replace', '^(.*)$', 'DNS:\\1') | join(',') }}"
+etcd_hosts_ips: "{{ groups['etcd'] | map('extract',hostvars,'ansible_host') | list | map('regex_replace', '^(.*)$', 'IP:\\1') | join(',')}}"
+etcd_subject: "{{ etcd_hosts_dns + ',' + etcd_hosts_ips + ',IP:127.0.0.1,DNS:localhost' }}"
+master_hosts_dns: "{{ groups['masters'] | list | map('regex_replace', '^(.*)$', 'DNS:\\1') | join(',') }}"
+master_hosts_ips: "{{ groups['masters'] | map('extract',hostvars,'ansible_host') | list | map('regex_replace', '^(.*)$', 'IP:\\1') | join(',')}}"
+master_custom_subject: "IP:127.0.0.1,DNS:localhost,DNS:kubernetes,DNS:kubernetes.default,DNS:kubernetes.default.svc,DNS:kubernetes.default.svc.cluster,DNS:kubernetes.default.svc.cluster.local{% if master_custom_alt_name %}{{ ',DNS:' + master_custom_alt_name }}{% endif %}"
+kube_api_subject: "{% if advertise_masters | ansible.netcommon.ipv4 %}{{ 'IP:' + advertise_masters + ',' + master_hosts_dns + ',' + master_hosts_ips + ',' + master_custom_subject + ',IP:' + agorakube_network.service_ip.kubernetes }}{% else %}{{ 'DNS:' + advertise_masters + ',' + master_hosts_dns + ',' + master_hosts_ips + ',' + master_custom_subject + ',IP:' + agorakube_network.service_ip.kubernetes }}{% endif %}"
+pki_path: "{{ agorakube.global.data_path }}/pki"
+rotate_private_keys: False # This parametter is used to renew K8S PKI keys. Keys, CSR and CRT are renewed. If calico is used as CNI, you must retart your cluster...

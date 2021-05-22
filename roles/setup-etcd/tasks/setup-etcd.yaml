@@ -1,14 +1,14 @@
 ---
 - name: Download etcd binaries
   unarchive:
-    src: https://github.com/etcd-io/etcd/releases/download/{{ etcd_release }}/etcd-{{ etcd_release }}-linux-amd64.tar.gz
+    src: https://github.com/etcd-io/etcd/releases/download/{{ agorakube_base_components.etcd.release }}/etcd-{{ agorakube_base_components.etcd.release }}-linux-amd64.tar.gz
     dest: /usr/bin
     remote_src: yes
-    creates: /usr/bin/etcd-{{ etcd_release }}-linux-amd64/etcd
+    creates: /usr/bin/etcd-{{ agorakube_base_components.etcd.release }}-linux-amd64/etcd
 
-- name: create folder {{ etcd_data_directory }}
+- name: create folder {{ agorakube_base_components.etcd.data_path }}
   file:
-    path: "{{ etcd_data_directory }}"
+    path: "{{ agorakube_base_components.etcd.data_path }}"
     state: directory
     recurse: yes
     owner: root

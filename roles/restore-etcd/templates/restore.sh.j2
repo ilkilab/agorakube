@@ -5,10 +5,10 @@
 {{ etcd_initial_cluster.append( host+"=https://"+hostvars[host].ansible_host+":2380" ) }}
 {% endfor %}
 export RESET_EVENT_ETCD=true
-ETCDCTL_API=3 /usr/bin/etcd-{{etcd_release}}-linux-amd64/etcdctl \
+ETCDCTL_API=3 /usr/bin/etcd-{{ agorakube_base_components.etcd.release }}-linux-amd64/etcdctl \
 --name {{ ansible_fqdn }} \
 --initial-cluster {{ etcd_initial_cluster|join(',') }} \
 --initial-cluster-token etcd-cluster-0 \
 --initial-advertise-peer-urls https://{{ hostvars[ansible_fqdn].ansible_host}}:2380 \
---data-dir {{ etcd_data_directory }} \
+--data-dir {{ agorakube_base_components.etcd.data_path }} \
 snapshot restore {{ backup_etcd_tempdir.path }}/snapshot-etcd.db 

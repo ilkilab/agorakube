@@ -1,0 +1,58 @@
+---
+apiVersion: openebs.io/v1alpha1
+kind: StoragePool
+metadata:
+  name: default-storage-pool-jiva
+  type: hostdir
+spec:
+  path: "{{ agorakube_features.storage.jiva.data_path }}"
+---
+apiVersion: storage.k8s.io/v1
+kind: StorageClass
+metadata:
+  name: default-jiva
+  annotations:
+    storageclass.kubernetes.io/is-default-class: "true"
+    openebs.io/cas-type: jiva
+    cas.openebs.io/config: |
+      - name: ReplicaCount
+        value: "{{ replicas_openebs }}"
+      - name: StoragePool
+        value: default-storage-pool-jiva
+      - name: VolumeMonitor
+        value: ON
+      - name: FSType
+        value: "{{ agorakube_features.storage.jiva.fs_type }}"
+      - name: ReplicaNodeSelector
+        value: |-
+            node-role.kubernetes.io/storage: true
+      - name: ReplicaTolerations
+        value: |-
+          t1:
+            key: "NoSchedulabe"
+            operator: "Exists"
+            effect: "NoSchedule"
+      - name: TargetTolerations
+        value: |-
+          t1:
+            key: "NoSchedulabe"
+            operator: "Exists"
+            effect: "NoSchedule"
+provisioner: openebs.io/provisioner-iscsi
+reclaimPolicy: Delete
+volumeBindingMode: Immediate
+---
+apiVersion: storage.k8s.io/v1
+kind: StorageClass
+metadata:
+  name: local-hostpath
+  annotations:
+    openebs.io/cas-type: local
+    cas.openebs.io/config: |
+      - name: StorageType
+        value: hostpath
+      - name: BasePath
+        value: {{ agorakube_features.storage.hostpath.data_path }}
+provisioner: openebs.io/local
+reclaimPolicy: Delete
+volumeBindingMode: WaitForFirstConsumer

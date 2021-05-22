@@ -1,3 +1,5 @@
 ---
 - name: Validate host connexion
   ping:
+  when:
+  - inventory_hostname not in groups['etc_hosts']

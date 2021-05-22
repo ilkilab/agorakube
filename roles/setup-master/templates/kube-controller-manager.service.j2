@@ -1,25 +1,28 @@
 [Unit]
-Description=Kubernetes Controller Manager {{ kubernetes_release }}
+Description=Kubernetes Controller Manager {{ agorakube_base_components.kubernetes.release }}
 Documentation=https://github.com/kubernetes/kubernetes
 
 [Service]
 ExecStart=/usr/local/bin/kubernetes/server/bin/kube-controller-manager \
   --bind-address=127.0.0.1 \
-  --cluster-cidr={{ cluster_cidr }} \
+  --cluster-cidr={{ agorakube_network.cidr.pod }} \
   --cluster-name=kubernetes \
   --cluster-signing-cert-file=/etc/kubernetes/pki/ca.crt \
   --cluster-signing-key-file=/etc/kubernetes/pki/ca.key \
-  --kubeconfig=/etc/kubernetes/manifests/kube-controller-manager.yaml \
+  --kubeconfig=/etc/kubernetes/manifests/controller-manager.conf \
   --leader-elect=true \
   --profiling=false \
   --root-ca-file=/etc/kubernetes/pki/ca.crt \
   --client-ca-file=/etc/kubernetes/pki/ca.crt \
-  --service-account-private-key-file=/etc/kubernetes/pki/sa.key \
-  --service-cluster-ip-range={{ service_cluster_ip_range }} \
+  --service-account-private-key-file=/etc/kubernetes/pki/sa/sa.key \
+  --service-cluster-ip-range={{ agorakube_network.cidr.service }} \
   --terminated-pod-gc-threshold=500 \
   --requestheader-client-ca-file=/etc/kubernetes/pki/front-proxy-ca.crt \
   --use-service-account-credentials=true \
   --allocate-node-cidrs=true \
+  --log-file=/var/log/kubernetes/kube-controller-manager.log \
+  --log-file-max-size=1800 \
+  --logtostderr=false \
   --v=2
 Restart=on-failure
 RestartSec=5
