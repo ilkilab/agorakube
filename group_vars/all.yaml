@@ -70,7 +70,7 @@ agorakube_features:
     enabled: false
     release: "0.0.89"
   storage:
-    enabled: false
+    enabled: true
     release: "2.8.0"
     jiva:
       data_path: /var/openebs
@@ -82,13 +82,25 @@ agorakube_features:
     generate_admin_token: false
     release: v2.2.0
   metrics_server:
-    enabled: false
+    enabled: true
   ingress:
     controller: nginx
     release: v0.46.0
   monitoring:
-    enabled: false
-    persistent: false
+    enabled: true
+    persistent:
+      enable: true
+      storage:
+        capacity: 4Gi
+        type: "storageclass"
+        storageclass:
+          name: "default-jiva"
+        persistentvolume:
+          name: "my-pv-monitoring"
+          storageclass: "my-storageclass-name"
+        hostpath:
+          nodename: "master1"
+          path: /var/monitoring-persistent
     admin:
       user: administrator
       password: P@ssw0rd
