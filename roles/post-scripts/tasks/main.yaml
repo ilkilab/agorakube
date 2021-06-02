@@ -63,4 +63,4 @@
 
 - name: Install Gatekeeper
   include_tasks: gatekeeper.yaml
-  when: ilke_features.gatekeeper.enabled | bool == True
+  when: agorakube_features.gatekeeper.enabled | bool == True
