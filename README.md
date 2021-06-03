@@ -7,12 +7,17 @@
 [![CII Best Practices](https://bestpractices.coreinfrastructure.org/projects/3104/badge)](https://bestpractices.coreinfrastructure.org/projects/3104)
 [![FOSSA Status](https://app.fossa.com/api/projects/git%2Bgithub.com%2Filkilab%2Fagorakube.svg?type=shield)](https://app.fossa.com/projects/git%2Bgithub.com%2Filkilab%2Fagorakube?ref=badge_shield)
 
+
 <p align="center">
 <img src="./images/agorakube-logo.svg" width="450" alt="Agorakube" title="Agorakube" />
 </p>
 <p>
+<a href="https://github.com/cncf/k8s-conformance">
 <img src="https://raw.githubusercontent.com/cncf/artwork/master/projects/kubernetes/certified-kubernetes/versionless/color/certified-kubernetes-color.svg?sanitize=true" width="100" alt="k8s-conformance-v1.16" title="https://github.com/cncf/k8s-conformance/tree/master/v1.16/agorakube"/>
+</a>
+<a href="https://landscape.cncf.io/?selected=agora-kube">
 <img src="https://raw.githubusercontent.com/cncf/artwork/master/other/cncf-landscape/stacked/color/cncf-landscape-stacked-color.svg?sanitize=true" width="100" alt="Agorakube is a cncf landscap project" title="Agorakube is a cncf landscap project"/>
+</a>
 </p>
 
 This project is aimed to provide the simplest way to install kubernetes on AMD-64 bare-metal, virtual & Cloud environments.
@@ -22,7 +27,7 @@ Master branch is stable.
 
 ## Table of Contents
 
-This is a list of points that will be explained in this Readme file for the IKE project :
+This is a list of points that will be explained in this Readme file for the Agorakube project :
 
 - [What is AGORAKUBE](#what-is-agorakube)
 - [How to install](#how-to-install)
@@ -33,11 +38,11 @@ This is a list of points that will be explained in this Readme file for the IKE 
 
 ## What is AGORAKUBE
 
-AGORAKUBE is an easy-to-use, stable Kubernetes distribution (Kubernetes v1.15, 1.16, 1.17, 1.18, 1.19, 1.20, 1.21).
+Agorakube is an easy-to-use, stable Kubernetes distribution (Kubernetes v1.15, 1.16, 1.17, 1.18, 1.19, 1.20, 1.21).
 
 By its symplicity, AGORAKUBE provide a good way to deploy and manage K8S Clusters.
 
-AGORAKUBE is based on Ansible scripts that install and configure Kubernetes components (control plane and data plane) quickly on bare-metal / VMs / Cloud Instances, as systemd services.
+Agorakube is based on Ansible scripts that install and configure Kubernetes components (control plane and data plane) quickly on bare-metal / VMs / Cloud Instances, as systemd services.
 
 This distribution is also adaptive by offering the opportunity to customize your deployment and fit to your needs : 
 * OS : Ubuntu-18.04/20.04-amd64 and Centos 7.X-amd64, Debian-10-amd64 
@@ -79,11 +84,11 @@ See our [Code Of Conduct](https://github.com/ilkilabs/agorakube/blob/master/CODE
 
 ## Community
 
-Join AGORAKUBE's community for discussion and ask questions : [AGORAKUBE's Slack](http://slack.agorakube.ilkilabs.io/)
+Join Agorakube's community for discussion and ask questions : [AGORAKUBE's Slack](http://slack.agorakube.ilkilabs.io/)
 
 Channels :
 - **#general** - For general purpose (news, events...)
-- **#developpers** - For people who contribute to AGORAKUBE by developing features
+- **#developpers** - For people who contribute to Agorakube by developing features
 - **#end-users** - For end users who want to give us feedbacks
 - **#random** - As its name suggests, for random discussions :)
 
