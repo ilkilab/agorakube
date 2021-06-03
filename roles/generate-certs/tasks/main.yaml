@@ -3,6 +3,6 @@
 
 - name: Generate Keycloak PKI
   include_tasks: oidc-keycloak.yaml
-  when: 
+  when:
     - agorakube_features.keycloak_oidc.auto_bootstrap.bootstrap_keycloak | bool == True
     - agorakube_features.keycloak_oidc.enabled | bool == True
