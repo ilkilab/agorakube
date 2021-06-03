@@ -339,7 +339,7 @@ agorakube_features:
     release: "0.0.89"
   storage:
     enabled: true
-    release: "2.8.0"
+    release: "2.9.0"
     jiva:
       data_path: /var/openebs
       fs_type: ext4
@@ -389,8 +389,8 @@ agorakube_features:
       user: administrator
       password: P@ssw0rd
     auto_bootstrap:
-        bootstrap_keycloak: true
-        bootstrap_kube_apiserver: true
+        bootstrap_keycloak: false
+        bootstrap_kube_apiserver: false
         populate_etc_hosts: true
         host: oidc.local.lan
 
