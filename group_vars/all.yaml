@@ -70,7 +70,7 @@ agorakube_features:
     enabled: false
     release: "0.0.89"
   storage:
-    enabled: true
+    enabled: false
     release: "2.8.0"
     jiva:
       data_path: /var/openebs
@@ -87,9 +87,9 @@ agorakube_features:
     controller: nginx
     release: v0.46.0
   monitoring:
-    enabled: true
+    enabled: false
     persistent:
-      enable: true
+      enable: false
       storage:
         capacity: 4Gi
         type: "storageclass"
@@ -109,7 +109,7 @@ agorakube_features:
     crontab: "* 2 * * *"
     day_retention: 14
   gatekeeper:
-    enabled: true
+    enabled: false
     release: v3.4.0
     replicas:
       #audit: 1
