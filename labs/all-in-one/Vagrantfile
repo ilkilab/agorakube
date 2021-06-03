@@ -139,7 +139,7 @@ agorakube_features:
     release: "0.0.89"
   storage:
     enabled: false
-    release: "2.8.0"
+    release: "2.9.0"
     jiva:
       data_path: /var/openebs
       fs_type: ext4
