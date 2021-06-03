@@ -62,6 +62,6 @@
     dest: /etc/kubernetes/pki/oidc/
   notify:
     - Restart kube-apiserver service
-  when: 
+  when:
     - agorakube_features.keycloak_oidc.auto_bootstrap.bootstrap_keycloak | bool == True
     - agorakube_features.keycloak_oidc.enabled | bool == True
