@@ -106,7 +106,7 @@ agorakube_base_components:
           nodename: "master1"
           path: /var/etcd-backup
   kubernetes:
-    release: v1.21.0
+    release: v1.21.1
     upgrade: false
   container:
     engine: containerd
@@ -135,7 +135,7 @@ agorakube_network:
 
 agorakube_features:
   coredns:
-    release: "1.8.2"
+    release: "1.8.3"
     replicas: 2
   reloader:
     enabled: false
@@ -153,13 +153,25 @@ agorakube_features:
     generate_admin_token: false
     release: v2.2.0
   metrics_server:
-    enabled: false
+    enabled: true
   ingress:
     controller: nginx
     release: v0.46.0
   monitoring:
     enabled: false
-    persistent: false
+    persistent:
+      enable: false
+      storage:
+        capacity: 4Gi
+        type: "storageclass"
+        storageclass:
+          name: "default-jiva"
+        persistentvolume:
+          name: "my-pv-monitoring"
+          storageclass: "my-storageclass-name"
+        hostpath:
+          nodename: "master1"
+          path: /var/monitoring-persistent
     admin:
       user: administrator
       password: P@ssw0rd
@@ -167,6 +179,13 @@ agorakube_features:
     enabled: false
     crontab: "* 2 * * *"
     day_retention: 14
+  gatekeeper:
+    enabled: false
+    release: v3.4.0
+    replicas:
+      #audit: 1
+      controller_manager: 3
+# keycloak_oidc is an Alpha feature and do not support persistence wet. Use it only for test purpose.
   keycloak_oidc:
     enabled: false
     admin:
@@ -176,7 +195,20 @@ agorakube_features:
         bootstrap_keycloak: true
         bootstrap_kube_apiserver: true
         populate_etc_hosts: true
-        host: keycloak.local.lan
+        host: oidc.local.lan
+#    storage:
+#        enabled: False
+#        capacity: 10Gi
+#        type: "storageclass"
+#        storageclass:
+#          name: "default-jiva"
+#        persistentvolume:
+#          name: "my-pv-backup-etcd"
+#          storageclass: "my-storageclass-name"
+#        hostpath:
+#          nodename: "master1"
+#          path: /var/keycloak
+
 agorakube_populate_etc_hosts: true
 
 # Security
