@@ -192,8 +192,8 @@ agorakube_features:
       user: administrator
       password: P@ssw0rd
     auto_bootstrap:
-        bootstrap_keycloak: true
-        bootstrap_kube_apiserver: true
+        bootstrap_keycloak: false
+        bootstrap_kube_apiserver: false
         populate_etc_hosts: true
         host: oidc.local.lan
 #    storage:
