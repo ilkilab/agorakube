@@ -17,8 +17,8 @@ With OPA, you define rules that govern how your system should behave. These rule
 Compared to using OPA with its sidecar kube-mgmt (aka Gatekeeper v1.0), Gatekeeper introduces the following functionality:
 
 - An extensible, parameterized policy library
-- Native Kubernetes CRDs for instantiating the policy library (aka "constraints")
-- Native Kubernetes CRDs for extending the policy library (aka "constraint templates")
+- Native Kubernetes CRDs for instantiating the policy library ("constraints")
+- Native Kubernetes CRDs for extending the policy library ("constraint templates")
 - Audit functionality
 
 ## Install opa/gatekeeper on Agorakube
