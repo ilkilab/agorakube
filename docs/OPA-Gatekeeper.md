@@ -23,10 +23,12 @@ Compared to using OPA with its sidecar kube-mgmt (aka Gatekeeper v1.0), Gatekeep
 
 ## Install opa/gatekeeper on Agorakube
 
-To install opa/Gatekeeper on Agorakube use this command :
+To install opa/Gatekeeper on Agorakube make sure to activate  :
 
 ```
-kubectl apply -f https://raw.githubusercontent.com/open-policy-agent/gatekeeper/release-3.4/deploy/gatekeeper.yaml
+agorakube_features:
+  gatekeeper:
+    enabled: True
 
 ```
 
