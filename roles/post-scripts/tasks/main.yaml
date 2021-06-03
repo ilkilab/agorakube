@@ -60,3 +60,7 @@
 - name: enable etcd backup cronJob
   include_tasks: backup-etcd-cronjob.yaml
   when: agorakube_base_components.etcd.backup.enabled | bool == True
+
+- name: Install Gatekeeper
+  include_tasks: gatekeeper.yaml
+  when: agorakube_features.gatekeeper.enabled | bool == True

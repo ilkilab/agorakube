@@ -108,6 +108,12 @@ agorakube_features:
     enabled: false
     crontab: "* 2 * * *"
     day_retention: 14
+  gatekeeper:
+    enabled: true
+    release: v3.4.0
+    replicas:
+      #audit: 1
+      controller_manager: 3
 # keycloak_oidc is an Alpha feature and do not support persistence wet. Use it only for test purpose.
   keycloak_oidc:
     enabled: false
