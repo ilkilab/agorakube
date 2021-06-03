@@ -122,7 +122,7 @@ agorakube_features:
       password: P@ssw0rd
     auto_bootstrap:
         bootstrap_keycloak: true
-        bootstrap_kube_apiserver: true
+        bootstrap_kube_apiserver: false
         populate_etc_hosts: true
         host: oidc.local.lan
 #    storage:
