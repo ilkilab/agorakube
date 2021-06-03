@@ -1,5 +1,5 @@
 # Open Policy Agent
-![opa](./images/logo-opa.png)
+![opa](../images/logo-opa.png)
 
 The Open Policy Agent (OPA) is an open source, general-purpose policy engine that enables unified, context-aware policy enforcement across the entire stack.
 OPA is hosted by the Cloud Native Computing Foundation (CNCF) as a graduated project.
@@ -13,8 +13,6 @@ With OPA, you define rules that govern how your system should behave. These rule
 - What tags must be set on resource R before it's created?
 
 # Gatekeeper
-
-## How is Gatekeeper different from OPA?
 
 Compared to using OPA with its sidecar kube-mgmt (aka Gatekeeper v1.0), Gatekeeper introduces the following functionality:
 
