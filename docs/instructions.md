@@ -355,7 +355,19 @@ agorakube_features:
     release: v0.46.0
   monitoring:
     enabled: false
-    persistent: false
+    persistent:
+      enable: true
+      storage:
+        capacity: 4Gi
+        type: "storageclass"
+        storageclass:
+          name: "default-jiva"
+        persistentvolume:
+          name: "my-pv-monitoring"
+          storageclass: "my-storageclass-name"
+        hostpath:
+          nodename: "master1"
+          path: /var/monitoring-persistent
     admin:
       user: administrator
       password: P@ssw0rd
@@ -486,7 +498,14 @@ This section allows you to configure your K8S features.
 | `agorakube_features.ingress.controller` | Ingress Controller to install : nginx, ha-proxy, traefik | **nginx** *(default)* |
 | `agorakube_features.ingress.release` | Ingress controller release to install. Only used if `agorakube_features.ingress.controller` set to "nginx" | **False** *(default)* |
 | `agorakube_features.monitoring.enabled` | Enable Monitoring | **False** *(default)* |
-| `agorakube_features.monitoring.persistent` | Persist Monitoring Data | **False** *(default)* |
+| `agorakube_features.monitoring.persistent.enable` | Persist Monitoring Data | **False** *(default)* |
+| `agorakube_features.monitoring.persistent.storage.capacity` | Storage size used to store Prometheus data and Dashboard localization | **4Gi** *(default)* |
+| `agorakube_features.monitoring.persistent.storage.type` | Type of Storage to use when `agorakube_features.monitoring.persistent.enable` is set to True | **storageclass** *(default)*, persistentVolume, hostpath |
+| `agorakube_features.monitoring.persistent.storage.storageclass.name` | StorageClass name used to store Prometheus data and Dashboard localization. Used only if `agorakube_features.monitoring.persistent.storage.type` is set to storageclass | **default-jiva** *(default)* |
+| `agorakube_features.monitoring.persistent.storage.persistentVolume.name` | PersistentVolume name used to store Prometheus data and Dashboard localization. Used only if `agorakube_features.monitoring.persistent.storage.type` is set to persistentVolume | **my-pv-monitoring** *(default)* |
+| `agorakube_features.monitoring.persistent.storage.persistentVolume.storageclass` | StorageClass name used to create persistentvolume set in `agorakube_features.monitoring.persistent.storage.persistentVolume.name`. Used only if `agorakube_features.monitoring.persistent.storage.type` is set to persistentvolume | **my storageclass-name** *(default)* |
+| `agorakube_features.monitoring.persistent.storage.hostpath.nodename` | K8S node (master/worker/storage) where monitoring data are stored locally. Used only `agorakube_features.monitoring.persistent.storage.type` is set to hostpath | **master1** *(default)* |
+| `agorakube_features.monitoring.persistent.storage.hostpath.path` | Path on `agorakube_features.monitoring.persistent.storage.hostpath.nodename` where Prometheus data and Dashboard localization are stored | **/var/monitoring-persistent** *(default)* |
 | `agorakube_features.monitoring.admin.user` | Default Grafana admin user | **administrator** *(default)* |
 | `agorakube_features.monitoring.admin.password` | Default grafana admin password | **P@ssw0rd** *(default)* |
 | `agorakube_features.reloader.enabled` | Enable Reloader | **False** *(default)* |
