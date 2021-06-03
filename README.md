@@ -27,7 +27,7 @@ Master branch is stable.
 
 ## Table of Contents
 
-This is a list of points that will be explained in this Readme file for the IKE project :
+This is a list of points that will be explained in this Readme file for the Agorakube project :
 
 - [What is AGORAKUBE](#what-is-agorakube)
 - [How to install](#how-to-install)
@@ -38,11 +38,11 @@ This is a list of points that will be explained in this Readme file for the IKE 
 
 ## What is AGORAKUBE
 
-AGORAKUBE is an easy-to-use, stable Kubernetes distribution (Kubernetes v1.15, 1.16, 1.17, 1.18, 1.19, 1.20, 1.21).
+Agorakube is an easy-to-use, stable Kubernetes distribution (Kubernetes v1.15, 1.16, 1.17, 1.18, 1.19, 1.20, 1.21).
 
 By its symplicity, AGORAKUBE provide a good way to deploy and manage K8S Clusters.
 
-AGORAKUBE is based on Ansible scripts that install and configure Kubernetes components (control plane and data plane) quickly on bare-metal / VMs / Cloud Instances, as systemd services.
+Agorakube is based on Ansible scripts that install and configure Kubernetes components (control plane and data plane) quickly on bare-metal / VMs / Cloud Instances, as systemd services.
 
 This distribution is also adaptive by offering the opportunity to customize your deployment and fit to your needs : 
 * OS : Ubuntu-18.04/20.04-amd64 and Centos 7.X-amd64, Debian-10-amd64 
@@ -84,11 +84,11 @@ See our [Code Of Conduct](https://github.com/ilkilabs/agorakube/blob/master/CODE
 
 ## Community
 
-Join AGORAKUBE's community for discussion and ask questions : [AGORAKUBE's Slack](http://slack.agorakube.ilkilabs.io/)
+Join Agorakube's community for discussion and ask questions : [AGORAKUBE's Slack](http://slack.agorakube.ilkilabs.io/)
 
 Channels :
 - **#general** - For general purpose (news, events...)
-- **#developpers** - For people who contribute to AGORAKUBE by developing features
+- **#developpers** - For people who contribute to Agorakube by developing features
 - **#end-users** - For end users who want to give us feedbacks
 - **#random** - As its name suggests, for random discussions :)
 
