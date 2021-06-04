@@ -15,7 +15,7 @@ agorakube_pki:
 
 agorakube_base_components:
   etcd:
-    release: v3.4.14
+    release: v3.4.16
     upgrade: False
     check: true
     data_path: /var/lib/etcd
@@ -35,7 +35,7 @@ agorakube_base_components:
           nodename: "master1"
           path: /var/etcd-backup
   kubernetes:
-    release: v1.19.11
+    release: v1.21.1
     upgrade: false
   container:
     engine: containerd
