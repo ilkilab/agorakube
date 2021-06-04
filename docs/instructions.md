@@ -13,7 +13,7 @@ This is a list of points that will be explained in this instructions file for th
 - [Upgrade OpenEBS Storage](#upgrade-openEBS-storage)
 - [How to use Reloader](#how-to-use-reloader)
 - [AGORAKUBE Log Architecture](#agorakube-log-architecture)
-- [Upgrade/Downgrade Kubernetes with Agorakube](#upgrade/downgrade-kubernetes-with-Agorakube)
+- [Upgrade And Downgrade Kubernetes with Agorakube](#upgrade-and-downgrade-kubernetes-with-Agorakube)
 - [Uninstall AGORAKUBE](#uninstall-agorakube)
 
 
@@ -905,7 +905,7 @@ Pods logs are stored in "/var/log/pods" directory.
 
 ETCD logs are only present in "journalctl". Run the following command to get ETCD logs from an "ETCD" host : `journalctl -xeu etcd`
 
-# Upgrade/Downgrade Kubernetes with Agorakube
+# Upgrade And Downgrade Kubernetes with Agorakube
 
 Edit "./group_vars/all.yaml" file with the following parameters
 
