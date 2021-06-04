@@ -1,6 +1,6 @@
 # AGORAKUBE KUBERNETES ENGINE
 <!-- ALL-CONTRIBUTORS-BADGE:START - Do not remove or modify this section -->
-[![All Contributors](https://img.shields.io/badge/all_contributors-7-orange.svg?style=flat-square)](#contributors-)
+[![All Contributors](https://img.shields.io/badge/all_contributors-8-orange.svg?style=flat-square)](#contributors-)
 <!-- ALL-CONTRIBUTORS-BADGE:END -->
 <!-- ALL-CONTRIBUTORS-BADGE:START - Do not remove or modify this section -->
 [![All Contributors](https://img.shields.io/badge/all_contributors-13-orange.svg?style=flat-square)](#contributors-)
@@ -128,6 +128,9 @@ Thanks goes to these wonderful people ([emoji key](https://allcontributors.org/d
     <td align="center"><a href="https://github.com/bryanILKI"><img src="https://avatars.githubusercontent.com/u/79568169?v=4?s=100" width="100px;" alt=""/><br /><sub><b>bryanILKI</b></sub></a><br /><a href="https://github.com/ilkilab/agorakube/commits?author=bryanILKI" title="Documentation">📖</a> <a href="https://github.com/ilkilab/agorakube/commits?author=bryanILKI" title="Code">💻</a> <a href="#maintenance-bryanILKI" title="Maintenance">🚧</a></td>
     <td align="center"><a href="https://github.com/sabrine-hammami"><img src="https://avatars.githubusercontent.com/u/79543319?v=4?s=100" width="100px;" alt=""/><br /><sub><b>sabrine-hammami</b></sub></a><br /><a href="https://github.com/ilkilab/agorakube/commits?author=sabrine-hammami" title="Documentation">📖</a> <a href="https://github.com/ilkilab/agorakube/commits?author=sabrine-hammami" title="Code">💻</a> <a href="#maintenance-sabrine-hammami" title="Maintenance">🚧</a></td>
     <td align="center"><a href="http://hameedullah.com"><img src="https://avatars.githubusercontent.com/u/59614?v=4?s=100" width="100px;" alt=""/><br /><sub><b>Hameedullah Khan</b></sub></a><br /><a href="https://github.com/ilkilab/agorakube/commits?author=hameedullah" title="Documentation">📖</a> <a href="https://github.com/ilkilab/agorakube/commits?author=hameedullah" title="Code">💻</a></td>
+  </tr>
+  <tr>
+    <td align="center"><a href="https://github.com/Flybro"><img src="https://avatars.githubusercontent.com/u/10743439?v=4?s=100" width="100px;" alt=""/><br /><sub><b>Big Bill</b></sub></a><br /><a href="https://github.com/ilkilab/agorakube/commits?author=Flybro" title="Documentation">📖</a> <a href="https://github.com/ilkilab/agorakube/commits?author=Flybro" title="Code">💻</a></td>
   </tr>
 </table>
 
