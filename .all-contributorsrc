@@ -1,0 +1,24 @@
+{
+  "files": [
+    "README.md"
+  ],
+  "imageSize": 100,
+  "commit": false,
+  "contributors": [
+    {
+      "login": "pranavbaitule",
+      "name": "pranavbaitule",
+      "avatar_url": "https://avatars.githubusercontent.com/u/72313242?v=4",
+      "profile": "https://github.com/pranavbaitule",
+      "contributions": [
+        "doc"
+      ]
+    }
+  ],
+  "contributorsPerLine": 7,
+  "projectName": "agorakube",
+  "projectOwner": "ilkilab",
+  "repoType": "github",
+  "repoHost": "https://github.com",
+  "skipCi": true
+}
