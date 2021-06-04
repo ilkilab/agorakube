@@ -49,6 +49,17 @@
         "ideas",
         "business"
       ]
+    },
+    {
+      "login": "bryanILKI",
+      "name": "bryanILKI",
+      "avatar_url": "https://avatars.githubusercontent.com/u/79568169?v=4",
+      "profile": "https://github.com/bryanILKI",
+      "contributions": [
+        "doc",
+        "code",
+        "maintenance"
+      ]
     }
   ],
   "contributorsPerLine": 7,
