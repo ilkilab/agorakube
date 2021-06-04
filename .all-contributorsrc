@@ -71,6 +71,16 @@
         "code",
         "maintenance"
       ]
+    },
+    {
+      "login": "hameedullah",
+      "name": "Hameedullah Khan",
+      "avatar_url": "https://avatars.githubusercontent.com/u/59614?v=4",
+      "profile": "http://hameedullah.com",
+      "contributions": [
+        "doc",
+        "code"
+      ]
     }
   ],
   "contributorsPerLine": 7,
