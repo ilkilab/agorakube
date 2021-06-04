@@ -60,6 +60,17 @@
         "code",
         "maintenance"
       ]
+    },
+    {
+      "login": "sabrine-hammami",
+      "name": "sabrine-hammami",
+      "avatar_url": "https://avatars.githubusercontent.com/u/79543319?v=4",
+      "profile": "https://github.com/sabrine-hammami",
+      "contributions": [
+        "doc",
+        "code",
+        "maintenance"
+      ]
     }
   ],
   "contributorsPerLine": 7,
