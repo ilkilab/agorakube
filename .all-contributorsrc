@@ -159,6 +159,16 @@
       "contributions": [
         "code"
       ]
+    },
+    {
+      "login": "rob-coq",
+      "name": "rob-coq",
+      "avatar_url": "https://avatars.githubusercontent.com/u/44269196?v=4",
+      "profile": "https://github.com/rob-coq",
+      "contributions": [
+        "doc",
+        "code"
+      ]
     }
   ],
   "contributorsPerLine": 7,
