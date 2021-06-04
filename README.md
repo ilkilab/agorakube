@@ -1,6 +1,6 @@
 # AGORAKUBE KUBERNETES ENGINE
 <!-- ALL-CONTRIBUTORS-BADGE:START - Do not remove or modify this section -->
-[![All Contributors](https://img.shields.io/badge/all_contributors-8-orange.svg?style=flat-square)](#contributors-)
+[![All Contributors](https://img.shields.io/badge/all_contributors-9-orange.svg?style=flat-square)](#contributors-)
 <!-- ALL-CONTRIBUTORS-BADGE:END -->
 <!-- ALL-CONTRIBUTORS-BADGE:START - Do not remove or modify this section -->
 [![All Contributors](https://img.shields.io/badge/all_contributors-13-orange.svg?style=flat-square)](#contributors-)
@@ -131,6 +131,7 @@ Thanks goes to these wonderful people ([emoji key](https://allcontributors.org/d
   </tr>
   <tr>
     <td align="center"><a href="https://github.com/Flybro"><img src="https://avatars.githubusercontent.com/u/10743439?v=4?s=100" width="100px;" alt=""/><br /><sub><b>Big Bill</b></sub></a><br /><a href="https://github.com/ilkilab/agorakube/commits?author=Flybro" title="Documentation">📖</a> <a href="https://github.com/ilkilab/agorakube/commits?author=Flybro" title="Code">💻</a></td>
+    <td align="center"><a href="https://github.com/husseinfahmy"><img src="https://avatars.githubusercontent.com/u/12388623?v=4?s=100" width="100px;" alt=""/><br /><sub><b>Hussein Fahmy</b></sub></a><br /><a href="https://github.com/ilkilab/agorakube/commits?author=husseinfahmy" title="Documentation">📖</a> <a href="https://github.com/ilkilab/agorakube/commits?author=husseinfahmy" title="Code">💻</a></td>
   </tr>
 </table>
 
