@@ -1,6 +1,6 @@
 # AGORAKUBE KUBERNETES ENGINE
 <!-- ALL-CONTRIBUTORS-BADGE:START - Do not remove or modify this section -->
-[![All Contributors](https://img.shields.io/badge/all_contributors-3-orange.svg?style=flat-square)](#contributors-)
+[![All Contributors](https://img.shields.io/badge/all_contributors-4-orange.svg?style=flat-square)](#contributors-)
 <!-- ALL-CONTRIBUTORS-BADGE:END -->
 <!-- ALL-CONTRIBUTORS-BADGE:START - Do not remove or modify this section -->
 [![All Contributors](https://img.shields.io/badge/all_contributors-13-orange.svg?style=flat-square)](#contributors-)
@@ -124,6 +124,7 @@ Thanks goes to these wonderful people ([emoji key](https://allcontributors.org/d
     <td align="center"><a href="https://github.com/pranavbaitule"><img src="https://avatars.githubusercontent.com/u/72313242?v=4?s=100" width="100px;" alt=""/><br /><sub><b>pranavbaitule</b></sub></a><br /><a href="https://github.com/ilkilab/agorakube/commits?author=pranavbaitule" title="Documentation">📖</a></td>
     <td align="center"><a href="https://www.ilki.fr/"><img src="https://avatars.githubusercontent.com/u/43336050?v=4?s=100" width="100px;" alt=""/><br /><sub><b>pierre villard</b></sub></a><br /><a href="https://github.com/ilkilab/agorakube/commits?author=pierreilki" title="Documentation">📖</a> <a href="https://github.com/ilkilab/agorakube/commits?author=pierreilki" title="Code">💻</a> <a href="#mentoring-pierreilki" title="Mentoring">🧑‍🏫</a> <a href="#projectManagement-pierreilki" title="Project Management">📆</a></td>
     <td align="center"><a href="https://github.com/gaelfr29"><img src="https://avatars.githubusercontent.com/u/43063988?v=4?s=100" width="100px;" alt=""/><br /><sub><b>gaelfr29</b></sub></a><br /><a href="https://github.com/ilkilab/agorakube/commits?author=gaelfr29" title="Documentation">📖</a> <a href="#projectManagement-gaelfr29" title="Project Management">📆</a> <a href="#ideas-gaelfr29" title="Ideas, Planning, & Feedback">🤔</a> <a href="#business-gaelfr29" title="Business development">💼</a></td>
+    <td align="center"><a href="https://github.com/ur2p0"><img src="https://avatars.githubusercontent.com/u/32265063?v=4?s=100" width="100px;" alt=""/><br /><sub><b>Adrien Huerre</b></sub></a><br /><a href="https://github.com/ilkilab/agorakube/commits?author=ur2p0" title="Documentation">📖</a> <a href="#projectManagement-ur2p0" title="Project Management">📆</a> <a href="#ideas-ur2p0" title="Ideas, Planning, & Feedback">🤔</a> <a href="#business-ur2p0" title="Business development">💼</a></td>
   </tr>
 </table>
 
