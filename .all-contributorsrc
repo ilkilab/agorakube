@@ -13,6 +13,18 @@
       "contributions": [
         "doc"
       ]
+    },
+    {
+      "login": "pierreilki",
+      "name": "pierre villard",
+      "avatar_url": "https://avatars.githubusercontent.com/u/43336050?v=4",
+      "profile": "https://www.ilki.fr/",
+      "contributions": [
+        "doc",
+        "code",
+        "mentoring",
+        "projectManagement"
+      ]
     }
   ],
   "contributorsPerLine": 7,
