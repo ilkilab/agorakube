@@ -91,6 +91,16 @@
         "doc",
         "code"
       ]
+    },
+    {
+      "login": "husseinfahmy",
+      "name": "Hussein Fahmy",
+      "avatar_url": "https://avatars.githubusercontent.com/u/12388623?v=4",
+      "profile": "https://github.com/husseinfahmy",
+      "contributions": [
+        "doc",
+        "code"
+      ]
     }
   ],
   "contributorsPerLine": 7,
