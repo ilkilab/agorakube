@@ -13,7 +13,7 @@ This is a list of points that will be explained in this instructions file for th
 - [Upgrade OpenEBS Storage](#upgrade-openEBS-storage)
 - [How to use Reloader](#how-to-use-reloader)
 - [AGORAKUBE Log Architecture](#agorakube-log-architecture)
-- [Upgrade/Downgrade Kubernetes with Agorakube](#upgrade-downgrade-kubernetes-with-Agorakube)
+- [Upgrade/Downgrade Kubernetes with Agorakube](#upgrade/downgrade-kubernetes-with-Agorakube)
 - [Uninstall AGORAKUBE](#uninstall-agorakube)
 
 
