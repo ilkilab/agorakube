@@ -904,6 +904,22 @@ Pods logs are stored in "/var/log/pods" directory.
 
 ETCD logs are only present in "journalctl". Run the following command to get ETCD logs from an "ETCD" host : `journalctl -xeu etcd`
 
+# Upgrade/Downgrade Kubernetes with Agorakube
+
+Edit "./group_vars/all.yaml" file with the following parameters
+
+```
+agorakube_base_components:
+  kubernetes:
+    release: v1.21.1  (Desired K8S release)
+    upgrade: true
+
+```
+
+Then apply your new Agorakube configuration by running the following command:
+
+`ansible-playbook agorakube.yaml`
+
 # Uninstall AGORAKUBE
 
 To uninstall AGORAKUBE cluster, go to your AGORAKUBE source folder located on the deploy machine and run the following command:
