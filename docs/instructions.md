@@ -13,6 +13,7 @@ This is a list of points that will be explained in this instructions file for th
 - [Upgrade OpenEBS Storage](#upgrade-openEBS-storage)
 - [How to use Reloader](#how-to-use-reloader)
 - [AGORAKUBE Log Architecture](#agorakube-log-architecture)
+- [Upgrade And Downgrade Kubernetes with Agorakube](#upgrade-and-downgrade-kubernetes-with-Agorakube)
 - [Uninstall AGORAKUBE](#uninstall-agorakube)
 
 
@@ -339,7 +340,7 @@ agorakube_features:
     release: "0.0.89"
   storage:
     enabled: true
-    release: "2.8.0"
+    release: "2.9.0"
     jiva:
       data_path: /var/openebs
       fs_type: ext4
@@ -389,8 +390,8 @@ agorakube_features:
       user: administrator
       password: P@ssw0rd
     auto_bootstrap:
-        bootstrap_keycloak: true
-        bootstrap_kube_apiserver: true
+        bootstrap_keycloak: false
+        bootstrap_kube_apiserver: false
         populate_etc_hosts: true
         host: oidc.local.lan
 
@@ -903,6 +904,22 @@ In "/var/log/kubernetes/" directory, log file size is limited to 1800 MB.
 Pods logs are stored in "/var/log/pods" directory.
 
 ETCD logs are only present in "journalctl". Run the following command to get ETCD logs from an "ETCD" host : `journalctl -xeu etcd`
+
+# Upgrade And Downgrade Kubernetes with Agorakube
+
+Edit "./group_vars/all.yaml" file with the following parameters
+
+```
+agorakube_base_components:
+  kubernetes:
+    release: v1.21.1  (Desired K8S release)
+    upgrade: true
+
+```
+
+Then apply your new Agorakube configuration by running the following command:
+
+`ansible-playbook agorakube.yaml`
 
 # Uninstall AGORAKUBE
 

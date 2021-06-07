@@ -1,0 +1,180 @@
+{
+  "files": [
+    "README.md"
+  ],
+  "imageSize": 100,
+  "commit": false,
+  "contributors": [
+    {
+      "login": "pranavbaitule",
+      "name": "pranavbaitule",
+      "avatar_url": "https://avatars.githubusercontent.com/u/72313242?v=4",
+      "profile": "https://github.com/pranavbaitule",
+      "contributions": [
+        "doc"
+      ]
+    },
+    {
+      "login": "pierreilki",
+      "name": "pierre villard",
+      "avatar_url": "https://avatars.githubusercontent.com/u/43336050?v=4",
+      "profile": "https://www.ilki.fr/",
+      "contributions": [
+        "doc",
+        "code",
+        "mentoring",
+        "projectManagement"
+      ]
+    },
+    {
+      "login": "gaelfr29",
+      "name": "gaelfr29",
+      "avatar_url": "https://avatars.githubusercontent.com/u/43063988?v=4",
+      "profile": "https://github.com/gaelfr29",
+      "contributions": [
+        "doc",
+        "projectManagement",
+        "ideas",
+        "business"
+      ]
+    },
+    {
+      "login": "ur2p0",
+      "name": "Adrien Huerre",
+      "avatar_url": "https://avatars.githubusercontent.com/u/32265063?v=4",
+      "profile": "https://github.com/ur2p0",
+      "contributions": [
+        "doc",
+        "projectManagement",
+        "ideas",
+        "business"
+      ]
+    },
+    {
+      "login": "bryanILKI",
+      "name": "bryanILKI",
+      "avatar_url": "https://avatars.githubusercontent.com/u/79568169?v=4",
+      "profile": "https://github.com/bryanILKI",
+      "contributions": [
+        "doc",
+        "code",
+        "maintenance"
+      ]
+    },
+    {
+      "login": "sabrine-hammami",
+      "name": "sabrine-hammami",
+      "avatar_url": "https://avatars.githubusercontent.com/u/79543319?v=4",
+      "profile": "https://github.com/sabrine-hammami",
+      "contributions": [
+        "doc",
+        "code",
+        "maintenance"
+      ]
+    },
+    {
+      "login": "hameedullah",
+      "name": "Hameedullah Khan",
+      "avatar_url": "https://avatars.githubusercontent.com/u/59614?v=4",
+      "profile": "http://hameedullah.com",
+      "contributions": [
+        "doc",
+        "code"
+      ]
+    },
+    {
+      "login": "Flybro",
+      "name": "Big Bill",
+      "avatar_url": "https://avatars.githubusercontent.com/u/10743439?v=4",
+      "profile": "https://github.com/Flybro",
+      "contributions": [
+        "doc",
+        "code"
+      ]
+    },
+    {
+      "login": "husseinfahmy",
+      "name": "Hussein Fahmy",
+      "avatar_url": "https://avatars.githubusercontent.com/u/12388623?v=4",
+      "profile": "https://github.com/husseinfahmy",
+      "contributions": [
+        "doc",
+        "code"
+      ]
+    },
+    {
+      "login": "rushilgala",
+      "name": "rushilgala",
+      "avatar_url": "https://avatars.githubusercontent.com/u/18123323?v=4",
+      "profile": "https://github.com/rushilgala",
+      "contributions": [
+        "doc",
+        "code"
+      ]
+    },
+    {
+      "login": "odidev",
+      "name": "odidev",
+      "avatar_url": "https://avatars.githubusercontent.com/u/40816837?v=4",
+      "profile": "https://github.com/odidev",
+      "contributions": [
+        "code"
+      ]
+    },
+    {
+      "login": "acjohnson",
+      "name": "Aaron Johnson",
+      "avatar_url": "https://avatars.githubusercontent.com/u/1386238?v=4",
+      "profile": "http://aaronjohnson.io",
+      "contributions": [
+        "doc",
+        "code"
+      ]
+    },
+    {
+      "login": "msouvatdy",
+      "name": "msouvatdy",
+      "avatar_url": "https://avatars.githubusercontent.com/u/49560112?v=4",
+      "profile": "https://github.com/msouvatdy",
+      "contributions": [
+        "doc",
+        "code"
+      ]
+    },
+    {
+      "login": "tyb3n",
+      "name": "tyb3n",
+      "avatar_url": "https://avatars.githubusercontent.com/u/16243465?v=4",
+      "profile": "https://github.com/tyb3n",
+      "contributions": [
+        "doc",
+        "code"
+      ]
+    },
+    {
+      "login": "digikin",
+      "name": "Eric Stumbo",
+      "avatar_url": "https://avatars.githubusercontent.com/u/25944964?v=4",
+      "profile": "https://ericstumbo.tech",
+      "contributions": [
+        "code"
+      ]
+    },
+    {
+      "login": "rob-coq",
+      "name": "rob-coq",
+      "avatar_url": "https://avatars.githubusercontent.com/u/44269196?v=4",
+      "profile": "https://github.com/rob-coq",
+      "contributions": [
+        "doc",
+        "code"
+      ]
+    }
+  ],
+  "contributorsPerLine": 7,
+  "projectName": "agorakube",
+  "projectOwner": "ilkilab",
+  "repoType": "github",
+  "repoHost": "https://github.com",
+  "skipCi": true
+}
