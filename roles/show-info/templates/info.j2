@@ -37,133 +37,45 @@ http://localhost:8001/api/v1/namespaces/kubernetes-dashboard/services/https:kube
    Run following command to see this information again anytime.
    $ cat /root/agorakube-info.txt
 
-################################################################################
+###############################################################################
+
+###############################################################################
+
+{% if agorakube_features.monitoring.enabled | bool == True %}
+1. To access open your web browser and go to http://localhost:3000 
+2. To login, enter Default Grafana admin user and Default grafana admin password
+{% endif %}
 
 ################################################################################
 
-To automatically install and clone the latest stable AGORAKUBE distribution run following command.
-
-$ bash <(curl -s https://raw.githubusercontent.com/ilkilab/agorakube/master/setup-deploy.sh)
-
-################################################################################
-
-################################################################################
-
-To install the agorakube and deploy the K8s cluster launch the vagrant file which can be found under the file https://github.com/ilkilab/agorakube/tree/master/labs/multi-nodes
-to deploy the woker nodes cluster run following command 
-
-$ vagrant up
-
-################################################################################
-
-################################################################################
-
-To deploy  the master nodes cluster lauch the vagrant file wich can be found under the file https://github.com/ilkilab/agorakube/tree/master/labs/all-in-one
-
-$ vagrant up
+{% if agorakube_features.monitoring.persistent.enable | bool == True %}
+Persist Monitoring Data when agorakube_features.monitoring.persistent.enable is set to True
+{% endif %}
 
 ################################################################################
 
 ################################################################################
 
-Run the following command to launch the Ansible playbook that will deploy the pre-configured Kubernetes cluster :
+{% if agorakube_features.storage.enabled | bool == True %}
+To enable Storage feature - OpenEBS based
+{% endif %}
 
-$ sudo ansible-playbook agorakube.yaml
-
-################################################################################
-
-################################################################################
-
-To backup ETCD cluster from Agorakube racine directory 
-# Run the following command:
-
- $ sudo ansible-playbook tools/etcd/backup-etcd-cluster.yaml
+#################################################################################
 
 ################################################################################
 
-To restore ETCD cluster from Agorakube racine directory follow the next steps
- # Edit group_vars/all.yaml file and add the following variable:
+{% if agorakube_features.logrotate.enabled | bool == True %}
+Enable Logrotate
+{% endif %}
 
-restoration_snapshot_file: /path/to/the/backups/file/on/deploy/machine
-
-# Then, from Agorakube racine directory, run the following command:
-sudo ansible-playbook tools/etcd/restore-etcd-cluster.yaml
+#################################################################################
 
 ################################################################################
 
-################################################################################
+{% if agorakube_features.gatekeeper.enabled | bool == True %}
+To install opa/Gatekeeper on Agorakube make sure to set 
+agorakube_features.logrotate.enabled to true
+{% endif %}
 
-To check the state of the etcd type the command below 
- 
-ansible-playbook agorakube.yaml --tags check-etcd
-
-################################################################################
-
-################################################################################
-
-To Upgrade/downgrade the etcd cluster edit file "group_vars/all.yaml" with 
-
-agorakube_base_components:
-  etcd:
-    release: v3.4.14  (Desired ETCD release)
-    upgrade: True
-
-################################################################################
-
-################################################################################
-
-To uninstall etcd cluster use following command 
-
-$ ansible-playbook delete-etcd-clusters.yaml --tags uninstall 
-
-################################################################################
-
-################################################################################
-To upgrade OpenEBS Storage
-
-To upgrade OpenEBS Jiva volumes in your AGORAKUBE cluster, follow this step
-
-Change in file "./group_vars/all.yaml" the variable agorakube_features.storage.release to the desired OpenEBS release (https://github.com/openebs/openebs/releases) and apply the changes to the cluster
-
-################################################################################
-
-################################################################################
-
-To uninstall OpenEBS Storage use following command 
-
-$ ansible-playbook delete_openebs.yaml --tags uninstall 
-
-################################################################################
-
-################################################################################
-
-To install opa/Gatekeeper on Agorakube make sure to activate 
-
-$ agorakube_features:
-  gatekeeper:
-    enabled: True
-
-################################################################################
-
-################################################################################
-
-To upgrade And Downgrade Kubernetes with Agorakube Edit "./group_vars/all.yaml" file with the following parameters
-
-agorakube_base_components:
-  kubernetes:
-    release: v1.21.1  (Desired K8S release)
-    upgrade: true
- 
-################################################################################
-
-################################################################################
-
-To uninstall AGORAKUBE cluster, go to AGORAKUBE source folder located on the deploy machine and run the following command:
-
-ansible-playbook agorakube.yaml --tags uninstall
-
-################################################################################
-
-
-
+#################################################################################
 
