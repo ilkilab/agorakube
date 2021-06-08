@@ -39,17 +39,20 @@ http://localhost:8001/api/v1/namespaces/kubernetes-dashboard/services/https:kube
 
 ###############################################################################
 
-###############################################################################
+################################################################################
 
 {% if agorakube_features.monitoring.enabled | bool == True %}
 1. To access open your web browser and go to http://localhost:3000 
+
 2. To login, enter Default Grafana admin user and Default grafana admin password
 {% endif %}
 
 ################################################################################
 
 {% if agorakube_features.monitoring.persistent.enable | bool == True %}
-Persist Monitoring Data when agorakube_features.monitoring.persistent.enable is set to True
+
+# Monitoring Data when agorakube_features.monitoring.persistent.enable is set to True
+
 {% endif %}
 
 ################################################################################
@@ -57,7 +60,9 @@ Persist Monitoring Data when agorakube_features.monitoring.persistent.enable is 
 ################################################################################
 
 {% if agorakube_features.storage.enabled | bool == True %}
-To enable Storage feature - OpenEBS based
+
+# Enable Storage feature - OpenEBS based
+
 {% endif %}
 
 #################################################################################
@@ -65,17 +70,19 @@ To enable Storage feature - OpenEBS based
 ################################################################################
 
 {% if agorakube_features.logrotate.enabled | bool == True %}
-Enable Logrotate
+
+# Enable Logrotate
+
 {% endif %}
 
-#################################################################################
+###############################################################################
 
 ################################################################################
 
 {% if agorakube_features.gatekeeper.enabled | bool == True %}
-To install opa/Gatekeeper on Agorakube make sure to set 
-agorakube_features.logrotate.enabled to true
+
+# To install opa/Gatekeeper on Agorakube make sure to set agorakube_features.logrotate.enabled to true
+
 {% endif %}
 
-#################################################################################
-
+###############################################################################
