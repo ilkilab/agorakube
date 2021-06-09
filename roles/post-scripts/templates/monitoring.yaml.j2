@@ -355,24 +355,21 @@ spec:
           mountPath: /etc/grafana/provisioning/datasources
         - name: grafana-dashboard
           mountPath: /etc/grafana/provisioning/dashboards
-{% if agorakube_features.monitoring.persistent.enable | bool == True %}
         - name: init-grafana-dashboard
           mountPath: /etc/grafana/provisioning/dashboards/default/
       initContainers:
       - name: init-grafana-dashboard
         image: busybox
-        command: ['sh', '-c', "wget https://raw.githubusercontent.com/bryanILKI/agorakube/monitoring_k8s_integration/roles/post-scripts/files/dashboards/agorakube-dashboard-v1.json -O /etc/grafana/provisioning/dashboards/default/agorakube-dashboard.json"]
+        command: ['sh', '-c', "wget https://raw.githubusercontent.com/bryanILKI/agorakube/monitoring_k8s_integration/roles/post-scripts/files/dashboards/agorakube-dashboard-v1.json -O /etc/grafana/provisioning/dashboards/default/agorakube-dashboard.json", "chmod -R 777 /etc/grafana/provisioning/dashboards/default"]
         volumeMounts:
         - name: init-grafana-dashboard
           mountPath: /etc/grafana/provisioning/dashboards/default/
-      - name: grafana-dashboard-permissions
-        image: busybox
-        command: ['sh', '-c', "chmod -R 777 /etc/grafana/provisioning/dashboards/default"]
-        #command: ["/bin/chmod", "777", "/etc/grafana/provisioning/dashboards/default"]
-        volumeMounts:
-        - name: init-grafana-dashboard
-          mountPath: /etc/grafana/provisioning/dashboards/default/
-{% endif %}
+#      - name: grafana-dashboard-permissions
+#        image: busybox
+#        command: ['sh', '-c', "chmod -R 777 /etc/grafana/provisioning/dashboards/default"]
+#        volumeMounts:
+#        - name: init-grafana-dashboard
+#          mountPath: /etc/grafana/provisioning/dashboards/default/
       volumes:
       - name: grafana-datasource
         configMap:
