@@ -43,53 +43,17 @@ http://localhost:8001/api/v1/namespaces/kubernetes-dashboard/services/https:kube
 
 {% if agorakube_features.monitoring.enabled | bool == True %}
 
-1. To log in to Grafana for the first time: open your web browser and go to http://localhost:3000 
+1.1. Run follwoing command on deploy (ansible control) machine.
+# kubectl proxy 
 
-2. To login, enter Default Grafana admin user and Default grafana admin password :
+2.To log in to Grafana for the first time: open your web browser and go to 
+http://localhost:8001/api/v1/namespaces/monitoring/services/http:/localhost:3000/grafana/proxy/
+
+3. To login, enter Default Grafana admin user and Default grafana admin password :
 
 user: administrator
 password: P@ssw0rd
 
 {% endif %}
 
-################################################################################
-
-###############################################################################
-
-{% if agorakube_features.monitoring.persistent.enable | bool == True %}
-
-Monitoring Data when agorakube_features.monitoring.persistent.enable is set to True
-
-{% endif %}
-
-################################################################################
-
-###############################################################################
-
-{% if agorakube_features.storage.enabled | bool == True %}
-
-Enable Storage feature - OpenEBS based
-
-{% endif %}
-
-#################################################################################
-
-################################################################################
-
-{% if agorakube_features.logrotate.enabled | bool == True %}
-
-Enable Logrotate
-
-{% endif %}
-
-###############################################################################
-
-################################################################################
-
-{% if agorakube_features.gatekeeper.enabled | bool == True %}
-
-To install opa/Gatekeeper on Agorakube make sure to set agorakube_features.logrotate.enabled to true
-
-{% endif %}
-
-###############################################################################
+##############################################################################
