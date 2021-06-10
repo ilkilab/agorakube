@@ -365,7 +365,7 @@ spec:
           mountPath: /var/lib/grafana/
       initContainers:
       - name: init-grafana-dashboard
-        image: busybox
+        image: busybox:1.32.0
         command: ['sh', '-c', "wget https://raw.githubusercontent.com/bryanILKI/agorakube/monitoring_k8s_integration/roles/post-scripts/files/dashboards/agorakube-dashboard-v1.json -O /etc/grafana/provisioning/dashboards/default/agorakube-dashboard.json", "chmod -R 777 /etc/grafana/provisioning/dashboards/default"]
         volumeMounts:
         - name: init-grafana-dashboard
