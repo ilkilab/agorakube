@@ -315,11 +315,15 @@ spec:
   selector:
     matchLabels:
       app: grafana
+  strategy:
+    type: Recreate
   template:
     metadata:
       labels:
-        app: grafana
+        app: grafana    
     spec:
+      securityContext:
+        fsGroup: 472
       containers:
       - name: grafana
         image: grafana/grafana:7.1.0
@@ -357,6 +361,8 @@ spec:
           mountPath: /etc/grafana/provisioning/dashboards
         - name: init-grafana-dashboard
           mountPath: /etc/grafana/provisioning/dashboards/default/
+        - name: grafana-data
+          mountPath: /var/lib/grafana/
       initContainers:
       - name: init-grafana-dashboard
         image: busybox
@@ -364,12 +370,6 @@ spec:
         volumeMounts:
         - name: init-grafana-dashboard
           mountPath: /etc/grafana/provisioning/dashboards/default/
-#      - name: grafana-dashboard-permissions
-#        image: busybox
-#        command: ['sh', '-c', "chmod -R 777 /etc/grafana/provisioning/dashboards/default"]
-#        volumeMounts:
-#        - name: init-grafana-dashboard
-#          mountPath: /etc/grafana/provisioning/dashboards/default/
       volumes:
       - name: grafana-datasource
         configMap:
@@ -381,8 +381,35 @@ spec:
       - name: init-grafana-dashboard
         persistentVolumeClaim:
           claimName: persistent-dashboard
+      - name: grafana-data
+        persistentVolumeClaim:
+          claimName: grafana-data
 {% endif %}
 {% if agorakube_features.monitoring.persistent.enable | bool == True %}
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: grafana-data
+  namespace: monitoring
+  labels:
+    openebs.io/target-affinity: agorakube-monitoring
+spec:
+{% if agorakube_features.monitoring.persistent.storage.type == "hostpath" %}
+  storageClassName: persistent-dashboard-hostpath
+{% endif %}
+{% if agorakube_features.monitoring.persistent.storage.type == "storageclass" %}
+  storageClassName: "{{ agorakube_features.monitoring.persistent.storage.storageclass.name }}"
+{% endif %}
+{% if agorakube_features.monitoring.persistent.storage.type == "persistentvolume" %}
+  storageClassName: "{{ agorakube_features.monitoring.persistent.storage.persistentvolume.name }}"
+{% endif %}
+  resources:
+    requests:
+      storage: "{{ agorakube_features.monitoring.persistent.storage.capacity }}"
+  volumeMode: Filesystem
+  accessModes:
+    - ReadWriteOnce
 ---
 apiVersion: v1
 kind: PersistentVolumeClaim
@@ -413,7 +440,8 @@ spec:
 apiVersion: v1
 kind: PersistentVolume
 metadata:
-  name: persistentvolume-dashboard-hostpath
+  #name: persistentvolume-dashboard-hostpath
+  name: persistent-dashboard-hostpath
   namespace: monitoring
 spec:
   storageClassName: persistent-dashboard-hostpath
@@ -473,6 +501,6 @@ data:
         editable: true
         allowUiUpdates: true
         options:
-          path: /etc/grafana/provisioning/dashboards/default/
+          path: /etc/grafana/provisioning/dashboards/
 #  node.json: |
 #{% raw %}
