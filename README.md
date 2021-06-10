@@ -59,6 +59,7 @@ This distribution is also adaptive by offering the opportunity to customize your
 * Kubernetes ConfigMap and Secret Reloader
 * Logrotate
 * OIDC/SSO with Keycloak
+* Open Policy Agent Gatekeeper
 
 ![AGORAKUBE](./images/AGORAKUBE.png)
 
