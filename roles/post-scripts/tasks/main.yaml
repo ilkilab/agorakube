@@ -65,6 +65,6 @@
   include_tasks: gatekeeper.yaml
   when: agorakube_features.gatekeeper.enabled | bool == True
 
-  - name: Install argocd
+- name: Install argocd
   include_tasks: argocd.yaml
   when: agorakube_features.argocd.enabled | bool == True
