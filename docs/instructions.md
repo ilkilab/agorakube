@@ -534,6 +534,8 @@ This section allows you to configure your K8S features.
 | `agorakube_features.logrotate.enabled` | Enable Logrotate | **false** *(default)* |
 | `agorakube_features.logrotate.crontab` | Crontab used to run logrotate | **"* 2 * * *"** *(default) run every day at 2 AM* |
 | `agorakube_features.logrotate.day_retention` | Indicate how many days logs will be keep | **14** *(default)* |
+| `agorakube_features.argocd.enabled` | Enable ArgoCD | **false** *(default)* |
+
 
 
 ## AGORAKUBE other settings
