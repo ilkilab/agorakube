@@ -114,6 +114,7 @@ agorakube_features:
     replicas:
       #audit: 1
       controller_manager: 3
+#argocd is an Alpha feature and do not support persistence wet. Use it only for test purpose.
   argocd:
     enabled: false
    
