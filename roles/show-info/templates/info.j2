@@ -46,7 +46,7 @@ http://localhost:8001/api/v1/namespaces/kubernetes-dashboard/services/https:kube
 ##################
 Kubectl config file is located at: /root/.kube/config
 
-{% if agorakube_features.dashboard.enabled | bool == True %}
+{% if agorakube_features.monitoring.enabled | bool == True %}
 ########################
 # Kubernetes Dashboard #
 ########################
@@ -58,7 +58,7 @@ grafana dashboard can be accessed by following the steps below:
 2. Visit following URL on deploy machine.
 http://localhost:8001/api/v1/namespaces/monitoring/services/https:grafana:/proxy/
 
-{% if agorakube_features.monitoring.enabled  | bool == True %}
+
 3. To login, enter Default Grafana admin user and Default grafana admin password:
 user: administrator
 password: P@ssw0rd
