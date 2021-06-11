@@ -61,25 +61,10 @@ password: {{ agorakube_features.monitoring.admin.password }}
 ########################
 argocd dashboard can be accessed by following the steps below:
 
-1. Run follwoing command on deploy (ansible control) machine.
-# kubectl port-forward
-
-1. Run follwoing command on deploy (ansible control) machine.
-3.You can simply retrieve this password using kubectl:
-#kubectl -n argocd get secret argocd-initial-admin-secret -o jsonpath="{.data.password}" | base64 -d
-Using the username admin and the password from above, login to Argo CD's IP or hostname:
-#argocd login argo-server
-
-Change the password using the command:
-#argocd account update-password
-
-
-Change the password using the command:
-#argocd account update-password
-
-4. to connect to the API server without exposing the service.
+1.To connect to the API server without exposing the service.
 #kubectl port-forward svc/argocd-server -n argocd 8080:443
-5.The API server can then be accessed using the 
+
+2.The API server can then be accessed using the 
 # http://localhost:8080
 
 
