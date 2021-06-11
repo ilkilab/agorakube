@@ -45,3 +45,15 @@ We can check the state of the etcd by typing the command below without forgettin
 allow to play only the tasks dedicated to the check-etcd:
 
 ```ansible-playbook agorakube.yaml --tags check-etcd```
+
+## how to Upgrade/downgrade the etcd cluster?
+
+Just edit file "group_vars/all.yaml" with:
+
+```
+agorakube_base_components:
+  etcd:
+    release: v3.4.14  (Desired ETCD release)
+    upgrade: True
+```
+Then apply agorakube with command `ansible-playbook agorakube.yaml`
