@@ -67,4 +67,4 @@
 
 - name: Deploy Log centralization
   include_tasks: log-centralization.yaml
-  when: agorakube_features.log_centralization.enabled | bool == True
+  when: agorakube_features.monitoring.log_centralization.enabled | bool == True

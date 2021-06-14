@@ -101,6 +101,8 @@ agorakube_features:
         hostpath:
           nodename: "master1"
           path: /var/monitoring-persistent
+    log_centralization:
+      enable : true
     admin:
       user: administrator
       password: P@ssw0rd
@@ -114,8 +116,6 @@ agorakube_features:
     replicas:
       #audit: 1
       controller_manager: 3
-  log_centralization:
-    enabled: true
 # keycloak_oidc is an Alpha feature and do not support persistence wet. Use it only for test purpose.
   keycloak_oidc:
     enabled: false
