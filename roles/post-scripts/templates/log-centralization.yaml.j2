@@ -2,13 +2,13 @@
 apiVersion: v1
 kind: Namespace
 metadata:
-  name: logging
+  name: supervision
 ---
 apiVersion: v1
 kind: ServiceAccount
 metadata:
   name: fluent-bit
-  namespace: logging
+  namespace: supervision
 ---
 apiVersion: rbac.authorization.k8s.io/v1beta1
 kind: ClusterRole
@@ -41,7 +41,7 @@ apiVersion: v1
 kind: ConfigMap
 metadata:
   name: fluent-bit-config
-  namespace: logging
+  namespace: supervision
   labels:
     k8s-app: fluent-bit
 data:
@@ -90,9 +90,8 @@ data:
     [OUTPUT]
         Name                   loki
         Match                  *
-        Host
-        Port
-        Tenant_id
+        Host                   http://loki:3100
+        Port                   3100
         line_format            json
         labels                 job=fluentbit
         auto_kubernetes_labels on
@@ -166,7 +165,7 @@ apiVersion: apps/v1
 kind: DaemonSet
 metadata:
   name: fluent-bit
-  namespace: logging
+  namespace: supervision
   labels:
     k8s-app: fluent-bit-logging
     version: v1
@@ -200,9 +199,9 @@ spec:
         volumeMounts:
         - name: varlog
           mountPath: /var/log
-        - name: varlibdockercontainers
-          mountPath: /var/lib/docker/containers
-          readOnly: true
+#        - name: varlibdockercontainers
+#          mountPath: /var/lib/docker/containers
+#          readOnly: true
         - name: fluent-bit-config
           mountPath: /fluent-bit/etc/
       terminationGracePeriodSeconds: 10
@@ -210,9 +209,9 @@ spec:
       - name: varlog
         hostPath:
           path: /var/log
-      - name: varlibdockercontainers
-        hostPath:
-          path: /var/lib/docker/containers
+#      - name: varlibdockercontainers
+#        hostPath:
+#          path: /var/lib/docker/containers
       - name: fluent-bit-config
         configMap:
           name: fluent-bit-config
@@ -225,4 +224,53 @@ spec:
         effect: "NoExecute"
       - operator: "Exists"
         effect: "NoSchedule"
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: loki
+  namespace: supervision
+spec:
+  type: ClusterIP
+  selector:
+    app: loki
+  ports:
+  - port: 3100
+    targetPort: 3100
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: loki
+  namespace: supervision
+spec:
+  selector:
+    matchLabels:
+      app: loki
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels:
+        app: loki    
+    spec:
+      containers:
+      - name: loki
+        image: grafana/loki:latest
+        ports:
+        - containerPort: 3100
+#        volumeMounts:
+#        - name: init-grafana-dashboard
+#          mountPath: /etc/grafana/provisioning/dashboards/default/
+#      initContainers:
+#      - name: init-loki-dashboard
+#        image: busybox:1.32.0
+#        command: ['sh', '-c', "wget https://raw.githubusercontent.com/bryanILKI/agorakube/#.json -O /etc/.../#.json", "chmod -R 777 /etc/..."]
+#        volumeMounts:
+#        - name: init-loki-dashboard
+#          mountPath: /etc/
+#      volumes:
+#      - name: init-loki-dashboard
+#        persistentVolumeClaim:
+#          claimName: persistent-dashboard
 ---
