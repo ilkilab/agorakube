@@ -71,4 +71,4 @@
 
 - name: Install tekton
   include_tasks: tekton.yaml
-  when: tekton_features.tekton.enabled | bool == True
+  when: agorakube_features.tekton.enabled | bool == True
