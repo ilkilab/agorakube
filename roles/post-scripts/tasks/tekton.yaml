@@ -29,7 +29,7 @@
 #  command: kubectl --kubeconfig {{ pki_path }}/kubeconfigs/admin/admin.conf get deploy -n tekton-system
 #  changed_when: false
 #  register: argocd_deployment
-#  until: tekton_deployment.stdout.find(tekton_features.tekton.replicas.controller_manager | string + "/" + tekton_features.argocd.replicas.controller_manager | string) != -1
+#  until: tekton_deployment.stdout.find(agorakube_features.tekton.replicas.controller_manager | string + "/" + tekton_features.argocd.replicas.controller_manager | string) != -1
 #  retries: 300
 #  delay: 10
 #  run_once: true
