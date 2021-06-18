@@ -104,6 +104,24 @@ agorakube_features:
     admin:
       user: administrator
       password: P@ssw0rd
+  tekton:
+    enabled: false
+    persistent:
+      enable: false
+      storage:
+        capacity: 5Gi
+        type: "storageclass"
+        storageclass:
+          name: "default-jiva"
+        persistentvolume:
+          name: "my-pv-tekton"
+          storageclass: "my-storageclass-name"
+        hostpath:
+          nodename: "master1"
+          path: /var/tekton-persistent
+    admin:
+      user: administrator
+      password: P@ssw0rd
   logrotate:
     enabled: false
     crontab: "* 2 * * *"

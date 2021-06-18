@@ -68,3 +68,7 @@
 - name: Install argocd
   include_tasks: argocd.yaml
   when: agorakube_features.argocd.enabled | bool == True
+
+- name: Install tekton
+  include_tasks: tekton.yaml
+  when: tekton_features.tekton.enabled | bool == True

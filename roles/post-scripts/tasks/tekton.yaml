@@ -1,0 +1,35 @@
+---
+- name: Create tempdir
+  tempfile:
+    state: directory
+    suffix: tekton
+  register: tekton_tempdir
+  changed_when: false
+
+- name: Render templates
+  template:
+    dest: "{{ tekton_tempdir.path }}/tekton.yaml"
+    src: "tekton.yaml.j2"
+  changed_when: false
+
+- name: Apply templates
+  command: kubectl --kubeconfig {{ pki_path }}/kubeconfigs/admin/admin.conf apply -f {{ tekton_tempdir.path }}/tekton.yaml
+  register: apply_tekton
+  changed_when: >
+    apply_tekton.stdout is search("created")
+    or apply_tekton.stdout is search("configured")
+
+- name: Cleanup tempdir
+  file:
+    state: absent
+    path: "{{ tekton_tempdir.path }}"
+  changed_when: false
+
+#- name: Verify if argocd pods has successfully started
+#  command: kubectl --kubeconfig {{ pki_path }}/kubeconfigs/admin/admin.conf get deploy -n tekton-system
+#  changed_when: false
+#  register: argocd_deployment
+#  until: tekton_deployment.stdout.find(tekton_features.tekton.replicas.controller_manager | string + "/" + tekton_features.argocd.replicas.controller_manager | string) != -1
+#  retries: 300
+#  delay: 10
+#  run_once: true
