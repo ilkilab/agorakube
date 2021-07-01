@@ -13,25 +13,24 @@ metadata:
 apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRole
 metadata:
-  name: fluent-bit-read
+  name: fluent-bit
 rules:
 - apiGroups: [""]
   resources:
     - namespaces
     - pods
-  verbs:
-    - get
-    - list
-    - watch 
+    - nodes
+    - nodes/proxy
+  verbs: ["get", "list", "watch"]
 ---
 apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRoleBinding
 metadata:
-  name: fluent-bit-read
+  name: fluent-bit
 roleRef:
   apiGroup: rbac.authorization.k8s.io
   kind: ClusterRole
-  name: fluent-bit-read
+  name: fluent-bit
 subjects:
 - kind: ServiceAccount
   name: fluent-bit
@@ -45,13 +44,11 @@ metadata:
   labels:
     k8s-app: fluent-bit
 data:
-  # Configuration files: server, input, filters and output
-  # ======================================================
   fluent-bit.conf: |
     [SERVICE]
-        Flush         2
+        Flush         1
         Log_Level     info
-        Daemon        on
+        Daemon        off
         Parsers_File  parsers.conf
         HTTP_Server   On
         HTTP_Listen   0.0.0.0
@@ -60,7 +57,6 @@ data:
     @INCLUDE input-kubernetes.conf
     @INCLUDE filter-kubernetes.conf
     @INCLUDE output-loki.conf
-#    @INCLUDE output-elasticsearch.conf
 
   input-kubernetes.conf: |
     [INPUT]
@@ -70,49 +66,54 @@ data:
         Parser            cri
         DB                /var/log/flb_kube.db
         Mem_Buf_Limit     5MB
-        Skip_Long_Lines   On
-        Refresh_Interval  10
+        # Skip_Long_Lines   On
+        # Refresh_Interval  10
         # Path              /var/log/*.log
         # Path              /var/log/containers/*.log
+        # Parser            docker
 
   filter-kubernetes.conf: |
     [FILTER]
         Name                kubernetes
         Match               kube.*
         Kube_URL            https://kubernetes.default.svc:443
-        Kube_CA_File        /var/run/secrets/kubernetes.io/serviceaccount/ca.crt
-        Kube_Token_File     /var/run/secrets/kubernetes.io/serviceaccount/token
-        Kube_Tag_Prefix     kube.var.log.containers.
         Merge_Log           On
-        Merge_Log_Key       log_processed
-        K8S-Logging.Parser  On
+        K8S-Logging.Parser  off
         K8S-Logging.Exclude Off
-  
+        # Kube_CA_File        /var/run/secrets/kubernetes.io/serviceaccount/ca.crt
+        # Kube_Token_File     /var/run/secrets/kubernetes.io/serviceaccount/token
+        # Kube_Tag_Prefix     kube.var.log.containers.
+        # Merge_Log_Key       log_processed
+        # Kube_Tag_Prefix     kube.var.log.containers.
+        # Kube_URL            https://kubernetes.default.svc.cluster.local:443
+        # kubelet_Port        10250
+        # Buffer_Size         0
+        # Use_Kubelet         true
+        
   output-loki.conf : |
     [OUTPUT]
         Name                   loki
         Match                  *
-        Url                    http://loki:3100
-        BatchWait              1s
-        BatchSize              1001024
-        AutoKubernetesLabels   true
-        # Host                   http://loki:3100
+        Host                   http://loki:3100/loki/api/v1/push
+        Labels                 {job="fluent-bit"}
+        tenant_id              ""
+        remove_Keys            kubernetes, stream
+        auto_kubernetes_labels on
+        line_format            json
+        # Url                    http://loki:3100/loki/api/v1/push
+        # Url                    http://localhost:3100/loki/api/v1/push
+        # Url                    http://loki:3100/loki/api/prom/push
+        # TenantID               ""
+        # BatchWait              1
+        # BatchSize              1048576
+        # AutoKubernetesLabels   true
+        # RemoveKeys             kubernetes, stream
+        # LineFormat             json
+        # LogLevel               warn
+        # LabelMapPath           /fluent-bit/etc/labelmap.json
         # Port                   3100
-        # line_format            json
         # labels                 job=fluentbit 
         # label_keys             $sub['stream']
-        # auto_kubernetes_labels on
-        # Url                    http://localhost:3100/loki/api/v1/push
-
-#  output-elasticsearch.conf: |
-#    [OUTPUT]
-#        Name            es
-#        Match           *
-#        Host            ${FLUENT_ELASTICSEARCH_HOST}
-#        Port            ${FLUENT_ELASTICSEARCH_PORT}
-#        Logstash_Format On
-#        Replace_Dots    On
-#        Retry_Limit     False
 
   parsers.conf: |
     [PARSER]
@@ -193,43 +194,35 @@ spec:
         prometheus.io/port: "2020"
         prometheus.io/path: /api/v1/metrics/prometheus
     spec:
+      serviceAccountName: fluent-bit
       containers:
       - name: fluent-bit
         image: grafana/fluent-bit-plugin-loki:main-12d418b-amd64
 #        image: grafana/fluent-bit-plugin-loki:latest
+#        image: grafana/fluent-bit-plugin-loki:2.1.0-amd64
 #        image: fluent/fluent-bit:1.5
         imagePullPolicy: Always
         ports:
           - containerPort: 2020
-        env:
-#        - name: FLUENT_ELASTICSEARCH_HOST
-#          value: "elasticsearch"
-#        - name: FLUENT_ELASTICSEARCH_PORT
-#          value: "9200"
-        - name: loki_url
-          value: http://loki:3100
-#        - name: loki_port
-#          value: "3100"
         volumeMounts:
         - name: varlog
           mountPath: /var/log
-#        - name: varlibdockercontainers
-#          mountPath: /var/lib/docker/containers
-#          readOnly: true
+        - name: varlibdockercontainers
+          mountPath: /var/lib/docker/containers
+          readOnly: true
         - name: fluent-bit-config
           mountPath: /fluent-bit/etc/
-      terminationGracePeriodSeconds: 10
+      terminationGracePeriodSeconds: 30
       volumes:
       - name: varlog
         hostPath:
           path: /var/log
-#      - name: varlibdockercontainers
-#        hostPath:
-#          path: /var/lib/docker/containers
+      - name: varlibdockercontainers
+        hostPath:
+          path: /var/lib/docker/containers
       - name: fluent-bit-config
         configMap:
           name: fluent-bit-config
-      serviceAccountName: fluent-bit
       tolerations:
       - key: node-role.kubernetes.io/master
         operator: Exists
