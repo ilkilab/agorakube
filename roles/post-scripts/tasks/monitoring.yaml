@@ -48,7 +48,7 @@
   changed_when: false
 
 - name: Wait for Prometheus to be deployed
-  command: kubectl --kubeconfig {{ pki_path }}/kubeconfigs/admin/admin.conf get deploy -n monitoring prometheus
+  command: kubectl --kubeconfig {{ pki_path }}/kubeconfigs/admin/admin.conf get deploy -n supervision prometheus
   changed_when: false
   register: monitoring_deployment
   until: monitoring_deployment.stdout.find("1/1") != -1
@@ -57,7 +57,7 @@
   run_once: true
 
 - name: Wait for Grafana to be deployed
-  command: kubectl --kubeconfig {{ pki_path }}/kubeconfigs/admin/admin.conf get deploy -n monitoring grafana
+  command: kubectl --kubeconfig {{ pki_path }}/kubeconfigs/admin/admin.conf get deploy -n supervision grafana
   changed_when: false
   register: monitoring_deployment
   until: monitoring_deployment.stdout.find("1/1") != -1
