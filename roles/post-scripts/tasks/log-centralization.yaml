@@ -1,0 +1,27 @@
+---
+- name: Create tempdir
+  tempfile:
+    state: directory
+    suffix: log
+  register: log_tempdir
+  changed_when: false
+
+- name: Render templates
+  template:
+    dest: "{{ log_tempdir.path }}/log-centralization.yaml"
+    src: "log-centralization.yaml.j2"
+  changed_when: false
+
+- name: Apply templates
+  command: kubectl --kubeconfig {{ pki_path }}/kubeconfigs/admin/admin.conf apply -f {{ log_tempdir.path }}/log-centralization.yaml
+  register: apply_log
+  changed_when: >
+    apply_log.stdout is search("created")
+    or apply_log.stdout is search("configured")
+
+- name: Cleanup tempdir
+  file:
+    state: absent
+    path: "{{ log_tempdir.path }}"
+  changed_when: false
+
