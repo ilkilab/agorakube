@@ -88,9 +88,10 @@ agorakube_features:
     release: v0.46.0
   supervision:
     monitoring:
-      enabled: false
+      enabled: true
+      dashboard: false
       persistent:
-        enable: false
+        enable: true
         storage:
           capacity: 4Gi
           type: "storageclass"
@@ -107,7 +108,7 @@ agorakube_features:
         user: administrator
         password: P@ssw0rd
       persistent:
-        enable: false
+        enable: true
         storage:
           capacity: 4Gi
           type: "storageclass"
@@ -120,9 +121,10 @@ agorakube_features:
             nodename: "master1"
             path: /var/monitoring-persistent
     logging:
-      enabled: false
+      enabled: true
+      dashboard: true
       persistent:
-        enable: false
+        enable: true
         storage:
           capacity: 4Gi
           type: "storageclass"
