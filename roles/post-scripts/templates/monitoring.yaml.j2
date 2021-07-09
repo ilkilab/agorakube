@@ -368,7 +368,7 @@ spec:
           mountPath: /var/lib/grafana/
 {% if agorakube_features.supervision.logging.dashboard | bool == True %}
         - name: init-logging-dashboard
-          mountPath: /etc/grafana/provisioning/dashboards/default/logging/
+          mountPath: /etc/grafana/provisioning/dashboards/logging/
 {% endif %}
       initContainers:
 {% if agorakube_features.supervision.monitoring.dashboard | bool == True %}
@@ -379,7 +379,7 @@ spec:
 {% if agorakube_features.supervision.logging.dashboard | bool == True %}
       - name: init-logging-dashboard
         image: busybox:1.32.0
-        command: ['sh', '-c', "wget https://raw.githubusercontent.com/bryanILKI/agorakube/log_centralization/roles/post-scripts/files/dashboards/agorakube-dashboard-logging-test.json -O /etc/grafana/provisioning/dashboards/default/logging/agorakube-dashboard-logging.json", "chmod -R 777 /etc/grafana/provisioning/dashboards/default/logging"]    
+        command: ['sh', '-c', "wget https://raw.githubusercontent.com/bryanILKI/agorakube/log_centralization/roles/post-scripts/files/dashboards/agorakube-dashboard-logging-test.json -O /etc/grafana/provisioning/dashboards/logging/agorakube-dashboard-logging.json", "chmod -R 777 /etc/grafana/provisioning/dashboards/logging"]    
 {% endif %}
         volumeMounts:
 {% if agorakube_features.supervision.monitoring.dashboard | bool == True %}
@@ -388,7 +388,7 @@ spec:
 {% endif %}
 {% if agorakube_features.supervision.logging.dashboard | bool == True %}
         - name: init-logging-dashboard
-          mountPath: /etc/grafana/provisioning/dashboards/default/logging/
+          mountPath: /etc/grafana/provisioning/dashboards/logging/
 {% endif %}
       volumes:
       - name: grafana-datasource
