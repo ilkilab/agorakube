@@ -375,18 +375,15 @@ spec:
       - name: init-grafana-dashboard
         image: busybox:1.32.0
         command: ['sh', '-c', "wget https://raw.githubusercontent.com/bryanILKI/agorakube/monitoring_k8s_integration/roles/post-scripts/files/dashboards/agorakube-dashboard-v1.json -O /etc/grafana/provisioning/dashboards/default/agorakube-dashboard.json", "chmod -R 777 /etc/grafana/provisioning/dashboards/default"]
-{% endif %}
-{% if agorakube_features.supervision.logging.dashboard | bool == True %}
-      - name: init-logging-dashboard
-        image: busybox:1.32.0
-        command: ['sh', '-c', "wget https://raw.githubusercontent.com/bryanILKI/agorakube/log_centralization/roles/post-scripts/files/dashboards/agorakube-dashboard-logging-test.json -O /etc/grafana/provisioning/dashboards/logging/agorakube-dashboard-logging.json", "chmod -R 777 /etc/grafana/provisioning/dashboards/logging"]    
-{% endif %}
         volumeMounts:
-{% if agorakube_features.supervision.monitoring.dashboard | bool == True %}
         - name: init-grafana-dashboard
           mountPath: /etc/grafana/provisioning/dashboards/default/
 {% endif %}
 {% if agorakube_features.supervision.logging.dashboard | bool == True %}
+      - name: init-logging-dashboard
+        image: busybox:1.32.0
+        command: ['sh', '-c', "wget https://raw.githubusercontent.com/bryanILKI/agorakube/log_centralization/roles/post-scripts/files/dashboards/agorakube-dashboard-logging-test.json -O /etc/grafana/provisioning/dashboards/logging/agorakube-dashboard-logging.json", "chmod -R 777 /etc/grafana/provisioning/dashboards/logging"] 
+        volumeMounts:
         - name: init-logging-dashboard
           mountPath: /etc/grafana/provisioning/dashboards/logging/
 {% endif %}
@@ -538,6 +535,17 @@ data:
         url: http://prometheus:9090
         basicAuth: false
         isDefault: true
+        editable: true
+  grafana-loki.yaml: |
+    apiVersion: 1
+    datasources:
+      - name: Loki
+        type: loki
+        access: proxy
+        orgId: 1
+        url: http://loki:3100
+        basicAuth: false
+        isDefault: false
         editable: true
 ---
 apiVersion: v1
