@@ -60,6 +60,7 @@ This distribution is also adaptive by offering the opportunity to customize your
 * Logrotate
 * OIDC/SSO with Keycloak
 * Open Policy Agent Gatekeeper
+* ArgoCD
 
 ![AGORAKUBE](./images/AGORAKUBE.png)
 
