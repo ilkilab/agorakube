@@ -410,7 +410,12 @@ spec:
 # Source: ingress-nginx/templates/admission-webhooks/validating-webhook.yaml
 # before changing this value, check the required kubernetes version
 # https://kubernetes.io/docs/reference/access-authn-authz/extensible-admission-controllers/#prerequisites
+{% if agorakube_base_components.kubernetes.release is version('v1.22', '>=') %}
 apiVersion: admissionregistration.k8s.io/v1
+{% endif %}
+{% if agorakube_base_components.kubernetes.release is version('v1.22', '<') %}
+apiVersion: admissionregistration.k8s.io/v1beta1
+{% endif %}
 kind: ValidatingWebhookConfiguration
 metadata:
   labels:
