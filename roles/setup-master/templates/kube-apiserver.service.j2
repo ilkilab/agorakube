@@ -33,7 +33,7 @@ ExecStart=/usr/local/bin/kubernetes/server/bin/kube-apiserver \
   --kubelet-certificate-authority=/etc/kubernetes/pki/ca.crt \
   --kubelet-client-certificate=/etc/kubernetes/pki/apiserver-kubelet-client.crt \
   --kubelet-client-key=/etc/kubernetes/pki/apiserver-kubelet-client.key \
-{% if agorakube_base_components.kubernetes.release is version("v1.21.1", "<=") %}
+{% if agorakube_base_components.kubernetes.release is version("v1.22", "<") %}
   --kubelet-https=true \
 {% endif %}
   --runtime-config=api/all=true \
