@@ -38,7 +38,7 @@ This is a list of points that will be explained in this Readme file for the Agor
 
 ## What is AGORAKUBE
 
-Agorakube is an easy-to-use, stable Kubernetes distribution (Kubernetes v1.15, 1.16, 1.17, 1.18, 1.19, 1.20, 1.21).
+Agorakube is an easy-to-use, stable Kubernetes distribution (Kubernetes v1.15, 1.16, 1.17, 1.18, 1.19, 1.20, 1.21, 1.22).
 
 By its symplicity, AGORAKUBE provide a good way to deploy and manage K8S Clusters.
 
