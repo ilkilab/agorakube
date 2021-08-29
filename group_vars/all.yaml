@@ -142,7 +142,7 @@ agorakube_features:
 #          nodename: "master1"
 #          path: /var/keycloak
 
-agorakube_populate_etc_hosts: false
+agorakube_populate_etc_hosts: True
 
 # Security
 agorakube_encrypt_etcd_keys:
