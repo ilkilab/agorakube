@@ -7,63 +7,63 @@
     msg: "Rotate certificates {{ agorakube_pki.management.rotate_certificats }} is not supported ! Supported values are : true, false"
   when: (agorakube_pki.management.rotate_certificats| string| lower) not in ['true', 'false']
 
-- name: check current Kubernetes release
+- name: check Upgrade Kubernetes release
   fail:
     msg: "Kubernetes release {{ agorakube_base_components.kubernetes.upgrade }} is not supported ! Supported values are : true, false"
   when: (agorakube_base_components.kubernetes.upgrade| string| lower) not in ['true', 'false']
 
-- name: check external_loadbalancing
+- name: check enable external loadbalancing
   fail:
     msg: "External_loadbalancing {{ agorakube_network.external_loadbalancing.enabled }} is not supported ! Supported values are : true, false"
   when: (agorakube_network.external_loadbalancing.enabled| string| lower) not in ['true', 'false']
 
-- name: check OpenEBS Path
+- name: check enable OpenEBS
   fail:
-    msg: "Path where OpenEBS store HostPath volumes on Pod node {{ agorakube_features.storage.enabled }} is not supported ! Supported values are : true, false"
+    msg: "Variable agorakube_features.storage.enabled is set to : {{ agorakube_features.storage.enabled }} . Not supported ! Supported values are : true, false"
   when: (agorakube_features.storage.enabled| string| lower) not in ['true', 'false']
 
-- name: check Kubernetes dashboard
+- name: check Enable Kubernetes dashboard
   fail:
-    msg: "Kubernetes dashboard {{ agorakube_features.dashboard.enabled }} is not supported ! Supported values are : true, false"
+    msg: "Variable agorakube_features.dashboard.enabled is set to : {{ agorakube_features.dashboard.enabled }} . Not supported ! Supported values are : true, false"
   when: (agorakube_features.dashboard.enabled| string| lower) not in ['true', 'false']
-- name: check default admin user
+- name: check enable default admin user for Kubernetes Dashboard
   fail:
-    msg: "default admin user {{ agorakube_features.dashboard.generate_admin_token }} is not supported ! Supported values are : true, false"
+    msg: "Variable agorakube_features.dashboard.generate_admin_token is set to : {{ agorakube_features.dashboard.generate_admin_token }} . Not supported ! Supported values are : true, false"
   when: (agorakube_features.dashboard.generate_admin_token| string| lower) not in ['true', 'false']
 
-- name: Metrics-Server
+- name: Check enable Metric-Server
   fail:
-    msg: "Metrics-Server {{ agorakube_features.metrics_server.enabled }} is not supported ! Supported values are : true, false"
+    msg: "Variable agorakube_features.metrics_server.enabled is set to : {{ agorakube_features.metrics_server.enabled }} . Not supported ! Supported values are : true, false"
   when: (agorakube_features.metrics_server.enabled| string| lower) not in ['true', 'false']
 
-- name: check ETCD cluster
+- name: check ETCD cluster status and Health
   fail:
-    msg: "ETCD cluster {{ agorakube_base_components.etcd.check }} is not supported ! Supported values are :  true, false"
+    msg: "Variable agorakube_base_components.etcd.check is set to : {{ agorakube_base_components.etcd.check }} . Not supported ! Supported values are :  true, false"
   when: (agorakube_base_components.etcd.check| string| lower) not in ['true', 'false']
 
-- name: check ETCD cluster
+- name: check Enable ETCD cluster backup
   fail:
-    msg: "ETCD cluster {{ agorakube_base_components.etcd.backup.enabled }} is not supported ! Supported values are :  true, false"
+    msg: "Variable agorakube_base_components.etcd.backup.enabled is set to : {{ agorakube_base_components.etcd.backup.enabled }} . Not supported ! Supported values are :  true, false"
   when: (agorakube_base_components.etcd.backup.enabled| string| lower) not in ['true', 'false']
 
-- name: chekck Monitoring
+- name: check Enable Monitoring
   fail:
-    msg: "Enable Monitoring {{ agorakube_features.monitoring.enabled }} is not supported ! Supported values are : true, false"
+    msg: "Variable agorakube_features.monitoring.enabled is set to {{ agorakube_features.monitoring.enabled }} . Not supported ! Supported values are : true, false"
   when: (agorakube_features.monitoring.enabled| string| lower) not in ['true', 'false']
 
-- name: chekck Monitoring Data
+- name: check Monitoring Data Persistent
   fail:
-    msg: "Monitoring Data {{ agorakube_features.monitoring.persistent }} is not supported ! Supported values are : true, false"
-  when: (agorakube_features.monitoring.persistent| string| lower) not in ['true', 'false']
+    msg: "Variable agorakube_features.monitoring.persistent.enable is set to : {{ agorakube_features.monitoring.persistent.enable }} . Not supported ! Supported values are : true, false"
+  when: (agorakube_features.monitoring.persistent.enable| string| lower) not in ['true', 'false']
 
 - name: Check Populate /etc/hosts
   fail:
-    msg: "Populate /etc/hosts variable is set to : {{ agorakube_populate_etc_hosts }} ! Supported values are : true, false"
+    msg: "Variable agorakube_populate_etc_hosts is set to : {{ agorakube_populate_etc_hosts }} ! Supported values are : true, false"
   when: (agorakube_populate_etc_hosts| string| lower) not in ['true', 'false']
 
 - name: Check runtime variable
   fail:
-    msg: "Runtime {{ agorakube_base_components.container.engine }} is not supported ! Supported values are : docker, containerd, none, false"
+    msg: "Variable agorakube_base_components.container.engine is set to :  {{ agorakube_base_components.container.engine }} is not supported ! Supported values are : docker, containerd, none, false"
   when: (agorakube_base_components.container.engine| string| lower) not in ['docker','containerd','false','none']
 
 - name: Check CNI plugin used
@@ -118,15 +118,15 @@
 
 - name: Check data_path variable
   fail:
-    msg: "Variable data_path must be a linux path ! Get {{ data_path }}"
+    msg: "Variable data_path must be a valid linux path ! Get {{ data_path }}"
   when: agorakube.global.data_path is not regex("^(\/[^\/ ]*)+\/?$")
 
 - name : check kubernetes release
   fail:
-    msg: "kubernetes release {{ agorakube_base_components.kubernetes.release }} is not supported ! Supported values are : v1.20.4"
+    msg: "Variable agorakube_base_components.kubernetes.release is set to : {{ agorakube_base_components.kubernetes.release }} . Not supported ! Supported values have the following patern : vX.X.X - Sample: v1.22.0"
   when: agorakube_base_components.kubernetes.release is not regex ("^v(?:[+-]?(?:[0-9]+)).(?:[+-]?(?:[0-9]+)).(?:[+-]?(?:[0-9]+))?$")
 
 - name : check ETCD release
   fail:
-    msg: "ETCD release {{ agorakube_base_components.etcd.release }} is not supported ! Supported values are : v3.4.14"
+    msg: "Variable agorakube_base_components.etcd.release is set to : {{ agorakube_base_components.etcd.release }} . Not supported ! Supported values have the following pattern : vX.X.X - Sample: v3.4.14"
   when: agorakube_base_components.etcd.release is not regex ("^v(?:[+-]?(?:[0-9]+)).(?:[+-]?(?:[0-9]+)).(?:[+-]?(?:[0-9]+))?$")
