@@ -78,7 +78,7 @@ agorakube_features:
     hostpath:
       data_path: /var/local-hostpath
   dashboard:
-    enabled: false
+    enabled: true
     generate_admin_token: false
     release: v2.2.0
   metrics_server:
@@ -87,7 +87,7 @@ agorakube_features:
     controller: nginx
     release: v0.46.0
   monitoring:
-    enabled: false
+    enabled: true
     persistent:
       enable: false
       storage:
@@ -148,3 +148,9 @@ agorakube_encrypt_etcd_keys:
     secret: 1fJcKt6vBxMt+AkBanoaxFF2O6ytHIkETNgQWv4b/+Q=
 
 #restoration_snapshot_file: /path/snopshot/file Located on {{ etcd_data_directory }}
+argocd:
+  enabled: true
+#
+#    # keycloak_oidc is an Alpha feature and do not support persistence wet. Use it only for test purpose.
+keycloak_oidc:
+  enabled: true

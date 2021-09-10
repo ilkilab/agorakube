@@ -64,3 +64,12 @@
 - name: Install Gatekeeper
   include_tasks: gatekeeper.yaml
   when: agorakube_features.gatekeeper.enabled | bool == True
+
+- name: Deploy Log centralization
+  include_tasks: log-centralization.yaml
+  when: agorakube_features.supervision.logging.enabled | bool == True 
+  when: agorakube_features.supervision.logging.enabled | bool == True
+
+- name: Install argocd
+  include_tasks: argocd.yaml
+  when: agorakube_features.argocd.enabled | bool == True

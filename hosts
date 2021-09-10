@@ -2,17 +2,17 @@
 deploy ansible_connection=local ansible_python_interpreter=/usr/bin/python3
 
 [masters]
-master1  ansible_host=10.10.20.4
+worker1  ansible_host=10.10.20.4
 
 [etcd]
-master1  ansible_host=10.10.20.4
+worker1  ansible_host=10.10.20.4
 
 [workers]
 worker2  ansible_host=10.10.20.5
-worker3  ansible_host=10.10.20.6
+#worker3  ansible_host=10.10.20.6
 
 [storage]
-worker4 ansible_host=10.10.20.20
+#worker4 ansible_host=10.10.20.20
 
 [all:vars]
 advertise_masters=10.10.20.4
