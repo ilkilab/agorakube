@@ -15,7 +15,7 @@ agorakube_pki:
 
 agorakube_base_components:
   etcd:
-    release: v3.4.14
+    release: v3.4.16
     upgrade: False
     check: true
     data_path: /var/lib/etcd
@@ -35,7 +35,7 @@ agorakube_base_components:
           nodename: "master1"
           path: /var/etcd-backup
   kubernetes:
-    release: v1.19.11
+    release: v1.21.1
     upgrade: false
   container:
     engine: containerd
@@ -86,10 +86,12 @@ agorakube_features:
   ingress:
     controller: nginx
     release: v0.46.0
+  
+  #supervision:
   monitoring:
     enabled: true
     persistent:
-      enable: false
+      enable: true
       storage:
         capacity: 4Gi
         type: "storageclass"
@@ -101,9 +103,39 @@ agorakube_features:
         hostpath:
           nodename: "master1"
           path: /var/monitoring-persistent
+  dashboard:
     admin:
       user: administrator
       password: P@ssw0rd
+    persistent:
+      enable: true
+      storage:
+        capacity: 4Gi
+        type: "storageclass"
+        storageclass: 
+          name: "default-jiva"
+        persistentvolume:
+          name: "my-pv-monitoring"
+          storageclass: "my-storageclass-name"
+        hostpath: 
+          nodename: "master1"
+          path: /var/monitoring-persistent
+  logging:
+    enabled: true
+    dashboard: true
+    persistent:
+      enable: true
+      storage:
+        capacity: 4Gi
+        type: "storageclass"
+        storageclass:
+          name: "default-jiva"
+        persistentvolume:
+          name: "my-pv-monitoring"
+          storageclass: "my-storageclass-name"
+        hostpath:
+          nodename: "master1"
+          path: /var/monitoring-persistent
   logrotate:
     enabled: false
     crontab: "* 2 * * *"
@@ -112,19 +144,22 @@ agorakube_features:
     enabled: false
     release: v3.4.0
     replicas:
-      #audit: 1
+       #audit: 1
       controller_manager: 3
+#argocd is an Alpha feature and do not support persistence wet. Use it only for test purpose.
+  argocd:
+      enabled: true
 # keycloak_oidc is an Alpha feature and do not support persistence wet. Use it only for test purpose.
   keycloak_oidc:
-    enabled: false
-    admin:
-      user: administrator
-      password: P@ssw0rd
-    auto_bootstrap:
-        bootstrap_keycloak: true
-        bootstrap_kube_apiserver: false
-        populate_etc_hosts: true
-        host: oidc.local.lan
+      enabled: false
+      admin:
+        user: administrator
+        password: P@ssw0rd
+      auto_bootstrap:
+          bootstrap_keycloak: true
+          bootstrap_kube_apiserver: false
+          populate_etc_hosts: true
+          host: oidc.local.lan
 #    storage:
 #        enabled: False
 #        capacity: 10Gi
@@ -146,11 +181,3 @@ agorakube_encrypt_etcd_keys:
 # Other keys are used only for decrypt purpose. Keys can be generated with command: head -c 32 /dev/urandom | base64
   key1:
     secret: 1fJcKt6vBxMt+AkBanoaxFF2O6ytHIkETNgQWv4b/+Q=
-
-#restoration_snapshot_file: /path/snopshot/file Located on {{ etcd_data_directory }}
-argocd:
-  enabled: true
-#
-#    # keycloak_oidc is an Alpha feature and do not support persistence wet. Use it only for test purpose.
-keycloak_oidc:
-  enabled: true

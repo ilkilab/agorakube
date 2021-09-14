@@ -55,7 +55,7 @@
 
 - name: Install Monitoring
   include_tasks: monitoring.yaml
-  when: agorakube_features.monitoring.enabled | bool == True
+  when: agorakube_features.supervision.enabled | bool == True
 
 - name: enable etcd backup cronJob
   include_tasks: backup-etcd-cronjob.yaml
@@ -68,7 +68,6 @@
 - name: Deploy Log centralization
   include_tasks: log-centralization.yaml
   when: agorakube_features.supervision.logging.enabled | bool == True 
-  when: agorakube_features.supervision.logging.enabled | bool == True
 
 - name: Install argocd
   include_tasks: argocd.yaml

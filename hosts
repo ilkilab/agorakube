@@ -27,7 +27,7 @@ ansible_ssh_private_key_file=/home/vagrant/ssh-private-key.pem
 
 # If centOS-7, use python2.7
 # If no-CentOS-7, use Python3
-ansible_python_interpreter=/usr/bin/python3
+ansible_python_interpreter=/usr/bin/python2.7
 
 [etc_hosts]
 #kubernetes.localcluster.lan ansible_host=10.10.20.4
