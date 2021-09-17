@@ -1,4 +1,3 @@
----
 apiVersion: v1
 kind: Namespace
 metadata:
@@ -143,7 +142,7 @@ subjects:
 - kind: ServiceAccount
   name: prometheus
   namespace: supervision
-{% if agorakube_features.supervision.monitoring.persistent.enable | bool == True %}
+{% if agorakube_features.supervision.monitoring.persistent.enabled | bool == True %}
 ---
 apiVersion: v1
 kind: PersistentVolumeClaim
@@ -204,6 +203,7 @@ data:
       - role: pod
       relabel_configs:
         - source_labels: [__meta_kubernetes_namespace]
+          #regex: monitoring
           regex: supervision
           action: keep
         - source_labels: [__meta_kubernetes_pod_controller_name]
@@ -232,7 +232,7 @@ spec:
     metadata:
       labels:
         app: prometheus
-{% if agorakube_features.supervision.monitoring.persistent.enable | bool == True  %}
+{% if agorakube_features.supervision.monitoring.persistent.enabled | bool == True  %}
         openebs.io/target-affinity: agorakube-monitoring
 {% endif %}
     spec:
@@ -272,7 +272,7 @@ spec:
         volumeMounts:
         - name: prometheus-config
           mountPath: /etc/prometheus
-{% if agorakube_features.supervision.monitoring.persistent.enable | bool == True %}
+{% if agorakube_features.supervision.monitoring.persistent.enabled | bool == True %}
         - name: prometheus-data
           mountPath: /prometheus
       initContainers:
@@ -287,7 +287,7 @@ spec:
       - name: prometheus-config
         configMap:
          name: prometheus-config
-{% if agorakube_features.supervision.monitoring.persistent.enable | bool == True %}
+{% if agorakube_features.supervision.monitoring.persistent.enabled | bool == True %}
       - name: prometheus-data
         persistentVolumeClaim:
             claimName: prometheus-data
@@ -315,11 +315,15 @@ spec:
   selector:
     matchLabels:
       app: grafana
+  strategy:
+    type: Recreate
   template:
     metadata:
       labels:
-        app: grafana
+        app: grafana    
     spec:
+      securityContext:
+        fsGroup: 472
       containers:
       - name: grafana
         image: grafana/grafana:7.1.0
@@ -327,9 +331,9 @@ spec:
         - containerPort: 3000
         env:
           - name: GF_SECURITY_ADMIN_USER
-            value: "{{ agorakube_features.supervision.dashboad.admin.user }}"
+            value: "{{ agorakube_features.supervision.dashboard.admin.user }}"
           - name: GF_SECURITY_ADMIN_PASSWORD
-            value: "{{ agorakube_features.spervision.dashboard.admin.password }}"
+            value: "{{ agorakube_features.supervision.dashboard.admin.password }}"
           - name: GF_USERS_ALLOW_SIGN_UP
             value: "false"
         #readinessProbe:
@@ -360,7 +364,7 @@ spec:
           mountPath: /etc/grafana/provisioning/dashboards/default/
 {% endif %}
         - name: grafana-data
-          mountPath: /var/lib/grafana
+          mountPath: /var/lib/grafana/
 {% if agorakube_features.supervision.logging.dashboard | bool == True %}
         - name: init-logging-dashboard
           mountPath: /etc/grafana/provisioning/dashboards/logging/
@@ -369,7 +373,7 @@ spec:
 {% if agorakube_features.supervision.monitoring.dashboard | bool == True %}
       - name: init-grafana-dashboard
         image: busybox:1.32.0
-        command: ['sh', '-c', "wget https://raw.githubusercontent.com/bryanILKI/agorakube/monitoring_k8s_integration/roles/post-scripts/files/dashboards/agorakube-dashboard-v1.json -O /etc/grafana/provisioning/dashboards/default/agorakube-dashboard.json"]
+        command: ['sh', '-c', "wget https://raw.githubusercontent.com/bryanILKI/agorakube/monitoring_k8s_integration/roles/post-scripts/files/dashboards/agorakube-dashboard-v1.json -O /etc/grafana/provisioning/dashboards/default/agorakube-dashboard.json", "chmod -R 777 /etc/grafana/provisioning/dashboards/default"]
         volumeMounts:
         - name: init-grafana-dashboard
           mountPath: /etc/grafana/provisioning/dashboards/default/
@@ -389,22 +393,22 @@ spec:
       - name: grafana-dashboard
         configMap:
          name: grafana-dashboard
-{% if agorakube_features.supervision.monitoring.persistent.enable | bool == True %}
+{% if agorakube_features.supervision.monitoring.persistent.enabled | bool == True %}
       - name: init-grafana-dashboard
         persistentVolumeClaim:
           claimName: persistent-dashboard
 {% endif %}
-{% if agorakube_features.supervision.dashboard.enable | bool == True %}
+{% if agorakube_features.supervision.dashboard.persistent.enabled | bool == True %}
       - name: grafana-data
         persistentVolumeClaim:
           claimName: grafana-data
 {% endif %}
-{% if agorakube_features.supervision.logging.persistent.enable | bool == True %}
+{% if agorakube_features.supervision.logging.persistent.enabled | bool == True %}
       - name: init-logging-dashboard
         persistentVolumeClaim:
           claimName: persistent-dashboard-logging
 {% endif %}
-{% if agorakube_features.supervision.dashboard.persistent.enable | bool == True %} 
+{% if agorakube_features.supervision.dashboard.persistent.enabled | bool == True %}
 ---
 apiVersion: v1
 kind: PersistentVolumeClaim
@@ -429,7 +433,6 @@ spec:
   volumeMode: Filesystem
   accessModes:
     - ReadWriteOnce
-{% endif %}
 ---
 apiVersion: v1
 kind: PersistentVolumeClaim
@@ -440,7 +443,7 @@ metadata:
     openebs.io/target-affinity: agorakube-monitoring
 spec:
 {% if agorakube_features.supervision.dashboard.persistent.storage.type == "hostpath" %}
- storageClassName: persistent-dashboard-hostpath
+  storageClassName: persistent-dashboard-hostpath
 {% endif %}
 {% if agorakube_features.supervision.dashboard.persistent.storage.type == "storageclass" %}
   storageClassName: "{{ agorakube_features.supervision.dashboard.persistent.storage.storageclass.name }}"
@@ -460,6 +463,7 @@ spec:
 apiVersion: v1
 kind: PersistentVolume
 metadata:
+  #name: persistentvolume-dashboard-hostpath
   name: persistent-dashboard-hostpath
   namespace: supervision
 spec:
@@ -471,7 +475,7 @@ spec:
   hostPath:
     path: "{{ agorakube_features.supervision.dashboard.persistent.storage.hostpath.path }}"
 {% endif %}
-{% if agorakube_features.supervision.logging.persistent.enable | bool == True %}
+{% if agorakube_features.supervision.logging.persistent.enabled | bool == True %}
 ---
 apiVersion: v1
 kind: PersistentVolumeClaim

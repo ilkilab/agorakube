@@ -12,7 +12,7 @@
     - "{{ groups['workers'] }}"
     - "{{ groups['storage'] }}"
 
-- name: Label Woker Nodes
+- name: Label Worker Nodes
   command: "kubectl --kubeconfig {{ pki_path }}/kubeconfigs/admin/admin.conf label node {{ item }}  node-role.kubernetes.io/worker=true --overwrite"
   changed_when: false
   with_items: "{{ groups['workers'] }}"
@@ -28,7 +28,7 @@
   with_items: "{{ groups['masters'] }}"
 
 - name: remove label node-role.kubernetes.io/worker=true
-  command: "kubectl --kubeconfig {{ pki_path }}/kubeconfigs/admin/admin.conf label node {{ item }}  node-role.kubernetes.io/worker=true- --overwrite"
+  command: "kubectl --kubeconfig {{ pki_path }}/kubeconfigs/admin/admin.conf label node {{ item }}  node-role.kubernetes.io/worker=true --overwrite"
   changed_when: false
   with_items:
     - "{{ groups['masters'] }}"
@@ -38,7 +38,7 @@
   ignore_errors: yes
 
 - name: remove label node-role.kubernetes.io/master=true
-  command: "kubectl --kubeconfig {{ pki_path }}/kubeconfigs/admin/admin.conf label node {{ item }}  node-role.kubernetes.io/master=true- --overwrite"
+  command: "kubectl --kubeconfig {{ pki_path }}/kubeconfigs/admin/admin.conf label node {{ item }}  node-role.kubernetes.io/master=true --overwrite"
   changed_when: false
   with_items:
     - "{{ groups['workers'] }}"
@@ -48,7 +48,7 @@
   ignore_errors: yes
 
 - name: remove label node-role.kubernetes.io/storage=true
-  command: "kubectl --kubeconfig {{ pki_path }}/kubeconfigs/admin/admin.conf label node {{ item }}  node-role.kubernetes.io/storage=true- --overwrite"
+  command: "kubectl --kubeconfig {{ pki_path }}/kubeconfigs/admin/admin.conf label node {{ item }}  node-role.kubernetes.io/storage=true --overwrite"
   changed_when: false
   with_items:
     - "{{ groups['workers'] }}"
@@ -79,18 +79,14 @@
     - item not in groups['workers']
 
 - name: Make sure hosts with worker role not have taint node-role.kubernetes.io/storage
-  command: |
-    kubectl --kubeconfig {{ pki_path }}/kubeconfigs/admin/admin.conf \
-    taint nodes {{ item }} node-role.kubernetes.io/storage- --overwrite
+  command: "kubectl --kubeconfig {{ pki_path }}/kubeconfigs/admin/admin.conf taint nodes {{ item }} node-role.kubernetes.io/storage- --overwrite"
   changed_when: false
   with_items:
   - "{{ groups['workers'] }}"
   ignore_errors: yes
 
 - name: Make sure hosts with worker role not have taint node-role.kubernetes.io/master
-  command: |
-    kubectl --kubeconfig {{ pki_path }}/kubeconfigs/admin/admin.conf \
-    taint nodes {{ item }} node-role.kubernetes.io/master- --overwrite
+  command: "kubectl --kubeconfig {{ pki_path }}/kubeconfigs/admin/admin.conf taint nodes {{ item }} node-role.kubernetes.io/master- --overwrite"
   changed_when: false
   with_items:
   - "{{ groups['workers'] }}"

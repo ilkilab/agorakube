@@ -40,7 +40,6 @@
   changed_when: >
     apply_monitoring.stdout is search("created")
     or apply_monitoring.stdout is search("configured")
-
 - name: Cleanup tempdir
   file:
     state: absent
@@ -54,7 +53,7 @@
   until: monitoring_deployment.stdout.find("1/1") != -1
   retries: 300
   delay: 10
-  run_once: false
+  run_once: true
 
 - name: Wait for Grafana to be deployed
   command: kubectl --kubeconfig {{ pki_path }}/kubeconfigs/admin/admin.conf get deploy -n supervision grafana
@@ -63,4 +62,4 @@
   until: monitoring_deployment.stdout.find("1/1") != -1
   retries: 300
   delay: 10
-  run_once: false
+  run_once: true
