@@ -1,0 +1,326 @@
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: supervision
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: fluent-bit
+  namespace: supervision
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: fluent-bit
+rules:
+- apiGroups: [""]
+  resources:
+    - namespaces
+    - pods
+    - nodes
+    - nodes/proxy
+  verbs: ["get", "list", "watch"]
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: fluent-bit
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: fluent-bit
+subjects:
+- kind: ServiceAccount
+  name: fluent-bit
+  namespace: supervision
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: fluent-bit-config
+  namespace: supervision
+  labels:
+    k8s-app: fluent-bit
+data:
+  fluent-bit.conf: |
+    [SERVICE]
+        Flush         1
+        Log_Level     info
+        Daemon        off
+        Parsers_File  parsers.conf
+        HTTP_Server   On
+        HTTP_Listen   0.0.0.0
+        HTTP_Port     2020
+
+    @INCLUDE input-kubernetes.conf
+    @INCLUDE output-loki.conf
+
+  input-kubernetes.conf: |
+    [INPUT]
+        Name              tail
+        Path              /var/log/kubernetes/kube-apiserver.log,/var/log/kubernetes/kube-controller-manager.log,/var/log/kubernetes/kube-scheduler.log,/var/log/kubernetes/kubelet.log,/var/log/kubernetes/kube-proxy.log
+        DB                /var/log/flb_kube.db
+        Mem_Buf_Limit     50MB
+        Skip_Long_Lines   On
+        # Tag               kube.*
+        # Refresh_Interval  10
+        # Path              /var/log/*.log
+        # Path              /var/log/containers/*.log
+        # Parser            docker
+        # Parser            cri
+
+#  filter-kubernetes.conf: |
+#    [FILTER]
+        # Name                kubernetes
+        # Match               kube.*
+        # Kube_URL            https://kubernetes.default.svc:443
+        # Merge_Log           On
+        # K8S-Logging.Parser  off
+        # K8S-Logging.Exclude Off
+        # Kube_CA_File        /var/run/secrets/kubernetes.io/serviceaccount/ca.crt
+        # Kube_Token_File     /var/run/secrets/kubernetes.io/serviceaccount/token
+        # Kube_Tag_Prefix     kube.var.log.containers.
+        # Merge_Log_Key       log_processed
+        # Kube_Tag_Prefix     kube.var.log.containers.
+        # Kube_URL            https://kubernetes.default.svc.cluster.local:443
+        # kubelet_Port        10250
+        # Buffer_Size         0
+        # Use_Kubelet         true
+
+  output-loki.conf : |
+    [OUTPUT]
+        Name                   loki
+        Match                  *
+        host                   loki
+        tenant_id              kubernetes
+        auto_kubernetes_labels on
+        line_format            json
+        # Labels                 {job="fluent-bit"}
+        # Url                    http://loki:3100/loki/api/v1/push
+        # Url                    http://localhost:3100/loki/api/v1/push
+        # Url                    http://loki:3100/loki/api/prom/push
+        # Host                   http://loki:3100/loki/api/v1/push
+        # TenantID               ""
+        # BatchWait              1
+        # BatchSize              1048576
+        # AutoKubernetesLabels   true
+        # RemoveKeys             kubernetes, stream
+        # remove_Keys            kubernetes, stream
+        # LineFormat             json
+        # LogLevel               warn
+        # LabelMapPath           /fluent-bit/etc/labelmap.json
+        # Port                   3100
+        # labels                 job=fluentbit 
+        # label_keys             $sub['stream']
+
+  parsers.conf: |
+    [PARSER]
+        Name   apache
+        Format regex
+        Regex  ^(?<host>[^ ]*) [^ ]* (?<user>[^ ]*) \[(?<time>[^\]]*)\] "(?<method>\S+)(?: +(?<path>[^\"]*?)(?: +\S*)?)?" (?<code>[^ ]*) (?<size>[^ ]*)(?: "(?<referer>[^\"]*)" "(?<agent>[^\"]*)")?$
+        Time_Key time
+        Time_Format %d/%b/%Y:%H:%M:%S %z
+
+    [PARSER]
+        Name   apache2
+        Format regex
+        Regex  ^(?<host>[^ ]*) [^ ]* (?<user>[^ ]*) \[(?<time>[^\]]*)\] "(?<method>\S+)(?: +(?<path>[^ ]*) +\S*)?" (?<code>[^ ]*) (?<size>[^ ]*)(?: "(?<referer>[^\"]*)" "(?<agent>[^\"]*)")?$
+        Time_Key time
+        Time_Format %d/%b/%Y:%H:%M:%S %z
+
+    [PARSER]
+        Name   apache_error
+        Format regex
+        Regex  ^\[[^ ]* (?<time>[^\]]*)\] \[(?<level>[^\]]*)\](?: \[pid (?<pid>[^\]]*)\])?( \[client (?<client>[^\]]*)\])? (?<message>.*)$
+
+    [PARSER]
+        Name   nginx
+        Format regex
+        Regex ^(?<remote>[^ ]*) (?<host>[^ ]*) (?<user>[^ ]*) \[(?<time>[^\]]*)\] "(?<method>\S+)(?: +(?<path>[^\"]*?)(?: +\S*)?)?" (?<code>[^ ]*) (?<size>[^ ]*)(?: "(?<referer>[^\"]*)" "(?<agent>[^\"]*)")?$
+        Time_Key time
+        Time_Format %d/%b/%Y:%H:%M:%S %z
+
+    [PARSER]
+        Name   json
+        Format json
+        Time_Key time
+        Time_Format %d/%b/%Y:%H:%M:%S %z
+
+    [PARSER]
+        Name        docker
+        Format      json
+        Time_Key    time
+        Time_Format %Y-%m-%dT%H:%M:%S.%L
+        Time_Keep   On
+
+    [PARSER]
+        # http://rubular.com/r/tjUt3Awgg4
+        Name cri
+        Format regex
+        Regex ^(?<time>[^ ]+) (?<stream>stdout|stderr) (?<logtag>[^ ]*) (?<message>.*)$
+        Time_Key    time
+        Time_Format %Y-%m-%dT%H:%M:%S.%L%z
+
+    [PARSER]
+        Name        syslog
+        Format      regex
+        Regex       ^\<(?<pri>[0-9]+)\>(?<time>[^ ]* {1,2}[^ ]* [^ ]*) (?<host>[^ ]*) (?<ident>[a-zA-Z0-9_\/\.\-]*)(?:\[(?<pid>[0-9]+)\])?(?:[^\:]*\:)? *(?<message>.*)$
+        Time_Key    time
+        Time_Format %b %d %H:%M:%S
+---
+apiVersion: apps/v1
+kind: DaemonSet
+metadata:
+  name: fluent-bit
+  namespace: supervision
+  labels:
+    k8s-app: fluent-bit-logging
+    version: v1
+    kubernetes.io/cluster-service: "true"
+spec:
+  selector:
+    matchLabels:
+      k8s-app: fluent-bit-logging
+  template:
+    metadata:
+      labels:
+        k8s-app: fluent-bit-logging
+        version: v1
+        kubernetes.io/cluster-service: "true"
+      annotations:
+        prometheus.io/scrape: "true"
+        prometheus.io/port: "2020"
+        prometheus.io/path: /api/v1/metrics/prometheus
+    spec:
+      serviceAccountName: fluent-bit
+      containers:
+      - name: fluent-bit
+        image: grafana/fluent-bit-plugin-loki:main-12d418b-amd64
+#        image: grafana/fluent-bit-plugin-loki:latest
+#        image: grafana/fluent-bit-plugin-loki:2.1.0-amd64
+#        image: fluent/fluent-bit:1.5
+        imagePullPolicy: Always
+        ports:
+          - containerPort: 2020
+        volumeMounts:
+        - name: varlog
+          mountPath: /var/log
+        - name: varlibdockercontainers
+          mountPath: /var/lib/docker/containers
+          readOnly: true
+        - name: fluent-bit-config
+          mountPath: /fluent-bit/etc/
+      terminationGracePeriodSeconds: 30
+      volumes:
+      - name: varlog
+        hostPath:
+          path: /var/log
+      - name: varlibdockercontainers
+        hostPath:
+          path: /var/lib/docker/containers
+      - name: fluent-bit-config
+        configMap:
+          name: fluent-bit-config
+      tolerations:
+      - key: node-role.kubernetes.io/master
+        operator: Exists
+        effect: NoSchedule
+      - operator: "Exists"
+        effect: "NoExecute"
+      - operator: "Exists"
+        effect: "NoSchedule"
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: loki
+  namespace: supervision
+  labels:
+    app: loki
+spec:
+  type: ClusterIP
+  selector:
+    app: loki
+  ports:
+  - port: 3100
+    targetPort: 3100
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: loki
+  namespace: supervision
+  labels:
+    app: loki
+spec:
+  selector:
+    matchLabels:
+      app: loki
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels:
+        app: loki    
+    spec:
+      containers:
+      - name: loki
+        image: grafana/loki:2.2.1
+        # image: grafana/loki:latest
+        # image: grafana/loki:k53-7a7eeb0-arm64
+#        args:
+#          - -config.file=/etc/loki/config.yaml
+#          - -log.level=debug
+#          - -target=loki
+        ports:
+        - containerPort: 3100
+#        volumeMounts:
+#        - name: loki-frontend
+#          mountPath: /etc/loki
+#        - name: init-grafana-dashboard
+#          mountPath: /etc/grafana/provisioning/dashboards/default/
+#      initContainers:
+#      - name: init-loki-dashboard
+#        image: busybox:1.32.0
+#        command: ['sh', '-c', "wget https://raw.githubusercontent.com/bryanILKI/agorakube/#.json -O /etc/.../#.json", "chmod -R 777 /etc/..."]
+#        volumeMounts:
+#        - name: init-loki-dashboard
+#          mountPath: /etc/
+#      volumes:
+#      - name: loki-frontend
+#        configMap:
+#          name: loki-frontend
+#      - name: init-loki-dashboard
+#        persistentVolumeClaim:
+#          claimName: persistent-dashboard
+#---
+#apiVersion: v1
+#kind: ConfigMap
+#metadata:
+#  name: loki-frontend
+#  namespace: supervision
+#data:
+#  config.yaml: |
+#    auth_enabled: false
+#    http_prefix: http://loki
+#    server:
+#      http_listen_port: 3100
+#    query_range:
+#      align_queries_with_step: true
+#      max_retries: 5
+#      split_queries_by_interval: 15m
+#      cache_results: true
+#      results_cache:
+#        cache:
+#          enable_fifocache: true
+#          fifocache:
+#            size: 1024
+#            validity: 24h
+#    limits_config:
+#      max_cache_freshness_per_query: '10m'
+#    frontend:
+#      log_queries_longer_than: 5s
+#      downstream_url: http://querier.supervision.svc.cluster.local:3100
+#      compress_responses: true 
