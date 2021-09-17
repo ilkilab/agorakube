@@ -17,7 +17,7 @@
     msg: "External_loadbalancing {{ agorakube_network.external_loadbalancing.enabled }} is not supported ! Supported values are : true, false"
   when: (agorakube_network.external_loadbalancing.enabled| string| lower) not in ['true', 'false']
 
-- name: check enable OpenEBS
+- name: check enable OpenEBS Storage
   fail:
     msg: "Variable agorakube_features.storage.enabled is set to : {{ agorakube_features.storage.enabled }} . Not supported ! Supported values are : true, false"
   when: (agorakube_features.storage.enabled| string| lower) not in ['true', 'false']
@@ -118,7 +118,7 @@
 
 - name: Check data_path variable
   fail:
-    msg: "Variable data_path must be a valid linux path ! Get {{ data_path }}"
+    msg: "Variable data_path must be a valid linux path ! Get {{ agorakube.global.data_path }}"
   when: agorakube.global.data_path is not regex("^(\/[^\/ ]*)+\/?$")
 
 - name : check kubernetes release
@@ -130,3 +130,28 @@
   fail:
     msg: "Variable agorakube_base_components.etcd.release is set to : {{ agorakube_base_components.etcd.release }} . Not supported ! Supported values have the following pattern : vX.X.X - Sample: v3.4.14"
   when: agorakube_base_components.etcd.release is not regex ("^v(?:[+-]?(?:[0-9]+)).(?:[+-]?(?:[0-9]+)).(?:[+-]?(?:[0-9]+))?$")
+
+- name: Check agorakube_base_components.etcd.data_path variable
+  fail:
+    msg: "Variable agorakube_base_components.etcd.data_path must be a valid linux path ! Get {{ agorakube_base_components.etcd.data_path }}"
+  when: agorakube_base_components.etcd.data_path is not regex("^(\/[^\/ ]*)+\/?$")
+
+- name: Check agorakube_base_components.etcd.backup.storage.hostpath.path variable
+  fail:
+    msg: "Variable agorakube_base_components.etcd.backup.storage.hostpath.path must be a valid linux path ! Get {{ agoraagorakube_base_components.etcd.backup.storage.hostpath.path }}"
+  when: agorakube_base_components.etcd.backup.storage.hostpath.path is not regex("^(\/[^\/ ]*)+\/?$")
+
+- name: Check agorakube_features.storage.jiva.data_path variable
+  fail:
+    msg: "Variable agorakube_features.storage.jiva.data_path must be a valid linux path ! Get {{ agorakube_features.storage.jiva.data_path }}"
+  when: agorakube_features.storage.jiva.data_path is not regex("^(\/[^\/ ]*)+\/?$")
+
+- name: Check agorakube_features.storage.hostpath.data_path variable
+  fail:
+    msg: "Variable agorakube_base_components.etcd.backup.storage.hostpath.path must be a valid linux path ! Get {{ agorakube_features.storage.hostpath.data_path }}"
+  when: agorakube_features.storage.hostpath.data_path is not regex("^(\/[^\/ ]*)+\/?$")
+
+- name: Check agorakube_features.monitoring.persistent.storage.hostpath.path variable
+  fail:
+    msg: "Variable agorakube_features.monitoring.persistent.storage.hostpath.path must be a valid linux path ! Get {{ agorakube_features.monitoring.persistent.storage.hostpath.path }}"
+  when: agorakube_features.monitoring.persistent.storage.hostpath.path is not regex("^(\/[^\/ ]*)+\/?$")
