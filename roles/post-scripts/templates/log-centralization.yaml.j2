@@ -113,7 +113,8 @@ data:
         # LabelMapPath           /fluent-bit/etc/labelmap.json
         # Port                   3100
         # labels                 job=fluentbit 
-        # label_keys             $sub['stream']
+        # label_keys             
+        $sub['stream']
 
   parsers.conf: |
     [PARSER]
@@ -377,10 +378,10 @@ spec:
   storageClassName: persistent-dashboard-logging-hostpath
 {% endif %}
 {% if agorakube_features.supervision.logging.persistent.storage.type == "storageclass" %}
-  storageClassName: "{{ agorakube_features.supervision.logging.persistent.storage.storageclass.na$
+  storageClassName: "{{ agorakube_features.supervision.logging.persistent.storage.storageclass.name
 {% endif %}
 {% if agorakube_features.supervision.logging.persistent.storage.type == "persistentvolume" %}
-  storageClassName: "{{ agorakube_features.supervision.logging.persistent.storage.persistentvolum$
+  storageClassName: "{{ agorakube_features.supervision.logging.persistent.storage.persistentvolume.name
 {% endif %}
   resources:
     requests:
