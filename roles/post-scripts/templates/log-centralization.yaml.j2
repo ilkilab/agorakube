@@ -211,7 +211,7 @@ spec:
           mountPath: /var/lib/docker/containers
           readOnly: true
         - name: fluent-bit-config
-          mountPath: /fluent-bit/etc/
+          mountPath: /etc/fluent-bit/
       terminationGracePeriodSeconds: 30
       volumes:
       - name: varlog
@@ -270,32 +270,143 @@ spec:
         image: grafana/loki:2.2.1
         # image: grafana/loki:latest
         # image: grafana/loki:k53-7a7eeb0-arm64
-#        args:
-#          - -config.file=/etc/loki/config.yaml
-#          - -log.level=debug
-#          - -target=loki
+        args:
+          - -config.file=/etc/loki/config.yaml
+          - -log.level=debug
+          - -target=loki
         ports:
         - containerPort: 3100
-#        volumeMounts:
-#        - name: loki-frontend
-#          mountPath: /etc/loki
-#        - name: init-grafana-dashboard
-#          mountPath: /etc/grafana/provisioning/dashboards/default/
-#      initContainers:
-#      - name: init-loki-dashboard
-#        image: busybox:1.32.0
-#        command: ['sh', '-c', "wget https://raw.githubusercontent.com/bryanILKI/agorakube/#.json -O /etc/.../#.json", "chmod -R 777 /etc/..."]
-#        volumeMounts:
-#        - name: init-loki-dashboard
-#          mountPath: /etc/
-#      volumes:
-#      - name: loki-frontend
-#        configMap:
-#          name: loki-frontend
-#      - name: init-loki-dashboard
-#        persistentVolumeClaim:
-#          claimName: persistent-dashboard
-#---
+        volumeMounts:
+        - name: loki-frontend
+          mountPath: /etc/loki
+        - name: init-grafana-dashboard
+          mountPath: /etc/grafana/provisioning/dashboards/default/
+      initContainers:
+      - name: init-loki-dashboard
+        image: busybox:1.32.0
+        command: ['sh', '-c', "wget https://raw.githubusercontent.com/bryanILKI/agorakube/#.json -O /etc/.../#.json", "chmod -R 777 /etc/..."]
+        volumeMounts:
+        - name: init-loki-dashboard
+          mountPath: /etc/
+      volumes:
+      - name: loki-frontend
+        configMap:
+          name: loki-frontend
+      - name: init-loki-dashboard
+        persistentVolumeClaim:
+          claimName: persistent-dashboard
+
+{% if agorakube_features.supervision.logging.persistent.enabled | bool == True %}
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: loki-data
+  namespace: supervision
+  labels:
+    openebs.io/target-affinity: agorakube-monitoring
+spec:
+{% if agorakube_features.supervision.logging.persistent.storage.type == "hostpath" %}
+  storageClassName: persistent-dashboard-hostpath
+{% endif %}
+{% if agorakube_features.supervision.logging.persistent.storage.type == "storageclass" %}
+  storageClassName: "{{ agorakube_features.supervision.logging.persistent.storage.storageclass.name }}"
+{% endif %}
+{% if agorakube_features.supervision.logging.persistent.storage.type == "persistentvolume" %}
+  storageClassName: "{{ agorakube_features.supervision.logging.persistent.storage.persistentvolume.name }}"
+{% endif %}
+  resources:
+    requests:
+      storage: "{{ agorakube_features.supervision.logging.persistent.storage.capacity }}"
+  volumeMode: Filesystem
+  accessModes:
+    - ReadWriteOnce
+---
+
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: persistent-dashboard
+  namespace: supervision
+  labels:
+    openebs.io/target-affinity: agorakube-monitoring
+spec:
+{% if agorakube_features.supervision.logging.persistent.storage.type == "hostpath" %}
+  storageClassName: persistent-dashboard-hostpath
+{% endif %}
+{% if agorakube_features.supervision.logging.persistent.storage.type == "storageclass" %}
+  storageClassName: "{{ agorakube_features.supervision.logging.persistent.storage.storageclass.name }}"
+{% endif %}
+{% if agorakube_features.supervision.logging.persistent.storage.type == "persistentvolume" %}
+  storageClassName: "{{ agorakube_features.supervision.logging.persistent.storage.persistentvolume.name }}"
+{% endif %}
+  resources:
+    requests:
+      storage: "{{ agorakube_features.supervision.logging.persistent.storage.capacity }}"
+  volumeMode: Filesystem
+  accessModes:
+    - ReadWriteOnce
+{% endif %}
+---
+{% if agorakube_features.supervision.logging.persistent.storage.type == "hostpath" %}
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: persistent-dashboard-hostpath
+  namespace: supervision
+spec:
+  storageClassName: persistent-dashboard-hostpath
+  capacity:
+    storage: {{ agorakube_features.supervision.logging.persistent.storage.capacity }}
+  accessModes:
+    - ReadWriteOnce
+ hostPath:
+    path: "{{ agorakube_features.supervision.logging.persistent.storage.hostpath.path }}"
+{% endif %}
+{% if agorakube_features.supervision.logging.persistent.enabled | bool == True %}
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: persistent-dashboard-logging
+  namespace: supervision
+  labels:
+    openebs.io/target-affinity: agorakube-monitoring
+spec:
+{% if agorakube_features.supervision.logging.persistent.storage.type == "hostpath" %}
+  storageClassName: persistent-dashboard-logging-hostpath
+{% endif %}
+{% if agorakube_features.supervision.logging.persistent.storage.type == "storageclass" %}
+  storageClassName: "{{ agorakube_features.supervision.logging.persistent.storage.storageclass.na$
+{% endif %}
+{% if agorakube_features.supervision.logging.persistent.storage.type == "persistentvolume" %}
+  storageClassName: "{{ agorakube_features.supervision.logging.persistent.storage.persistentvolum$
+{% endif %}
+  resources:
+    requests:
+ requests:
+      storage: "{{ agorakube_features.supervision.logging.persistent.storage.capacity }}"
+  volumeMode: Filesystem
+  accessModes:
+    - ReadWriteOnce
+{% endif %}
+---
+{% if agorakube_features.supervision.logging.persistent.storage.type == "hostpath" %}
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: persistent-dashboard-logging-hostpath
+  namespace: supervision
+spec:
+  storageClassName: persistent-dashboard-logging-hostpath
+  capacity:
+    storage: {{ agorakube_features.supervision.logging.persistent.storage.capacity }}
+  accessModes:
+    - ReadWriteOnce
+  hostPath:
+    path: "{{ agorakube_features.supervision.logging.persistent.storage.hostpath.path }}"
+{% endif %}
+---
 #apiVersion: v1
 #kind: ConfigMap
 #metadata:

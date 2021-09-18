@@ -1,0 +1,6 @@
+---
+- hosts: deploy
+  become: true
+  roles:
+    - post-scripts
+    - show-info
