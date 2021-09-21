@@ -2,11 +2,6 @@
 #    msg: "Variable delete_previous_k8s_install is set to {{ delete_previous_k8s_install }} ! Supported values are : True, False"
 #  when: (delete_previous_k8s_install | string) not in ['True','False']
 
-- name: test
-  debug:
-    msg: "lolilol {{ agorakube_base_components.kubernetes.release }}"
-
-
 - name: check rotate certificates
   fail:
     msg: "Rotate certificates {{ agorakube_pki.management.rotate_certificats }} is not supported ! Supported values are : true, false"
