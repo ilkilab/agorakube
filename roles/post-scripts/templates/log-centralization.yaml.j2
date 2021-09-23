@@ -88,7 +88,7 @@ data:
         # kubelet_Port        10250
         # Buffer_Size         0
         # Use_Kubelet         true
-
+        
   output-loki.conf : |
     [OUTPUT]
         Name                   loki
@@ -211,7 +211,7 @@ spec:
           mountPath: /var/lib/docker/containers
           readOnly: true
         - name: fluent-bit-config
-          mountPath: /etc/fluent-bit/
+          mountPath: /fluent-bit/etc/
       terminationGracePeriodSeconds: 30
       volumes:
       - name: varlog
@@ -232,20 +232,25 @@ spec:
       - operator: "Exists"
         effect: "NoSchedule"
 ---
+# https://grafana.com/docs/loki/latest/configuration/query-frontend/#configmap
 apiVersion: v1
 kind: Service
 metadata:
-  name: loki
+  name: query-frontend
   namespace: supervision
   labels:
     app: loki
+    name: query-frontend
 spec:
   type: ClusterIP
   selector:
     app: loki
+    name: query-frontend
   ports:
-  - port: 3100
+  - name: query-frontend-http
+    port: 3100
     targetPort: 3100
+{% if agorakube_features.supervision.logging.persistent.enabled | bool == True %}
 ---
 # Add PVC for Loki
 apiVersion: v1
@@ -289,70 +294,58 @@ spec:
   hostPath:
     path: "{{ agorakube_features.supervision.logging.persistent.storage.hostpath.path }}"
 {% endif %}
-
 ---
+# https://grafana.com/docs/loki/latest/configuration/query-frontend/#configmap
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: loki
+  name: query-frontend
   namespace: supervision
   labels:
-    app: loki
+    app: query-frontend
 spec:
   selector:
     matchLabels:
-      app: loki
+      app: query-frontend
   strategy:
     type: Recreate
   template:
     metadata:
       labels:
-        app: loki    
+        app: query-frontend    
     spec:
       containers:
-      - name: loki
-        image: grafana/loki:2.2.1
-        # image: grafana/loki:latest
+      - name: query-frontend
+        # image: grafana/loki:2.2.1
+        image: grafana/loki:latest
         # image: grafana/loki:k53-7a7eeb0-arm64
         args:
           - -config.file=/etc/loki/config.yaml
           - -log.level=debug
-          - -target=loki
+          - -target=query-frontend
         ports:
         - containerPort: 3100
         volumeMounts:
         - name: loki-frontend
           mountPath: /etc/loki
-
-{% if agorakube_features.supervision.monitoring.dashboard | bool == True %}
-        - name: init-grafana-dashboard
-          mountPath: /etc/grafana/provisioning/dashboards/default/
-{% endif %}
-        - name: grafana-data
-          mountPath: /var/lib/grafana
-{% if agorakube_features.supervision.logging.dashboard | bool == True %}
-        - name: init-logging-dashboard
-          mountPath: /etc/grafana/provisioning/dashboards/logging/
-{% endif %}
-      initContainers:
-{% if agorakube_features.supervision.logging.dashboard | bool == True %}
-      - name: init-loki-dashboard
-        image: busybox:1.32.0
-        command: ['sh', '-c', "wget https://raw.githubusercontent.com/bryanILKI/agorakube/#.json -O /etc/.../#.json", "chmod -R 777 /etc/..."]
-        volumeMounts:
-        - name: init-loki-dashboard
-          mountPath: /etc/
-{% endif %}
+#        - name: init-grafana-dashboard
+#          mountPath: /etc/grafana/provisioning/dashboards/default/
+#      initContainers:
+#      - name: init-loki-dashboard
+#        image: busybox:1.32.0
+#        command: ['sh', '-c', "wget https://raw.githubusercontent.com/bryanILKI/agorakube/#.json -O /etc/.../#.json", "chmod -R 777 /etc/..."]
+#        volumeMounts:
+#        - name: init-loki-dashboard
+#          mountPath: /etc/
       volumes:
       - name: loki-frontend
         configMap:
           name: loki-frontend
-{% if agorakube_features.supervision.logging.persistent.enabled | bool == True %}
       - name: init-loki-dashboard
         persistentVolumeClaim:
           claimName: persistent-dashboard
-{% endif %}
 ---
+# https://grafana.com/docs/loki/latest/configuration/query-frontend/#configmap
 apiVersion: v1
 kind: ConfigMap
 metadata:
@@ -364,19 +357,35 @@ data:
     http_prefix: http://loki
     server:
       http_listen_port: 3100
+
     query_range:
+      # make queries more cache-able by aligning them with their step intervals
       align_queries_with_step: true
       max_retries: 5
+      # parallelize queries in 15min intervals
       split_queries_by_interval: 15m
       cache_results: true
       results_cache:
         cache:
+          # We're going to use the in-process "FIFO" cache
           enable_fifocache: true
-         fifocache:
+          fifocache:
             size: 1024
             validity: 24h
+
+    schema_config:
+      configs:
+      - from: 2020-10-24
+        store: boltdb-shipper
+        object_store: filesystem
+        schema: v11
+        index:
+          prefix: index_
+          period: 24h
+
     limits_config:
       max_cache_freshness_per_query: '10m'
+
     frontend:
       log_queries_longer_than: 5s
       downstream_url: http://querier.supervision.svc.cluster.local:3100
