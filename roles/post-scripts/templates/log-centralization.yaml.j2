@@ -239,12 +239,12 @@ metadata:
   name: query-frontend
   namespace: supervision
   labels:
-    app: loki
+    app: query-frontend
     name: query-frontend
 spec:
   type: ClusterIP
   selector:
-    app: loki
+    app: query-frontend
     name: query-frontend
   ports:
   - name: query-frontend-http
@@ -252,17 +252,16 @@ spec:
     targetPort: 3100
 {% if agorakube_features.supervision.logging.persistent.enabled | bool == True %}
 ---
-# Add PVC for Loki
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
-  name: loki-frontend
+  name: loki-data
   namespace: supervision
   labels:
-    openebs.io/target-affinity: agorakube-monitoring
+    openebs.io/target-affinity: agorakube-loki-data
 spec:
 {% if agorakube_features.supervision.logging.persistent.storage.type == "hostpath" %}
-  storageClassName: persistent-loki-frontend
+  storageClassName: persistent-loki-hostpath
 {% endif %}
 {% if agorakube_features.supervision.logging.persistent.storage.type == "storageclass" %}
   storageClassName: "{{ agorakube_features.supervision.logging.persistent.storage.storageclass.name }}"
@@ -276,17 +275,17 @@ spec:
   volumeMode: Filesystem
   accessModes:
     - ReadWriteOnce
-{% endif %}
+{% endif %}  
 ---
 # Add PV for Loki
 {% if agorakube_features.supervision.logging.persistent.storage.type == "hostpath" %}
 apiVersion: v1
 kind: PersistentVolume
 metadata:
-  name: persistentvolume-loki-frontend
+  name: persistent-loki-hostpath
   namespace: supervision
 spec:
-  storageClassName: persistentvolume-loki-frontend
+  storageClassName: persistent-loki-hostpath
   capacity:
     storage: {{ agorakube_features.supervision.logging.persistent.storage.capacity }}
   accessModes:
@@ -294,7 +293,9 @@ spec:
   hostPath:
     path: "{{ agorakube_features.supervision.logging.persistent.storage.hostpath.path }}"
 {% endif %}
+
 ---
+
 # https://grafana.com/docs/loki/latest/configuration/query-frontend/#configmap
 apiVersion: apps/v1
 kind: Deployment
@@ -312,13 +313,14 @@ spec:
   template:
     metadata:
       labels:
-        app: query-frontend    
+        app: query-frontend   
+{% if agorakube_features.supervision.logging.persistent.enabled | bool == True  %}
+        openebs.io/target-affinity: agorakube-loki-data
+{% endif %}   
     spec:
       containers:
       - name: query-frontend
-        # image: grafana/loki:2.2.1
         image: grafana/loki:latest
-        # image: grafana/loki:k53-7a7eeb0-arm64
         args:
           - -config.file=/etc/loki/config.yaml
           - -log.level=debug
@@ -326,30 +328,28 @@ spec:
         ports:
         - containerPort: 3100
         volumeMounts:
-        - name: loki-frontend
+        - name: loki-config
           mountPath: /etc/loki
-#        - name: init-grafana-dashboard
-#          mountPath: /etc/grafana/provisioning/dashboards/default/
-#      initContainers:
-#      - name: init-loki-dashboard
-#        image: busybox:1.32.0
-#        command: ['sh', '-c', "wget https://raw.githubusercontent.com/bryanILKI/agorakube/#.json -O /etc/.../#.json", "chmod -R 777 /etc/..."]
-#        volumeMounts:
-#        - name: init-loki-dashboard
-#          mountPath: /etc/
+{% if agorakube_features.supervision.logging.dashboard | bool == True %}
+        - name: loki-data
+          mountPath: /loki/boltdb-shipper-active 
+{% endif %}
+
       volumes:
-      - name: loki-frontend
+      - name: loki-config
         configMap:
-          name: loki-frontend
-      - name: init-loki-dashboard
+          name: loki-config
+{% if agorakube_features.supervision.logging.persistent.enabled | bool == True %}
+      - name: loki-data
         persistentVolumeClaim:
-          claimName: persistent-dashboard
+          claimName: loki-data
+{% endif %}
 ---
 # https://grafana.com/docs/loki/latest/configuration/query-frontend/#configmap
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: loki-frontend
+  name: loki-config
   namespace: supervision
 data:
   config.yaml: |
