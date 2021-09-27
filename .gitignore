@@ -1,1 +1,2 @@
 roles/post-scripts/templates/log-centralization-temp.yaml.j2
+roles/post-scripts/templates/log-centralization-temp2.yaml.j2

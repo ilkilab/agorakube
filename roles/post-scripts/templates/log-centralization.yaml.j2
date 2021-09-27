@@ -93,7 +93,7 @@ data:
     [OUTPUT]
         Name                   loki
         Match                  *
-        host                   loki
+        host                   query-frontend
         tenant_id              kubernetes
         auto_kubernetes_labels on
         line_format            json
@@ -249,6 +249,8 @@ spec:
   ports:
   - name: query-frontend-http
     port: 3100
+    # Add protocol
+    protocol: TCP
     targetPort: 3100
 {% if agorakube_features.supervision.logging.persistent.enabled | bool == True %}
 ---
@@ -327,6 +329,9 @@ spec:
           - -target=query-frontend
         ports:
         - containerPort: 3100
+          # Add protocol
+          name: http
+          protocol: TCP
         volumeMounts:
         - name: loki-config
           mountPath: /etc/loki
@@ -354,7 +359,7 @@ metadata:
 data:
   config.yaml: |
     auth_enabled: false
-    http_prefix: http://loki
+    http_prefix: http://query-frontend
     server:
       http_listen_port: 3100
 
