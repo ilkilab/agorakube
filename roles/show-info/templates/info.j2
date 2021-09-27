@@ -41,7 +41,7 @@ http://localhost:8001/api/v1/namespaces/kubernetes-dashboard/services/https:kube
 
 ################################################################################
 
-{% if agorakube_features.monitoring.enabled | bool == True %}
+{% if agorakube_features.supervision.monitoring.enabled | bool == True %}
 
 1.1. By default, run the follwoing command on your client machine. (Where your Browser is installed)
 # kubectl port-forward service/grafana 3000:3000 -n supervision
