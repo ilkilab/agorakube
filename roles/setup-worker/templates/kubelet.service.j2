@@ -21,6 +21,9 @@ ExecStart=/usr/local/bin/kubernetes/node/bin/kubelet \
 {% if agorakube_base_components.container.engine == 'docker' %}
   --container-runtime=docker \
 {% endif %}
+{% if agorakube_base_components.cloud_controller_manager.enabled | bool == True %}
+  --cloud-provider=external \
+{% endif %}
 {% if agorakube_base_components.container.engine == 'containerd' %}
  --container-runtime=remote \
  --container-runtime-endpoint=unix:///var/run/containerd/containerd.sock \
