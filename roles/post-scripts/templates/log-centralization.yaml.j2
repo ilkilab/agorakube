@@ -97,7 +97,7 @@ data:
         tenant_id              kubernetes
         auto_kubernetes_labels on
         line_format            json
-        labels                 {job="fluent-bit"}
+        #labels                 {job="fluent-bit"}
         # Url                    http://loki:3100/loki/api/v1/pushkubectl
         # Url                    http://localhost:3100/loki/api/v1/push
         # Url                    http://loki:3100/loki/api/prom/push
@@ -111,7 +111,7 @@ data:
         # LineFormat             json
         # LogLevel               warn
         # LabelMapPath           /fluent-bit/etc/labelmap.json
-        Port                   3100
+        #Port                   3100
         #labels                 job=fluentbit 
         #label_keys             $sub['']
         http_user              administrator
@@ -320,6 +320,10 @@ spec:
         openebs.io/target-affinity: agorakube-loki-data
 {% endif %}   
     spec:
+      securityContext:
+        runAsUser: 1000
+        runAsGroup: 3000
+        fsGroup: 2000
       containers:
       - name: loki
         image: grafana/loki:latest
