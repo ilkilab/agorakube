@@ -107,12 +107,7 @@ spec:
 #          secret:
 #            secretName: tls-monitoring
 ---
-{% if agorakube_base_components.kubernetes.release is version('v1.22', '>=') %}
 apiVersion: rbac.authorization.k8s.io/v1
-{% endif %}
-{% if agorakube_base_components.kubernetes.release is version('v1.22', '>=') %}
-apiVersion: rbac.authorization.k8s.io/v1beta1
-{% endif %}
 kind: ClusterRole
 metadata:
   name: prometheus
