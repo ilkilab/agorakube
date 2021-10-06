@@ -35,8 +35,8 @@ agorakube_base_components:
           nodename: "master1"
           path: /var/etcd-backup
   kubernetes:
-    release: v1.21.5
-    upgrade: false
+    release: v1.22.0
+    upgrade: true
   container:
     engine: containerd
 # release : Only Supported if container engine is set to docker
@@ -85,7 +85,7 @@ agorakube_features:
     enabled: true
   ingress:
     controller: nginx
-    release: v0.46.0
+    release: v1.0.1
   monitoring:
     enabled: false
     persistent:
