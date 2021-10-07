@@ -300,12 +300,25 @@ spec:
     app.kubernetes.io/component: controller
 {% if agorakube_features.ingress.release is version('v1.0.1', '>=') %}
 ---
+# Source: ingress-nginx/templates/controller-ingressclass.yaml
 apiVersion: networking.k8s.io/v1
 kind: IngressClass
 metadata:
+  labels:
+    helm.sh/chart: ingress-nginx-2.11.0
+    app.kubernetes.io/name: ingress-nginx
+    app.kubernetes.io/instance: ingress-nginx
+    app.kubernetes.io/version: 0.34.0
+    app.kubernetes.io/managed-by: Helm
+    app.kubernetes.io/component: controller
   name: ingress-class-default
-sepc:
-  controller: ingress-nginx-controller
+  namespace: ingress-nginx
+  annotations:
+    ingressclass.kubernetes.io/is-default-class: "true"
+spec:
+  #controller: ingress-nginx-controller
+  #controller: k8s.io/custom-nginx
+  controller: k8s.io/ingress-nginx-controller
 {% endif %}
 ---
 # Source: ingress-nginx/templates/controller-deployment.yaml
@@ -550,7 +563,7 @@ spec:
       restartPolicy: OnFailure
       serviceAccountName: ingress-nginx-admission
 {% if agorakube_features.ingress.release is version('v1.0.1', '>=') %}
-      ingressClassName: ingress-class-default
+      #ingressClassName: ingress-class-default
 {% endif %}
       securityContext:
         runAsNonRoot: true
@@ -598,7 +611,7 @@ spec:
       restartPolicy: OnFailure
       serviceAccountName: ingress-nginx-admission
 {% if agorakube_features.ingress.release is version('v1.0.1', '>=') %}
-      ingressClassName: ingress-class-default
+      #ingressClassName: ingress-class-default
 {% endif %}
       securityContext:
         runAsNonRoot: true
