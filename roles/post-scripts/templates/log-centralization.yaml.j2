@@ -47,20 +47,27 @@ data:
   fluent-bit.conf: |
     [SERVICE]
         Flush         1
-        Log_Level     info
+        Log_Level     warning
         Daemon        off
         Parsers_File  parsers.conf
         HTTP_Server   On
         HTTP_Listen   0.0.0.0
         HTTP_Port     2020
 
-    @INCLUDE input-kubernetes.conf
+    @INCLUDE input-kube-apiserver.conf
+    @INCLUDE input-kube-scheduler.conf
+    @INCLUDE input-kube-controller-manager.conf
+    @INCLUDE input-kubelet.conf
+    @INCLUDE input-kubeproxy.conf
     @INCLUDE output-loki.conf
+    #@INCLUDE filter-kubernetes.conf
 
-  input-kubernetes.conf: |
+  input-kube-apiserver.conf: |
     [INPUT]
         Name              tail
-        Path              /var/log/kubernetes/kube-apiserver.log,/var/log/kubernetes/kube-controller-manager.log,/var/log/kubernetes/kube-scheduler.log,/var/log/kubernetes/kubelet.log,/var/log/kubernetes/kube-proxy.log
+        #Path              /var/log/kubernetes/kube-apiserver.log,/var/log/kubernetes/kube-controller-manager.log,/var/log/kubernetes/kube-scheduler.log,/var/log/kubernetes/kubelet.log,/var/log/kubernetes/kube-proxy.log
+        Path              /var/log/kubernetes/kube-apiserver.log
+        Tag               kube-apiserver
         DB                /var/log/flb_kube.db
         Mem_Buf_Limit     50MB
         Skip_Long_Lines   On
@@ -69,7 +76,44 @@ data:
         # Path              /var/log/*.log
         # Path              /var/log/containers/*.log
         # Parser            docker
-        # Parser            cri
+        Parser            kube
+
+  input-kube-scheduler.conf: |
+    [INPUT]
+        Name              tail
+        Path              /var/log/kubernetes/kube-scheduler.log
+        Tag               kube-scheduler
+        DB                /var/log/flb_kube.db
+        Mem_Buf_Limit     50MB
+        Skip_Long_Lines   On
+
+  input-kube-controller-manager.conf: |
+    [INPUT]
+        Name              tail
+        Path              /var/log/kubernetes/kube-controller-manager.log
+        Tag               kube-controller-manager
+        DB                /var/log/flb_kube.db
+        Mem_Buf_Limit     50MB
+        Skip_Long_Lines   On
+
+  input-kubelet.conf: |
+    [INPUT]
+        Name              tail
+        Path              /var/log/kubernetes/kubelet.log
+        Tag               kubelet
+        DB                /var/log/flb_kube.db
+        Mem_Buf_Limit     50MB
+        Skip_Long_Lines   On
+  
+  input-kubeproxy.conf: |
+    [INPUT]
+        Name              tail
+        Path              /var/log/kubernetes/kubeproxy.log
+        Tag               kubeproxy
+        DB                /var/log/flb_kube.db
+        Mem_Buf_Limit     50MB
+        Skip_Long_Lines   On
+
 
 #  filter-kubernetes.conf: |
 #    [FILTER]
@@ -88,36 +132,16 @@ data:
         # kubelet_Port        10250
         # Buffer_Size         0
         # Use_Kubelet         true
-        
-  output-loki.conf : |
-    [OUTPUT]
-        Name                   loki
-        Match                  *
-        host                   loki
-        tenant_id              kubernetes
-        auto_kubernetes_labels on
-        line_format            json
-        #labels                 {job="fluent-bit"}
-        # Url                    http://loki:3100/loki/api/v1/pushkubectl
-        # Url                    http://localhost:3100/loki/api/v1/push
-        # Url                    http://loki:3100/loki/api/prom/push
-        # Host                   http://loki:3100/loki/api/v1/push
-        # TenantID               ""
-        # BatchWait              1
-        # BatchSize              1048576
-        # AutoKubernetesLabels   true
-        # RemoveKeys             kubernetes, stream
-        # remove_Keys            kubernetes, stream
-        # LineFormat             json
-        # LogLevel               warn
-        # LabelMapPath           /fluent-bit/etc/labelmap.json
-        #Port                   3100
-        #labels                 job=fluentbit 
-        #label_keys             $sub['']
-        http_user              administrator
-        http_passwd            P@ssw0rd
 
   parsers.conf: |
+    [PARSER]
+        Name        kube
+        Format      regex
+        # https://regex101.com/r/4WZK5n/1
+        Regex       ^\D{8}(?<severity>\w)(?<time>\d{4} [^\s]*)\s+(?<pid>\d+)\s+(?<source>[^ \]]+)\] (?<message>.*)$
+        Time_Key    time 
+        Time_Format %d/%b/%Y:%H:%M:%S %z
+
     [PARSER]
         Name   apache
         Format regex
@@ -171,6 +195,57 @@ data:
         Regex       ^\<(?<pri>[0-9]+)\>(?<time>[^ ]* {1,2}[^ ]* [^ ]*) (?<host>[^ ]*) (?<ident>[a-zA-Z0-9_\/\.\-]*)(?:\[(?<pid>[0-9]+)\])?(?:[^\:]*\:)? *(?<message>.*)$
         Time_Key    time
         Time_Format %b %d %H:%M:%S
+
+  output-loki.conf : |
+    [OUTPUT]
+        Name                   loki
+        Match                  *
+        host                   loki
+        tenant_id              kubernetes
+        auto_kubernetes_labels off
+        line_format            json
+        labels                 job=kubelet
+
+    [OUTPUT]
+        Name                   loki
+        Match                  *
+        host                   loki
+        tenant_id              kubernetes
+        auto_kubernetes_labels off
+        line_format            json
+        labels                 job=kube-apiserver
+        #label_keys             $log
+        #http_user
+
+    [OUTPUT]
+        Name                   loki
+        Match                  *
+        host                   loki
+        tenant_id              kubernetes
+        auto_kubernetes_labels off
+        line_format            json
+        labels                 job=kube-controller-manager
+
+    [OUTPUT]
+        Name                   loki
+        Match                  *
+        host                   loki
+        tenant_id              kubernetes
+        auto_kubernetes_labels off
+        line_format            json
+        labels                 job=kube-scheduler
+
+    [OUTPUT]
+        Name                   loki
+        Match                  *
+        host                   loki
+        tenant_id              kubernetes
+        auto_kubernetes_labels off
+        line_format            json
+        labels                 job=kubeproxy
+
+
+
 ---
 apiVersion: apps/v1
 kind: DaemonSet
@@ -204,6 +279,8 @@ spec:
 #        image: grafana/fluent-bit-plugin-loki:2.1.0-amd64
 #        image: fluent/fluent-bit:1.5
         imagePullPolicy: Always
+        securityContext: 
+          privileged: true
         ports:
           - containerPort: 2020
         volumeMounts:
