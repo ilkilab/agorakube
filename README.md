@@ -1,6 +1,6 @@
 # AGORAKUBE KUBERNETES ENGINE
 <!-- ALL-CONTRIBUTORS-BADGE:START - Do not remove or modify this section -->
-[![All Contributors](https://img.shields.io/badge/all_contributors-16-orange.svg?style=flat-square)](#contributors-)
+[![All Contributors](https://img.shields.io/badge/all_contributors-17-orange.svg?style=flat-square)](#contributors-)
 <!-- ALL-CONTRIBUTORS-BADGE:END -->
 
 [![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
@@ -140,6 +140,7 @@ Thanks goes to these wonderful people ([emoji key](https://allcontributors.org/d
   <tr>
     <td align="center"><a href="https://ericstumbo.tech"><img src="https://avatars.githubusercontent.com/u/25944964?v=4?s=100" width="100px;" alt=""/><br /><sub><b>Eric Stumbo</b></sub></a><br /><a href="https://github.com/ilkilab/agorakube/commits?author=digikin" title="Code">💻</a></td>
     <td align="center"><a href="https://github.com/rob-coq"><img src="https://avatars.githubusercontent.com/u/44269196?v=4?s=100" width="100px;" alt=""/><br /><sub><b>rob-coq</b></sub></a><br /><a href="https://github.com/ilkilab/agorakube/commits?author=rob-coq" title="Documentation">📖</a> <a href="https://github.com/ilkilab/agorakube/commits?author=rob-coq" title="Code">💻</a></td>
+    <td align="center"><a href="https://github.com/HaroldIlki"><img src="https://avatars.githubusercontent.com/u/90386162?v=4?s=100" width="100px;" alt=""/><br /><sub><b>HaroldIlki</b></sub></a><br /><a href="https://github.com/ilkilab/agorakube/commits?author=HaroldIlki" title="Documentation">📖</a> <a href="https://github.com/ilkilab/agorakube/commits?author=HaroldIlki" title="Code">💻</a></td>
   </tr>
 </table>
 
