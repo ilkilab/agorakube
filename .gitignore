@@ -1,5 +1,0 @@
-roles/post-scripts/templates/log-centralization-temp.yaml.j2
-roles/post-scripts/templates/log-centralization-temp2.yaml.j2
-roles/post-scripts/templates/log-centralization-save.yaml.j2
-roles/post-scripts/templates/log-centralization-save2.yaml.j2
-roles/post-scripts/templates/log-centralization-save3.yaml.j2
