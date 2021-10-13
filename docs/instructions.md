@@ -47,6 +47,21 @@ Below the OS currently supported on all the machines :
 - Unique hostname, MAC address, and product_uuid for every node. See here for more [details](https://kubernetes.io/docs/setup/production-environment/tools/kubeadm/install-kubeadm/#verify-the-mac-address-and-product-uuid-are-unique-for-every-node).
 - Certain ports are open on your machines. See here for more [details](https://kubernetes.io/docs/setup/production-environment/tools/kubeadm/install-kubeadm/#check-required-ports).
 
+If Agorakube is installed behind a Proxy/Firewall, make sure the following URLs are accessible:
+-	https://pypi.org/
+-	https://pypi.python.org/
+-	https://files.pythonhosted.org
+-	https://storage.googleapis.com/kubernetes-release/
+-	https://github.com/etcd-io/etcd/releases/download/
+-	https://dl.k8s.io/
+-	https://github.com/containernetworking/plugins/releases/download/
+-	https://download.docker.com/linux/
+-	https://index.docker.io/v1/
+-	https://k8s.gcr.io/
+-	https://docker.io
+-	https://github-releases.githubusercontent.com/
+
+
 ## Node Sizing
 
 Node sizing indicated here is for production environment. You can custom it according to suit your needs.
