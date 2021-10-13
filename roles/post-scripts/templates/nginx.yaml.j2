@@ -311,14 +311,16 @@ metadata:
     app.kubernetes.io/version: 0.34.0
     app.kubernetes.io/managed-by: Helm
     app.kubernetes.io/component: controller
-  name: ingress-class-default
+  #name: ingress-class-default
+  name: nginx
   namespace: ingress-nginx
-  annotations:
-    ingressclass.kubernetes.io/is-default-class: "true"
+  #annotations:
+    #ingressclass.kubernetes.io/is-default-class: "true"
 spec:
   #controller: ingress-nginx-controller
   #controller: k8s.io/custom-nginx
-  controller: k8s.io/ingress-nginx-controller
+  #controller: k8s.io/ingress-nginx-controller
+  controller: k8s.io/ingress-nginx
 {% endif %}
 ---
 # Source: ingress-nginx/templates/controller-deployment.yaml
@@ -367,6 +369,10 @@ spec:
             - --validating-webhook=:8443
             - --validating-webhook-certificate=/usr/local/certificates/cert
             - --validating-webhook-key=/usr/local/certificates/key
+{% if agorakube_features.ingress.release is version('v1.0.1', '>=') %}
+            - --controller-class=k8s.io/ingress-nginx
+            - --publish-service=ingress-nginx/ingress-nginx-controller
+{% endif %}
           securityContext:
             capabilities:
               drop:
