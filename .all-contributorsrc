@@ -179,6 +179,15 @@
         "doc",
         "code"
       ]
+    },
+    {
+      "login": "robakerson",
+      "name": "Bob Akerson",
+      "avatar_url": "https://avatars.githubusercontent.com/u/85378187?v=4",
+      "profile": "https://github.com/robakerson",
+      "contributions": [
+        "doc"
+      ]
     }
   ],
   "contributorsPerLine": 7,
