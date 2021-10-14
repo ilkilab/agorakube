@@ -118,7 +118,7 @@ agorakube_features:
   argocd:
     enabled: false
    
-# keycloak_oidc is an Alpha feature and do not support persistence wet. Use it only for test purpose.
+# keycloak_oidc is an Alpha feature.
   keycloak_oidc:
     enabled: false
     admin:
