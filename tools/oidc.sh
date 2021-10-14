@@ -1,6 +1,6 @@
 #!/bin/bash
 
-KEYCLOAK_URL=https://keycloak.local.lan
+KEYCLOAK_URL=https://oidc.local.lan
 KEYCLOAK_REALM=local
 KEYCLOAK_CLIENT_ID=kube
 KEYCLOAK_CLIENT_SECRET=79e34f70-581a-4cc3-a2b4-10b5a4d670df
