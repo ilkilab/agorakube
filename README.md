@@ -20,14 +20,14 @@
 </a>
 </p>
 
-This project is aimed to provide the simplest way to install kubernetes on AMD-64 bare-metal, virtual & Cloud environments.
+This project aims to provide the simplest way to install Kubernetes on AMD-64 bare-metal, virtual & Cloud environments.
 Currently, Ubuntu 18.04 & 20.04,  Centos 7 and Debian 10  are supported, but several other operating systems will be available soon.
 
 Master branch is stable.
 
 ## Table of Contents
 
-This is a list of points that will be explained in this Readme file for the Agorakube project :
+The following items are explained in this Readme file for the Agorakube project :
 
 - [What is AGORAKUBE](#what-is-agorakube)
 - [How to install](#how-to-install)
@@ -40,12 +40,12 @@ This is a list of points that will be explained in this Readme file for the Agor
 
 Agorakube is an easy-to-use, stable Kubernetes distribution (Kubernetes v1.15, 1.16, 1.17, 1.18, 1.19, 1.20, 1.21, 1.22).
 
-By its symplicity, AGORAKUBE provide a good way to deploy and manage K8S Clusters.
+Agorakube provides a simple, user-friendly way to deploy and manage K8S Clusters.
 
 Agorakube is based on Ansible scripts that install and configure Kubernetes components (control plane and data plane) quickly on bare-metal / VMs / Cloud Instances, as systemd services.
 
-This distribution is also adaptive by offering the opportunity to customize your deployment and fit to your needs : 
-* OS : Ubuntu-18.04/20.04-amd64 and Centos 7.X-amd64, Debian-10-amd64 
+This distribution is also adaptive by offering the opportunity to customize your deployment to fit your needs :
+* OS : Ubuntu-18.04/20.04-amd64 and Centos 7.X-amd64, Debian-10-amd64
 * DNS Service: CoreDNS
 * Ingress Controller Traefik v2 & HA-Proxy & Nginx (Default)
 * Container Runtime: Containerd (Default) & Docker
@@ -74,7 +74,7 @@ To deploy your K8S cluster follow these [instructions](docs/instructions.md).
 
 ## How to give feedback
 
-Every feedback is very welcome via the
+All feedback is welcome via the
 [GitHub site](https://github.com/ilkilabs/agorakube)
 as issues or pull (merge) requests.
 
@@ -90,24 +90,24 @@ Join Agorakube's community for discussion and ask questions : [AGORAKUBE's Slack
 
 Channels :
 - **#general** - For general purpose (news, events...)
-- **#developpers** - For people who contribute to Agorakube by developing features
-- **#end-users** - For end users who want to give us feedbacks
+- **#developers** - For people who contribute to Agorakube by developing features
+- **#end-users** - For end users who want to give us feedback
 - **#random** - As its name suggests, for random discussions :)
 
 ## Licensing
 
-All material here is released under the [APACHE 2.0 license](./LICENSE).
+All material here is released under the [APACHE 2.0 license](./LICENSE).  
 All material that is not executable, including all text when not executed,
-is also released under the APACHE 2.0.
-In SPDX terms, everything here is licensed under APACHE 2.0;
+is also released under APACHE 2.0.  
+In SPDX terms, everything here is licensed under APACHE 2.0;  
 if it's not executable, including the text when extracted from code, it's
 "(APACHE 2.0)".
 
-Lagorakube almost all software today, this software depends on many
-other components with their own licenses.
+As with almost all software today, Agorakube depends on many
+other components with their own licenses.  
 Not all components we depend on are APACHE 2.0-licensed, but all
-*required* components are FLOSS. We prevent licensing issues
-using various processes (see [CONTRIBUTING](./docs/CONTRIBUTING.md)).
+*required* components are FLOSS.   
+We use various processes to prevent licensing issues (see [CONTRIBUTING](./docs/CONTRIBUTING.md)).
 
 
 [![FOSSA Status](https://app.fossa.com/api/projects/git%2Bgithub.com%2Filkilab%2Fagorakube.svg?type=large)](https://app.fossa.com/projects/git%2Bgithub.com%2Filkilab%2Fagorakube?ref=badge_large)
