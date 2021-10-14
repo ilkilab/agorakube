@@ -120,7 +120,7 @@ spec:
 {% if agorakube_features.keycloak_oidc.storage.enabled | bool == True %}
         volumeMounts:
         - name: keycloakdb-data
-          mountPath: /var/lib/postgresql/data
+          mountPath: /var/lib/postgresql
 {% endif %}
 {% if agorakube_features.keycloak_oidc.storage.enabled | bool == True %}
       volumes:
