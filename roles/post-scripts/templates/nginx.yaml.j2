@@ -101,7 +101,7 @@ rules:
       - update
       - watch
   - apiGroups:
-      - extensions
+      - extensions   # !! 
       - networking.k8s.io   # k8s 1.14+
     resources:
       - ingresses
@@ -206,7 +206,7 @@ rules:
       - update
       - watch
   - apiGroups:
-      - extensions
+      - extensions   # !!
       - networking.k8s.io   # k8s 1.14+
     resources:
       - ingresses
@@ -215,7 +215,7 @@ rules:
       - list
       - watch
   - apiGroups:
-      - extensions
+      - extensions  # !!
       - networking.k8s.io   # k8s 1.14+
     resources:
       - ingresses/status
@@ -252,7 +252,7 @@ rules:
   - apiGroups:
       - ''
     resources:
-      - endpoints
+      - endpoints   # !!
     verbs:
       - create
       - get
@@ -474,6 +474,10 @@ spec:
               valueFrom:
                 fieldRef:
                   fieldPath: metadata.namespace
+{% if agorakube_features.ingress.release is version('v1.0.1', '>=') %}
+            - name: LD_PRELOAD
+              value: /usr/local/lib/libmimalloc.so
+{% endif %}
           livenessProbe:
             httpGet:
               path: /healthz
@@ -556,7 +560,7 @@ webhooks:
 {% endif %}
     rules:
       - apiGroups:
-          - extensions
+          - extensions  # !!
           - networking.k8s.io
         apiVersions:
 {% if agorakube_base_components.kubernetes.release is version('v1.22', '<') %}
@@ -696,7 +700,7 @@ spec:
           image: docker.io/jettech/kube-webhook-certgen:v1.2.2
 {% endif %}
 {% if agorakube_features.ingress.release is version('v1.0.1', '>=') %}
-          image: k8s.gcr.io/ingress-nginx/kube-webhook-certgen:v1.1.1@sha256:64d8c73dca984af206adf9d6d7e46aa550362b1d7a01f3a0a91b20cc67868660 #!!!
+          image: k8s.gcr.io/ingress-nginx/kube-webhook-certgen:v1.1.1@sha256:64d8c73dca984af206adf9d6d7e46aa550362b1d7a01f3a0a91b20cc67868660  # !!
 {% endif %}
           imagePullPolicy: IfNotPresent
           args:
@@ -760,7 +764,7 @@ spec:
           image: docker.io/jettech/kube-webhook-certgen:v1.2.2
 {% endif %}
 {% if agorakube_features.ingress.release is version('v1.0.1', '>=') %}
-          image: k8s.gcr.io/ingress-nginx/kube-webhook-certgen:v1.1.1@sha256:64d8c73dca984af206adf9d6d7e46aa550362b1d7a01f3a0a91b20cc67868660 #!!!
+          image: k8s.gcr.io/ingress-nginx/kube-webhook-certgen:v1.1.1@sha256:64d8c73dca984af206adf9d6d7e46aa550362b1d7a01f3a0a91b20cc67868660   # !!
 {% endif %}
           imagePullPolicy: IfNotPresent
           args:
