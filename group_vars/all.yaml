@@ -129,18 +129,18 @@ agorakube_features:
         bootstrap_kube_apiserver: false
         populate_etc_hosts: true
         host: oidc.local.lan
-#    storage:
-#        enabled: False
-#        capacity: 10Gi
-#        type: "storageclass"
-#        storageclass:
-#          name: "default-jiva"
-#        persistentvolume:
-#          name: "my-pv-backup-etcd"
-#          storageclass: "my-storageclass-name"
-#        hostpath:
-#          nodename: "master1"
-#          path: /var/keycloak
+    storage:
+        enabled: False
+        capacity: 10Gi
+        type: "storageclass"
+        storageclass:
+          name: "default-jiva"
+        persistentvolume:
+          name: "my-pv-backup-etcd"
+          storageclass: "my-storageclass-name"
+        hostpath:
+          nodename: "master1"
+          path: /var/keycloak
 
 agorakube_populate_etc_hosts: True
 
