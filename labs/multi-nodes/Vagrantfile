@@ -157,24 +157,55 @@ agorakube_features:
   ingress:
     controller: nginx
     release: v0.46.0
-  monitoring:
-    enabled: false
-    persistent:
-      enable: false
-      storage:
-        capacity: 4Gi
-        type: "storageclass"
-        storageclass:
-          name: "default-jiva"
-        persistentvolume:
-          name: "my-pv-monitoring"
-          storageclass: "my-storageclass-name"
-        hostpath:
-          nodename: "master1"
-          path: /var/monitoring-persistent
-    admin:
-      user: administrator
-      password: P@ssw0rd
+  supervision:
+    monitoring:
+      enabled: true
+      dashboard: false
+      persistent:
+        enable: true
+        storage:
+          capacity: 4Gi
+          type: "storageclass"
+          storageclass:
+            name: "default-jiva"
+          persistentvolume:
+            name: "my-pv-monitoring"
+            storageclass: "my-storageclass-name"
+          hostpath:
+            nodename: "master1"
+            path: /var/monitoring-persistent
+    dashboard:
+      admin:
+        user: administrator
+        password: P@ssw0rd
+      persistent:
+        enabled: true
+        storage:
+          capacity: 4Gi
+          type: "storageclass"
+          storageclass:
+            name: "default-jiva"
+          persistentvolument:
+            storageclass: "my-storageclass-name"
+          hostpath:
+            nodename: "master1"
+            path: /var/monitoring-persistent
+    logging:
+      enabled: true
+      dashboard: true
+      persistent:
+        enabled: true
+        storage:
+          capacity: 4Gi
+          type: "storageclass"
+          storageclass:
+            name: "default-jiva"
+          persistentvolume:
+            name: "my-pv-monitoring"
+              storageclass: "my-storageclass-name"
+            hostpath:
+              nodename: "master1"
+              path: /var/monitoring-persistent
   logrotate:
     enabled: false
     crontab: "* 2 * * *"
@@ -185,8 +216,6 @@ agorakube_features:
     replicas:
       #audit: 1
       controller_manager: 3
-  argocd:
-    enabled: false
 # keycloak_oidc is an Alpha feature and do not support persistence wet. Use it only for test purpose.
   keycloak_oidc:
     enabled: false
