@@ -68,7 +68,6 @@
   register: keycloak_ip_traefik
   run_once: true
   when: agorakube_features.ingress.controller == 'traefik'
-  changed_when: false
 
 - name: Get Ingress keycloak IP if Ingress is HAProxy
   command: kubectl --kubeconfig {{ pki_path }}/kubeconfigs/admin/admin.conf get services haproxy-ingress --namespace haproxy-controller --output jsonpath='{.spec.clusterIP}'
