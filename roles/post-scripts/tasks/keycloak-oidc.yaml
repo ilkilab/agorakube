@@ -54,3 +54,57 @@
   retries: 300
   delay: 10
   run_once: true
+
+- name: Get Ingress keycloak IP if Ingress is Nginx
+  command: kubectl --kubeconfig {{ pki_path }}/kubeconfigs/admin/admin.conf get services ingress-nginx-controller --namespace ingress-nginx --output jsonpath='{.spec.clusterIP}'
+  changed_when: false
+  register: keycloak_ip_nginx
+  run_once: true
+  when: agorakube_features.ingress.controller == 'nginx'
+
+- name: Get Ingress keycloak IP if Ingress is Traefik
+  command: kubectl --kubeconfig {{ pki_path }}/kubeconfigs/admin/admin.conf get services traefik --namespace ingress-traefik --output jsonpath='{.spec.clusterIP}'
+  changed_when: false
+  register: keycloak_ip_traefik
+  run_once: true
+  when: agorakube_features.ingress.controller == 'traefik'
+
+- name: Get Ingress keycloak IP if Ingress is HAProxy
+  command: kubectl --kubeconfig {{ pki_path }}/kubeconfigs/admin/admin.conf get services haproxy-ingress --namespace haproxy-controller --output jsonpath='{.spec.clusterIP}'
+  register: keycloak_ip_haproxy
+  run_once: true
+  when: agorakube_features.ingress.controller == 'haproxy'
+  changed_when: false
+
+- name: Configure /etc/hosts file for OIDC when ingress is nginx
+  lineinfile:
+    path: /etc/hosts
+    line: "{{ keycloak_ip_nginx.stdout }} {{ agorakube_features.keycloak_oidc.auto_bootstrap.host }}"
+    create: yes
+  when:
+  - agorakube_features.keycloak_oidc.auto_bootstrap.populate_etc_hosts | bool == True
+  - agorakube_features.ingress.controller == 'nginx'
+  delegate_to: "{{ item }}"
+  loop: "{{ groups['all'] }}"
+
+- name: Configure /etc/hosts file for OIDC whn ingress is traefik
+  lineinfile:
+    path: /etc/hosts
+    line: "{{ keycloak_ip_traefik.stdout }} {{ agorakube_features.keycloak_oidc.auto_bootstrap.host }}"
+    create: yes
+  when:
+  - agorakube_features.keycloak_oidc.auto_bootstrap.populate_etc_hosts | bool == True
+  - agorakube_features.ingress.controller == 'traefik'
+  delegate_to: "{{ item }}"
+  loop: "{{ groups['all'] }}"
+
+- name: Configure /etc/hosts file for OIDC when ingress is haproxy
+  lineinfile:
+    path: /etc/hosts
+    line: "{{ keycloak_ip_haproxy.stdout }} {{ agorakube_features.keycloak_oidc.auto_bootstrap.host }}"
+    create: yes
+  when:
+  - agorakube_features.keycloak_oidc.auto_bootstrap.populate_etc_hosts | bool == True
+  - agorakube_features.ingress.controller == 'haproxy'
+  delegate_to: "{{ item }}"
+  loop: "{{ groups['all'] }}"

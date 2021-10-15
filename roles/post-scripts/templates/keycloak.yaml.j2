@@ -99,6 +99,12 @@ spec:
       labels:
         app: keycloak-db
     spec:
+{% if agorakube_features.keycloak_oidc.storage.enabled | bool == True %}
+{% if agorakube_features.keycloak_oidc.storage.type  == "hostpath" %}
+      nodeSelector:
+        kubernetes.io/hostname: {{ agorakube_features.keycloak_oidc.storage.hostpath.nodename }}
+{% endif %}
+{% endif %}
       containers:
       - name: keycloak-db
         image: postgres:13.2
@@ -111,6 +117,60 @@ spec:
           value: "{{ agorakube_features.keycloak_oidc.admin.password }}"
         ports:
         - containerPort: 5432
+{% if agorakube_features.keycloak_oidc.storage.enabled | bool == True %}
+        volumeMounts:
+        - name: keycloakdb-data
+          mountPath: /var/lib/postgresql
+{% endif %}
+{% if agorakube_features.keycloak_oidc.storage.enabled | bool == True %}
+      volumes:
+      - name: keycloakdb-data
+        persistentVolumeClaim:
+          claimName: keycloakdb-data
+{% endif %}
+{% if agorakube_features.keycloak_oidc.storage.enabled | bool == True %}
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: keycloakdb-data
+  namespace: keycloak
+spec:
+{% if agorakube_features.keycloak_oidc.storage.type  == "hostpath" %}
+  storageClassName: keycloakdb-data-hostpath
+{% endif %}
+{% if agorakube_features.keycloak_oidc.storage.type  == "storageclass" %}
+  storageClassName: "{{ agorakube_features.keycloak_oidc.storage.storageclass.name }}"
+{% endif %}
+{% if agorakube_features.keycloak_oidc.storage.type  == "persistentvolume" %}
+  storageClassName: "{{ agorakube_features.keycloak_oidc.storage.persistentvolume.storageclass }}"
+{% endif %}
+  resources:
+    requests:
+      storage: {{ agorakube_features.keycloak_oidc.storage.capacity }}
+  volumeMode: Filesystem
+  accessModes:
+    - ReadWriteOnce
+{% if agorakube_features.keycloak_oidc.storage.type  == "persistentvolume" %}
+  volumeName: "{{ agorakube_features.keycloak_oidc.storage.persistentvolume.name }}"
+{% endif %}
+---
+{% if agorakube_features.keycloak_oidc.storage.type  == "hostpath" %}
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: keycloakdb-data-hostpath
+  namespace: keycloak
+spec:
+  storageClassName: keycloakdb-data-hostpath
+  capacity:
+    storage: {{ agorakube_features.keycloak_oidc.storage.capacity  }}
+  accessModes:
+    - ReadWriteOnce
+  hostPath:
+    path: "{{ agorakube_features.keycloak_oidc.storage.hostpath.path  }}"
+{% endif %}
+{% endif %}
 ---
 apiVersion: v1
 kind: Service

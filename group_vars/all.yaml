@@ -118,7 +118,7 @@ agorakube_features:
   argocd:
     enabled: false
    
-# keycloak_oidc is an Alpha feature and do not support persistence wet. Use it only for test purpose.
+# keycloak_oidc is an Alpha feature.
   keycloak_oidc:
     enabled: false
     admin:
@@ -126,21 +126,21 @@ agorakube_features:
       password: P@ssw0rd
     auto_bootstrap:
         bootstrap_keycloak: true
-        bootstrap_kube_apiserver: false
+        bootstrap_kube_apiserver: true
         populate_etc_hosts: true
         host: oidc.local.lan
-#    storage:
-#        enabled: False
-#        capacity: 10Gi
-#        type: "storageclass"
-#        storageclass:
-#          name: "default-jiva"
-#        persistentvolume:
-#          name: "my-pv-backup-etcd"
-#          storageclass: "my-storageclass-name"
-#        hostpath:
-#          nodename: "master1"
-#          path: /var/keycloak
+    storage:
+        enabled: False
+        capacity: 10Gi
+        type: "storageclass"
+        storageclass:
+          name: "default-jiva"
+        persistentvolume:
+          name: "my-pv-backup-etcd"
+          storageclass: "my-storageclass-name"
+        hostpath:
+          nodename: "master1"
+          path: /var/keycloak
 
 agorakube_populate_etc_hosts: True
 

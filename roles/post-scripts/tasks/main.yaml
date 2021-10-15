@@ -41,6 +41,10 @@
   include_tasks: nginx.yaml
   when: agorakube_features.ingress.controller == 'nginx'
 
+- name: Install openebs for persistence
+  include_tasks: openebs.yaml
+  when: agorakube_features.storage.enabled | bool == True
+
 - name: Install Keycloak OIDC
   include_tasks: keycloak-oidc.yaml
   when: agorakube_features.keycloak_oidc.enabled | bool == True
@@ -48,10 +52,6 @@
 - name: Install K8S Default Dashboard
   include_tasks: default_dashboard.yaml
   when: agorakube_features.dashboard.enabled | bool == True
-
-- name: Install openebs for persistence
-  include_tasks: openebs.yaml
-  when: agorakube_features.storage.enabled | bool == True
 
 - name: Install Monitoring
   include_tasks: monitoring.yaml
