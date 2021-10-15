@@ -84,8 +84,8 @@
   when:
   - agorakube_features.keycloak_oidc.auto_bootstrap.populate_etc_hosts | bool == True
   - agorakube_features.ingress.controller == 'nginx'
-  delegate_to: "{{item}}"
-  loop: "{{groups['all']}}"
+  delegate_to: "{{ item }}"
+  loop: "{{ groups['all'] }}"
 
 - name: Configure /etc/hosts file for OIDC whn ingress is traefik
   lineinfile:
@@ -95,8 +95,8 @@
   when:
   - agorakube_features.keycloak_oidc.auto_bootstrap.populate_etc_hosts | bool == True
   - agorakube_features.ingress.controller == 'traefik'
-  delegate_to: "{{item}}"
-  loop: "{{groups['all']}}"
+  delegate_to: "{{ item }}"
+  loop: "{{ groups['all'] }}"
 
 - name: Configure /etc/hosts file for OIDC when ingress is haproxy
   lineinfile:
@@ -106,5 +106,5 @@
   when:
   - agorakube_features.keycloak_oidc.auto_bootstrap.populate_etc_hosts | bool == True
   - agorakube_features.ingress.controller == 'haproxy'
-  delegate_to: "{{item}}"
-  loop: "{{groups['all']}}"
+  delegate_to: "{{ item }}"
+  loop: "{{ groups['all'] }}"
