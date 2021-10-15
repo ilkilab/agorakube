@@ -2,7 +2,7 @@
 apiVersion: v1
 kind: Namespace
 metadata:
-  name: monitoring
+  name: supervision
 #---
 #apiVersion: v1
 #kind: ConfigMap
@@ -19,7 +19,7 @@ apiVersion: apps/v1
 kind: DaemonSet
 metadata:
   name: node-exporter
-  namespace: monitoring
+  namespace: supervision
   labels:
     app: node-exporter
 spec:
@@ -129,7 +129,7 @@ apiVersion: v1
 kind: ServiceAccount
 metadata:
   name: prometheus
-  namespace: monitoring
+  namespace: supervision
 ---
 apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRoleBinding
@@ -142,55 +142,55 @@ roleRef:
 subjects:
 - kind: ServiceAccount
   name: prometheus
-  namespace: monitoring
-{% if agorakube_features.monitoring.persistent.enable | bool == True %}
+  namespace: supervision
+{% if agorakube_features.supervision.monitoring.persistent.enabled | bool == True %}
 ---
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
   name: prometheus-data
-  namespace: monitoring
+  namespace: supervision
   labels:
     openebs.io/target-affinity: agorakube-monitoring
 spec:
-{% if agorakube_features.monitoring.persistent.storage.type == "hostpath" %}
+{% if agorakube_features.supervision.monitoring.persistent.storage.type == "hostpath" %}
   storageClassName: persistent-prometheus-data
 {% endif %}
-{% if agorakube_features.monitoring.persistent.storage.type == "storageclass" %}
-  storageClassName: "{{ agorakube_features.monitoring.persistent.storage.storageclass.name }}"
+{% if agorakube_features.supervision.monitoring.persistent.storage.type == "storageclass" %}
+  storageClassName: "{{ agorakube_features.supervision.monitoring.persistent.storage.storageclass.name }}"
 {% endif %}
-{% if agorakube_features.monitoring.persistent.storage.type == "persistentvolume" %}
-  storageClassName: "{{ agorakube_features.monitoring.persistent.storage.persistentvolume.name }}"
+{% if agorakube_features.supervision.monitoring.persistent.storage.type == "persistentvolume" %}
+  storageClassName: "{{ agorakube_features.supervision.monitoring.persistent.storage.persistentvolume.name }}"
 {% endif %}
   resources:
     requests:
-      storage: "{{ agorakube_features.monitoring.persistent.storage.capacity }}"
+      storage: "{{ agorakube_features.supervision.monitoring.persistent.storage.capacity }}"
   volumeMode: Filesystem
   accessModes:
     - ReadWriteOnce
 {% endif %}
 ---
-{% if agorakube_features.monitoring.persistent.storage.type == "hostpath" %}
+{% if agorakube_features.supervision.monitoring.persistent.storage.type == "hostpath" %}
 apiVersion: v1
 kind: PersistentVolume
 metadata:
   name: persistentvolume-prometheus-data
-  namespace: monitoring
+  namespace: supervision
 spec:
   storageClassName: persistent-prometheus-data
   capacity:
-    storage: {{ agorakube_features.monitoring.persistent.storage.capacity }}
+    storage: {{ agorakube_features.supervision.monitoring.persistent.storage.capacity }}
   accessModes:
     - ReadWriteOnce
   hostPath:
-    path: "{{ agorakube_features.monitoring.persistent.storage.hostpath.path }}"
+    path: "{{ agorakube_features.supervision.monitoring.persistent.storage.hostpath.path }}"
 {% endif %}
 ---
 apiVersion: v1
 kind: ConfigMap
 metadata:
   name: prometheus-config
-  namespace: monitoring
+  namespace: supervision
 data:
   prometheus.yaml: |
 {% raw %}
@@ -204,7 +204,8 @@ data:
       - role: pod
       relabel_configs:
         - source_labels: [__meta_kubernetes_namespace]
-          regex: monitoring
+          #regex: monitoring
+          regex: supervision
           action: keep
         - source_labels: [__meta_kubernetes_pod_controller_name]
           regex: node-exporter
@@ -223,7 +224,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: prometheus
-  namespace: monitoring
+  namespace: supervision
 spec:
   selector:
     matchLabels:
@@ -232,7 +233,7 @@ spec:
     metadata:
       labels:
         app: prometheus
-{% if agorakube_features.monitoring.persistent.enable | bool == True  %}
+{% if agorakube_features.supervision.monitoring.persistent.enabled | bool == True  %}
         openebs.io/target-affinity: agorakube-monitoring
 {% endif %}
     spec:
@@ -272,7 +273,7 @@ spec:
         volumeMounts:
         - name: prometheus-config
           mountPath: /etc/prometheus
-{% if agorakube_features.monitoring.persistent.enable | bool == True %}
+{% if agorakube_features.supervision.monitoring.persistent.enabled | bool == True %}
         - name: prometheus-data
           mountPath: /prometheus
       initContainers:
@@ -287,7 +288,7 @@ spec:
       - name: prometheus-config
         configMap:
          name: prometheus-config
-{% if agorakube_features.monitoring.persistent.enable | bool == True %}
+{% if agorakube_features.supervision.monitoring.persistent.enabled | bool == True %}
       - name: prometheus-data
         persistentVolumeClaim:
             claimName: prometheus-data
@@ -297,7 +298,7 @@ apiVersion: v1
 kind: Service
 metadata:
   name: prometheus
-  namespace: monitoring
+  namespace: supervision
 spec:
   type: ClusterIP
   selector:
@@ -305,202 +306,3 @@ spec:
   ports:
   - port: 9090
     targetPort: 9090
----
-apiVersion: apps/v1
-kind: Deployment
-metadata:
-  name: grafana
-  namespace: monitoring
-spec:
-  selector:
-    matchLabels:
-      app: grafana
-  strategy:
-    type: Recreate
-  template:
-    metadata:
-      labels:
-        app: grafana    
-    spec:
-      securityContext:
-        fsGroup: 472
-      containers:
-      - name: grafana
-        image: grafana/grafana:7.1.0
-        ports:
-        - containerPort: 3000
-        env:
-          - name: GF_SECURITY_ADMIN_USER
-            value: "{{ agorakube_features.monitoring.admin.user }}"
-          - name: GF_SECURITY_ADMIN_PASSWORD
-            value: "{{ agorakube_features.monitoring.admin.password }}"
-          - name: GF_USERS_ALLOW_SIGN_UP
-            value: "false"
-        #readinessProbe:
-          #httpGet:
-            #path: /-/ready
-            #port: 3000
-          #initialDelaySeconds: 3
-          #periodSeconds: 5
-        #livenessProbe:
-          #httpGet:
-            #path: /-/healthy
-            #port: 3000
-          #failureThreshold: 1
-          #periodSeconds: 10
-        #startupProbe:
-          #httpGet:
-            #path: /-/healthy
-            #port: 3000
-          #failureThreshold: 30
-          #periodSeconds: 10
-        volumeMounts:
-        - name: grafana-datasource
-          mountPath: /etc/grafana/provisioning/datasources
-        - name: grafana-dashboard
-          mountPath: /etc/grafana/provisioning/dashboards
-        - name: init-grafana-dashboard
-          mountPath: /etc/grafana/provisioning/dashboards/default/
-        - name: grafana-data
-          mountPath: /var/lib/grafana/
-      initContainers:
-      - name: init-grafana-dashboard
-        image: busybox:1.32.0
-        command: ['sh', '-c', "wget https://raw.githubusercontent.com/bryanILKI/agorakube/monitoring_k8s_integration/roles/post-scripts/files/dashboards/agorakube-dashboard-v1.json -O /etc/grafana/provisioning/dashboards/default/agorakube-dashboard.json", "chmod -R 777 /etc/grafana/provisioning/dashboards/default"]
-        volumeMounts:
-        - name: init-grafana-dashboard
-          mountPath: /etc/grafana/provisioning/dashboards/default/
-      volumes:
-      - name: grafana-datasource
-        configMap:
-         name: grafana-datasource
-      - name: grafana-dashboard
-        configMap:
-         name: grafana-dashboard
-{% if agorakube_features.monitoring.persistent.enable | bool == True %}
-      - name: init-grafana-dashboard
-        persistentVolumeClaim:
-          claimName: persistent-dashboard
-      - name: grafana-data
-        persistentVolumeClaim:
-          claimName: grafana-data
-{% endif %}
-{% if agorakube_features.monitoring.persistent.enable | bool == True %}
----
-apiVersion: v1
-kind: PersistentVolumeClaim
-metadata:
-  name: grafana-data
-  namespace: monitoring
-  labels:
-    openebs.io/target-affinity: agorakube-monitoring
-spec:
-{% if agorakube_features.monitoring.persistent.storage.type == "hostpath" %}
-  storageClassName: persistent-dashboard-hostpath
-{% endif %}
-{% if agorakube_features.monitoring.persistent.storage.type == "storageclass" %}
-  storageClassName: "{{ agorakube_features.monitoring.persistent.storage.storageclass.name }}"
-{% endif %}
-{% if agorakube_features.monitoring.persistent.storage.type == "persistentvolume" %}
-  storageClassName: "{{ agorakube_features.monitoring.persistent.storage.persistentvolume.name }}"
-{% endif %}
-  resources:
-    requests:
-      storage: "{{ agorakube_features.monitoring.persistent.storage.capacity }}"
-  volumeMode: Filesystem
-  accessModes:
-    - ReadWriteOnce
----
-apiVersion: v1
-kind: PersistentVolumeClaim
-metadata:
-  name: persistent-dashboard
-  namespace: monitoring
-  labels:
-    openebs.io/target-affinity: agorakube-monitoring
-spec:
-{% if agorakube_features.monitoring.persistent.storage.type == "hostpath" %}
-  storageClassName: persistent-dashboard-hostpath
-{% endif %}
-{% if agorakube_features.monitoring.persistent.storage.type == "storageclass" %}
-  storageClassName: "{{ agorakube_features.monitoring.persistent.storage.storageclass.name }}"
-{% endif %}
-{% if agorakube_features.monitoring.persistent.storage.type == "persistentvolume" %}
-  storageClassName: "{{ agorakube_features.monitoring.persistent.storage.persistentvolume.name }}"
-{% endif %}
-  resources:
-    requests:
-      storage: "{{ agorakube_features.monitoring.persistent.storage.capacity }}"
-  volumeMode: Filesystem
-  accessModes:
-    - ReadWriteOnce
-{% endif %}
----
-{% if agorakube_features.monitoring.persistent.storage.type == "hostpath" %}
-apiVersion: v1
-kind: PersistentVolume
-metadata:
-  #name: persistentvolume-dashboard-hostpath
-  name: persistent-dashboard-hostpath
-  namespace: monitoring
-spec:
-  storageClassName: persistent-dashboard-hostpath
-  capacity:
-    storage: {{ agorakube_features.monitoring.persistent.storage.capacity }}
-  accessModes:
-    - ReadWriteOnce
-  hostPath:
-    path: "{{ agorakube_features.monitoring.persistent.storage.hostpath.path }}"
-{% endif %}
----
-apiVersion: v1
-kind: ConfigMap
-metadata:
-  name: grafana-datasource
-  namespace: monitoring
-data:
-  prometheus.yaml: |
-    apiVersion: 1
-    datasources:
-      - name: Prometheus
-        type: prometheus
-        access: proxy
-        orgId: 1
-        url: http://prometheus:9090
-        basicAuth: false
-        isDefault: true
-        editable: true
----
-apiVersion: v1
-kind: Service
-metadata:
-  name: grafana
-  namespace: monitoring
-spec:
-  type: ClusterIP
-  selector:
-    app: grafana
-  ports:
-  - port: 3000
-    targetPort: 3000
----
-apiVersion: v1
-kind: ConfigMap
-metadata:
-  name: grafana-dashboard
-  namespace: monitoring
-data:
-  dashboard.yaml: |
-    apiVersion: 1
-    providers:
-      - name: 'Prometheus'
-        orgId: 1
-        folder: ''
-        type: file
-        disableDeletion: false
-        editable: true
-        allowUiUpdates: true
-        options:
-          path: /etc/grafana/provisioning/dashboards/
-#  node.json: |
-#{% raw %}
