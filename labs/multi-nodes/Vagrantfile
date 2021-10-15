@@ -216,6 +216,8 @@ agorakube_features:
     replicas:
       #audit: 1
       controller_manager: 3
+  argocd:
+    enabled: false
 # keycloak_oidc is an Alpha feature and do not support persistence wet. Use it only for test purpose.
   keycloak_oidc:
     enabled: false
