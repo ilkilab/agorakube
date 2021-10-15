@@ -13,6 +13,7 @@ This is a list of points that will be explained in this instructions file for th
 - [Upgrade OpenEBS Storage](#upgrade-openEBS-storage)
 - [How to use Reloader](#how-to-use-reloader)
 - [AGORAKUBE Log Architecture](#agorakube-log-architecture)
+- [Upgrade And Downgrade Kubernetes with Agorakube](#upgrade-and-downgrade-kubernetes-with-Agorakube)
 - [Uninstall AGORAKUBE](#uninstall-agorakube)
 
 
@@ -413,6 +414,8 @@ agorakube_features:
     replicas:
       #audit: 1
       controller_manager: 3
+  argocd:
+    enabled: false
 # keycloak_oidc is an Alpha feature and do not support persistence yet. Use it only for test purpose.
   keycloak_oidc:
     enabled: false
@@ -573,6 +576,7 @@ This section allows you to configure your K8S features.
 | `agorakube_features.logrotate.enabled` | Enable Logrotate | **False** *(default)* |
 | `agorakube_features.logrotate.crontab` | Crontab used to run logrotate | **"* 2 * * *"** *(default) run every day at 2 AM* |
 | `agorakube_features.logrotate.day_retention` | Indicate how many days logs will be keep | **14** *(default)* |
+| `agorakube_features.argocd.enabled` | Enable ArgoCD | **false** *(default)* |
 | `agorakube_features.gatekeeper.enabled` | Enable Gatekeeper | **True** *(default)* |
 | `agorakube_features.gatekeeper.release` | Gatekeeper release to install | **3.4.0** *(default)* |
 | `agorakube_features.gatekeeper.replicas.audit `| Number of Gatekeeper Audit Replicas | **Not activate** *(default)* |
@@ -583,7 +587,7 @@ This section allows you to configure some other settings
 
 | Parameter | Description | Values |
 | --- | --- | --- |
-| `agorakube_populate_etc_hosts` | Add to all hostname/IPs of AGORAKUBE Cluster to /etc/hosts file of all hosts. Use it only if you don't have DNS server. | **False** *(default)* |
+| `agorakube_populate_etc_hosts` | Add to all hostname/IPs of AGORAKUBE Cluster to /etc/hosts file of all hosts. | **True** *(default)* |
 | `agorakube_encrypt_etcd_keys` | Array of keys/algorith used to crypt/decrypt data in etcd? Generate with : `head -c 32 /dev/urandom | base64` | **changeME !** *(default)* |
 | `restoration_snapshot_file` | ETCD backup path to be restored | **none** *(default)* |
 | `master_custom_alt_name`  | Optional DNS alt name to be added to kube-apiserver certificate | **""** *(default)* |
@@ -948,6 +952,22 @@ In "/var/log/kubernetes/" directory, log file size is limited to 1800 MB.
 Pods logs are stored in "/var/log/pods" directory.
 
 ETCD logs are only present in "journalctl". Run the following command to get ETCD logs from an "ETCD" host : `journalctl -xeu etcd`
+
+
+# Upgrade And Downgrade Kubernetes with Agorakube
+
+Edit "./group_vars/all.yaml" file with the following parameters
+
+```
+agorakube_base_components:
+  kubernetes:
+    release: v1.21.1  (Desired K8S release)
+    upgrade: true
+```
+
+Then apply your new Agorakube configuration by running the following command:
+
+`ansible-playbook agorakube.yaml`
 
 # Uninstall AGORAKUBE
 
