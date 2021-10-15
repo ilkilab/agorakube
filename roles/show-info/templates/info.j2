@@ -41,18 +41,17 @@ http://localhost:8001/api/v1/namespaces/kubernetes-dashboard/services/https:kube
 
 ################################################################################
 
-{% if agorakube_features.monitoring.enabled | bool == True %}
+{% if agorakube_features.supervision.monitoring.enabled | bool == True %}
 
 1.1. By default, run the follwoing command on your client machine. (Where your Browser is installed)
-# kubectl port-forward service/grafana 3000:3000 -n monitoring
-
+# kubectl port-forward service/grafana 3000:3000 -n supervision
 2.To log in to Grafana for the first time: open your web browser and go to 
 # http://localhost:3000
 
 3. To login, enter Default Grafana admin user and Default grafana admin password :
 
-user: {{ agorakube_features.monitoring.admin.user }}
-password: {{ agorakube_features.monitoring.admin.password }}
+user: {{ agorakube_features.supervision.monitoring.admin.user }}
+password: {{ agorakube_features.supervision.monitoring.admin.password }}
 
 {% endif %}
 
