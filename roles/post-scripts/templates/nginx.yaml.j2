@@ -446,9 +446,7 @@ spec:
           args:
             - /nginx-ingress-controller
             - --election-id=ingress-controller-leader
-{% if agorakube_features.ingress.release is version('v1.0.1', '<') %}
             - --ingress-class=nginx
-{% endif %}
             - --configmap=ingress-nginx/ingress-nginx-controller
             - --validating-webhook=:8443
             - --validating-webhook-certificate=/usr/local/certificates/cert
@@ -560,7 +558,7 @@ webhooks:
 {% endif %}
     rules:
       - apiGroups:
-          - extensions  # !!
+          #- extensions  # !!
           - networking.k8s.io
         apiVersions:
 {% if agorakube_base_components.kubernetes.release is version('v1.22', '<') %}
@@ -700,7 +698,7 @@ spec:
           image: docker.io/jettech/kube-webhook-certgen:v1.2.2
 {% endif %}
 {% if agorakube_features.ingress.release is version('v1.0.1', '>=') %}
-          image: k8s.gcr.io/ingress-nginx/kube-webhook-certgen:v1.1.1@sha256:64d8c73dca984af206adf9d6d7e46aa550362b1d7a01f3a0a91b20cc67868660  # !!
+          image: k8s.gcr.io/ingress-nginx/kube-webhook-certgen:v1.1.1@sha256:64d8c73dca984af206adf9d6d7e46aa550362b1d7a01f3a0a91b20cc67868660
 {% endif %}
           imagePullPolicy: IfNotPresent
           args:
@@ -764,7 +762,7 @@ spec:
           image: docker.io/jettech/kube-webhook-certgen:v1.2.2
 {% endif %}
 {% if agorakube_features.ingress.release is version('v1.0.1', '>=') %}
-          image: k8s.gcr.io/ingress-nginx/kube-webhook-certgen:v1.1.1@sha256:64d8c73dca984af206adf9d6d7e46aa550362b1d7a01f3a0a91b20cc67868660   # !!
+          image: k8s.gcr.io/ingress-nginx/kube-webhook-certgen:v1.1.1@sha256:64d8c73dca984af206adf9d6d7e46aa550362b1d7a01f3a0a91b20cc67868660
 {% endif %}
           imagePullPolicy: IfNotPresent
           args:
@@ -774,13 +772,6 @@ spec:
             - --patch-mutating=false
             - --secret-name=ingress-nginx-admission
             - --patch-failure-policy=Fail
-{% if agorakube_features.ingress.release is version('v1.0.1', '>=') %}
-          env:
-            - name: POD_NAMESPACE
-              valueFrom:
-                fieldRef:
-                  fieldPath: metadata.namespace
-{% endif %}
       restartPolicy: OnFailure
       serviceAccountName: ingress-nginx-admission
 {% if agorakube_features.ingress.release is version('v1.0.1', '>=') %}
