@@ -16,15 +16,15 @@ agorakube_pki:
 agorakube_base_components:
   etcd:
     release: v3.4.16
-    upgrade: False
+    upgrade: true
     check: true
     data_path: /var/lib/etcd
     backup:
-      enabled: False
+      enabled: false
       crontab: "*/30 * * * *"
       storage:
         capacity: 10Gi
-        enabled: False
+        enabled: true
         type: "storageclass"
         storageclass:
           name: "default-jiva"
@@ -36,6 +36,7 @@ agorakube_base_components:
           path: /var/etcd-backup
   kubernetes:
     release: v1.22.0
+    #release: v1.21.5
     upgrade: true
   container:
     engine: containerd
@@ -85,7 +86,8 @@ agorakube_features:
     enabled: true
   ingress:
     controller: nginx
-    release: v1.0.1
+    release: v1.0.4
+    #release: v0.46.0
   monitoring:
     enabled: false
     persistent:
