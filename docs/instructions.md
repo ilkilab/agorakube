@@ -990,7 +990,7 @@ spec:
 status:
   loadBalancer: {}
 ```
-
+Note: If you had already created an "ingress" ressource before version v1.0.4 : add `spec.ingressClassName: nginx` to your ressource.
 
 # AGORAKUBE Log Architecture
 
