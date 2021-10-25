@@ -74,7 +74,7 @@ spec:
 {% if agorakube_features.supervision.logging.dashboard | bool == True %}
       - name: init-logging-dashboard
         image: busybox:1.32.0
-        command: ['sh', '-c', "wget https://raw.githubusercontent.com/HaroldIlki/agorakube/log_centralization_check/roles/post-scripts/files/dashboards/agorakube-dashboard-v2.1.json -O /etc/grafana/provisioning/dashboards/logging/agorakube-dashboard-logging.json", "chmod -R 777 /etc/grafana/provisioning/dashboards/logging"] 
+        command: ['sh', '-c', "wget https://raw.githubusercontent.com/ilkilab/agorakube/log_centralization_check/roles/post-scripts/files/dashboards/agorakube-dashboard-v2.1.json -O /etc/grafana/provisioning/dashboards/logging/agorakube-dashboard-logging.json", "chmod -R 777 /etc/grafana/provisioning/dashboards/logging"] 
         volumeMounts:
         - name: init-logging-dashboard
           mountPath: /etc/grafana/provisioning/dashboards/logging/
