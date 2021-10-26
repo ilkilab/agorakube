@@ -52,6 +52,7 @@ spec:
           mountPath: /etc/grafana/provisioning/dashboards/logging/
 {% endif %}
       initContainers:
+{% if agorakube_features.supervision.monitoring.enabled | bool == True %}
 {% if agorakube_features.supervision.monitoring.dashboard | bool == True %}
       - name: init-grafana-dashboard-monitoring
         image: busybox:1.32.0
@@ -60,6 +61,8 @@ spec:
         - name: init-grafana-dashboard
           mountPath: /etc/grafana/provisioning/dashboards/default/
 {% endif %}
+{% endif %}
+{% if agorakube_features.supervision.logging.enabled | bool == True %}
 {% if agorakube_features.supervision.logging.dashboard | bool == True %}
       - name: init-grafana-dashboard-logging
         image: busybox:1.32.0
@@ -67,6 +70,7 @@ spec:
         volumeMounts:
         - name: init-logging-dashboard
           mountPath: /etc/grafana/provisioning/dashboards/logging/
+{% endif %}
 {% endif %}
       volumes:
       - name: grafana-datasource
@@ -214,6 +218,7 @@ metadata:
   name: grafana-datasource
   namespace: supervision
 data:
+{% if agorakube_features.supervision.monitoring.enabled | bool == True %}
   prometheus.yaml: |
     apiVersion: 1
     datasources:
@@ -225,6 +230,8 @@ data:
         basicAuth: false
         isDefault: true
         editable: true
+{% endif %}
+{% if agorakube_features.supervision.logging.enabled | bool == True %}
   grafana-loki.yaml: |
     apiVersion: 1
     datasources:
@@ -236,6 +243,7 @@ data:
         basicAuth: false
         isDefault: false
         editable: true
+{% endif %}
 ---
 apiVersion: v1
 kind: Service
@@ -268,5 +276,3 @@ data:
         allowUiUpdates: true
         options:
           path: /etc/grafana/provisioning/dashboards/
-#  node.json: |
-#{% raw %}
