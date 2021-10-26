@@ -18,7 +18,7 @@ spec:
   template:
     metadata:
       labels:
-        app: grafana    
+        app: grafana
     spec:
       securityContext:
         fsGroup: 472
@@ -34,24 +34,6 @@ spec:
             value: "{{ agorakube_features.supervision.dashboard.admin.password }}"
           - name: GF_USERS_ALLOW_SIGN_UP
             value: "false"
-        #readinessProbe:
-          #httpGet:
-            #path: /-/ready
-            #port: 3000
-          #initialDelaySeconds: 3
-          #periodSeconds: 5
-        #livenessProbe:
-          #httpGet:
-            #path: /-/healthy
-            #port: 3000
-          #failureThreshold: 1
-          #periodSeconds: 10
-        #startupProbe:
-          #httpGet:
-            #path: /-/healthy
-            #port: 3000
-          #failureThreshold: 30
-          #periodSeconds: 10
         volumeMounts:
         - name: grafana-datasource
           mountPath: /etc/grafana/provisioning/datasources
@@ -71,7 +53,7 @@ spec:
 {% endif %}
       initContainers:
 {% if agorakube_features.supervision.monitoring.dashboard | bool == True %}
-      - name: init-grafana-dashboard
+      - name: init-grafana-dashboard-monitoring
         image: busybox:1.32.0
         command: ['sh', '-c', "wget https://raw.githubusercontent.com/ilkilab/agorakube/log_centralization_check/roles/post-scripts/files/dashboards/agorakube-dashboard-v2.1.json -O /etc/grafana/provisioning/dashboards/default/agorakube-dashboard.json", "chmod -R 777 /etc/grafana/provisioning/dashboards/default"]
         volumeMounts:
@@ -79,9 +61,9 @@ spec:
           mountPath: /etc/grafana/provisioning/dashboards/default/
 {% endif %}
 {% if agorakube_features.supervision.logging.dashboard | bool == True %}
-      - name: init-logging-dashboard
+      - name: init-grafana-dashboard-logging
         image: busybox:1.32.0
-        command: ['sh', '-c', "wget https://raw.githubusercontent.com/ilkilab/agorakube/log_centralization_check/roles/post-scripts/files/dashboards/agorakube-dashboard-v2.1.json -O /etc/grafana/provisioning/dashboards/logging/agorakube-dashboard-logging.json", "chmod -R 777 /etc/grafana/provisioning/dashboards/logging"] 
+        command: ['sh', '-c', "wget https://raw.githubusercontent.com/ilkilab/agorakube/log_centralization_check/roles/post-scripts/files/dashboards/agorakube-dashboard-v2.1.json -O /etc/grafana/provisioning/dashboards/logging/agorakube-dashboard-logging.json", "chmod -R 777 /etc/grafana/provisioning/dashboards/logging"]
         volumeMounts:
         - name: init-logging-dashboard
           mountPath: /etc/grafana/provisioning/dashboards/logging/
@@ -93,20 +75,28 @@ spec:
       - name: grafana-dashboard
         configMap:
          name: grafana-dashboard
-{% if agorakube_features.supervision.monitoring.persistent.enabled | bool == True %}
+{% if agorakube_features.supervision.dashboard.persistent.enabled | bool == True %}
       - name: init-grafana-dashboard
         persistentVolumeClaim:
           claimName: persistent-dashboard
+{% endif %}
+{% if agorakube_features.supervision.dashboard.persistent.enabled | bool == False %}
+      - name: init-grafana-dashboard
+        emptyDir: {}
 {% endif %}
 {% if agorakube_features.supervision.dashboard.persistent.enabled | bool == True %}
       - name: grafana-data
         persistentVolumeClaim:
           claimName: grafana-data
 {% endif %}
-{% if agorakube_features.supervision.logging.persistent.enabled | bool == True %}
+{% if agorakube_features.supervision.dashboard.persistent.enabled | bool == True %}
       - name: init-logging-dashboard
         persistentVolumeClaim:
           claimName: persistent-dashboard-logging
+{% endif %}
+{% if agorakube_features.supervision.dashboard.persistent.enabled | bool == False %}
+      - name: init-logging-dashboard
+        emptyDir: {}
 {% endif %}
 {% if agorakube_features.supervision.dashboard.persistent.enabled | bool == True %}
 ---
