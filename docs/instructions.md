@@ -12,6 +12,7 @@ This is a list of points that will be explained in this instructions file for th
 - [Storage Benchmark](#storage-benchmark)
 - [Upgrade OpenEBS Storage](#upgrade-openEBS-storage)
 - [How to use Reloader](#how-to-use-reloader)
+- [How to use Ingress-Nginx](#how-to-use-ingress-nginx)
 - [AGORAKUBE Log Architecture](#agorakube-log-architecture)
 - [Upgrade And Downgrade Kubernetes with Agorakube](#upgrade-and-downgrade-kubernetes-with-Agorakube)
 - [Uninstall AGORAKUBE](#uninstall-agorakube)
@@ -958,6 +959,98 @@ metadata:
 spec:
   template: metadata:
 ```
+# How to use Ingress NGINX
+
+## Basic usage
+
+### Deployment
+
+Create a simple app.
+
+`kubectl create deploy deploy-simpleapp --image=nginx --replicas=1 --port=80 -o yaml --dry-run=client > deploy-simpleapp.yaml`
+
+```yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  creationTimestamp: null
+  labels:
+    app: deploy-simpleapp
+  name: deploy-simpleapp
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: deploy-simpleapp
+  strategy: {}
+  template:
+    metadata:
+      creationTimestamp: null
+      labels:
+        app: deploy-simpleapp
+    spec:
+      containers:
+      - image: nginx
+        name: nginx
+        ports:
+        - containerPort: 8080
+        resources: {}
+status: {}
+```
+
+### Service
+
+`kubectl expose deploy deploy-simpleapp --port=80 --target-port=80 -o yaml --dry-run=client > svc-simpleapp.yaml`
+
+```yaml
+apiVersion: v1
+kind: Service
+metadata:
+  creationTimestamp: null
+  labels:
+    app: deploy-simpleapp
+  name: deploy-simpleapp
+spec:
+  ports:
+  - port: 80
+    protocol: TCP
+    targetPort: 80
+  selector:
+    app: deploy-simpleapp
+status:
+  loadBalancer: {}
+```
+
+### Ingress
+
+Make sure to use the default ingressClass : nginx
+
+`kubectl create ingress ingress-simpleapp --rule=svcsimpleapp.kub"/=deploy-simpleapp:80" --class=nginx -o yaml --dry-run=client > ingress-simpleapp.yaml`
+
+```yaml
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  creationTimestamp: null
+  name: ingress-simpleapp
+spec:
+  ingressClassName: nginx
+  rules:
+  - host: svcsimpleapplast.kub
+    http:
+      paths:
+      - backend:
+          service:
+            name: deploy-simpleapp
+            port:
+              number: 80
+        path: /
+        pathType: Exact
+status:
+  loadBalancer: {}
+```
+Note: If you had already created an "ingress" resource before version v1.0.4 : add `spec.ingressClassName: nginx` to your resource.
+
 # AGORAKUBE Log Architecture
 
 Actually, AGORAKUBE configure Kubernetes components to write logs in "journalctl" an "/var/log/kubernetes/" directory.
