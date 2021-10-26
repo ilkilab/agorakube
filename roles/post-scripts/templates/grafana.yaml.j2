@@ -1,0 +1,275 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: grafana
+  namespace: supervision
+spec:
+  selector:
+    matchLabels:
+      app: grafana
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels:
+        app: grafana    
+    spec:
+      securityContext:
+        fsGroup: 472
+      containers:
+      - name: grafana
+        image: grafana/grafana:7.1.0
+        ports:
+        - containerPort: 3000
+        env:
+          - name: GF_SECURITY_ADMIN_USER
+            value: "{{ agorakube_features.supervision.dashboard.admin.user }}"
+          - name: GF_SECURITY_ADMIN_PASSWORD
+            value: "{{ agorakube_features.supervision.dashboard.admin.password }}"
+          - name: GF_USERS_ALLOW_SIGN_UP
+            value: "false"
+        #readinessProbe:
+          #httpGet:
+            #path: /-/ready
+            #port: 3000
+          #initialDelaySeconds: 3
+          #periodSeconds: 5
+        #livenessProbe:
+          #httpGet:
+            #path: /-/healthy
+            #port: 3000
+          #failureThreshold: 1
+          #periodSeconds: 10
+        #startupProbe:
+          #httpGet:
+            #path: /-/healthy
+            #port: 3000
+          #failureThreshold: 30
+          #periodSeconds: 10
+        volumeMounts:
+        - name: grafana-datasource
+          mountPath: /etc/grafana/provisioning/datasources
+        - name: grafana-dashboard
+          mountPath: /etc/grafana/provisioning/dashboards
+{% if agorakube_features.supervision.monitoring.dashboard | bool == True %}
+        - name: init-grafana-dashboard
+          mountPath: /etc/grafana/provisioning/dashboards/default/
+{% endif %}
+        - name: grafana-data
+          mountPath: /var/lib/grafana/
+{% if agorakube_features.supervision.logging.dashboard | bool == True %}
+        - name: init-logging-dashboard
+          mountPath: /etc/grafana/provisioning/dashboards/logging/
+{% endif %}
+      initContainers:
+{% if agorakube_features.supervision.monitoring.dashboard | bool == True %}
+      - name: init-grafana-dashboard
+        image: busybox:1.32.0
+        command: ['sh', '-c', "wget https://raw.githubusercontent.com/ilkilab/agorakube/log_centralization_check/roles/post-scripts/files/dashboards/agorakube-dashboard-v2.1.json -O /etc/grafana/provisioning/dashboards/default/agorakube-dashboard.json", "chmod -R 777 /etc/grafana/provisioning/dashboards/default"]
+        volumeMounts:
+        - name: init-grafana-dashboard
+          mountPath: /etc/grafana/provisioning/dashboards/default/
+{% endif %}
+{% if agorakube_features.supervision.logging.dashboard | bool == True %}
+      - name: init-logging-dashboard
+        image: busybox:1.32.0
+        command: ['sh', '-c', "wget https://raw.githubusercontent.com/ilkilab/agorakube/log_centralization_check/roles/post-scripts/files/dashboards/agorakube-dashboard-v2.1.json -O /etc/grafana/provisioning/dashboards/logging/agorakube-dashboard-logging.json", "chmod -R 777 /etc/grafana/provisioning/dashboards/logging"] 
+        volumeMounts:
+        - name: init-logging-dashboard
+          mountPath: /etc/grafana/provisioning/dashboards/logging/
+{% endif %}
+      volumes:
+      - name: grafana-datasource
+        configMap:
+         name: grafana-datasource
+      - name: grafana-dashboard
+        configMap:
+         name: grafana-dashboard
+{% if agorakube_features.supervision.monitoring.persistent.enabled | bool == True %}
+      - name: init-grafana-dashboard
+        persistentVolumeClaim:
+          claimName: persistent-dashboard
+{% endif %}
+{% if agorakube_features.supervision.dashboard.persistent.enabled | bool == True %}
+      - name: grafana-data
+        persistentVolumeClaim:
+          claimName: grafana-data
+{% endif %}
+{% if agorakube_features.supervision.logging.persistent.enabled | bool == True %}
+      - name: init-logging-dashboard
+        persistentVolumeClaim:
+          claimName: persistent-dashboard-logging
+{% endif %}
+{% if agorakube_features.supervision.dashboard.persistent.enabled | bool == True %}
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: grafana-data
+  namespace: supervision
+  labels:
+    openebs.io/target-affinity: agorakube-monitoring
+spec:
+{% if agorakube_features.supervision.dashboard.persistent.storage.type == "hostpath" %}
+  storageClassName: persistent-dashboard-hostpath
+{% endif %}
+{% if agorakube_features.supervision.dashboard.persistent.storage.type == "storageclass" %}
+  storageClassName: "{{ agorakube_features.supervision.dashboard.persistent.storage.storageclass.name }}"
+{% endif %}
+{% if agorakube_features.supervision.dashboard.persistent.storage.type == "persistentvolume" %}
+  storageClassName: "{{ agorakube_features.supervision.dashboard.persistent.storage.persistentvolume.name }}"
+{% endif %}
+  resources:
+    requests:
+      storage: "{{ agorakube_features.supervision.dashboard.persistent.storage.capacity }}"
+  volumeMode: Filesystem
+  accessModes:
+    - ReadWriteOnce
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: persistent-dashboard
+  namespace: supervision
+  labels:
+    openebs.io/target-affinity: agorakube-monitoring
+spec:
+{% if agorakube_features.supervision.dashboard.persistent.storage.type == "hostpath" %}
+  storageClassName: persistent-dashboard-hostpath
+{% endif %}
+{% if agorakube_features.supervision.dashboard.persistent.storage.type == "storageclass" %}
+  storageClassName: "{{ agorakube_features.supervision.dashboard.persistent.storage.storageclass.name }}"
+{% endif %}
+{% if agorakube_features.supervision.dashboard.persistent.storage.type == "persistentvolume" %}
+  storageClassName: "{{ agorakube_features.supervision.dashboard.persistent.storage.persistentvolume.name }}"
+{% endif %}
+  resources:
+    requests:
+      storage: "{{ agorakube_features.supervision.dashboard.persistent.storage.capacity }}"
+  volumeMode: Filesystem
+  accessModes:
+    - ReadWriteOnce
+{% endif %}
+---
+{% if agorakube_features.supervision.dashboard.persistent.storage.type == "hostpath" %}
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  #name: persistentvolume-dashboard-hostpath
+  name: persistent-dashboard-hostpath
+  namespace: supervision
+spec:
+  storageClassName: persistent-dashboard-hostpath
+  capacity:
+    storage: {{ agorakube_features.supervision.dashboard.persistent.storage.capacity }}
+  accessModes:
+    - ReadWriteOnce
+  hostPath:
+    path: "{{ agorakube_features.supervision.dashboard.persistent.storage.hostpath.path }}"
+{% endif %}
+{% if agorakube_features.supervision.logging.persistent.enabled | bool == True %}
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: persistent-dashboard-logging
+  namespace: supervision
+  labels:
+    openebs.io/target-affinity: agorakube-monitoring
+spec:
+{% if agorakube_features.supervision.logging.persistent.storage.type == "hostpath" %}
+  storageClassName: persistent-dashboard-logging-hostpath
+{% endif %}
+{% if agorakube_features.supervision.logging.persistent.storage.type == "storageclass" %}
+  storageClassName: "{{ agorakube_features.supervision.logging.persistent.storage.storageclass.name }}"
+{% endif %}
+{% if agorakube_features.supervision.logging.persistent.storage.type == "persistentvolume" %}
+  storageClassName: "{{ agorakube_features.supervision.logging.persistent.storage.persistentvolume.name }}"
+{% endif %}
+  resources:
+    requests:
+      storage: "{{ agorakube_features.supervision.logging.persistent.storage.capacity }}"
+  volumeMode: Filesystem
+  accessModes:
+    - ReadWriteOnce
+{% endif %}
+---
+{% if agorakube_features.supervision.logging.persistent.storage.type == "hostpath" %}
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: persistent-dashboard-logging-hostpath
+  namespace: supervision
+spec:
+  storageClassName: persistent-dashboard-logging-hostpath
+  capacity:
+    storage: {{ agorakube_features.supervision.logging.persistent.storage.capacity }}
+  accessModes:
+    - ReadWriteOnce
+  hostPath:
+    path: "{{ agorakube_features.supervision.logging.persistent.storage.hostpath.path }}"
+{% endif %}
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: grafana-datasource
+  namespace: supervision
+data:
+  prometheus.yaml: |
+    apiVersion: 1
+    datasources:
+      - name: Prometheus
+        type: prometheus
+        access: proxy
+        orgId: 1
+        url: http://prometheus:9090
+        basicAuth: false
+        isDefault: true
+        editable: true
+  grafana-loki.yaml: |
+    apiVersion: 1
+    datasources:
+      - name: Loki
+        type: loki
+        access: proxy
+        orgId: 1
+        url: http://loki:3100
+        basicAuth: false
+        isDefault: false
+        editable: true
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: grafana
+  namespace: supervision
+spec:
+  type: ClusterIP
+  selector:
+    app: grafana
+  ports:
+  - port: 3000
+    targetPort: 3000
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: grafana-dashboard
+  namespace: supervision
+data:
+  dashboard.yaml: |
+    apiVersion: 1
+    providers:
+      - name: 'Prometheus'
+        orgId: 1
+        folder: ''
+        type: file
+        disableDeletion: false
+        editable: true
+        allowUiUpdates: true
+        options:
+          path: /etc/grafana/provisioning/dashboards/
+#  node.json: |
+#{% raw %}

@@ -86,26 +86,58 @@ agorakube_features:
     enabled: true
   ingress:
     controller: nginx
-    release: v1.0.4
-    #release: v0.46.0
-  monitoring:
-    enabled: false
-    persistent:
-      enable: false
-      storage:
-        capacity: 4Gi
-        type: "storageclass"
-        storageclass:
-          name: "default-jiva"
-        persistentvolume:
-          name: "my-pv-monitoring"
-          storageclass: "my-storageclass-name"
-        hostpath:
-          nodename: "master1"
-          path: /var/monitoring-persistent
-    admin:
-      user: administrator
-      password: P@ssw0rd
+    release: v0.46.0
+
+  supervision:
+    monitoring:
+      enabled: true
+      dashboard: false
+      persistent:
+        enabled: true
+        storage:
+          capacity: 4Gi
+          type: "storageclass"
+          storageclass:
+            name: "default-jiva"
+          persistentvolume:
+            name: "my-pv-monitoring"
+            storageclass: "my-storageclass-name"
+          hostpath:
+            nodename: "master1"
+            path: /var/monitoring-persistent
+    dashboard:
+      admin:
+        user: administrator
+        password: P@ssw0rd
+      persistent:
+        enabled: true
+        storage:
+          capacity: 4Gi
+          type: "storageclass"
+          storageclass: 
+            name: "default-jiva"
+          persistentvolume:
+            name: "my-pv-monitoring"
+            storageclass: "my-storageclass-name"
+          hostpath: 
+            nodename: "master1"
+            path: /var/monitoring-persistent
+    logging:
+      enabled: true
+      dashboard: true
+      persistent:
+        enabled: true
+        storage:
+          capacity: 4Gi
+          type: "storageclass"
+          storageclass:
+            name: "default-jiva"
+          persistentvolume:
+            name: "my-pv-monitoring"
+            storageclass: "my-storageclass-name"
+          hostpath:
+            nodename: "master1"
+            path: /var/monitoring-persistent
   logrotate:
     enabled: false
     crontab: "* 2 * * *"
