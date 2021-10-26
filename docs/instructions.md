@@ -923,7 +923,7 @@ spec:
 
 Create a simple app.
 
-`kubectl create deploy deploy-simpleapp --image=dgkanatsios/simpleapp --replicas=1 --port=8080 -o yaml --dry-run=client > deploy-simpleapp.yaml`
+`kubectl create deploy deploy-simpleapp --image=nginx --replicas=1 --port=80 -o yaml --dry-run=client > deploy-simpleapp.yaml`
 
 ```yaml
 apiVersion: apps/v1
@@ -946,8 +946,8 @@ spec:
         app: deploy-simpleapp
     spec:
       containers:
-      - image: dgkanatsios/simpleapp
-        name: simpleapp
+      - image: nginx
+        name: nginx
         ports:
         - containerPort: 8080
         resources: {}
@@ -956,7 +956,7 @@ status: {}
 
 ### Service
 
-`kubectl expose deploy deploy-simpleapp --port=6262 --target-port=8080 -o yaml --dry-run=client > svc-simpleapp.yaml`
+`kubectl expose deploy deploy-simpleapp --port=80 --target-port=80 -o yaml --dry-run=client > svc-simpleapp.yaml`
 
 ```yaml
 apiVersion: v1
@@ -968,9 +968,9 @@ metadata:
   name: deploy-simpleapp
 spec:
   ports:
-  - port: 6262
+  - port: 80
     protocol: TCP
-    targetPort: 8080
+    targetPort: 80
   selector:
     app: deploy-simpleapp
 status:
@@ -981,7 +981,7 @@ status:
 
 Make sure to use the default ingressClass : nginx
 
-`kubectl create ingress ingress-simpleapp --rule=svcsimpleapp.kub"/=deploy-simpleapp:6262" --class=nginx -o yaml --dry-run=client > ingress-simpleapp.yaml`
+`kubectl create ingress ingress-simpleapp --rule=svcsimpleapp.kub"/=deploy-simpleapp:80" --class=nginx -o yaml --dry-run=client > ingress-simpleapp.yaml`
 
 ```yaml
 apiVersion: networking.k8s.io/v1
@@ -999,7 +999,7 @@ spec:
           service:
             name: deploy-simpleapp
             port:
-              number: 6262
+              number: 80
         path: /
         pathType: Exact
 status:
