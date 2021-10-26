@@ -56,7 +56,7 @@ spec:
 {% if agorakube_features.supervision.monitoring.dashboard | bool == True %}
       - name: init-grafana-dashboard-monitoring
         image: busybox:1.32.0
-        command: ['sh', '-c', "wget https://raw.githubusercontent.com/ilkilab/agorakube/develop/roles/post-scripts/files/dashboards/agorakube-dashboard-v2.1.json -O /etc/grafana/provisioning/dashboards/default/agorakube-dashboard.json", "chmod -R 777 /etc/grafana/provisioning/dashboards/default"]
+        command: ['sh', '-c', "wget https://raw.githubusercontent.com/ilkilab/agorakube/develop/roles/post-scripts/files/dashboards/agorakube-dashboard-v1.json -O /etc/grafana/provisioning/dashboards/default/agorakube-dashboard-v1.json", "chmod -R 777 /etc/grafana/provisioning/dashboards/default"]
         volumeMounts:
         - name: init-grafana-dashboard
           mountPath: /etc/grafana/provisioning/dashboards/default/
@@ -157,7 +157,6 @@ spec:
 apiVersion: v1
 kind: PersistentVolume
 metadata:
-  #name: persistentvolume-dashboard-hostpath
   name: persistent-dashboard-hostpath
   namespace: supervision
 spec:
