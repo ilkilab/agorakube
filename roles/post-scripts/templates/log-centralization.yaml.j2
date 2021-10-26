@@ -401,10 +401,10 @@ spec:
         openebs.io/target-affinity: agorakube-loki-data
 {% endif %}   
     spec:
-      securityContext:
-        runAsUser: 1000
-        runAsGroup: 3000
-        fsGroup: 2000
+#      securityContext:
+#        runAsUser: 1000
+#        runAsGroup: 3000
+#        fsGroup: 2000
       containers:
       - name: loki
         image: grafana/loki:latest
@@ -420,7 +420,7 @@ spec:
         volumeMounts:
         - name: loki-config
           mountPath: /etc/loki
-{% if agorakube_features.supervision.logging.dashboard | bool == True %}
+{% if agorakube_features.supervision.logging.persistent.enabled | bool == True %}
         - name: loki-data
           mountPath: /loki
 {% endif %}
