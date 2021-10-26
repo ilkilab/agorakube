@@ -59,7 +59,7 @@
 
 - name: Install Grafana
   include_tasks: grafana.yaml
-  when: agorakube_features.supervision.monitoring.enabled | bool == True
+  when: agorakube_features.supervision.monitoring.enabled | bool == True or agorakube_features.supervision.logging.enabled | bool == True 
 
 - name: enable etcd backup cronJob
   include_tasks: backup-etcd-cronjob.yaml
