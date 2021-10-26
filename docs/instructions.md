@@ -336,6 +336,9 @@ agorakube_network:
   service_ip:
     kubernetes: 10.32.0.1 
     coredns: 10.32.0.10
+  dns:
+    primary_forwarder: 8.8.8.8
+    secondary_forwarder: 8.8.4.4
   nodeport:
     range: 30000-32000
   external_loadbalancing:
@@ -509,6 +512,8 @@ This section allows you to configure your K8S cluster network settings.
 | `agorakube_network.cidr.service` | Service CIDR network | **10.32.0.0/16** *(default)* |
 | `agorakube_network.service_ip.kubernetes` | ClusterIP of *default.kubernetes* service. Should be the first IP available in `agorakube_network.cidr.service` | **10.32.0.1** *(default)* |
 | `agorakube_network.service_ip.coredns` | ClusterIP of *kube-system.kube-dns* service. | **10.32.0.10** *(default)* |
+| `agorakube_network.dns.primary_forwarder` | Default Primary DNS Forwarder | **8.8.8.8** *(default google DNS1)* |
+| `agorakube_network.dns.secondary_forwarder` | Default Secondary DNS Forwarder | **8.8.4.4** *(default google DNS2)* |
 | `agorakube_network.nodeport.range` | Range of allowed ports usable by NodePort services | **30000-32000** *(default)* |
 | `agorakube_network.external_loadbalancing.enabled` | Enable External LoadBalancing in ARP mode. Working only if On-Prem deployments | **False** *(default)* |
 | `agorakube_network.external_loadbalancing.ip_range` | IPs Range, or CIDR used by External LoadBalancer to assign External IPs  | **10.10.20.50-10.10.20.250** *(default range)* |
