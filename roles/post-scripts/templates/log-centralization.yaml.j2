@@ -104,7 +104,7 @@ data:
         DB                /var/log/flb_kube.db
         Mem_Buf_Limit     50MB
         Skip_Long_Lines   On
-  
+
   input-kubeproxy.conf: |
     [INPUT]
         Name              tail
@@ -143,7 +143,7 @@ data:
         Format      regex
         # https://regex101.com/r/4WZK5n/1
         Regex       ^\D{8}(?<severity>\w)(?<time>\d{4} [^\s]*)\s+(?<pid>\d+)\s+(?<source>[^ \]]+)\] (?<message>.*)$
-        Time_Key    time 
+        Time_Key    time
         Time_Format %d/%b/%Y:%H:%M:%S %z
 
     [PARSER]
@@ -283,7 +283,7 @@ spec:
 #        image: grafana/fluent-bit-plugin-loki:2.1.0-amd64
 #        image: fluent/fluent-bit:1.5
         imagePullPolicy: Always
-        #securityContext: 
+        #securityContext:
         #  privileged: true
         ports:
           - containerPort: 2020
@@ -358,7 +358,7 @@ spec:
   volumeMode: Filesystem
   accessModes:
     - ReadWriteOnce
-{% endif %}  
+{% endif %}
 ---
 # Add PV for Loki
 {% if agorakube_features.supervision.logging.persistent.storage.type == "hostpath" %}
@@ -396,10 +396,10 @@ spec:
   template:
     metadata:
       labels:
-        app: loki   
+        app: loki
 {% if agorakube_features.supervision.logging.persistent.enabled | bool == True  %}
         openebs.io/target-affinity: agorakube-loki-data
-{% endif %}   
+{% endif %}
     spec:
 #      securityContext:
 #        runAsUser: 1000
