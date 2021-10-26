@@ -61,8 +61,10 @@ spec:
         - name: init-grafana-dashboard
           mountPath: /etc/grafana/provisioning/dashboards/default/
 {% endif %}
+{% if agorakube_features.supervision.dashboard.persistent.enabled | bool == True %}
         - name: grafana-data
           mountPath: /var/lib/grafana/
+{% endif %}
 {% if agorakube_features.supervision.logging.dashboard | bool == True %}
         - name: init-logging-dashboard
           mountPath: /etc/grafana/provisioning/dashboards/logging/
