@@ -315,7 +315,6 @@ spec:
       - operator: "Exists"
         effect: "NoSchedule"
 ---
-# https://grafana.com/docs/loki/latest/configuration/loki/#configmap
 apiVersion: v1
 kind: Service
 metadata:
@@ -378,8 +377,6 @@ spec:
 {% endif %}
 
 ---
-
-# https://grafana.com/docs/loki/latest/configuration/loki/#configmap
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -424,6 +421,15 @@ spec:
         - name: loki-data
           mountPath: /loki
 {% endif %}
+      initContainers:
+{% if agorakube_features.supervision.dashboard.persistent.enabled | bool == True %}
+      - name: chmod-grafana-data
+        image: busybox:1.32.0
+        command: ['sh', '-c', "chmod -R 777 /loki"]
+        volumeMounts:
+        - name: loki-data
+          mountPath: /loki
+{% endif %}
       restartPolicy: Always
       terminationGracePeriodSeconds: 30
       volumes:
@@ -436,7 +442,6 @@ spec:
           claimName: loki-data
 {% endif %}
 ---
-# https://grafana.com/docs/loki/latest/configuration/loki/#configmap
 apiVersion: v1
 kind: ConfigMap
 metadata:
