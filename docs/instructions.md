@@ -973,9 +973,11 @@ Create a simple app pod.
 `kubectl run nginx --image=nginx --port 80`
 
 Customize you website front page:
+
 `kubectl exec nginx -- /bin/bash -c "echo My Super Website > /usr/share/nginx/html/index.html"`
 
 Create a service ClusterIP in front of your pod:
+
 `kubectl expose pod nginx --port=80 --name=frontend`
 
 Create an Ingress with the following code to publish your `frontend` service
@@ -998,7 +1000,7 @@ spec:
               number: 80
 ```
 
-Access your Ingress en see your website !
+Access your Ingress and see your website !
 
 Warning: Sine Nginx Controller v1.0.0, Ingress must declare `spec.ingressClassName: nginx` !
 Note: If you had already created an "ingress" resource before version v1.0.4 : add `spec.ingressClassName: nginx` to your resource.
