@@ -276,15 +276,14 @@ spec:
         prometheus.io/path: /api/v1/metrics/prometheus
     spec:
       serviceAccountName: fluent-bit
+      tolerations:
+        - effect: NoSchedule
+          operator: Exists
+      hostNetwork: true
+      hostPID: true
       containers:
       - name: fluent-bit
-        image: grafana/fluent-bit-plugin-loki:main-12d418b-amd64
-#        image: grafana/fluent-bit-plugin-loki:latest
-#        image: grafana/fluent-bit-plugin-loki:2.1.0-amd64
-#        image: fluent/fluent-bit:1.5
-        imagePullPolicy: Always
-        #securityContext:
-        #  privileged: true
+        image: grafana/fluent-bit-plugin-loki:main
         ports:
           - containerPort: 2020
         volumeMounts:
@@ -306,14 +305,6 @@ spec:
       - name: fluent-bit-config
         configMap:
           name: fluent-bit-config
-      tolerations:
-      - key: node-role.kubernetes.io/master
-        operator: Exists
-        effect: NoSchedule
-      - operator: "Exists"
-        effect: "NoExecute"
-      - operator: "Exists"
-        effect: "NoSchedule"
 ---
 apiVersion: v1
 kind: Service
@@ -404,7 +395,7 @@ spec:
 #        fsGroup: 2000
       containers:
       - name: loki
-        image: grafana/loki:latest
+        image: grafana/loki:2.3.0
         args:
           - -config.file=/etc/loki/config.yaml
           - -log.level=debug
@@ -486,7 +477,7 @@ data:
       boltdb_shipper:
         active_index_directory: /loki/boltdb-shipper-active
         cache_location: /loki/boltdb-shipper-cache
-        cache_ttl: 24h         # Can be increased for faster performance over longer query periods, uses more disk space
+        cache_ttl: 24h
         shared_store: filesystem
       filesystem:
         directory: /loki/chunks
@@ -498,7 +489,6 @@ data:
     limits_config:
       reject_old_samples: true
       reject_old_samples_max_age: 168h
-      unordered_writes: true
 
     chunk_store_config:
       max_look_back_period: 0s
