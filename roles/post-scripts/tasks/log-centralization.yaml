@@ -13,7 +13,7 @@
   changed_when: false
 
 - name: Apply templates 1
-  command: kubectl --kubeconfig {{ pki_path }}/kubeconfigs/admin/admin.conf apply -f {{ logging_tempdir.path }}/log-centralization.yaml
+  command: kubectl --kubeconfig {{ pki_path }}/kubeconfigs/admin/admin.conf apply -f {{ logging_tempdir.path }}/log-centralization.yaml --force
   register: apply_logging
   changed_when: >
     apply_logging.stdout is search("created")
