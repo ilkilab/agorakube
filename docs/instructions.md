@@ -968,91 +968,61 @@ spec:
 
 ### Deployment
 
-Create a simple app.
+Create a simple app pod.
 
-`kubectl create deploy deploy-simpleapp --image=nginx --replicas=1 --port=80 -o yaml --dry-run=client > deploy-simpleapp.yaml`
+`kubectl run nginx --image=nginx --port 80`
 
-```yaml
-apiVersion: apps/v1
-kind: Deployment
-metadata:
-  creationTimestamp: null
-  labels:
-    app: deploy-simpleapp
-  name: deploy-simpleapp
-spec:
-  replicas: 1
-  selector:
-    matchLabels:
-      app: deploy-simpleapp
-  strategy: {}
-  template:
-    metadata:
-      creationTimestamp: null
-      labels:
-        app: deploy-simpleapp
-    spec:
-      containers:
-      - image: nginx
-        name: nginx
-        ports:
-        - containerPort: 8080
-        resources: {}
-status: {}
+Customize you website front page:
+`kubectl exec nginx -- /bin/bash -c "echo My Super Website > /usr/share/nginx/html/index.html"`
+
+Create a service ClusterIP in front of your pod:
+`kubectl expose pod nginx --port=80 --name=frontend`
+
+Create an Ingress with the following code to publish your `frontend` service
 ```
-
-### Service
-
-`kubectl expose deploy deploy-simpleapp --port=80 --target-port=80 -o yaml --dry-run=client > svc-simpleapp.yaml`
-
-```yaml
-apiVersion: v1
-kind: Service
-metadata:
-  creationTimestamp: null
-  labels:
-    app: deploy-simpleapp
-  name: deploy-simpleapp
-spec:
-  ports:
-  - port: 80
-    protocol: TCP
-    targetPort: 80
-  selector:
-    app: deploy-simpleapp
-status:
-  loadBalancer: {}
-```
-
-### Ingress
-
-Make sure to use the default ingressClass : nginx
-
-`kubectl create ingress ingress-simpleapp --rule=svcsimpleapp.kub"/=deploy-simpleapp:80" --class=nginx -o yaml --dry-run=client > ingress-simpleapp.yaml`
-
-```yaml
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
-  creationTimestamp: null
-  name: ingress-simpleapp
+  name: test-ingress
+spec:
+  rules:
+  - host: foo.bar.com
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: frontend
+            port:
+              number: 80
+```
+
+Access your Ingress en see your website !
+
+Warning: Sine Nginx Controller v1.0.0, Ingress must declare `spec.ingressClassName: nginx` !
+Note: If you had already created an "ingress" resource before version v1.0.4 : add `spec.ingressClassName: nginx` to your resource.
+
+Sample:
+```
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: test-ingress
 spec:
   ingressClassName: nginx
   rules:
-  - host: svcsimpleapplast.kub
+  - host: foo.bar.com
     http:
       paths:
-      - backend:
+      - path: /
+        pathType: Prefix
+        backend:
           service:
-            name: deploy-simpleapp
+            name: frontend
             port:
               number: 80
-        path: /
-        pathType: Exact
-status:
-  loadBalancer: {}
 ```
-Note: If you had already created an "ingress" resource before version v1.0.4 : add `spec.ingressClassName: nginx` to your resource.
 
 # AGORAKUBE Log Architecture
 
