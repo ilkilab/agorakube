@@ -330,6 +330,7 @@ agorakube_base_components:
 
 agorakube_network:
   cni_plugin: calico
+  calico_autodetection_methode: "first-found"
   mtu: 0
   cidr:
     pod: 10.33.0.0/16
@@ -536,6 +537,7 @@ This section allows you to configure your K8S cluster network settings.
 | Parameter | Description | Values |
 | --- | --- | --- |
 | `agorakube_network.cni_plugin` | CNI plugin used to enable K8S hosts Networking | **calico** *(default)*, kube-router |
+| `agorakube_network.calico_autodetection_methode` | [Calico Autodetect Method](#configure-calico). Used by Calico to detect which IPv4 IFACE will be used to route between nodes  | **first-found** *(default)* |
 | `agorakube_network.mtu` | MTU for CNI plugin. Auto-MTU if set to **0**. Only used if `agorakube_network.cni_plugin` is set to **calico** | **0** *(default)* |
 | `agorakube_network.cidr.pod` | PODs CIDR network | **10.33.0.0/16** *(default)* |
 | `agorakube_network.cidr.service` | Service CIDR network | **10.32.0.0/16** *(default)* |
@@ -1076,6 +1078,10 @@ agorakube_base_components:
 Then apply your new Agorakube configuration by running the following command:
 
 `ansible-playbook agorakube.yaml`
+
+# Configure Calico
+
+
 
 # Uninstall AGORAKUBE
 
