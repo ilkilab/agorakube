@@ -3645,6 +3645,8 @@ spec:
             # Auto-detect the BGP IP address.
             - name: IP
               value: "autodetect"
+            - name: IP_AUTODETECTION_METHOD
+              value: "{{ agorakube_network.calico_autodetection_methode  }}"
             # Enable IPIP
             - name: CALICO_IPV4POOL_IPIP
               value: "Never"
