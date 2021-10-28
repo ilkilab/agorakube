@@ -330,7 +330,7 @@ agorakube_base_components:
 
 agorakube_network:
   cni_plugin: calico
-  calico_autodetection_methode: "first-found"
+  calico_autodetection_method: "first-found"
   mtu: 0
   cidr:
     pod: 10.33.0.0/16
@@ -537,7 +537,7 @@ This section allows you to configure your K8S cluster network settings.
 | Parameter | Description | Values |
 | --- | --- | --- |
 | `agorakube_network.cni_plugin` | CNI plugin used to enable K8S hosts Networking | **calico** *(default)*, kube-router |
-| `agorakube_network.calico_autodetection_methode` | [Calico Autodetect Method](#configure-calico). Used by Calico to detect which IPv4 IFACE will be used to route between nodes  | **first-found** *(default)* |
+| `agorakube_network.calico_autodetection_method` | [Calico Autodetect Method](#configure-calico). Used by Calico to detect which IPv4 IFACE will be used to route between nodes  | **first-found** *(default)* |
 | `agorakube_network.mtu` | MTU for CNI plugin. Auto-MTU if set to **0**. Only used if `agorakube_network.cni_plugin` is set to **calico** | **0** *(default)* |
 | `agorakube_network.cidr.pod` | PODs CIDR network | **10.33.0.0/16** *(default)* |
 | `agorakube_network.cidr.service` | Service CIDR network | **10.32.0.0/16** *(default)* |
@@ -1080,6 +1080,9 @@ Then apply your new Agorakube configuration by running the following command:
 `ansible-playbook agorakube.yaml`
 
 # Configure Calico
+
+With Agorakube, you can configure the way Calico discover node IFACE. In some case, Agorakube master/nodes can have multiple Iface, with different names, order, and subnet/network. In that case, Calico will need your help to discover which Iface should be used to route bettwen nodes. To do this, you can use "agorakube_network.calico_autodetection_method" parameter.
+The following sections describe the available IP autodetection methods.
 
 
 
