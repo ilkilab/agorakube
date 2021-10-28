@@ -54,31 +54,18 @@ data:
         HTTP_Listen   0.0.0.0
         HTTP_Port     2020
 
-    @INCLUDE input-kube-apiserver.conf
-    @INCLUDE input-kube-scheduler.conf
-    @INCLUDE input-kube-controller-manager.conf
-    @INCLUDE input-kubelet.conf
-    @INCLUDE input-kubeproxy.conf
+    @INCLUDE input-kubernetes.conf
     @INCLUDE output-loki.conf
-    #@INCLUDE filter-kubernetes.conf
 
-  input-kube-apiserver.conf: |
+  input-kubernetes.conf: |
     [INPUT]
         Name              tail
         Path              /var/log/kubernetes/kube-apiserver.log
-        Tag               apiserver
+        Tag               kube-apiserver
         DB                /var/log/flb_kube.db
         Mem_Buf_Limit     50MB
         Skip_Long_Lines   On
-        #Tag               kube.*
-        # Refresh_Interval  10
-        # Path              /var/log/*.log
-        # Path              /var/log/containers/*.log
-        Parser            docker
-        # Parser            kube
-        #Tag_Regex         ^\D{8}(?<severity>\w)(?<time>\d{4} [^\s]*)\s+(?<pid>\d+)\s+(?<source>[^ \]]+)\] (?<message>.*)$
-
-  input-kube-scheduler.conf: |
+        Parser            kube
     [INPUT]
         Name              tail
         Path              /var/log/kubernetes/kube-scheduler.log
@@ -86,8 +73,7 @@ data:
         DB                /var/log/flb_kube.db
         Mem_Buf_Limit     50MB
         Skip_Long_Lines   On
-
-  input-kube-controller-manager.conf: |
+        Parser            kube
     [INPUT]
         Name              tail
         Path              /var/log/kubernetes/kube-controller-manager.log
@@ -95,8 +81,7 @@ data:
         DB                /var/log/flb_kube.db
         Mem_Buf_Limit     50MB
         Skip_Long_Lines   On
-
-  input-kubelet.conf: |
+        Parser            kube
     [INPUT]
         Name              tail
         Path              /var/log/kubernetes/kubelet.log
@@ -104,101 +89,47 @@ data:
         DB                /var/log/flb_kube.db
         Mem_Buf_Limit     50MB
         Skip_Long_Lines   On
-
-  input-kubeproxy.conf: |
+        Parser            kube
     [INPUT]
         Name              tail
-        Path              /var/log/kubernetes/kubeproxy.log
-        Tag               kubeproxy
+        Path              /var/log/kubernetes/kube-proxy.log
         DB                /var/log/flb_kube.db
         Mem_Buf_Limit     50MB
+        Tag               kube-proxy
         Skip_Long_Lines   On
-
-
-  #filter-kubernetes.conf: |
-  #  [FILTER]
-  #      Name                kubernetes
-  #      Match               kube.*
-  #      Kube_URL            https://kubernetes.default.svc:443
-      #  Merge_Log           True
-      #  Merge_Log-Trim      True
-      #  Merge_Log_Key       True
-      #  K8S-Logging.Parser  True
-      #  Labels              True
-      #  Annotations         True
-      #  Keep_Log            False
-        # Kube_Tag_Prefix     kube
-        # K8S-Logging.Exclude Off
-        # Kube_CA_File        /var/run/secrets/kubernetes.io/serviceaccount/ca.crt
-        # Kube_Token_File     /var/run/secrets/kubernetes.io/serviceaccount/token
-        # Kube_Tag_Prefix     kube.var.log.containers.
-        # Merge_Log_Key       log_processed
-        # kubelet_Port        10250
-        # Buffer_Size         0
-        # Use_Kubelet         true
-
+        Parser            kube
+    [FILTER]
+        Name record_modifier
+        Match kube-apiserver
+        Record service kube-apiserver
+        Record hostname ${HOSTNAME}
+    [FILTER]
+        Name record_modifier
+        Match kube-scheduler
+        Record service kube-scheduler
+        Record hostname ${HOSTNAME}
+    [FILTER]
+        Name record_modifier
+        Match kube-controller-manager
+        Record service kube-controller-manager
+        Record hostname ${HOSTNAME}
+    [FILTER]
+        Name record_modifier
+        Match kubelet
+        Record service kubelet
+        Record hostname ${HOSTNAME}
+    [FILTER]
+        Name record_modifier
+        Match kube-proxy
+        Record service kube-proxy
+        Record hostname ${HOSTNAME}
   parsers.conf: |
     [PARSER]
         Name        kube
         Format      regex
-        # https://regex101.com/r/4WZK5n/1
-        Regex       ^\D{8}(?<severity>\w)(?<time>\d{4} [^\s]*)\s+(?<pid>\d+)\s+(?<source>[^ \]]+)\] (?<message>.*)$
+        Regex       ^(?<level>[^ ]*) (?<time>[^ ]*)     (?<number>[^ ]*) (?<message>[^ ].*)
         Time_Key    time
-        Time_Format %d/%b/%Y:%H:%M:%S %z
-
-    [PARSER]
-        Name   apache
-        Format regex
-        Regex  ^(?<host>[^ ]*) [^ ]* (?<user>[^ ]*) \[(?<time>[^\]]*)\] "(?<method>\S+)(?: +(?<path>[^\"]*?)(?: +\S*)?)?" (?<code>[^ ]*) (?<size>[^ ]*)(?: "(?<referer>[^\"]*)" "(?<agent>[^\"]*)")?$
-        Time_Key time
-        Time_Format %d/%b/%Y:%H:%M:%S %z
-
-    [PARSER]
-        Name   apache2
-        Format regex
-        Regex  ^(?<host>[^ ]*) [^ ]* (?<user>[^ ]*) \[(?<time>[^\]]*)\] "(?<method>\S+)(?: +(?<path>[^ ]*) +\S*)?" (?<code>[^ ]*) (?<size>[^ ]*)(?: "(?<referer>[^\"]*)" "(?<agent>[^\"]*)")?$
-        Time_Key time
-        Time_Format %d/%b/%Y:%H:%M:%S %z
-
-    [PARSER]
-        Name   apache_error
-        Format regex
-        Regex  ^\[[^ ]* (?<time>[^\]]*)\] \[(?<level>[^\]]*)\](?: \[pid (?<pid>[^\]]*)\])?( \[client (?<client>[^\]]*)\])? (?<message>.*)$
-
-    [PARSER]
-        Name   nginx
-        Format regex
-        Regex ^(?<remote>[^ ]*) (?<host>[^ ]*) (?<user>[^ ]*) \[(?<time>[^\]]*)\] "(?<method>\S+)(?: +(?<path>[^\"]*?)(?: +\S*)?)?" (?<code>[^ ]*) (?<size>[^ ]*)(?: "(?<referer>[^\"]*)" "(?<agent>[^\"]*)")?$
-        Time_Key time
-        Time_Format %d/%b/%Y:%H:%M:%S %z
-
-    [PARSER]
-        Name   json
-        Format json
-        Time_Key time
-        Time_Format %d/%b/%Y:%H:%M:%S %z
-
-    [PARSER]
-        Name        docker
-        Format      json
-        Time_Key    time
-        Time_Format %Y-%m-%dT%H:%M:%S.%L
-        Time_Keep   On
-
-    [PARSER]
-        # http://rubular.com/r/tjUt3Awgg4
-        Name cri
-        Format regex
-        Regex ^(?<time>[^ ]+) (?<stream>stdout|stderr) (?<logtag>[^ ]*) (?<message>.*)$
-        Time_Key    time
-        Time_Format %Y-%m-%dT%H:%M:%S.%L%z
-
-    [PARSER]
-        Name        syslog
-        Format      regex
-        Regex       ^\<(?<pri>[0-9]+)\>(?<time>[^ ]* {1,2}[^ ]* [^ ]*) (?<host>[^ ]*) (?<ident>[a-zA-Z0-9_\/\.\-]*)(?:\[(?<pid>[0-9]+)\])?(?:[^\:]*\:)? *(?<message>.*)$
-        Time_Key    time
-        Time_Format %b %d %H:%M:%S
+        Time_Format %H:%M:%S.%L
 
   output-loki.conf : |
     [OUTPUT]
@@ -208,45 +139,7 @@ data:
         tenant_id              kubernetes
         auto_kubernetes_labels off
         line_format            json
-        labels                 job=kubelet
-
-    [OUTPUT]
-        Name                   loki
-        Match                  *
-        host                   loki
-        tenant_id              kubernetes
-        auto_kubernetes_labels on
-        line_format            json
-        labels                 job=kube-apiserver
-        #label_keys             $job
-        #http_user
-
-    [OUTPUT]
-        Name                   loki
-        Match                  *
-        host                   loki
-        tenant_id              kubernetes
-        auto_kubernetes_labels off
-        line_format            json
-        labels                 job=kube-controller-manager
-
-    [OUTPUT]
-        Name                   loki
-        Match                  *
-        host                   loki
-        tenant_id              kubernetes
-        auto_kubernetes_labels off
-        line_format            json
-        labels                 job=kube-scheduler
-
-    [OUTPUT]
-        Name                   loki
-        Match                  *
-        host                   loki
-        tenant_id              kubernetes
-        auto_kubernetes_labels off
-        line_format            json
-        labels                 job=kubeproxy
+        labels                 job=kubernetes
 
 
 
