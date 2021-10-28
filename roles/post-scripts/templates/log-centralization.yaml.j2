@@ -398,7 +398,7 @@ spec:
         image: grafana/loki:2.3.0
         args:
           - -config.file=/etc/loki/config.yaml
-          - -log.level=debug
+          - -log.level=info
           - -target=all
         ports:
         - containerPort: 3100
