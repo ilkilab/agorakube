@@ -14,6 +14,7 @@ This is a list of points that will be explained in this instructions file for th
 - [How to use Reloader](#how-to-use-reloader)
 - [How to use Ingress-Nginx](#how-to-use-ingress-nginx)
 - [AGORAKUBE Log Architecture](#agorakube-log-architecture)
+- [Configure Calico](#configure-calico)
 - [Upgrade And Downgrade Kubernetes with Agorakube](#upgrade-and-downgrade-kubernetes-with-Agorakube)
 - [Uninstall AGORAKUBE](#uninstall-agorakube)
 
@@ -330,6 +331,7 @@ agorakube_base_components:
 
 agorakube_network:
   cni_plugin: calico
+  calico_autodetection_method: "first-found"
   mtu: 0
   cidr:
     pod: 10.33.0.0/16
@@ -536,6 +538,7 @@ This section allows you to configure your K8S cluster network settings.
 | Parameter | Description | Values |
 | --- | --- | --- |
 | `agorakube_network.cni_plugin` | CNI plugin used to enable K8S hosts Networking | **calico** *(default)*, kube-router |
+| `agorakube_network.calico_autodetection_method` | [Calico Autodetect Method](#configure-calico). Used by Calico to detect which IPv4 IFACE will be used to route between nodes  | **first-found** *(default)* |
 | `agorakube_network.mtu` | MTU for CNI plugin. Auto-MTU if set to **0**. Only used if `agorakube_network.cni_plugin` is set to **calico** | **0** *(default)* |
 | `agorakube_network.cidr.pod` | PODs CIDR network | **10.33.0.0/16** *(default)* |
 | `agorakube_network.cidr.service` | Service CIDR network | **10.32.0.0/16** *(default)* |
@@ -1076,6 +1079,71 @@ agorakube_base_components:
 Then apply your new Agorakube configuration by running the following command:
 
 `ansible-playbook agorakube.yaml`
+
+# Configure Calico
+
+With Agorakube, you can configure the way Calico discover node IFACE. In some case, Agorakube master/nodes can have multiple Iface, with different names, order, and subnet/network. In that case, Calico will need your help to discover which Iface should be used to route bettwen nodes. To do this, you can use "agorakube_network.calico_autodetection_method" parameter.
+The following sections describe the available IP autodetection methods. (From https://docs.projectcalico.org/reference/node/configuration#ip-autodetection-methods)
+
+## First-Found
+
+The `first-found` option enumerates all interface IP addresses and returns the first valid IP address (based on IP version and type of address) on the first valid interface. Certain known “local” interfaces are omitted, such as the docker bridge. The order that both the interfaces and the IP addresses are listed is system dependent.
+
+This is the default detection method. However, since this method only makes a very simplified guess, it is recommended to either configure the node with a specific IP address, or to use one of the other detection methods.
+
+```
+agorakube_network:
+  calico_autodetection_method: "fisrt-found"
+```
+
+## can-reach=DESTINATION
+
+The `can-reach` method uses your local routing to determine which IP address will be used to reach the supplied destination. Both IP addresses and domain names may be used.
+```
+agorakube_network:
+  calico_autodetection_method: "can-reach=8.8.8.8"
+```
+or
+```
+agorakube_network:
+  calico_autodetection_method: "can-reach=www.google.com"
+```
+
+## interface=INTERFACE-REGEX
+
+The interface method uses the supplied interface regular expression (golang syntax) to enumerate matching interfaces and to return the first IP address on the first matching interface. The order that both the interfaces and the IP addresses are listed is system dependent.
+
+```
+agorakube_network:
+  calico_autodetection_method: "interface=eth.*"
+```
+
+## skip-interface=INTERFACE-REGEX
+
+The `skip-interface` method uses the supplied interface regular expression (golang syntax) to exclude interfaces and to return the first IP address on the first interface that not matching. The order that both the interfaces and the IP addresses are listed is system dependent.
+
+```
+agorakube_network:
+  calico_autodetection_method: "skip-interface=enp6s0f0,eth.*"
+```
+
+## cidr=CIDR
+
+The `cidr` method uses one or more comma-separated IP ranges in CIDR format to determine valid IP addresses to choose from.
+```
+agorakube_network:
+  calico_autodetection_method: "cidr=10.10.20.0/24"
+```
+
+## Debug Calico
+
+If you notice some network trouble with calico, deploy a calico pod with : `kubectl apply -f https://docs.projectcalico.org/manifests/calicoctl.yaml`
+
+Then, print IFACE used by Calico with : `kubectl exec -ti -n kube-system calicoctl -- /calicoctl get nodes --allow-version-mismatch -o wide`
+
+Calicoctl help command:  `kubectl exec -ti -n kube-system calicoctl -- /calicoctl -h`
+
+
 
 # Uninstall AGORAKUBE
 
