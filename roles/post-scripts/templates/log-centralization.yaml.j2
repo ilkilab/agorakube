@@ -280,7 +280,7 @@ spec:
         - effect: NoSchedule
           operator: Exists
       hostNetwork: true
-      hostPID: true
+      dnsPolicy: ClusterFirstWithHostNet
       containers:
       - name: fluent-bit
         image: grafana/fluent-bit-plugin-loki:main
@@ -398,7 +398,8 @@ spec:
         image: grafana/loki:2.3.0
         args:
           - -config.file=/etc/loki/config.yaml
-          - -log.level=info
+          - -log.level=warn
+          - -print-config-stderr=true
           - -target=all
         ports:
         - containerPort: 3100
