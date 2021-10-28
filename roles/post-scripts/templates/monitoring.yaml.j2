@@ -3,497 +3,306 @@ apiVersion: v1
 kind: Namespace
 metadata:
   name: supervision
----
-apiVersion: v1
-kind: ServiceAccount
-metadata:
-  name: fluent-bit
-  namespace: supervision
----
-apiVersion: rbac.authorization.k8s.io/v1
-kind: ClusterRole
-metadata:
-  name: fluent-bit
-rules:
-- apiGroups: [""]
-  resources:
-    - namespaces
-    - pods
-    - nodes
-    - nodes/proxy
-  verbs: ["get", "list", "watch"]
----
-apiVersion: rbac.authorization.k8s.io/v1
-kind: ClusterRoleBinding
-metadata:
-  name: fluent-bit
-roleRef:
-  apiGroup: rbac.authorization.k8s.io
-  kind: ClusterRole
-  name: fluent-bit
-subjects:
-- kind: ServiceAccount
-  name: fluent-bit
-  namespace: supervision
----
-apiVersion: v1
-kind: ConfigMap
-metadata:
-  name: fluent-bit-config
-  namespace: supervision
-  labels:
-    k8s-app: fluent-bit
-data:
-  fluent-bit.conf: |
-    [SERVICE]
-        Flush         1
-        Log_Level     info
-        Daemon        off
-        Parsers_File  parsers.conf
-        HTTP_Server   On
-        HTTP_Listen   0.0.0.0
-        HTTP_Port     2020
-
-    @INCLUDE input-kube-apiserver.conf
-    @INCLUDE input-kube-scheduler.conf
-    @INCLUDE input-kube-controller-manager.conf
-    @INCLUDE input-kubelet.conf
-    @INCLUDE input-kubeproxy.conf
-    @INCLUDE output-loki.conf
-    #@INCLUDE filter-kubernetes.conf
-
-  input-kube-apiserver.conf: |
-    [INPUT]
-        Name              tail
-        Path              /var/log/kubernetes/kube-apiserver.log
-        Tag               apiserver
-        DB                /var/log/flb_kube.db
-        Mem_Buf_Limit     50MB
-        Skip_Long_Lines   On
-        #Tag               kube.*
-        # Refresh_Interval  10
-        # Path              /var/log/*.log
-        # Path              /var/log/containers/*.log
-        Parser            docker
-        # Parser            kube
-        #Tag_Regex         ^\D{8}(?<severity>\w)(?<time>\d{4} [^\s]*)\s+(?<pid>\d+)\s+(?<source>[^ \]]+)\] (?<message>.*)$
-
-  input-kube-scheduler.conf: |
-    [INPUT]
-        Name              tail
-        Path              /var/log/kubernetes/kube-scheduler.log
-        Tag               kube-scheduler
-        DB                /var/log/flb_kube.db
-        Mem_Buf_Limit     50MB
-        Skip_Long_Lines   On
-
-  input-kube-controller-manager.conf: |
-    [INPUT]
-        Name              tail
-        Path              /var/log/kubernetes/kube-controller-manager.log
-        Tag               kube-controller-manager
-        DB                /var/log/flb_kube.db
-        Mem_Buf_Limit     50MB
-        Skip_Long_Lines   On
-
-  input-kubelet.conf: |
-    [INPUT]
-        Name              tail
-        Path              /var/log/kubernetes/kubelet.log
-        Tag               kubelet
-        DB                /var/log/flb_kube.db
-        Mem_Buf_Limit     50MB
-        Skip_Long_Lines   On
-
-  input-kubeproxy.conf: |
-    [INPUT]
-        Name              tail
-        Path              /var/log/kubernetes/kubeproxy.log
-        Tag               kubeproxy
-        DB                /var/log/flb_kube.db
-        Mem_Buf_Limit     50MB
-        Skip_Long_Lines   On
-
-
-  #filter-kubernetes.conf: |
-  #  [FILTER]
-  #      Name                kubernetes
-  #      Match               kube.*
-  #      Kube_URL            https://kubernetes.default.svc:443
-      #  Merge_Log           True
-      #  Merge_Log-Trim      True
-      #  Merge_Log_Key       True
-      #  K8S-Logging.Parser  True
-      #  Labels              True
-      #  Annotations         True
-      #  Keep_Log            False
-        # Kube_Tag_Prefix     kube
-        # K8S-Logging.Exclude Off
-        # Kube_CA_File        /var/run/secrets/kubernetes.io/serviceaccount/ca.crt
-        # Kube_Token_File     /var/run/secrets/kubernetes.io/serviceaccount/token
-        # Kube_Tag_Prefix     kube.var.log.containers.
-        # Merge_Log_Key       log_processed
-        # kubelet_Port        10250
-        # Buffer_Size         0
-        # Use_Kubelet         true
-
-  parsers.conf: |
-    [PARSER]
-        Name        kube
-        Format      regex
-        # https://regex101.com/r/4WZK5n/1
-        Regex       ^\D{8}(?<severity>\w)(?<time>\d{4} [^\s]*)\s+(?<pid>\d+)\s+(?<source>[^ \]]+)\] (?<message>.*)$
-        Time_Key    time
-        Time_Format %d/%b/%Y:%H:%M:%S %z
-
-    [PARSER]
-        Name   apache
-        Format regex
-        Regex  ^(?<host>[^ ]*) [^ ]* (?<user>[^ ]*) \[(?<time>[^\]]*)\] "(?<method>\S+)(?: +(?<path>[^\"]*?)(?: +\S*)?)?" (?<code>[^ ]*) (?<size>[^ ]*)(?: "(?<referer>[^\"]*)" "(?<agent>[^\"]*)")?$
-        Time_Key time
-        Time_Format %d/%b/%Y:%H:%M:%S %z
-
-    [PARSER]
-        Name   apache2
-        Format regex
-        Regex  ^(?<host>[^ ]*) [^ ]* (?<user>[^ ]*) \[(?<time>[^\]]*)\] "(?<method>\S+)(?: +(?<path>[^ ]*) +\S*)?" (?<code>[^ ]*) (?<size>[^ ]*)(?: "(?<referer>[^\"]*)" "(?<agent>[^\"]*)")?$
-        Time_Key time
-        Time_Format %d/%b/%Y:%H:%M:%S %z
-
-    [PARSER]
-        Name   apache_error
-        Format regex
-        Regex  ^\[[^ ]* (?<time>[^\]]*)\] \[(?<level>[^\]]*)\](?: \[pid (?<pid>[^\]]*)\])?( \[client (?<client>[^\]]*)\])? (?<message>.*)$
-
-    [PARSER]
-        Name   nginx
-        Format regex
-        Regex ^(?<remote>[^ ]*) (?<host>[^ ]*) (?<user>[^ ]*) \[(?<time>[^\]]*)\] "(?<method>\S+)(?: +(?<path>[^\"]*?)(?: +\S*)?)?" (?<code>[^ ]*) (?<size>[^ ]*)(?: "(?<referer>[^\"]*)" "(?<agent>[^\"]*)")?$
-        Time_Key time
-        Time_Format %d/%b/%Y:%H:%M:%S %z
-
-    [PARSER]
-        Name   json
-        Format json
-        Time_Key time
-        Time_Format %d/%b/%Y:%H:%M:%S %z
-
-    [PARSER]
-        Name        docker
-        Format      json
-        Time_Key    time
-        Time_Format %Y-%m-%dT%H:%M:%S.%L
-        Time_Keep   On
-
-    [PARSER]
-        # http://rubular.com/r/tjUt3Awgg4
-        Name cri
-        Format regex
-        Regex ^(?<time>[^ ]+) (?<stream>stdout|stderr) (?<logtag>[^ ]*) (?<message>.*)$
-        Time_Key    time
-        Time_Format %Y-%m-%dT%H:%M:%S.%L%z
-
-    [PARSER]
-        Name        syslog
-        Format      regex
-        Regex       ^\<(?<pri>[0-9]+)\>(?<time>[^ ]* {1,2}[^ ]* [^ ]*) (?<host>[^ ]*) (?<ident>[a-zA-Z0-9_\/\.\-]*)(?:\[(?<pid>[0-9]+)\])?(?:[^\:]*\:)? *(?<message>.*)$
-        Time_Key    time
-        Time_Format %b %d %H:%M:%S
-
-  output-loki.conf : |
-    [OUTPUT]
-        Name                   loki
-        Match                  *
-        host                   loki
-        tenant_id              kubernetes
-        auto_kubernetes_labels off
-        line_format            json
-        labels                 job=kubelet
-
-    [OUTPUT]
-        Name                   loki
-        Match                  *
-        host                   loki
-        tenant_id              kubernetes
-        auto_kubernetes_labels on
-        line_format            json
-        labels                 job=kube-apiserver
-        #label_keys             $job
-        #http_user
-
-    [OUTPUT]
-        Name                   loki
-        Match                  *
-        host                   loki
-        tenant_id              kubernetes
-        auto_kubernetes_labels off
-        line_format            json
-        labels                 job=kube-controller-manager
-
-    [OUTPUT]
-        Name                   loki
-        Match                  *
-        host                   loki
-        tenant_id              kubernetes
-        auto_kubernetes_labels off
-        line_format            json
-        labels                 job=kube-scheduler
-
-    [OUTPUT]
-        Name                   loki
-        Match                  *
-        host                   loki
-        tenant_id              kubernetes
-        auto_kubernetes_labels off
-        line_format            json
-        labels                 job=kubeproxy
-
-
-
+#---
+#apiVersion: v1
+#kind: ConfigMap
+#metadata:
+#  name: web-config-node-exporter
+#  namespace: monitoring
+#data:
+#  web-config.yml: |
+#    tls_server_config:
+#      cert_file: /var/tls-monitoring/crt.pem
+#      key_file: /var/tls-monitoring/key.pem
 ---
 apiVersion: apps/v1
 kind: DaemonSet
 metadata:
-  name: fluent-bit
+  name: node-exporter
   namespace: supervision
   labels:
-    k8s-app: fluent-bit-logging
-    version: v1
-    kubernetes.io/cluster-service: "true"
+    app: node-exporter
 spec:
   selector:
     matchLabels:
-      k8s-app: fluent-bit-logging
+      app: node-exporter
   template:
     metadata:
       labels:
-        k8s-app: fluent-bit-logging
-        version: v1
-        kubernetes.io/cluster-service: "true"
-      annotations:
-        prometheus.io/scrape: "true"
-        prometheus.io/port: "2020"
-        prometheus.io/path: /api/v1/metrics/prometheus
+        app: node-exporter
     spec:
-      serviceAccountName: fluent-bit
       tolerations:
         - effect: NoSchedule
           operator: Exists
       hostNetwork: true
       hostPID: true
       containers:
-      - name: fluent-bit
-        image: grafana/fluent-bit-plugin-loki:main
+      - name: node-exporter
+        image: quay.io/prometheus/node-exporter:v1.1.0
+        args:
+          - --path.procfs=/host/proc
+          - --path.sysfs=/host/sys
+          #- --web.config="/etc/node-exporter/web-config.yml"
+          #- --no-collector.arp
+          #- --no-collector.bcache
+          #- --no-collector.bonding
+          #- --no-collector.conntrack
+          #- --no-collector.cpu
+          #- --no-collector.cpufreq
+          #- --no-collector.diskstats
+          #- --no-collector.edac
+          #- --no-collector.entropy
+          #- --no-collector.filefd
+          #- --no-collector.filesystem
+          #- --no-collector.hwmon
+          #- --no-collector.infiniband
+          #- --no-collector.ipvs
+          #- --no-collector.loadavg
+          #- --no-collector.mdadm
+          #- --no-collector.meminfo
+          #- --no-collector.netclass
+          #- --no-collector.netdev
+          #- --no-collector.netstat
+          #- --no-collector.nfs
+          #- --no-collector.nfsd
+          #- --no-collector.pressure
+          #- --no-collector.rapl
+          #- --no-collector.schedstat
+          #- --no-collector.sockstat
+          #- --no-collector.softnet
+          #- --no-collector.stat
+          #- --no-collector.textfile
+          #- --no-collector.thermal_zone
+          #- --no-collector.time
+          #- --no-collector.timex
+          #- --no-collector.udp_queues
+          #- --no-collector.uname
+          #- --no-collector.vmstat
+          #- --no-collector.xfs
+          #- --no-collector.zfs
         ports:
-          - containerPort: 2020
+        - name: metrics
+          containerPort: 9100
         volumeMounts:
-        - name: varlog
-          mountPath: /var/log
-        - name: varlibdockercontainers
-          mountPath: /var/lib/docker/containers
-          readOnly: true
-        - name: fluent-bit-config
-          mountPath: /fluent-bit/etc/
-      terminationGracePeriodSeconds: 30
+        - name: proc
+          mountPath: /host/proc
+        - name: sys
+          mountPath: /host/sys
+#        - name: web-config
+#          mountPath: /etc/node-exporter/web-config.yml
+#          subPath: web-config.yml
+#        - name: tls-monitoring
+#          mountPath: /var/tls-monitoring/
       volumes:
-      - name: varlog
-        hostPath:
-          path: /var/log
-      - name: varlibdockercontainers
-        hostPath:
-          path: /var/lib/docker/containers
-      - name: fluent-bit-config
-        configMap:
-          name: fluent-bit-config
+        - name: proc
+          hostPath:
+            path: /proc
+        - name: sys
+          hostPath:
+            path: /sys
+#        - name: web-config
+#          configMap:
+#            name: web-config-node-exporter
+#        - name: tls-monitoring
+#          secret:
+#            secretName: tls-monitoring
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: prometheus
+rules:
+- apiGroups: [""]
+  resources:
+  - nodes
+  - services
+  - endpoints
+  - pods
+  verbs: ["get", "list", "watch"]
+- apiGroups:
+  - extensions
+  resources:
+  - ingresses
+  verbs: ["get", "list", "watch"]
 ---
 apiVersion: v1
-kind: Service
+kind: ServiceAccount
 metadata:
-  name: loki
+  name: prometheus
   namespace: supervision
-  labels:
-    app: loki
-spec:
-  type: ClusterIP
-  selector:
-    app: loki
-  ports:
-  - name: loki-http
-    port: 3100
-    # Add protocol
-    protocol: TCP
-    targetPort: 3100
-{% if agorakube_features.supervision.logging.persistent.enabled | bool == True %}
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: prometheus
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: prometheus
+subjects:
+- kind: ServiceAccount
+  name: prometheus
+  namespace: supervision
+{% if agorakube_features.supervision.monitoring.persistent.enabled | bool == True %}
 ---
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
-  name: loki-data
+  name: prometheus-data
   namespace: supervision
   labels:
-    openebs.io/target-affinity: agorakube-loki-data
+    openebs.io/target-affinity: agorakube-monitoring
 spec:
-{% if agorakube_features.supervision.logging.persistent.storage.type == "hostpath" %}
-  storageClassName: persistent-loki-hostpath
+{% if agorakube_features.supervision.monitoring.persistent.storage.type == "hostpath" %}
+  storageClassName: persistent-prometheus-data
 {% endif %}
-{% if agorakube_features.supervision.logging.persistent.storage.type == "storageclass" %}
-  storageClassName: "{{ agorakube_features.supervision.logging.persistent.storage.storageclass.name }}"
+{% if agorakube_features.supervision.monitoring.persistent.storage.type == "storageclass" %}
+  storageClassName: "{{ agorakube_features.supervision.monitoring.persistent.storage.storageclass.name }}"
 {% endif %}
-{% if agorakube_features.supervision.logging.persistent.storage.type == "persistentvolume" %}
-  storageClassName: "{{ agorakube_features.supervision.logging.persistent.storage.persistentvolume.name }}"
+{% if agorakube_features.supervision.monitoring.persistent.storage.type == "persistentvolume" %}
+  storageClassName: "{{ agorakube_features.supervision.monitoring.persistent.storage.persistentvolume.name }}"
 {% endif %}
   resources:
     requests:
-      storage: "{{ agorakube_features.supervision.logging.persistent.storage.capacity }}"
+      storage: "{{ agorakube_features.supervision.monitoring.persistent.storage.capacity }}"
   volumeMode: Filesystem
   accessModes:
     - ReadWriteOnce
 {% endif %}
 ---
-# Add PV for Loki
-{% if agorakube_features.supervision.logging.persistent.storage.type == "hostpath" %}
+{% if agorakube_features.supervision.monitoring.persistent.storage.type == "hostpath" %}
 apiVersion: v1
 kind: PersistentVolume
 metadata:
-  name: persistent-loki-hostpath
+  name: persistentvolume-prometheus-data
   namespace: supervision
 spec:
-  storageClassName: persistent-loki-hostpath
+  storageClassName: persistent-prometheus-data
   capacity:
-    storage: {{ agorakube_features.supervision.logging.persistent.storage.capacity }}
+    storage: {{ agorakube_features.supervision.monitoring.persistent.storage.capacity }}
   accessModes:
     - ReadWriteOnce
   hostPath:
-    path: "{{ agorakube_features.supervision.logging.persistent.storage.hostpath.path }}"
-{% endif %}
-
----
-apiVersion: apps/v1
-kind: Deployment
-metadata:
-  name: loki
-  namespace: supervision
-  labels:
-    app: loki
-spec:
-  selector:
-    matchLabels:
-      app: loki
-  strategy:
-    type: Recreate
-  template:
-    metadata:
-      labels:
-        app: loki
-{% if agorakube_features.supervision.logging.persistent.enabled | bool == True  %}
-        openebs.io/target-affinity: agorakube-loki-data
-{% endif %}
-    spec:
-#      securityContext:
-#        runAsUser: 1000
-#        runAsGroup: 3000
-#        fsGroup: 2000
-      containers:
-      - name: loki
-        image: grafana/loki:2.3.0
-        args:
-          - -config.file=/etc/loki/config.yaml
-          - -log.level=debug
-          - -target=all
-        ports:
-        - containerPort: 3100
-          # Add protocol
-          name: http
-          protocol: TCP
-        volumeMounts:
-        - name: loki-config
-          mountPath: /etc/loki
-{% if agorakube_features.supervision.logging.persistent.enabled | bool == True %}
-        - name: loki-data
-          mountPath: /loki
-{% endif %}
-      initContainers:
-{% if agorakube_features.supervision.dashboard.persistent.enabled | bool == True %}
-      - name: chmod-grafana-data
-        image: busybox:1.32.0
-        command: ['sh', '-c', "chmod -R 777 /loki"]
-        volumeMounts:
-        - name: loki-data
-          mountPath: /loki
-{% endif %}
-      restartPolicy: Always
-      terminationGracePeriodSeconds: 30
-      volumes:
-      - name: loki-config
-        configMap:
-          name: loki-config
-{% if agorakube_features.supervision.logging.persistent.enabled | bool == True %}
-      - name: loki-data
-        persistentVolumeClaim:
-          claimName: loki-data
+    path: "{{ agorakube_features.supervision.monitoring.persistent.storage.hostpath.path }}"
 {% endif %}
 ---
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: loki-config
+  name: prometheus-config
   namespace: supervision
 data:
-  config.yaml: |
-    auth_enabled: false
-
-    server:
-      http_listen_port: 3100
-      grpc_listen_port: 9096
-
-    ingester:
-      wal:
-        enabled: true
-        dir: /loki/wal
-      lifecycler:
-        address: 127.0.0.1
-        ring:
-          kvstore:
-            store: inmemory
-          replication_factor: 1
-        final_sleep: 0s
-      chunk_idle_period: 1h       # Any chunk not receiving new logs in this time will be flushed
-      max_chunk_age: 1h           # All chunks will be flushed when they hit this age, default is 1h
-      chunk_target_size: 1048576  # Loki will attempt to build chunks up to 1.5MB, flushing first if chunk_idle_period or max_chunk_age is reached first
-      chunk_retain_period: 30s    # Must be greater than index read cache TTL if using an index cache (Default index read cache TTL is 5m)
-      max_transfer_retries: 0     # Chunk transfers disabled
-
-    schema_config:
-      configs:
-        - from: 2020-10-24
-          store: boltdb-shipper
-          object_store: filesystem
-          schema: v11
-          index:
-            prefix: index_
-            period: 24h
-
-    storage_config:
-      boltdb_shipper:
-        active_index_directory: /loki/boltdb-shipper-active
-        cache_location: /loki/boltdb-shipper-cache
-        cache_ttl: 24h         # Can be increased for faster performance over longer query periods, uses more disk space
-        shared_store: filesystem
-      filesystem:
-        directory: /loki/chunks
-
-    compactor:
-      working_directory: /loki/boltdb-shipper-compactor
-      shared_store: filesystem
-
-    limits_config:
-      reject_old_samples: true
-      reject_old_samples_max_age: 168h
-      unordered_writes: true
-
-    chunk_store_config:
-      max_look_back_period: 0s
-
-    table_manager:
-      retention_deletes_enabled: false
-      retention_period: 0s
+  prometheus.yaml: |
+{% raw %}
+    global:
+      scrape_interval: 10s
+      scrape_timeout: 5s
+      evaluation_interval: 1m
+    scrape_configs:
+    - job_name: 'node-exporter'
+      kubernetes_sd_configs:
+      - role: pod
+      relabel_configs:
+        - source_labels: [__meta_kubernetes_namespace]
+          #regex: monitoring
+          regex: supervision
+          action: keep
+        - source_labels: [__meta_kubernetes_pod_controller_name]
+          regex: node-exporter
+          action: keep
+        - source_labels: [__meta_kubernetes_pod_container_port_number]
+          regex: 9100
+          action: keep
+      scheme: http
+      #tls_config:
+      #  ca_file: /var/run/secrets/kubernetes.io/serviceaccount/ca.crt
+      #  insecure_skip_verify: true
+      #bearer_token_file: /var/run/secrets/kubernetes.io/serviceaccount/token
+{% endraw %}
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: prometheus
+  namespace: supervision
+spec:
+  selector:
+    matchLabels:
+      app: prometheus
+  template:
+    metadata:
+      labels:
+        app: prometheus
+{% if agorakube_features.supervision.monitoring.persistent.enabled | bool == True  %}
+        openebs.io/target-affinity: agorakube-monitoring
+{% endif %}
+    spec:
+      serviceAccountName: prometheus
+      containers:
+      - name: prometheus
+        image: prom/prometheus:v2.24.1
+        args:
+          - --web.enable-lifecycle
+          - --web.listen-address=0.0.0.0:9090
+          - --web.enable-admin-api
+          - --web.page-title=IKE-Prometheus
+          - --storage.tsdb.path=/prometheus
+          - --config.file=/etc/prometheus/prometheus.yaml
+          - --storage.tsdb.retention.time=30d
+        ports:
+        - name: metrics
+          containerPort: 9090
+        readinessProbe:
+          httpGet:
+            path: /-/ready
+            port: 9090
+          initialDelaySeconds: 3
+          periodSeconds: 5
+        livenessProbe:
+          httpGet:
+            path: /-/healthy
+            port: 9090
+          failureThreshold: 1
+          periodSeconds: 10
+        startupProbe:
+          httpGet:
+            path: /-/healthy
+            port: 9090
+          failureThreshold: 30
+          periodSeconds: 10
+        volumeMounts:
+        - name: prometheus-config
+          mountPath: /etc/prometheus
+{% if agorakube_features.supervision.monitoring.persistent.enabled | bool == True %}
+        - name: prometheus-data
+          mountPath: /prometheus
+      initContainers:
+      - name: prometheus-data-set-permissions
+        image: busybox:1.32.0
+        command: ["/bin/chown","-R","65534:65534", "/prometheus"]
+        volumeMounts:
+        - name: prometheus-data
+          mountPath: /prometheus
+{% endif %}
+      volumes:
+      - name: prometheus-config
+        configMap:
+         name: prometheus-config
+{% if agorakube_features.supervision.monitoring.persistent.enabled | bool == True %}
+      - name: prometheus-data
+        persistentVolumeClaim:
+            claimName: prometheus-data
+{% endif %}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: prometheus
+  namespace: supervision
+spec:
+  type: ClusterIP
+  selector:
+    app: prometheus
+  ports:
+  - port: 9090
+    targetPort: 9090
