@@ -39,38 +39,36 @@ spec:
           mountPath: /etc/grafana/provisioning/datasources
         - name: grafana-dashboard
           mountPath: /etc/grafana/provisioning/dashboards
-{% if agorakube_features.supervision.monitoring.dashboard | bool == True %}
         - name: init-grafana-dashboard
           mountPath: /etc/grafana/provisioning/dashboards/default/
-{% endif %}
 {% if agorakube_features.supervision.dashboard.persistent.enabled | bool == True %}
         - name: grafana-data
           mountPath: /var/lib/grafana/
 {% endif %}
-{% if agorakube_features.supervision.logging.dashboard | bool == True %}
-        - name: init-logging-dashboard
-          mountPath: /etc/grafana/provisioning/dashboards/logging/
-{% endif %}
       initContainers:
-{% if agorakube_features.supervision.monitoring.enabled | bool == True %}
-{% if agorakube_features.supervision.monitoring.dashboard | bool == True %}
+{% if agorakube_features.supervision.monitoring.enabled | bool == True and agorakube_features.supervision.monitoring.dashboard | bool == True %}
       - name: init-grafana-dashboard-monitoring
         image: busybox:1.32.0
-        command: ['sh', '-c', "wget https://raw.githubusercontent.com/ilkilab/agorakube/develop/roles/post-scripts/files/dashboards/agorakube-dashboard-v2.1.json -O /etc/grafana/provisioning/dashboards/default/agorakube-dashboard.json", "chmod -R 777 /etc/grafana/provisioning/dashboards/default"]
+        command: ['sh', '-c', "wget https://raw.githubusercontent.com/ilkilab/agorakube/develop/roles/post-scripts/files/dashboards/agorakube-dashboard-v1.json -O /etc/grafana/provisioning/dashboards/default/agorakube-dashboard-v1.json", "chmod -R 777 /etc/grafana/provisioning/dashboards/default"]
         volumeMounts:
         - name: init-grafana-dashboard
           mountPath: /etc/grafana/provisioning/dashboards/default/
 {% endif %}
-{% endif %}
-{% if agorakube_features.supervision.logging.enabled | bool == True %}
-{% if agorakube_features.supervision.logging.dashboard | bool == True %}
+{% if agorakube_features.supervision.logging.enabled | bool == True and agorakube_features.supervision.logging.dashboard | bool == True %}
       - name: init-grafana-dashboard-logging
         image: busybox:1.32.0
-        command: ['sh', '-c', "wget https://raw.githubusercontent.com/ilkilab/agorakube/develop/roles/post-scripts/files/dashboards/agorakube-dashboard-v2.1.json -O /etc/grafana/provisioning/dashboards/logging/agorakube-dashboard-logging.json", "chmod -R 777 /etc/grafana/provisioning/dashboards/logging"]
+        command: ['sh', '-c', "wget https://raw.githubusercontent.com/ilkilab/agorakube/develop/roles/post-scripts/files/dashboards/agorakube-dashboard-v2.1.json -O /etc/grafana/provisioning/dashboards/default/agorakube-dashboard-logging.json", "chmod -R 777 /etc/grafana/provisioning/dashboards/default"]
         volumeMounts:
-        - name: init-logging-dashboard
-          mountPath: /etc/grafana/provisioning/dashboards/logging/
+        - name: init-grafana-dashboard
+          mountPath: /etc/grafana/provisioning/dashboards/default/
 {% endif %}
+{% if agorakube_features.supervision.dashboard.persistent.enabled | bool == True %}
+      - name: chmod-grafana-data
+        image: busybox:1.32.0
+        command: ['sh', '-c', "chmod -R 777 /var/lib/grafana"]
+        volumeMounts:
+        - name: grafana-data
+          mountPath: /var/lib/grafana
 {% endif %}
       volumes:
       - name: grafana-datasource
@@ -79,29 +77,14 @@ spec:
       - name: grafana-dashboard
         configMap:
          name: grafana-dashboard
-{% if agorakube_features.supervision.dashboard.persistent.enabled | bool == True %}
-      - name: init-grafana-dashboard
-        persistentVolumeClaim:
-          claimName: persistent-dashboard
-{% endif %}
-{% if agorakube_features.supervision.dashboard.persistent.enabled | bool == False %}
       - name: init-grafana-dashboard
         emptyDir: {}
-{% endif %}
 {% if agorakube_features.supervision.dashboard.persistent.enabled | bool == True %}
       - name: grafana-data
         persistentVolumeClaim:
           claimName: grafana-data
 {% endif %}
-{% if agorakube_features.supervision.dashboard.persistent.enabled | bool == True %}
-      - name: init-logging-dashboard
-        persistentVolumeClaim:
-          claimName: persistent-dashboard-logging
-{% endif %}
-{% if agorakube_features.supervision.dashboard.persistent.enabled | bool == False %}
-      - name: init-logging-dashboard
-        emptyDir: {}
-{% endif %}
+
 {% if agorakube_features.supervision.dashboard.persistent.enabled | bool == True %}
 ---
 apiVersion: v1
@@ -113,31 +96,7 @@ metadata:
     openebs.io/target-affinity: agorakube-monitoring
 spec:
 {% if agorakube_features.supervision.dashboard.persistent.storage.type == "hostpath" %}
-  storageClassName: persistent-dashboard-hostpath
-{% endif %}
-{% if agorakube_features.supervision.dashboard.persistent.storage.type == "storageclass" %}
-  storageClassName: "{{ agorakube_features.supervision.dashboard.persistent.storage.storageclass.name }}"
-{% endif %}
-{% if agorakube_features.supervision.dashboard.persistent.storage.type == "persistentvolume" %}
-  storageClassName: "{{ agorakube_features.supervision.dashboard.persistent.storage.persistentvolume.name }}"
-{% endif %}
-  resources:
-    requests:
-      storage: "{{ agorakube_features.supervision.dashboard.persistent.storage.capacity }}"
-  volumeMode: Filesystem
-  accessModes:
-    - ReadWriteOnce
----
-apiVersion: v1
-kind: PersistentVolumeClaim
-metadata:
-  name: persistent-dashboard
-  namespace: supervision
-  labels:
-    openebs.io/target-affinity: agorakube-monitoring
-spec:
-{% if agorakube_features.supervision.dashboard.persistent.storage.type == "hostpath" %}
-  storageClassName: persistent-dashboard-hostpath
+  storageClassName: persistent-grafana-data-hostpath
 {% endif %}
 {% if agorakube_features.supervision.dashboard.persistent.storage.type == "storageclass" %}
   storageClassName: "{{ agorakube_features.supervision.dashboard.persistent.storage.storageclass.name }}"
@@ -157,11 +116,9 @@ spec:
 apiVersion: v1
 kind: PersistentVolume
 metadata:
-  #name: persistentvolume-dashboard-hostpath
-  name: persistent-dashboard-hostpath
-  namespace: supervision
+  name: persistent-grafana-data-hostpath
 spec:
-  storageClassName: persistent-dashboard-hostpath
+  storageClassName: persistent-grafana-data-hostpath
   capacity:
     storage: {{ agorakube_features.supervision.dashboard.persistent.storage.capacity }}
   accessModes:
@@ -169,48 +126,7 @@ spec:
   hostPath:
     path: "{{ agorakube_features.supervision.dashboard.persistent.storage.hostpath.path }}"
 {% endif %}
-{% if agorakube_features.supervision.logging.persistent.enabled | bool == True %}
----
-apiVersion: v1
-kind: PersistentVolumeClaim
-metadata:
-  name: persistent-dashboard-logging
-  namespace: supervision
-  labels:
-    openebs.io/target-affinity: agorakube-monitoring
-spec:
-{% if agorakube_features.supervision.logging.persistent.storage.type == "hostpath" %}
-  storageClassName: persistent-dashboard-logging-hostpath
-{% endif %}
-{% if agorakube_features.supervision.logging.persistent.storage.type == "storageclass" %}
-  storageClassName: "{{ agorakube_features.supervision.logging.persistent.storage.storageclass.name }}"
-{% endif %}
-{% if agorakube_features.supervision.logging.persistent.storage.type == "persistentvolume" %}
-  storageClassName: "{{ agorakube_features.supervision.logging.persistent.storage.persistentvolume.name }}"
-{% endif %}
-  resources:
-    requests:
-      storage: "{{ agorakube_features.supervision.logging.persistent.storage.capacity }}"
-  volumeMode: Filesystem
-  accessModes:
-    - ReadWriteOnce
-{% endif %}
----
-{% if agorakube_features.supervision.logging.persistent.storage.type == "hostpath" %}
-apiVersion: v1
-kind: PersistentVolume
-metadata:
-  name: persistent-dashboard-logging-hostpath
-  namespace: supervision
-spec:
-  storageClassName: persistent-dashboard-logging-hostpath
-  capacity:
-    storage: {{ agorakube_features.supervision.logging.persistent.storage.capacity }}
-  accessModes:
-    - ReadWriteOnce
-  hostPath:
-    path: "{{ agorakube_features.supervision.logging.persistent.storage.hostpath.path }}"
-{% endif %}
+
 ---
 apiVersion: v1
 kind: ConfigMap
@@ -276,3 +192,5 @@ data:
         allowUiUpdates: true
         options:
           path: /etc/grafana/provisioning/dashboards/
+#  node.json: |
+#{% raw %}

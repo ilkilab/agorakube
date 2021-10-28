@@ -104,7 +104,7 @@ data:
         DB                /var/log/flb_kube.db
         Mem_Buf_Limit     50MB
         Skip_Long_Lines   On
-  
+
   input-kubeproxy.conf: |
     [INPUT]
         Name              tail
@@ -143,7 +143,7 @@ data:
         Format      regex
         # https://regex101.com/r/4WZK5n/1
         Regex       ^\D{8}(?<severity>\w)(?<time>\d{4} [^\s]*)\s+(?<pid>\d+)\s+(?<source>[^ \]]+)\] (?<message>.*)$
-        Time_Key    time 
+        Time_Key    time
         Time_Format %d/%b/%Y:%H:%M:%S %z
 
     [PARSER]
@@ -276,15 +276,14 @@ spec:
         prometheus.io/path: /api/v1/metrics/prometheus
     spec:
       serviceAccountName: fluent-bit
+      tolerations:
+        - effect: NoSchedule
+          operator: Exists
+      hostNetwork: true
+      hostPID: true
       containers:
       - name: fluent-bit
-        image: grafana/fluent-bit-plugin-loki:main-12d418b-amd64
-#        image: grafana/fluent-bit-plugin-loki:latest
-#        image: grafana/fluent-bit-plugin-loki:2.1.0-amd64
-#        image: fluent/fluent-bit:1.5
-        imagePullPolicy: Always
-        #securityContext: 
-        #  privileged: true
+        image: grafana/fluent-bit-plugin-loki:main
         ports:
           - containerPort: 2020
         volumeMounts:
@@ -306,16 +305,7 @@ spec:
       - name: fluent-bit-config
         configMap:
           name: fluent-bit-config
-      tolerations:
-      - key: node-role.kubernetes.io/master
-        operator: Exists
-        effect: NoSchedule
-      - operator: "Exists"
-        effect: "NoExecute"
-      - operator: "Exists"
-        effect: "NoSchedule"
 ---
-# https://grafana.com/docs/loki/latest/configuration/loki/#configmap
 apiVersion: v1
 kind: Service
 metadata:
@@ -358,7 +348,7 @@ spec:
   volumeMode: Filesystem
   accessModes:
     - ReadWriteOnce
-{% endif %}  
+{% endif %}
 ---
 # Add PV for Loki
 {% if agorakube_features.supervision.logging.persistent.storage.type == "hostpath" %}
@@ -378,8 +368,6 @@ spec:
 {% endif %}
 
 ---
-
-# https://grafana.com/docs/loki/latest/configuration/loki/#configmap
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -396,10 +384,10 @@ spec:
   template:
     metadata:
       labels:
-        app: loki   
+        app: loki
 {% if agorakube_features.supervision.logging.persistent.enabled | bool == True  %}
         openebs.io/target-affinity: agorakube-loki-data
-{% endif %}   
+{% endif %}
     spec:
 #      securityContext:
 #        runAsUser: 1000
@@ -407,7 +395,7 @@ spec:
 #        fsGroup: 2000
       containers:
       - name: loki
-        image: grafana/loki:latest
+        image: grafana/loki:2.3.0
         args:
           - -config.file=/etc/loki/config.yaml
           - -log.level=debug
@@ -424,6 +412,15 @@ spec:
         - name: loki-data
           mountPath: /loki
 {% endif %}
+      initContainers:
+{% if agorakube_features.supervision.dashboard.persistent.enabled | bool == True %}
+      - name: chmod-grafana-data
+        image: busybox:1.32.0
+        command: ['sh', '-c', "chmod -R 777 /loki"]
+        volumeMounts:
+        - name: loki-data
+          mountPath: /loki
+{% endif %}
       restartPolicy: Always
       terminationGracePeriodSeconds: 30
       volumes:
@@ -436,7 +433,6 @@ spec:
           claimName: loki-data
 {% endif %}
 ---
-# https://grafana.com/docs/loki/latest/configuration/loki/#configmap
 apiVersion: v1
 kind: ConfigMap
 metadata:
@@ -481,7 +477,7 @@ data:
       boltdb_shipper:
         active_index_directory: /loki/boltdb-shipper-active
         cache_location: /loki/boltdb-shipper-cache
-        cache_ttl: 24h         # Can be increased for faster performance over longer query periods, uses more disk space
+        cache_ttl: 24h
         shared_store: filesystem
       filesystem:
         directory: /loki/chunks
@@ -493,7 +489,6 @@ data:
     limits_config:
       reject_old_samples: true
       reject_old_samples_max_age: 168h
-      unordered_writes: true
 
     chunk_store_config:
       max_look_back_period: 0s

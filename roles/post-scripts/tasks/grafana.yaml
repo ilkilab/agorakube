@@ -13,7 +13,7 @@
   changed_when: false
 
 - name: Apply templates Grafana
-  command: kubectl --kubeconfig {{ pki_path }}/kubeconfigs/admin/admin.conf apply -f {{ grafana_tempdir.path }}/grafana.yaml
+  command: kubectl --kubeconfig {{ pki_path }}/kubeconfigs/admin/admin.conf apply -f {{ grafana_tempdir.path }}/grafana.yaml --force
   register: apply_grafana
   changed_when: >
     apply_grafana.stdout is search("created")

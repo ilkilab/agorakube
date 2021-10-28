@@ -103,7 +103,7 @@ agorakube_features:
             name: "my-pv-monitoring"
             storageclass: "my-storageclass-name"
           hostpath:
-            nodename: "master1"
+            nodename: "worker1"
             path: /var/monitoring-persistent
     dashboard:
       admin:
@@ -120,8 +120,8 @@ agorakube_features:
             name: "my-pv-monitoring"
             storageclass: "my-storageclass-name"
           hostpath: 
-            nodename: "master1"
-            path: /var/monitoring-persistent
+            nodename: "worker1"
+            path: /var/grafana-persistent
     logging:
       enabled: true
       dashboard: true
@@ -136,8 +136,8 @@ agorakube_features:
             name: "my-pv-monitoring"
             storageclass: "my-storageclass-name"
           hostpath:
-            nodename: "master1"
-            path: /var/monitoring-persistent
+            nodename: "worker1"
+            path: /var/logging-persistent
   logrotate:
     enabled: false
     crontab: "* 2 * * *"
