@@ -16,15 +16,15 @@ agorakube_pki:
 agorakube_base_components:
   etcd:
     release: v3.4.16
-    upgrade: true
+    upgrade: False
     check: true
     data_path: /var/lib/etcd
     backup:
-      enabled: false
+      enabled: False
       crontab: "*/30 * * * *"
       storage:
         capacity: 10Gi
-        enabled: true
+        enabled: False
         type: "storageclass"
         storageclass:
           name: "default-jiva"
@@ -35,9 +35,8 @@ agorakube_base_components:
           nodename: "master1"
           path: /var/etcd-backup
   kubernetes:
-    release: v1.22.0
-    #release: v1.21.5
-    upgrade: true
+    release: v1.21.5
+    upgrade: False
   container:
     engine: containerd
 # release : Only Supported if container engine is set to docker
@@ -69,10 +68,10 @@ agorakube_features:
     release: "1.8.3"
     replicas: 2
   reloader:
-    enabled: false
+    enabled: False
     release: "0.0.89"
   storage:
-    enabled: false
+    enabled: False
     release: "2.9.0"
     jiva:
       data_path: /var/openebs
@@ -80,21 +79,21 @@ agorakube_features:
     hostpath:
       data_path: /var/local-hostpath
   dashboard:
-    enabled: false
-    generate_admin_token: false
+    enabled: False
+    generate_admin_token: False
     release: v2.2.0
   metrics_server:
-    enabled: true
+    enabled: True
   ingress:
     controller: nginx
     release: v0.46.0
 
   supervision:
     monitoring:
-      enabled: true
-      dashboard: false
+      enabled: False
+      dashboard: True
       persistent:
-        enabled: true
+        enabled: False
         storage:
           capacity: 4Gi
           type: "storageclass"
@@ -111,7 +110,7 @@ agorakube_features:
         user: administrator
         password: P@ssw0rd
       persistent:
-        enabled: true
+        enabled: False
         storage:
           capacity: 4Gi
           type: "storageclass"
@@ -124,10 +123,10 @@ agorakube_features:
             nodename: "worker1"
             path: /var/grafana-persistent
     logging:
-      enabled: true
-      dashboard: true
+      enabled: False
+      dashboard: True
       persistent:
-        enabled: true
+        enabled: False
         storage:
           capacity: 4Gi
           type: "storageclass"
@@ -140,22 +139,22 @@ agorakube_features:
             nodename: "worker1"
             path: /var/logging-persistent
   logrotate:
-    enabled: false
+    enabled: False
     crontab: "* 2 * * *"
     day_retention: 14
   gatekeeper:
-    enabled: false
+    enabled: False
     release: v3.4.0
     replicas:
       #audit: 1
       controller_manager: 3
 #argocd is an Alpha feature and do not support persistence wet. Use it only for test purpose.
   argocd:
-    enabled: false
+    enabled: False
    
 # keycloak_oidc is an Alpha feature.
   keycloak_oidc:
-    enabled: false
+    enabled: False
     admin:
       user: administrator
       password: P@ssw0rd
