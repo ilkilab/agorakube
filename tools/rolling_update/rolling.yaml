@@ -1,3 +1,4 @@
+# This playbook must be run from Agorakube root directory
 ---
 - hosts: workers,etcd,masters,storage
   any_errors_fatal: true
