@@ -13,63 +13,39 @@ apiVersion: v1
 kind: ServiceAccount
 metadata:
   labels:
-{% if agorakube_features.ingress.release is version('v1.0.1', '<') %}
     helm.sh/chart: ingress-nginx-2.11.0
-    app.kubernetes.io/version: 0.34.0
-{% endif %}
-{% if agorakube_features.ingress.release is version('v1.0.1', '>=') %}
-    helm.sh/chart: ingress-nginx-4.0.6
-    app.kubernetes.io/version: 1.0.4
-{% endif %}
     app.kubernetes.io/name: ingress-nginx
     app.kubernetes.io/instance: ingress-nginx
+    app.kubernetes.io/version: 0.34.0
     app.kubernetes.io/managed-by: Helm
     app.kubernetes.io/component: controller
   name: ingress-nginx
   namespace: ingress-nginx
-{% if agorakube_features.ingress.release is version('v1.0.1', '>=') %}
-automountServiceAccountToken: true
-{% endif %}
 ---
 # Source: ingress-nginx/templates/controller-configmap.yaml
 apiVersion: v1
 kind: ConfigMap
 metadata:
   labels:
-{% if agorakube_features.ingress.release is version('v1.0.1', '<') %}
     helm.sh/chart: ingress-nginx-2.11.0
-    app.kubernetes.io/version: 0.34.0
-{% endif %}
-{% if agorakube_features.ingress.release is version('v1.0.1', '>=') %}
-    helm.sh/chart: ingress-nginx-4.0.6
-    app.kubernetes.io/version: 1.0.4
-{% endif %}
     app.kubernetes.io/name: ingress-nginx
     app.kubernetes.io/instance: ingress-nginx
+    app.kubernetes.io/version: 0.34.0
     app.kubernetes.io/managed-by: Helm
     app.kubernetes.io/component: controller
   name: ingress-nginx-controller
   namespace: ingress-nginx
 data:
-{% if agorakube_features.ingress.release is version('v1.0.1', '>=') %}
-  allow-snippet-annotations: 'true'
-{% endif %}
 ---
 # Source: ingress-nginx/templates/clusterrole.yaml
 apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRole
 metadata:
   labels:
-{% if agorakube_features.ingress.release is version('v1.0.1', '<') %}
     helm.sh/chart: ingress-nginx-2.11.0
-    app.kubernetes.io/version: 0.34.0
-{% endif %}
-{% if agorakube_features.ingress.release is version('v1.0.1', '>=') %}
-    helm.sh/chart: ingress-nginx-4.0.6
-    app.kubernetes.io/version: 1.0.4
-{% endif %}
     app.kubernetes.io/name: ingress-nginx
     app.kubernetes.io/instance: ingress-nginx
+    app.kubernetes.io/version: 0.34.0
     app.kubernetes.io/managed-by: Helm
   name: ingress-nginx
   namespace: ingress-nginx
@@ -101,7 +77,7 @@ rules:
       - update
       - watch
   - apiGroups:
-      - extensions   # !! 
+      - extensions
       - networking.k8s.io   # k8s 1.14+
     resources:
       - ingresses
@@ -137,16 +113,10 @@ apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRoleBinding
 metadata:
   labels:
-{% if agorakube_features.ingress.release is version('v1.0.1', '<') %}
     helm.sh/chart: ingress-nginx-2.11.0
-    app.kubernetes.io/version: 0.34.0
-{% endif %}
-{% if agorakube_features.ingress.release is version('v1.0.1', '>=') %}
-    helm.sh/chart: ingress-nginx-4.0.6
-    app.kubernetes.io/version: 1.0.4
-{% endif %}
     app.kubernetes.io/name: ingress-nginx
     app.kubernetes.io/instance: ingress-nginx
+    app.kubernetes.io/version: 0.34.0
     app.kubernetes.io/managed-by: Helm
   name: ingress-nginx
   namespace: ingress-nginx
@@ -164,16 +134,10 @@ apiVersion: rbac.authorization.k8s.io/v1
 kind: Role
 metadata:
   labels:
-{% if agorakube_features.ingress.release is version('v1.0.1', '<') %}
     helm.sh/chart: ingress-nginx-2.11.0
-    app.kubernetes.io/version: 0.34.0
-{% endif %}
-{% if agorakube_features.ingress.release is version('v1.0.1', '>=') %}
-    helm.sh/chart: ingress-nginx-4.0.6
-    app.kubernetes.io/version: 1.0.4
-{% endif %}
     app.kubernetes.io/name: ingress-nginx
     app.kubernetes.io/instance: ingress-nginx
+    app.kubernetes.io/version: 0.34.0
     app.kubernetes.io/managed-by: Helm
     app.kubernetes.io/component: controller
   name: ingress-nginx
@@ -206,7 +170,7 @@ rules:
       - update
       - watch
   - apiGroups:
-      - extensions   # !!
+      - extensions
       - networking.k8s.io   # k8s 1.14+
     resources:
       - ingresses
@@ -215,7 +179,7 @@ rules:
       - list
       - watch
   - apiGroups:
-      - extensions  # !!
+      - extensions
       - networking.k8s.io   # k8s 1.14+
     resources:
       - ingresses/status
@@ -234,12 +198,7 @@ rules:
     resources:
       - configmaps
     resourceNames:
-{% if agorakube_features.ingress.release is version('v1.0.1', '<') %}
       - ingress-controller-leader-nginx
-{% endif %}
-{% if agorakube_features.ingress.release is version('v1.0.1', '>=') %}
-      - ingress-controller-leader # !! 
-{% endif %}
     verbs:
       - get
       - update
@@ -252,7 +211,7 @@ rules:
   - apiGroups:
       - ''
     resources:
-      - endpoints   # !!
+      - endpoints
     verbs:
       - create
       - get
@@ -270,16 +229,10 @@ apiVersion: rbac.authorization.k8s.io/v1
 kind: RoleBinding
 metadata:
   labels:
-{% if agorakube_features.ingress.release is version('v1.0.1', '<') %}
     helm.sh/chart: ingress-nginx-2.11.0
-    app.kubernetes.io/version: 0.34.0
-{% endif %}
-{% if agorakube_features.ingress.release is version('v1.0.1', '>=') %}
-    helm.sh/chart: ingress-nginx-4.0.6
-    app.kubernetes.io/version: 1.0.4
-{% endif %}
     app.kubernetes.io/name: ingress-nginx
     app.kubernetes.io/instance: ingress-nginx
+    app.kubernetes.io/version: 0.34.0
     app.kubernetes.io/managed-by: Helm
     app.kubernetes.io/component: controller
   name: ingress-nginx
@@ -298,16 +251,10 @@ apiVersion: v1
 kind: Service
 metadata:
   labels:
-{% if agorakube_features.ingress.release is version('v1.0.1', '<') %}
     helm.sh/chart: ingress-nginx-2.11.0
-    app.kubernetes.io/version: 0.34.0
-{% endif %}
-{% if agorakube_features.ingress.release is version('v1.0.1', '>=') %}
-    helm.sh/chart: ingress-nginx-4.0.6
-    app.kubernetes.io/version: 1.0.4
-{% endif %}
     app.kubernetes.io/name: ingress-nginx
     app.kubernetes.io/instance: ingress-nginx
+    app.kubernetes.io/version: 0.34.0
     app.kubernetes.io/managed-by: Helm
     app.kubernetes.io/component: controller
   name: ingress-nginx-controller-admission
@@ -318,9 +265,6 @@ spec:
     - name: https-webhook
       port: 443
       targetPort: webhook
-{% if agorakube_features.ingress.release is version('v1.0.1', '>=') %}
-      appProtocol: https
-{% endif %}
   selector:
     app.kubernetes.io/name: ingress-nginx
     app.kubernetes.io/instance: ingress-nginx
@@ -331,84 +275,39 @@ apiVersion: v1
 kind: Service
 metadata:
   labels:
-{% if agorakube_features.ingress.release is version('v1.0.1', '<') %}
     helm.sh/chart: ingress-nginx-2.11.0
-    app.kubernetes.io/version: 0.34.0
-{% endif %}
-{% if agorakube_features.ingress.release is version('v1.0.1', '>=') %}
-    helm.sh/chart: ingress-nginx-4.0.6
-    app.kubernetes.io/version: 1.0.4
-{% endif %}
     app.kubernetes.io/name: ingress-nginx
     app.kubernetes.io/instance: ingress-nginx
+    app.kubernetes.io/version: 0.34.0
     app.kubernetes.io/managed-by: Helm
     app.kubernetes.io/component: controller
   name: ingress-nginx-controller
   namespace: ingress-nginx
 spec:
   type: NodePort
-{% if agorakube_features.ingress.release is version('v1.0.1', '>=') %}
-  ipFamilyPolicy: SingleStack
-  ipFamilies:
-    - IPv4
-{% endif %}
   ports:
     - name: http
       port: 80
       protocol: TCP
       targetPort: http
-{% if agorakube_features.ingress.release is version('v1.0.1', '>=') %}
-      appProtocol: http
-{% endif %}
     - name: https
       port: 443
       protocol: TCP
       targetPort: https
-{% if agorakube_features.ingress.release is version('v1.0.1', '>=') %}
-      appProtocol: https
-{% endif %}
   selector:
     app.kubernetes.io/name: ingress-nginx
     app.kubernetes.io/instance: ingress-nginx
     app.kubernetes.io/component: controller
-{% if agorakube_features.ingress.release is version('v1.0.1', '>=') %}
----
-# Source: ingress-nginx/templates/controller-ingressclass.yaml
-apiVersion: networking.k8s.io/v1
-kind: IngressClass
-metadata:
-  labels:
-    helm.sh/chart: ingress-nginx-4.0.6
-    app.kubernetes.io/name: ingress-nginx
-    app.kubernetes.io/instance: ingress-nginx
-    app.kubernetes.io/version: 1.0.4
-    app.kubernetes.io/managed-by: Helm
-    app.kubernetes.io/component: controller
-  #name: ingress-class-default
-  name: nginx
-  namespace: ingress-nginx
-  #annotations:
-    #ingressclass.kubernetes.io/is-default-class: "true"
-spec:
-  #controller: k8s.io/ingress-nginx-controller
-  controller: k8s.io/ingress-nginx
-{% endif %}
 ---
 # Source: ingress-nginx/templates/controller-deployment.yaml
 apiVersion: apps/v1
 kind: Deployment
 metadata:
   labels:
-{% if agorakube_features.ingress.release is version('v1.0.1', '<') %}
     helm.sh/chart: ingress-nginx-2.11.0
-    app.kubernetes.io/version: 0.34.0
-{% endif %}
-{% if agorakube_features.ingress.release is version('v1.0.1', '>=') %}
-    helm.sh/chart: ingress-nginx-4.0.6
-    app.kubernetes.io/version: 1.0.4
-{% endif %}
     app.kubernetes.io/name: ingress-nginx
     app.kubernetes.io/instance: ingress-nginx
+    app.kubernetes.io/version: 0.34.0
     app.kubernetes.io/managed-by: Helm
     app.kubernetes.io/component: controller
   name: ingress-nginx-controller
@@ -431,12 +330,7 @@ spec:
       dnsPolicy: ClusterFirst
       containers:
         - name: controller
-{% if agorakube_features.ingress.release is version('v1.0.1', '<') %}
           image: us.gcr.io/k8s-artifacts-prod/ingress-nginx/controller:{{ agorakube_features.ingress.release }}@sha256:56633bd00dab33d92ba14c6e709126a762d54a75a6e72437adefeaaca0abb069
-{% endif %}
-{% if agorakube_features.ingress.release is version('v1.0.1', '>=') %}
-          image: k8s.gcr.io/ingress-nginx/controller:{{ agorakube_features.ingress.release }}@sha256:545cff00370f28363dad31e3b59a94ba377854d3a11f18988f5f9e56841ef9ef
-{% endif %}
           imagePullPolicy: IfNotPresent
           lifecycle:
             preStop:
@@ -451,10 +345,6 @@ spec:
             - --validating-webhook=:8443
             - --validating-webhook-certificate=/usr/local/certificates/cert
             - --validating-webhook-key=/usr/local/certificates/key
-{% if agorakube_features.ingress.release is version('v1.0.1', '>=') %}
-            - --controller-class=k8s.io/ingress-nginx
-            - --publish-service=ingress-nginx/ingress-nginx-controller # !!!
-{% endif %}
           securityContext:
             capabilities:
               drop:
@@ -472,10 +362,6 @@ spec:
               valueFrom:
                 fieldRef:
                   fieldPath: metadata.namespace
-{% if agorakube_features.ingress.release is version('v1.0.1', '>=') %}
-            - name: LD_PRELOAD
-              value: /usr/local/lib/libmimalloc.so
-{% endif %}
           livenessProbe:
             httpGet:
               path: /healthz
@@ -514,10 +400,6 @@ spec:
             requests:
               cpu: 100m
               memory: 90Mi
-{% if agorakube_features.ingress.release is version('v1.0.1', '>=') %}
-      nodeSelector:
-        kubernetes.io/os: linux
-{% endif %}
       serviceAccountName: ingress-nginx
       terminationGracePeriodSeconds: 300
       volumes:
@@ -537,36 +419,22 @@ apiVersion: admissionregistration.k8s.io/v1beta1
 kind: ValidatingWebhookConfiguration
 metadata:
   labels:
-{% if agorakube_features.ingress.release is version('v1.0.1', '<') %}
     helm.sh/chart: ingress-nginx-2.11.0
-    app.kubernetes.io/version: 0.34.0
-{% endif %}
-{% if agorakube_features.ingress.release is version('v1.0.1', '>=') %}
-    helm.sh/chart: ingress-nginx-4.0.6
-    app.kubernetes.io/version: 1.0.4
-{% endif %}
     app.kubernetes.io/name: ingress-nginx
     app.kubernetes.io/instance: ingress-nginx
+    app.kubernetes.io/version: 0.34.0
     app.kubernetes.io/managed-by: Helm
     app.kubernetes.io/component: admission-webhook
   name: ingress-nginx-admission
   namespace: ingress-nginx
 webhooks:
   - name: validate.nginx.ingress.kubernetes.io
-{% if agorakube_features.ingress.release is version('v1.0.1', '>=') %}
-    matchPolicy: Equivalent
-{% endif %}
     rules:
       - apiGroups:
-          #- extensions  # !!
+          - extensions
           - networking.k8s.io
         apiVersions:
-{% if agorakube_base_components.kubernetes.release is version('v1.22', '<') %}
           - v1beta1
-{% endif %}
-{% if agorakube_base_components.kubernetes.release is version('v1.22', '>=') %}
-          - v1
-{% endif %}
         operations:
           - CREATE
           - UPDATE
@@ -576,19 +444,12 @@ webhooks:
     sideEffects: None
     admissionReviewVersions:
       - v1
-{% if agorakube_base_components.kubernetes.release is version('v1.22', '<') %}
       - v1beta1
-{% endif %}
     clientConfig:
       service:
         namespace: ingress-nginx
         name: ingress-nginx-controller-admission
-{% if agorakube_base_components.kubernetes.release is version('v1.22', '<') %}
         path: /extensions/v1beta1/ingresses
-{% endif %}
-{% if agorakube_base_components.kubernetes.release is version('v1.22', '>=') %}
-        path: /networking/v1/ingresses
-{% endif %}
 ---
 # Source: ingress-nginx/templates/admission-webhooks/job-patch/clusterrole.yaml
 apiVersion: rbac.authorization.k8s.io/v1
@@ -599,16 +460,10 @@ metadata:
     helm.sh/hook: pre-install,pre-upgrade,post-install,post-upgrade
     helm.sh/hook-delete-policy: before-hook-creation,hook-succeeded
   labels:
-{% if agorakube_features.ingress.release is version('v1.0.1', '<') %}
     helm.sh/chart: ingress-nginx-2.11.0
-    app.kubernetes.io/version: 0.34.0
-{% endif %}
-{% if agorakube_features.ingress.release is version('v1.0.1', '>=') %}
-    helm.sh/chart: ingress-nginx-4.0.6
-    app.kubernetes.io/version: 1.0.4
-{% endif %}
     app.kubernetes.io/name: ingress-nginx
     app.kubernetes.io/instance: ingress-nginx
+    app.kubernetes.io/version: 0.34.0
     app.kubernetes.io/managed-by: Helm
     app.kubernetes.io/component: admission-webhook
   namespace: ingress-nginx
@@ -630,16 +485,10 @@ metadata:
     helm.sh/hook: pre-install,pre-upgrade,post-install,post-upgrade
     helm.sh/hook-delete-policy: before-hook-creation,hook-succeeded
   labels:
-{% if agorakube_features.ingress.release is version('v1.0.1', '<') %}
     helm.sh/chart: ingress-nginx-2.11.0
-    app.kubernetes.io/version: 0.34.0
-{% endif %}
-{% if agorakube_features.ingress.release is version('v1.0.1', '>=') %}
-    helm.sh/chart: ingress-nginx-4.0.6
-    app.kubernetes.io/version: 1.0.4
-{% endif %}
     app.kubernetes.io/name: ingress-nginx
     app.kubernetes.io/instance: ingress-nginx
+    app.kubernetes.io/version: 0.34.0
     app.kubernetes.io/managed-by: Helm
     app.kubernetes.io/component: admission-webhook
   namespace: ingress-nginx
@@ -661,16 +510,10 @@ metadata:
     helm.sh/hook: pre-install,pre-upgrade
     helm.sh/hook-delete-policy: before-hook-creation,hook-succeeded
   labels:
-{% if agorakube_features.ingress.release is version('v1.0.1', '<') %}
     helm.sh/chart: ingress-nginx-2.11.0
-    app.kubernetes.io/version: 0.34.0
-{% endif %}
-{% if agorakube_features.ingress.release is version('v1.0.1', '>=') %}
-    helm.sh/chart: ingress-nginx-4.0.6
-    app.kubernetes.io/version: 1.0.4
-{% endif %}
     app.kubernetes.io/name: ingress-nginx
     app.kubernetes.io/instance: ingress-nginx
+    app.kubernetes.io/version: 0.34.0
     app.kubernetes.io/managed-by: Helm
     app.kubernetes.io/component: admission-webhook
   namespace: ingress-nginx
@@ -679,27 +522,16 @@ spec:
     metadata:
       name: ingress-nginx-admission-create
       labels:
-{% if agorakube_features.ingress.release is version('v1.0.1', '<') %}
         helm.sh/chart: ingress-nginx-2.11.0
-        app.kubernetes.io/version: 0.34.0
-{% endif %}
-{% if agorakube_features.ingress.release is version('v1.0.1', '>=') %}
-        helm.sh/chart: ingress-nginx-4.0.6
-        app.kubernetes.io/version: 1.0.4
-{% endif %}
         app.kubernetes.io/name: ingress-nginx
         app.kubernetes.io/instance: ingress-nginx
+        app.kubernetes.io/version: 0.34.0
         app.kubernetes.io/managed-by: Helm
         app.kubernetes.io/component: admission-webhook
     spec:
       containers:
         - name: create
-{% if agorakube_features.ingress.release is version('v1.0.1', '<') %}
           image: docker.io/jettech/kube-webhook-certgen:v1.2.2
-{% endif %}
-{% if agorakube_features.ingress.release is version('v1.0.1', '>=') %}
-          image: k8s.gcr.io/ingress-nginx/kube-webhook-certgen:v1.1.1@sha256:64d8c73dca984af206adf9d6d7e46aa550362b1d7a01f3a0a91b20cc67868660
-{% endif %}
           imagePullPolicy: IfNotPresent
           args:
             - create
@@ -708,10 +540,6 @@ spec:
             - --secret-name=ingress-nginx-admission
       restartPolicy: OnFailure
       serviceAccountName: ingress-nginx-admission
-{% if agorakube_features.ingress.release is version('v1.0.1', '>=') %}
-      nodeSelector:
-        kubernetes.io/os: linux
-{% endif %}
       securityContext:
         runAsNonRoot: true
         runAsUser: 2000
@@ -725,16 +553,10 @@ metadata:
     helm.sh/hook: post-install,post-upgrade
     helm.sh/hook-delete-policy: before-hook-creation,hook-succeeded
   labels:
-{% if agorakube_features.ingress.release is version('v1.0.1', '<') %}
     helm.sh/chart: ingress-nginx-2.11.0
-    app.kubernetes.io/version: 0.34.0
-{% endif %}
-{% if agorakube_features.ingress.release is version('v1.0.1', '>=') %}
-    helm.sh/chart: ingress-nginx-4.0.6
-    app.kubernetes.io/version: 1.0.4
-{% endif %}
     app.kubernetes.io/name: ingress-nginx
     app.kubernetes.io/instance: ingress-nginx
+    app.kubernetes.io/version: 0.34.0
     app.kubernetes.io/managed-by: Helm
     app.kubernetes.io/component: admission-webhook
   namespace: ingress-nginx
@@ -743,27 +565,16 @@ spec:
     metadata:
       name: ingress-nginx-admission-patch
       labels:
-{% if agorakube_features.ingress.release is version('v1.0.1', '<') %}
         helm.sh/chart: ingress-nginx-2.11.0
-        app.kubernetes.io/version: 0.34.0
-{% endif %}
-{% if agorakube_features.ingress.release is version('v1.0.1', '>=') %}
-        helm.sh/chart: ingress-nginx-4.0.6
-        app.kubernetes.io/version: 1.0.4
-{% endif %}
         app.kubernetes.io/name: ingress-nginx
         app.kubernetes.io/instance: ingress-nginx
+        app.kubernetes.io/version: 0.34.0
         app.kubernetes.io/managed-by: Helm
         app.kubernetes.io/component: admission-webhook
     spec:
       containers:
         - name: patch
-{% if agorakube_features.ingress.release is version('v1.0.1', '<') %}
           image: docker.io/jettech/kube-webhook-certgen:v1.2.2
-{% endif %}
-{% if agorakube_features.ingress.release is version('v1.0.1', '>=') %}
-          image: k8s.gcr.io/ingress-nginx/kube-webhook-certgen:v1.1.1@sha256:64d8c73dca984af206adf9d6d7e46aa550362b1d7a01f3a0a91b20cc67868660
-{% endif %}
           imagePullPolicy: IfNotPresent
           args:
             - patch
@@ -774,10 +585,6 @@ spec:
             - --patch-failure-policy=Fail
       restartPolicy: OnFailure
       serviceAccountName: ingress-nginx-admission
-{% if agorakube_features.ingress.release is version('v1.0.1', '>=') %}
-      nodeSelector:
-        kubernetes.io/os: linux
-{% endif %}
       securityContext:
         runAsNonRoot: true
         runAsUser: 2000
@@ -791,16 +598,10 @@ metadata:
     helm.sh/hook: pre-install,pre-upgrade,post-install,post-upgrade
     helm.sh/hook-delete-policy: before-hook-creation,hook-succeeded
   labels:
-{% if agorakube_features.ingress.release is version('v1.0.1', '<') %}
     helm.sh/chart: ingress-nginx-2.11.0
-    app.kubernetes.io/version: 0.34.0
-{% endif %}
-{% if agorakube_features.ingress.release is version('v1.0.1', '>=') %}
-    helm.sh/chart: ingress-nginx-4.0.6
-    app.kubernetes.io/version: 1.0.4
-{% endif %}
     app.kubernetes.io/name: ingress-nginx
     app.kubernetes.io/instance: ingress-nginx
+    app.kubernetes.io/version: 0.34.0
     app.kubernetes.io/managed-by: Helm
     app.kubernetes.io/component: admission-webhook
   namespace: ingress-nginx
@@ -822,16 +623,10 @@ metadata:
     helm.sh/hook: pre-install,pre-upgrade,post-install,post-upgrade
     helm.sh/hook-delete-policy: before-hook-creation,hook-succeeded
   labels:
-{% if agorakube_features.ingress.release is version('v1.0.1', '<') %}
     helm.sh/chart: ingress-nginx-2.11.0
-    app.kubernetes.io/version: 0.34.0
-{% endif %}
-{% if agorakube_features.ingress.release is version('v1.0.1', '>=') %}
-    helm.sh/chart: ingress-nginx-4.0.6
-    app.kubernetes.io/version: 1.0.4
-{% endif %}
     app.kubernetes.io/name: ingress-nginx
     app.kubernetes.io/instance: ingress-nginx
+    app.kubernetes.io/version: 0.34.0
     app.kubernetes.io/managed-by: Helm
     app.kubernetes.io/component: admission-webhook
   namespace: ingress-nginx
@@ -853,16 +648,10 @@ metadata:
     helm.sh/hook: pre-install,pre-upgrade,post-install,post-upgrade
     helm.sh/hook-delete-policy: before-hook-creation,hook-succeeded
   labels:
-{% if agorakube_features.ingress.release is version('v1.0.1', '<') %}
     helm.sh/chart: ingress-nginx-2.11.0
-    app.kubernetes.io/version: 0.34.0
-{% endif %}
-{% if agorakube_features.ingress.release is version('v1.0.1', '>=') %}
-    helm.sh/chart: ingress-nginx-4.0.6
-    app.kubernetes.io/version: 1.0.4
-{% endif %}
     app.kubernetes.io/name: ingress-nginx
     app.kubernetes.io/instance: ingress-nginx
+    app.kubernetes.io/version: 0.34.0
     app.kubernetes.io/managed-by: Helm
     app.kubernetes.io/component: admission-webhook
   namespace: ingress-nginx
