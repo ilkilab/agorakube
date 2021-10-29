@@ -1,0 +1,35 @@
+---
+- name: Create tempdir
+  tempfile:
+    state: directory
+    suffix: logging
+  register: logging_tempdir
+  changed_when: false
+
+- name: Render templates 1
+  template:
+    dest: "{{ logging_tempdir.path }}/log-centralization.yaml"
+    src: "log-centralization.yaml.j2"
+  changed_when: false
+
+- name: Apply templates 1
+  command: kubectl --kubeconfig {{ pki_path }}/kubeconfigs/admin/admin.conf apply -f {{ logging_tempdir.path }}/log-centralization.yaml --force
+  register: apply_logging
+  changed_when: >
+    apply_logging.stdout is search("created")
+    or apply_logging.stdout is search("configured")
+
+- name: Cleanup tempdir
+  file:
+    state: absent
+    path: "{{ logging_tempdir.path }}"
+  changed_when: false
+
+#- name: Wait for Prometheus to be deployed
+#  command: kubectl --kubeconfig {{ pki_path }}/kubeconfigs/admin/admin.conf get deploy -n supervision prometheus
+#  changed_when: false
+#  register: monitoring_deployment
+#  until: monitoring_deployment.stdout.find("1/1") != -1
+#  retries: 300
+#  delay: 10
+#  run_once: true

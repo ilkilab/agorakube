@@ -1,0 +1,47 @@
+# This playbook must be run from Agorakube root directory
+---
+- hosts: workers,etcd,masters,storage
+  any_errors_fatal: true
+  become: true
+  roles:
+    - connexion-to-hosts
+    - check-hosts-names
+    - populate_etc_hosts
+- hosts: deploy
+  become: true
+  vars:
+    ansible_python_interpreter: /usr/local/agorakube-env/bin/python3
+  roles:
+#    - compliance-checks
+    - install-kubectl
+    - generate-certs
+    - configure-kubeconfig
+- hosts: etcd
+  become: true
+  roles:
+    - setup-etcd
+- hosts: masters
+  become: true
+  serial: 1
+  roles:
+    - drain
+    - setup-master
+    - install-cni
+    - install-runtimes
+    - setup-worker
+    - uncordon
+- hosts: workers,storage
+  become: true
+  serial: 1
+  roles:
+    - drain
+    - install-cni
+    - install-runtimes
+    - setup-worker
+    - clear
+    - uncordon
+- hosts: deploy
+  become: true
+  roles:
+    - post-scripts
+    - show-info

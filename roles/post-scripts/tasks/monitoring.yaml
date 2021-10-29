@@ -12,28 +12,6 @@
     src: "monitoring.yaml.j2"
   changed_when: false
 
-#- name: Render templates 2
-#  template:
-#    dest: "{{ monitoring_tempdir.path }}/tls-monitoring-gen.yaml"
-#    src: "tls-monitoring-gen.yaml.j2"
-#  changed_when: false
-
-#- name: Apply templates 2
-#  command: kubectl --kubeconfig {{ pki_path }}/kubeconfigs/admin/admin.conf apply -f {{ monitoring_tempdir.path }}/tls-monitoring-gen.yaml
-#  register: apply_monitoring_job
-#  changed_when: >
-#    apply_monitoring_job.stdout is search("created")
-#    or apply_monitoring_job.stdout is search("configured")
-
-#- name: Wait for TLS Secret to be created
-#  command: kubectl --kubeconfig {{ pki_path }}/kubeconfigs/admin/admin.conf get job -n monitoring tls-monitoring-gen
-#  changed_when: false
-#  register: monitoring_job
-#  until: monitoring_job.stdout.find("1/1") != -1
-#  retries: 300
-#  delay: 10
-#  run_once: true
-
 - name: Apply templates 1
   command: kubectl --kubeconfig {{ pki_path }}/kubeconfigs/admin/admin.conf apply -f {{ monitoring_tempdir.path }}/monitoring.yaml
   register: apply_monitoring
@@ -48,16 +26,7 @@
   changed_when: false
 
 - name: Wait for Prometheus to be deployed
-  command: kubectl --kubeconfig {{ pki_path }}/kubeconfigs/admin/admin.conf get deploy -n monitoring prometheus
-  changed_when: false
-  register: monitoring_deployment
-  until: monitoring_deployment.stdout.find("1/1") != -1
-  retries: 300
-  delay: 10
-  run_once: true
-
-- name: Wait for Grafana to be deployed
-  command: kubectl --kubeconfig {{ pki_path }}/kubeconfigs/admin/admin.conf get deploy -n monitoring grafana
+  command: kubectl --kubeconfig {{ pki_path }}/kubeconfigs/admin/admin.conf get deploy -n supervision prometheus
   changed_when: false
   register: monitoring_deployment
   until: monitoring_deployment.stdout.find("1/1") != -1

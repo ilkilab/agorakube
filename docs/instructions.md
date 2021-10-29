@@ -12,7 +12,9 @@ This is a list of points that will be explained in this instructions file for th
 - [Storage Benchmark](#storage-benchmark)
 - [Upgrade OpenEBS Storage](#upgrade-openEBS-storage)
 - [How to use Reloader](#how-to-use-reloader)
+- [How to use Ingress-Nginx](#how-to-use-ingress-nginx)
 - [AGORAKUBE Log Architecture](#agorakube-log-architecture)
+- [Configure Calico](#configure-calico)
 - [Upgrade And Downgrade Kubernetes with Agorakube](#upgrade-and-downgrade-kubernetes-with-Agorakube)
 - [Uninstall AGORAKUBE](#uninstall-agorakube)
 
@@ -329,6 +331,7 @@ agorakube_base_components:
 
 agorakube_network:
   cni_plugin: calico
+  calico_autodetection_method: "first-found"
   mtu: 0
   cidr:
     pod: 10.33.0.0/16
@@ -373,24 +376,55 @@ agorakube_features:
   ingress:
     controller: nginx
     release: v0.46.0
-  monitoring:
-    enabled: true
-    persistent:
-      enable: true
-      storage:
-        capacity: 4Gi
-        type: "storageclass"
-        storageclass:
-          name: "default-jiva"
-        persistentvolume:
-          name: "my-pv-monitoring"
-          storageclass: "my-storageclass-name"
-        hostpath:
-          nodename: "master1"
-          path: /var/monitoring-persistent
-    admin:
-      user: administrator
-      password: P@ssw0rd
+  supervision:
+    monitoring:
+      enabled: true
+      dashboard: false
+      persistent:
+        enable: true
+        storage:
+          capacity: 4Gi
+          type: "storageclass"
+          storageclass:
+            name: "default-jiva"
+          persistentvolume:
+            name: "my-pv-monitoring"
+            storageclass: "my-storageclass-name"
+          hostpath:
+            nodename: "master1"
+            path: /var/monitoring-persistent
+    dashboard:
+      admin:
+        user: administrator
+        password: P@ssw0rd
+      persistent:
+        enabled: true
+        storage:
+          capacity: 4Gi
+          type: "storageclass"
+          storageclass:
+            name: "default-jiva"
+          persistentvolument:
+            storageclass: "my-storageclass-name"
+          hostpath:
+            nodename: "master1"
+            path: /var/monitoring-persistent
+    logging:
+      enabled: true
+      dashboard: true
+      persistent:
+        enabled: true
+        storage:
+          capacity: 4Gi
+          type: "storageclass"
+          storageclass:
+            name: "default-jiva"
+          persistentvolume:
+            name: "my-pv-monitoring"
+              storageclass: "my-storageclass-name"
+            hostpath:
+              nodename: "master1"
+              path: /var/monitoring-persistent
   logrotate:
     enabled: true
     crontab: "* 2 * * *"
@@ -403,7 +437,7 @@ agorakube_features:
       controller_manager: 3
   argocd:
     enabled: false
-# keycloak_oidc is an Alpha feature and do not support persistence wet. Use it only for test purpose.
+# keycloak_oidc is an Alpha feature and do not support persistence yet. Use it only for test purpose.
   keycloak_oidc:
     enabled: false
     admin:
@@ -507,6 +541,7 @@ This section allows you to configure your K8S cluster network settings.
 | Parameter | Description | Values |
 | --- | --- | --- |
 | `agorakube_network.cni_plugin` | CNI plugin used to enable K8S hosts Networking | **calico** *(default)*, kube-router |
+| `agorakube_network.calico_autodetection_method` | [Calico Autodetect Method](#configure-calico). Used by Calico to detect which IPv4 IFACE will be used to route between nodes  | **first-found** *(default)* |
 | `agorakube_network.mtu` | MTU for CNI plugin. Auto-MTU if set to **0**. Only used if `agorakube_network.cni_plugin` is set to **calico** | **0** *(default)* |
 | `agorakube_network.cidr.pod` | PODs CIDR network | **10.33.0.0/16** *(default)* |
 | `agorakube_network.cidr.service` | Service CIDR network | **10.32.0.0/16** *(default)* |
@@ -538,25 +573,38 @@ This section allows you to configure your K8S features.
 | `agorakube_features.metrics_server.enabled` | Enable Metrics-Server | **False** *(default)* |
 | `agorakube_features.ingress.controller` | Ingress Controller to install : nginx, ha-proxy, traefik | **nginx** *(default)* |
 | `agorakube_features.ingress.release` | Ingress controller release to install. Only used if `agorakube_features.ingress.controller` set to "nginx" | **False** *(default)* |
-| `agorakube_features.monitoring.enabled` | Enable Monitoring | **False** *(default)* |
-| `agorakube_features.monitoring.persistent.enable` | Persist Monitoring Data | **False** *(default)* |
-| `agorakube_features.monitoring.persistent.storage.capacity` | Storage size used to store Prometheus data and Dashboard localization | **4Gi** *(default)* |
-| `agorakube_features.monitoring.persistent.storage.type` | Type of Storage to use when `agorakube_features.monitoring.persistent.enable` is set to True | **storageclass** *(default)*, persistentVolume, hostpath |
-| `agorakube_features.monitoring.persistent.storage.storageclass.name` | StorageClass name used to store Prometheus data and Dashboard localization. Used only if `agorakube_features.monitoring.persistent.storage.type` is set to storageclass | **default-jiva** *(default)* |
-| `agorakube_features.monitoring.persistent.storage.persistentVolume.name` | PersistentVolume name used to store Prometheus data and Dashboard localization. Used only if `agorakube_features.monitoring.persistent.storage.type` is set to persistentVolume | **my-pv-monitoring** *(default)* |
-| `agorakube_features.monitoring.persistent.storage.persistentVolume.storageclass` | StorageClass name used to create persistentvolume set in `agorakube_features.monitoring.persistent.storage.persistentVolume.name`. Used only if `agorakube_features.monitoring.persistent.storage.type` is set to persistentvolume | **my storageclass-name** *(default)* |
-| `agorakube_features.monitoring.persistent.storage.hostpath.nodename` | K8S node (master/worker/storage) where monitoring data are stored locally. Used only `agorakube_features.monitoring.persistent.storage.type` is set to hostpath | **master1** *(default)* |
-| `agorakube_features.monitoring.persistent.storage.hostpath.path` | Path on `agorakube_features.monitoring.persistent.storage.hostpath.nodename` where Prometheus data and Dashboard localization are stored | **/var/monitoring-persistent** *(default)* |
-| `agorakube_features.monitoring.admin.user` | Default Grafana admin user | **administrator** *(default)* |
-| `agorakube_features.monitoring.admin.password` | Default grafana admin password | **P@ssw0rd** *(default)* |
+| `agorakube_features.supervision.monitoring.enabled` | Enable Monitoring | **True** *(default)* |
+| `agorakube_features.supervision.monitoring.dashboard` | Activate dashboard monitoring | **False** *(default)* |
+| `agorakube_features.supervision.monitoring.persistent.enabled` | Persist Monitoring Data | **False** *(default)* |
+| `agorakube_features.supervision.monitoring.persistent.storage.capacity` | Storage size used to store Prometheus data and Dashboard localization | **4Gi** *(default)* |
+| `agorakube_features.supervision.monitoring.persistent.storage.type` | Type of Storage to use when `agorakube_features.supervision.monitoring.persistent.enabled` is set to True | **storageclass** *(default)*, persistentVolume, hostpath |
+| `agorakube_features.supervision.monitoring.persistent.storage.storageclass.name` | StorageClass name used to store Prometheus data and Dashboard localization. Used only if `agorakube_features.supervision.monitoring.persistent.storage.type` is set to storageclass | **default-jiva** *(default)* |
+| `agorakube_features.supervision.monitoring.persistent.storage.persistentVolume.name` | PersistentVolume name used to store Prometheus data and Dashboard localization. Used only if `agorakube_features.supervision.monitoring.persistent.storage.type` is set to persistentVolume | **my-pv-monitoring** *(default)* |
+| `agorakube_features.supervision.monitoring.persistent.storage.persistentVolume.storageclass` | StorageClass name used to create persistentvolume set in `agorakube_features.supervision.monitoring.persistent.storage.persistentVolume.name`. Used only if `agorakube_features.supervision.monitoring.persistent.storage.type` is set to persistentvolume | **my storageclass-name** *(default)* |
+| `agorakube_features.supervision.monitoring.persistent.storage.hostpath.nodename` | K8S node (master/worker/storage) where monitoring data are stored locally. Used only `agorakube_features.supervision.monitoring.persistent.storage.type` is set to hostpath | **master1** *(default)* |
+| `agorakube_features.supervision.monitoring.persistent.storage.hostpath.path` | Path on `agorakube_features.supervision.monitoring.persistent.storage.hostpath.nodename` where Prometheus data and Dashboard localization are stored | **/var/monitoring-persistent** *(default)* |
+| `agorakube_features.supervision.monitoring.admin.user` | Default Grafana admin user | **administrator** *(default)* |
+| `agorakube_features.supervision.monitoring.admin.password` | Default grafana admin password | **P@ssw0rd** *(default)* |
+| `agorakube_features.supervision.logging.enabled` | Enable loki | **True** *(default)* |
+| `agorakube_features.supervision.logging.dashboard` | Enable loki dashboard | **True** *(default)* |
+| `agorakube_features.supervision.logging.persistent.enabled` | Persist loki datas | **True** *(default)* |
+| `agorakube_features.supervision.logging.persistent.storage.capacity` | Storage size used to store Loki datas and Dashboard localization | **4Gi** *(default)* |
+| `agorakube_features.supervision.logging.persistent.storage.type` | Type of Storage to use when `agorakube_features.supervision.logging.persistent.enabled` is set to True | **storageclass** *(default)*, persistentVolume, hostpath |
+| `agorakube_features.supervision.logging.persistent.storage.storageclass.name` | StorageClass name used to store Loki datas and Dashboard localization. Used only if `agorakube_features.supervision.logging.persistent.storage.type` is set to storageclass | **default-jiva** *(default)* |
+| `agorakube_features.supervision.logging.persistent.storage.persistentVolume.name` | PersistentVolume name used to store Loki datas and Dashboard localization. Used only if `agorakube_features.supervision.logging.persistent.storage.type` is set to persistentVolume | **my-pv-monitoring** *(default)* |
+| `agorakube_features.supervision.logging.persistent.storage.persistentVolume.storageclass` | StorageClass name used to create persistentvolume set in `agorakube_features.supervision.logging.persistent.storage.persistentVolume.name`. Used only if `agorakube_features.supervision.logging.persistent.storage.type` is set to persistentvolume | **my storageclass-name** *(default)* |
+| `agorakube_features.supervision.logging.persistent.storage.hostpath.nodename` | K8S node (master/worker/storage) where loki datas are stored locally. Used only `agorakube_features.supervision.logging.persistent.storage.type` is set to hostpath | **master1** *(default)* |
+| `agorakube_features.supervision.logging.persistent.storage.hostpath.path` | Path on `agorakube_features.supervision.logging.persistent.storage.hostpath.nodename` where Loki datas and Dashboard localization are stored | **/var/monitoring-persistent** *(default)* |
 | `agorakube_features.reloader.enabled` | Enable Reloader | **False** *(default)* |
 | `agorakube_features.reloader.release` | Reloader release to install | **0.0.89** *(default)* |
-| `agorakube_features.logrotate.enabled` | Enable Logrotate | **false** *(default)* |
+| `agorakube_features.logrotate.enabled` | Enable Logrotate | **False** *(default)* |
 | `agorakube_features.logrotate.crontab` | Crontab used to run logrotate | **"* 2 * * *"** *(default) run every day at 2 AM* |
 | `agorakube_features.logrotate.day_retention` | Indicate how many days logs will be keep | **14** *(default)* |
 | `agorakube_features.argocd.enabled` | Enable ArgoCD | **false** *(default)* |
-
-
+| `agorakube_features.gatekeeper.enabled` | Enable Gatekeeper | **True** *(default)* |
+| `agorakube_features.gatekeeper.release` | Gatekeeper release to install | **3.4.0** *(default)* |
+| `agorakube_features.gatekeeper.replicas.audit `| Number of Gatekeeper Audit Replicas | **Not activate** *(default)* |
+| `agorakube_features.gatekeeper.replicas.controller_manager `| Number of Gatekeeper Controller_Manager Replicas | **3** *(default)* | 
 
 ## AGORAKUBE other settings
 This section allows you to configure some other settings
@@ -919,9 +967,73 @@ metadata:
 spec:
   template: metadata:
 ```
+# How to use Ingress NGINX
+
+## Basic usage
+
+### Deployment
+
+Create a simple app pod.
+
+`kubectl run nginx --image=nginx --port 80`
+
+Customize you website front page:
+
+`kubectl exec nginx -- /bin/bash -c "echo My Super Website > /usr/share/nginx/html/index.html"`
+
+Create a service ClusterIP in front of your pod:
+
+`kubectl expose pod nginx --port=80 --name=frontend`
+
+Create an Ingress with the following code to publish your `frontend` service
+```
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: test-ingress
+spec:
+  rules:
+  - host: foo.bar.com
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: frontend
+            port:
+              number: 80
+```
+
+Access your Ingress and see your website !
+
+Warning: Sine Nginx Controller v1.0.0, Ingress must declare `spec.ingressClassName: nginx` !
+Note: If you had already created an "ingress" resource before version v1.0.4 : add `spec.ingressClassName: nginx` to your resource.
+
+Sample:
+```
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: test-ingress
+spec:
+  ingressClassName: nginx
+  rules:
+  - host: foo.bar.com
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: frontend
+            port:
+              number: 80
+```
+
 # AGORAKUBE Log Architecture
 
-Actually, AGORAKUBE configure Kubernetes componants to write logs in "journalctl" an "/var/log/kubernetes/" directory.
+Actually, AGORAKUBE configure Kubernetes components to write logs in "journalctl" an "/var/log/kubernetes/" directory.
 
 In "/var/log/kubernetes/" directory, log file size is limited to 1800 MB.
 
@@ -929,7 +1041,72 @@ Pods logs are stored in "/var/log/pods" directory.
 
 ETCD logs are only present in "journalctl". Run the following command to get ETCD logs from an "ETCD" host : `journalctl -xeu etcd`
 
+# Configure Calico
+
+With Agorakube, you can configure the way Calico discover node IFACE. In some case, Agorakube master/nodes can have multiple Iface, with different names, order, and subnet/network. In that case, Calico will need your help to discover which Iface should be used to route bettwen nodes. To do this, you can use "agorakube_network.calico_autodetection_method" parameter.
+The following sections describe the available IP autodetection methods. (From https://docs.projectcalico.org/reference/node/configuration#ip-autodetection-methods)
+
+## First-Found
+
+The `first-found` option enumerates all interface IP addresses and returns the first valid IP address (based on IP version and type of address) on the first valid interface. Certain known “local” interfaces are omitted, such as the docker bridge. The order that both the interfaces and the IP addresses are listed is system dependent.
+
+This is the default detection method. However, since this method only makes a very simplified guess, it is recommended to either configure the node with a specific IP address, or to use one of the other detection methods.
+
+```
+agorakube_network:
+  calico_autodetection_method: "fisrt-found"
+```
+
+## can-reach=DESTINATION
+
+The `can-reach` method uses your local routing to determine which IP address will be used to reach the supplied destination. Both IP addresses and domain names may be used.
+```
+agorakube_network:
+  calico_autodetection_method: "can-reach=8.8.8.8"
+```
+or
+```
+agorakube_network:
+  calico_autodetection_method: "can-reach=www.google.com"
+```
+
+## interface=INTERFACE-REGEX
+
+The interface method uses the supplied interface regular expression (golang syntax) to enumerate matching interfaces and to return the first IP address on the first matching interface. The order that both the interfaces and the IP addresses are listed is system dependent.
+
+```
+agorakube_network:
+  calico_autodetection_method: "interface=eth.*"
+```
+
+## skip-interface=INTERFACE-REGEX
+
+The `skip-interface` method uses the supplied interface regular expression (golang syntax) to exclude interfaces and to return the first IP address on the first interface that not matching. The order that both the interfaces and the IP addresses are listed is system dependent.
+
+```
+agorakube_network:
+  calico_autodetection_method: "skip-interface=enp6s0f0,eth.*"
+```
+
+## cidr=CIDR
+
+The `cidr` method uses one or more comma-separated IP ranges in CIDR format to determine valid IP addresses to choose from.
+```
+agorakube_network:
+  calico_autodetection_method: "cidr=10.10.20.0/24"
+```
+
+## Debug Calico
+
+If you notice some network trouble with calico, deploy a calico pod with : `kubectl apply -f https://docs.projectcalico.org/manifests/calicoctl.yaml`
+
+Then, print IFACE used by Calico with : `kubectl exec -ti -n kube-system calicoctl -- /calicoctl get nodes --allow-version-mismatch -o wide`
+
+Calicoctl help command:  `kubectl exec -ti -n kube-system calicoctl -- /calicoctl -h`
+
 # Upgrade And Downgrade Kubernetes with Agorakube
+
+## One-Shoot Upgrade
 
 Edit "./group_vars/all.yaml" file with the following parameters
 
@@ -938,12 +1115,27 @@ agorakube_base_components:
   kubernetes:
     release: v1.21.1  (Desired K8S release)
     upgrade: true
-
 ```
 
-Then apply your new Agorakube configuration by running the following command:
+Then apply your new Agorakube configuration from your agorakube root directory by running the following command:
 
 `ansible-playbook agorakube.yaml`
+
+
+## Rolling Upgrade
+
+Agorakube support Rolling Upgrades for Kubernetes.
+To make a rolling upgrade, edit "./group_vars/all.yaml" file with the following parameters
+
+```
+agorakube_base_components:
+  kubernetes:
+    release: v1.21.1  (Desired K8S release)
+    upgrade: true
+```
+Then apply your new Agorakube configuration from your agorakube root directory by running the following command:
+
+`ansible-playbook tools/rolling_update/rolling.yaml`
 
 # Uninstall AGORAKUBE
 
