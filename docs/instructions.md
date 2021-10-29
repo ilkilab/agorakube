@@ -1036,22 +1036,6 @@ Pods logs are stored in "/var/log/pods" directory.
 
 ETCD logs are only present in "journalctl". Run the following command to get ETCD logs from an "ETCD" host : `journalctl -xeu etcd`
 
-
-# Upgrade And Downgrade Kubernetes with Agorakube
-
-Edit "./group_vars/all.yaml" file with the following parameters
-
-```
-agorakube_base_components:
-  kubernetes:
-    release: v1.21.1  (Desired K8S release)
-    upgrade: true
-```
-
-Then apply your new Agorakube configuration by running the following command:
-
-`ansible-playbook agorakube.yaml`
-
 # Configure Calico
 
 With Agorakube, you can configure the way Calico discover node IFACE. In some case, Agorakube master/nodes can have multiple Iface, with different names, order, and subnet/network. In that case, Calico will need your help to discover which Iface should be used to route bettwen nodes. To do this, you can use "agorakube_network.calico_autodetection_method" parameter.
@@ -1115,7 +1099,38 @@ Then, print IFACE used by Calico with : `kubectl exec -ti -n kube-system calicoc
 
 Calicoctl help command:  `kubectl exec -ti -n kube-system calicoctl -- /calicoctl -h`
 
+# Upgrade And Downgrade Kubernetes with Agorakube
 
+## One-Shoot Upgrade
+
+Edit "./group_vars/all.yaml" file with the following parameters
+
+```
+agorakube_base_components:
+  kubernetes:
+    release: v1.21.1  (Desired K8S release)
+    upgrade: true
+```
+
+Then apply your new Agorakube configuration from your agorakube root directory by running the following command:
+
+`ansible-playbook agorakube.yaml`
+
+
+## Rolling Upgrade
+
+Agorakube support Rolling Upgrades for Kubernetes.
+To make a rolling upgrade, edit "./group_vars/all.yaml" file with the following parameters
+
+```
+agorakube_base_components:
+  kubernetes:
+    release: v1.21.1  (Desired K8S release)
+    upgrade: true
+```
+Then apply your new Agorakube configuration from your agorakube root directory by running the following command:
+
+`ansible-playbook tools/rolling_update/rolling.yaml`
 
 # Uninstall AGORAKUBE
 
