@@ -1,7 +1,6 @@
 ---
 - name: Drain Node
   command: kubectl --kubeconfig {{ pki_path }}/kubeconfigs/admin/admin.conf drain {{ inventory_hostname  }} --ignore-daemonsets --delete-local-data
-  when: agorakube_base_components.kubernetes.drain | bool == True
   retries: 300
   delay: 10
   run_once: true
