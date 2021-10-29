@@ -18,7 +18,7 @@
   changed_when: >
     apply_monitoring.stdout is search("created")
     or apply_monitoring.stdout is search("configured")
-    
+
 - name: Cleanup tempdir
   file:
     state: absent
