@@ -13,7 +13,7 @@
   changed_when: false
 
 - name: Apply templates
-  command: kubectl --kubeconfig {{ pki_path }}/kubeconfigs/admin/admin.conf apply -f {{ nginx_tempdir.path }}/nginx.yaml
+  command: kubectl --kubeconfig {{ pki_path }}/kubeconfigs/admin/admin.conf apply -f {{ nginx_tempdir.path }}/nginx.yaml --force
   register: apply_nginx
   changed_when: >
     apply_nginx.stdout is search("created")
