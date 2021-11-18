@@ -60,9 +60,16 @@
   notify:
     - Restart kube-apiserver service
 
+- name: Fetch controller-manager.conf kubeconfig
+  fetch:
+    src: "{{ pki_path }}/kubeconfigs/controller-manager/controller-manager.conf"
+    dest: "/tmp/agorakube_tmp{{ pki_path }}/kubeconfigs/controller-manager/controller-manager.conf"
+    flat: yes
+  delegate_to: "{{ groups['deploy'][0] }}"
+
 - name: Import controller-manager.conf kubeconfig
   copy:
-    src: "{{ pki_path }}/kubeconfigs/controller-manager/controller-manager.conf"
+    src: "/tmp/agorakube_tmp{{ pki_path }}/kubeconfigs/controller-manager/controller-manager.conf"
     dest: /etc/kubernetes/manifests/controller-manager.conf
     owner: root
     group: root
@@ -80,9 +87,16 @@
   notify:
     - Restart kube-scheduler service
 
+- name: Fetch /etc/kubernetes/manifests/scheduler.conf
+  fetch:
+    src: "{{ pki_path }}/kubeconfigs/scheduler/scheduler.conf"
+    dest: "/tmp/agorakube_tmp{{ pki_path }}/kubeconfigs/scheduler/scheduler.conf"
+    flat: yes
+  delegate_to: "{{ groups['deploy'][0] }}"
+
 - name: Import /etc/kubernetes/manifests/scheduler.conf
   copy:
-    src: "{{ pki_path }}/kubeconfigs/scheduler/scheduler.conf"
+    src: "/tmp/agorakube_tmp{{ pki_path }}/kubeconfigs/scheduler/scheduler.conf"
     dest: /etc/kubernetes/manifests/scheduler.conf
     owner: root
     group: root

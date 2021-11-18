@@ -64,9 +64,24 @@
   notify:
     - restart kubelet
 
+- name: Find kubelet and kube-proxy kubeconfig files
+  find:
+    paths: "{{ pki_path }}/kubeconfigs"
+    recurse: yes
+  register: kubeconfig_files
+  delegate_to: "{{ groups['deploy'][0] }}"
+
+- name: Fetch kubelet and kube-proxy kubeconfig files
+  fetch:
+    src: "{{ item.path }}"
+    dest: "/tmp/agorakube_tmp{{ item.path }}"
+    flat: yes
+  with_items: "{{ kubeconfig_files.files }}"
+  delegate_to: "{{ groups['deploy'][0] }}"
+
 - name: Import kubelet and kube-proxy kubeconfig files
   copy:
-    src: "{{ pki_path }}/kubeconfigs/{{ item }}/{{ ansible_fqdn }}/{{ item }}.conf"
+    src: "/tmp/agorakube_tmp{{ pki_path }}/kubeconfigs/{{ item }}/{{ ansible_fqdn }}/{{ item }}.conf"
     dest: /etc/kubernetes/manifests/{{ item }}.conf
     owner: root
     group: root

@@ -5,9 +5,23 @@
     state: directory
     recurse: True
 
+- name: Fetch etcd keys and certificates
+  fetch:
+    src: "{{ pki_path }}/{{ item }}"
+    dest: "/tmp/agorakube_tmp{{ pki_path }}/{{ item }}"
+    flat: yes
+  with_items:
+    - 'intermediate/etcd/ca.key'
+    - 'intermediate/etcd/ca.crt'
+    - 'end/kube-etcd.key'
+    - 'end/kube-etcd.crt'
+    - 'end/kube-etcd-peer.key'
+    - 'end/kube-etcd-peer.crt'
+  delegate_to: "{{ groups['deploy'][0] }}"
+
 - name: Import etcd keys and certificates
   copy:
-    src: "{{ pki_path }}/{{ item.src }}"
+    src: "/tmp/agorakube_tmp{{ pki_path }}/{{ item.src }}"
     dest: /etc/kubernetes/pki/{{ item.dest }}
   with_items:
     - { src: 'intermediate/etcd/ca.key', dest: 'etcd/ca.key' }
@@ -19,9 +33,20 @@
   notify:
     - Restart etcd
 
+- name: Fetch etcdctl keys and certificates
+  fetch:
+    src: "{{ pki_path }}/{{ item }}"
+    dest: "/tmp/agorakube_tmp{{ pki_path }}/{{ item }}"
+    flat: yes
+  with_items:
+    - 'end/kube-etcd-healthcheck-client.key'
+    - 'end/kube-etcd-healthcheck-client.crt'
+    - 'intermediate/etcd/ca.crt'
+  delegate_to: "{{ groups['deploy'][0] }}"
+
 - name: Import etcdctl keys and certificates
   copy:
-    src: "{{ pki_path }}/{{ item.src }}"
+    src: "/tmp/agorakube_tmp{{ pki_path }}/{{ item.src }}"
     dest: /etc/kubernetes/pki/{{ item.dest }}
   with_items:
     - { src: 'end/kube-etcd-healthcheck-client.key', dest: 'etcd/healthcheck-client.key' }

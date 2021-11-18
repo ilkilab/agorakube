@@ -8,25 +8,45 @@
     mode: '644'
     recurse: True
 
+- name: Fetch master CA crt for kubelet
+  fetch:
+    src: "{{ pki_path }}/intermediate/ca.crt"
+    dest: "/tmp/agorakube_tmp{{ pki_path }}/intermediate/ca.crt"
+    flat: yes
+  delegate_to: "{{ groups['deploy'][0] }}"
+
 - name: Import master CA crt for kubelet
   copy:
-    src: "{{ pki_path }}/intermediate/ca.crt"
+    src: "/tmp/agorakube_tmp{{ pki_path }}/intermediate/ca.crt"
     dest: /etc/kubernetes/pki/ca.crt
-  with_items:
-    - { src: 'intermediate/ca.crt', dest: 'ca.crt' }
   notify:
     - restart kubelet
 
+- name: "Find specific kubelet keys in {{ pki_path }}/kubeconfigs/kubelet"
+  find:
+    paths: "{{ pki_path }}/kubeconfigs/kubelet"
+    recurse: yes
+  register: kubelet_keys
+  delegate_to: "{{ groups['deploy'][0] }}"
+
+- name: Fetch specific kubelet keys
+  fetch:
+    src: "{{ item.path }}"
+    dest: "/tmp/agorakube_tmp{{ item.path }}"
+    flat: yes
+  with_items: "{{ kubelet_keys.files }}"
+  delegate_to: "{{ groups['deploy'][0] }}"
+
 - name: Import specific KEY for kubelet
   copy:
-    src: "{{ pki_path }}/kubeconfigs/kubelet/{{ inventory_hostname }}/kubelet.key"
+    src: "/tmp/agorakube_tmp{{ pki_path }}/kubeconfigs/kubelet/{{ inventory_hostname }}/kubelet.key"
     dest: /etc/kubernetes/pki/kubelet.key
   notify:
     - restart kubelet
 
-- name: Import specific KEY for kubelet
+- name: Import specific CERT for kubelet
   copy:
-    src: "{{ pki_path }}/kubeconfigs/kubelet/{{ inventory_hostname }}/kubelet.crt"
+    src: "/tmp/agorakube_tmp{{ pki_path }}/kubeconfigs/kubelet/{{ inventory_hostname }}/kubelet.crt"
     dest: /etc/kubernetes/pki/kubelet.crt
   notify:
     - restart kubelet

@@ -1,0 +1,6 @@
+---
+- name: Remove agorakube temp directory
+  local_action:
+    module: file
+    path: /tmp/agorakube_tmp
+    state: absent

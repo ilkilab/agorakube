@@ -9,3 +9,4 @@
     src: "{{ pki_path }}/kubeconfigs/admin/admin.conf"
     dest: /root/.kube/config
     mode: 0600
+    remote_src: yes

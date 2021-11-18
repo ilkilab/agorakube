@@ -76,3 +76,6 @@
 - name: Install argocd
   include_tasks: argocd.yaml
   when: agorakube_features.argocd.enabled | bool == True
+
+- name: Cleanup temporary files
+  include_tasks: cleanup-temp.yaml

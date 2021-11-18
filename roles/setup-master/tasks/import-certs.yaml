@@ -11,9 +11,31 @@
     - /etc/kubernetes/pki/etcd
     - /etc/kubernetes/pki/sa/backups
 
+- name: Fetch all master components keys and certificates
+  fetch:
+    src: "{{ pki_path }}/{{ item }}"
+    dest: "/tmp/agorakube_tmp{{ pki_path }}/{{ item }}"
+    flat: yes
+  with_items:
+    - 'intermediate/etcd/ca.key'
+    - 'intermediate/etcd/ca.crt'
+    - 'end/kube-apiserver-etcd-client.key'
+    - 'end/kube-apiserver-etcd-client.crt'
+    - 'intermediate/ca.key'
+    - 'intermediate/ca.crt'
+    - 'end/kube-apiserver.key'
+    - 'end/kube-apiserver.crt'
+    - 'end/kube-apiserver-kubelet-client.key'
+    - 'end/kube-apiserver-kubelet-client.crt'
+    - 'intermediate/front-proxy-ca.key'
+    - 'intermediate/front-proxy-ca.crt'
+    - 'end/front-proxy-client.key'
+    - 'end/front-proxy-client.crt'
+  delegate_to: "{{ groups['deploy'][0] }}"
+
 - name: Import all master components keys and certificates
   copy:
-    src: "{{ pki_path }}/{{ item.src }}"
+    src: "/tmp/agorakube_tmp{{ pki_path }}/{{ item.src }}"
     dest: /etc/kubernetes/pki/{{ item.dest }}
   with_items:
     - { src: 'intermediate/etcd/ca.key', dest: 'etcd/ca.key' }
@@ -35,12 +57,26 @@
     - Restart kube-scheduler service
     - Restart kube-controller-manager service
 
+- name: "Find SA keys in {{ pki_path }}/sa"
+  find:
+    paths: "{{ pki_path }}/sa"
+  register: sa_keys
+  delegate_to: "{{ groups['deploy'][0] }}"
+
+- name: Fetch SA private keys and public key used for Token authentication
+  fetch:
+    src: "{{ item.path }}"
+    dest: "/tmp/agorakube_tmp{{ item.path }}"
+    flat: yes
+  with_items: "{{ sa_keys.files }}"
+  delegate_to: "{{ groups['deploy'][0] }}"
+
 - name: Import SA private keys and public key used for Token authentication
   copy:
     src: "{{ item }}"
     dest: /etc/kubernetes/pki/sa/
   with_fileglob:
-    - "{{ pki_path  }}/sa/*"
+    - "/tmp/agorakube_tmp{{ pki_path }}/sa/*"
   notify:
     - Restart kube-apiserver service
     - Restart kube-scheduler service
@@ -56,9 +92,18 @@
 #  with_fileglob:
 #    - "{{ data_path }}/authentication_keys/*"
 
+- name: Fetch CA Cert OIDC
+  fetch:
+    src: "{{ pki_path }}/oidc/oidc-ca.crt"
+    dest: "/tmp/agorakube_tmp{{ pki_path }}/oidc/oidc-ca.crt }}"
+    flat: yes
+  when:
+    - (inventory_hostname in groups['deploy'] and agorakube_features.keycloak_oidc.auto_bootstrap.bootstrap_keycloak) | bool == True
+    - (inventory_hostname in groups['deploy'] and agorakube_features.keycloak_oidc.enabled) | bool == True
+
 - name: Import CA Cert OIDC
   copy:
-    src: "{{ pki_path }}/oidc/oidc-ca.crt"
+    src: "/tmp/agorakube_tmp{{ pki_path }}/oidc/oidc-ca.crt"
     dest: /etc/kubernetes/pki/oidc/
   notify:
     - Restart kube-apiserver service
