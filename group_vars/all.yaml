@@ -37,6 +37,8 @@ agorakube_base_components:
   kubernetes:
     release: v1.21.5
     upgrade: False
+  cloud_controller_manager:
+    enabled: False
   container:
     engine: containerd
 # release : Only Supported if container engine is set to docker

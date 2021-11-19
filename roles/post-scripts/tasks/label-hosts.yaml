@@ -1,4 +1,16 @@
 ---
+- name: Make sure hosts with cloud controller manager enabled not have taint node.cloudprovider.kubernetes.io/uninitialized
+  command: |
+    kubectl --kubeconfig {{ pki_path }}/kubeconfigs/admin/admin.conf \
+    taint nodes {{ item }} node.cloudprovider.kubernetes.io/uninitialized- --overwrite
+  changed_when: false
+  with_items:
+  - "{{ groups['masters'] }}"
+  - "{{ groups['workers'] }}"
+  - "{{ groups['storage'] }}"
+  ignore_errors: yes
+  when: agorakube_base_components.cloud_controller_manager.enabled | bool == True
+
 - name: Wait for nodes to be ready
   command: kubectl --kubeconfig {{ pki_path }}/kubeconfigs/admin/admin.conf get node {{ item }}
   changed_when: false
