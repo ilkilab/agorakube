@@ -524,6 +524,14 @@ This section allows you to configure your Kubernetes deployment.
 | `agorakube_base_components.kubernetes.release` | Kubernetes release that will be installed on *Master/Worker/Storage* hosts |  **v1.21.0** *(default)* |
 | `agorakube_base_components.kubernetes.upgrade` | Upgrade current Kubernetes release to `agorakube_base_components.kubernetes.release` | **False** *(default)* |
 
+### Cloud Controller Manager
+
+This section allows you to configure the kubelet to use the [Cloud Controller Manager](https://kubernetes.io/docs/concepts/architecture/cloud-controller)
+
+| Parameter | Description | Values |
+| --- | --- | --- |
+| `agorakube_base_components.cloud_controller_manager.enabled` | Enable or disable the `cloud-controller-manager` | **False** *(default)* |
+
 ### Container Engine
 
 This section allows you to configure your Container Engine that will be deployed on all Master/Worker/Storage hosts.
