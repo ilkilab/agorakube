@@ -1,8 +1,13 @@
 ---
-- name: Stop etcd server
+- name: Stop control plan server
   systemd:
-    name: etcd
+    name: "{{ item }}"
     state: stopped
+  with_items:
+    - kube-apiserver
+    - kube-scheduler
+    - kube-controller-manager
+    - etcd
 
 - name: Create tempdir
   tempfile:
@@ -45,7 +50,12 @@
     group: root
     mode: '0700'
 
-- name: Start etcd service
+- name: Start control plan service
   systemd:
-    name: etcd
+    name: "{{ item }}"
     state: started
+  with_items:
+    - kube-apiserver
+    - kube-scheduler
+    - kube-controller-manager
+    - etcd
