@@ -24,7 +24,7 @@ This is a list of points that will be explained in this instructions file for th
 Below is a diagram of the high-level architecture deployed by AGORAKUBE :
 ![Architecture](../images/AGORAKUBE_diagram.png)
 
-**Notes :** This distibution is aimed to be customizable so you can choose : 
+**Notes :** This distribution is aimed to be customizable so you can choose : 
  - Where the **etcd** will be deployed (with the master or not) 
  - The number of **master** nodes to deploy (from 1 to many - 5 nodes for production)
  - The number of **etcd** nodes to deploy (from 1 to many - 5 nodes for production)
@@ -37,7 +37,7 @@ This section details the prerequisites to install AGORAKUBE in your environment.
 
 ## OS
 
-Below are the OS's currently supported on all the machines :
+Below are the OS's currently supported on all the machines:
   - Ubuntu 18.04 & 20.04 - amd64
   - Centos 7 - amd64
   - Debian 10 - amd64
@@ -163,7 +163,7 @@ ansible --version
 #  python version = 3.8.5 (default, Jul 28 2020, 12:59:40) [GCC 9.3.0]
 
 
-# If you whant to stop using the Python Virtual Environment, just execute the following command:
+# If you want to stop using the Python Virtual Environment, just execute the following command:
 deactivate
 ```
 
@@ -206,7 +206,7 @@ AGORAKUBE enables an easy way to deploy and manage customizable K8S clusters.
 
 ## ansible.cfg file
 
-This file alows you to configure default settings for your Ansible server.
+This file allows you to configure default settings for your Ansible server.
 
 **If you are using CentOS-7, make sure to set "interpreter_python = /usr/bin/python2.7" !!** Ansible on CentOS-7 doesn't fully support Python3. 
 
@@ -466,7 +466,7 @@ agorakube_encrypt_etcd_keys:
 
 # AGORAKUBE Parameters
 
-Below  you can find all the parameters you can use in this file, section by section.
+Below, you can find all the parameters you can use in this file, section by section.
 
 ## Global Section
 
@@ -1051,7 +1051,7 @@ ETCD logs are only present in "journalctl". Run the following command to get ETC
 
 # Configure Calico
 
-With Agorakube, you can configure the way Calico discover node IFACE. In some cases, Agorakube master/nodes can have multiple Iface, with different names, order, and subnet/network. In that case, Calico will need your help to discover which Iface should be used to route bettwen nodes. To do this, you can use "agorakube_network.calico_autodetection_method" parameter.
+With Agorakube, you can configure the way Calico discover node IFACE. In some cases, Agorakube master/nodes can have multiple Iface, with different names, order, and subnet/network. In that case, Calico will need your help to discover which Iface should be used to route between nodes. To do this, you can use "agorakube_network.calico_autodetection_method" parameter.
 The following sections describe the available IP autodetection methods. (From https://docs.projectcalico.org/reference/node/configuration#ip-autodetection-methods)
 
 ## First-Found
