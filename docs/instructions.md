@@ -15,6 +15,7 @@ This is a list of points that will be explained in this instructions file for th
 - [How to use Ingress-Nginx](#how-to-use-ingress-nginx)
 - [AGORAKUBE Log Architecture](#agorakube-log-architecture)
 - [Configure Calico](#configure-calico)
+- [Configure Keycloak](#configure-keycloak)
 - [Upgrade And Downgrade Kubernetes with Agorakube](#upgrade-and-downgrade-kubernetes-with-Agorakube)
 - [Uninstall AGORAKUBE](#uninstall-agorakube)
 
@@ -1111,6 +1112,109 @@ If you notice some network trouble with calico, deploy a calico pod with : `kube
 Then, print IFACE used by Calico with : `kubectl exec -ti -n kube-system calicoctl -- /calicoctl get nodes --allow-version-mismatch -o wide`
 
 Calicoctl help command:  `kubectl exec -ti -n kube-system calicoctl -- /calicoctl -h`
+
+# Configure Keycloak
+
+Keycloak is used to enable SSO OIDC in Agorakube Kubernetes Cluster.
+
+Keycloak can be enabled with the following parameters:
+
+```
+  keycloak_oidc:
+    enabled: False
+    admin:
+      user: administrator
+      password: P@ssw0rd
+    auto_bootstrap:
+        bootstrap_keycloak: true
+        bootstrap_kube_apiserver: true
+        populate_etc_hosts: true
+        host: oidc.local.lan
+
+    # And Keycloak Storage parametters
+    #
+    #
+```
+
+## Setup infrastructure
+
+Keycloak is published with an Ingress entry powered by Nginx-Controller with TLS.
+
+Agorakube automatically configure a "/etc/hosts" on kubernetes nodes to points to "nginx-controller" ClusterIP. So all Kubernetes master/nodes can access OIDC/Keycloak through "https://keycloak_oidc.auto_bootstraphost" (eg: https://oidc.local.lan).
+
+If you wanna use SSO/OIDC **from outside the cluster**, you will need to publish your Nginx-Ingress through a LoadBalancer (Powered by Agorakube/MetalLB, or by your own infra) and configure your external DNS (Used by your users) to resolve "keycloak_oidc.auto_bootstraphost".
+
+All users must be able to access keyclock through "https://keycloak_oidc.auto_bootstraphost". DO NOT USE PORT OTHER THAN 443 ! If you do so, you will notice an Authorization error on kube-APISERVER. ` "Unable to authenticate the request" err="invalid bearer token" `
+
+
+## Manage Keycloak
+
+- Connect to keycloak service and login with Administrator credentials.
+- Create a user in keycloack:
+  - User MUST have a "mail" field (Used by Kubernetes to authenticate user and log actions)
+  - User MUST have "e-mail verifed" set to "ON"
+  - Once user is created, set up a password to that user ("Credentials" panel) and set "Temporary" field to "OFF"
+
+Kubernetes will authorize users according Keycloak (or federated) users and groups.
+
+By default Agorakube create 2 groups - "kubernetes-admin" and "kubernetes-auditor" with associated RBAC created on Kubernetes.
+
+Adding your user to "kubernetes-admin" group will give them all "cluster-admin" rights.
+
+Adding your user to "kubernetes-admin" group will give them a "read-all cluster" rights.
+
+Here are default RBAC. Notice "oidc" prefix used on "Subjects" to identify OIDC/Keycloak users and groups ! 
+
+```
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: cluster-auditor-oidc
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: cluster-view
+subjects:
+- apiGroup: rbac.authorization.k8s.io
+  kind: Group
+  name: oidc:kubernetes-auditor
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: cluster-admin-oidc
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: cluster-admin
+subjects:
+- apiGroup: rbac.authorization.k8s.io
+  kind: Group
+  name: oidc:kubernetes-admin
+```
+
+## Setup Kubectl for users
+
+Firstlly, you MUST regenerate a private "oidc-client-secret" used by all your users. Do not use the Agorakube default "oidc-client-secret" wich is public !
+  - Connect to keycloak GUI with Administrator credentials
+  - Go to : "Local Realm (default)" > Configure > Clients > kube > Credentials > Clic on "Regenerate Secret".
+
+In order to manage kubernetes, your users must :
+  - install kubectl -> https://kubernetes.io/fr/docs/tasks/tools/install-kubectl/
+  - install kubelogin -> https://github.com/int128/kubelogin
+  - Get Keycloak OIDC-CA cert located on Deploy Agorakube machine at -> /var/agorakube/pki/oidc/oidc-ca.crt (Used to validate TLS with Keycloak)
+
+Once kubectl and kubelogin are installed, and oidc-ca.crt is present on the client machine, you can authenticate yourself to keycloak with the following command:
+
+Sample:
+```
+kubectl oidc-login setup \
+  --oidc-issuer-url=https://oidc.local.lan/auth/realms/local \
+  --oidc-client-id=kube \
+  --oidc-client-secret=79e34f70-581a-4cc3-a2b4-10b5a4d670df \
+  --certificate-authority=C:\Users\PierreILKI\.kube\oidc-ca.crt
+```
 
 # Upgrade And Downgrade Kubernetes with Agorakube
 
