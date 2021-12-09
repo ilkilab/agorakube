@@ -35,7 +35,7 @@ agorakube_base_components:
           nodename: "master1"
           path: /var/etcd-backup
   kubernetes:
-    release: v1.21.5
+    release: v1.23.0
     upgrade: False
   cloud_controller_manager:
     enabled: False
