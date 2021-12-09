@@ -15,6 +15,7 @@ This is a list of points that will be explained in this instructions file for th
 - [How to use Ingress-Nginx](#how-to-use-ingress-nginx)
 - [AGORAKUBE Log Architecture](#agorakube-log-architecture)
 - [Configure Calico](#configure-calico)
+- [Configure Keycloak](#configure-keycloak)
 - [Upgrade And Downgrade Kubernetes with Agorakube](#upgrade-and-downgrade-kubernetes-with-Agorakube)
 - [Uninstall AGORAKUBE](#uninstall-agorakube)
 
