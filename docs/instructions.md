@@ -21,10 +21,10 @@ This is a list of points that will be explained in this instructions file for th
 
 # High-level Architecture
 
-Below a diagram of the high-level architecture deployed by AGORAKUBE :
+Below is a diagram of the high-level architecture deployed by AGORAKUBE :
 ![Architecture](../images/AGORAKUBE_diagram.png)
 
-**Notes :** This distibution is aimed to be customizable so you can choose : 
+**Notes :** This distribution is aimed to be customizable so you can choose : 
  - Where the **etcd** will be deployed (with the master or not) 
  - The number of **master** nodes to deploy (from 1 to many - 5 nodes for production)
  - The number of **etcd** nodes to deploy (from 1 to many - 5 nodes for production)
@@ -33,11 +33,11 @@ Below a diagram of the high-level architecture deployed by AGORAKUBE :
  
  # Prerequisites
 
-This section explains what are the prerequisites to install AGORAKUBE in your environment.
+This section details the prerequisites to install AGORAKUBE in your environment.
 
 ## OS
 
-Below the OS currently supported on all the machines :
+Below are the OS's currently supported on all the machines:
   - Ubuntu 18.04 & 20.04 - amd64
   - Centos 7 - amd64
   - Debian 10 - amd64
@@ -66,9 +66,9 @@ If Agorakube is installed behind a Proxy/Firewall, make sure the following URLs 
 
 ## Node Sizing
 
-Node sizing indicated here is for production environment. You can custom it according to suit your needs.
+Node sizing indicated here is for a production environment. You can custom it accordingly to suit your needs.
 
-It is a best-practice to install ETCD and MASTERS on separate hosts.
+It is best-practice to install ETCD and MASTERS on separate hosts.
 
 | AGORAKUBE Type | no HA or all-in-one | no-production | production |
 | --- | --- | --- | --- |
@@ -99,7 +99,7 @@ We actually configure the proper VM size for your ETCD depending on the number o
 
 # Nodes Setup
 
-This section explains how to setup nodes before deploying Kubernetes Clusters with AGORAKUBE.
+This section explains how to set up nodes before deploying Kubernetes Clusters with AGORAKUBE.
 
 ## Deployment node
 
@@ -121,7 +121,7 @@ bash <(curl -s https://raw.githubusercontent.com/ilkilab/agorakube/master/setup-
 
 ### Use Python Virtual Environment
 
-Sometimes it is better to run Ansible and all its dependences into a specific *Python Virtual Environment*. This will make it easier for you to install Ansible and all its dependences needed by AGORAKUBE without take the risk to break your existing Python/Python3 installation.
+Sometimes it is better to run Ansible and all its dependences in a specific *Python Virtual Environment*. This will make it easier for you to install Ansible and all its dependences needed by AGORAKUBE without the risk of breaking your existing Python/Python3 installation.
 
 
 You can create your own *Python Virtual Environment* from scratch by following:
@@ -163,7 +163,7 @@ ansible --version
 #  python version = 3.8.5 (default, Jul 28 2020, 12:59:40) [GCC 9.3.0]
 
 
-# If you whant to stop using the Python Virtual Environment, just execute the following command:
+# If you want to stop using the Python Virtual Environment, just execute the following command:
 deactivate
 ```
 
@@ -206,9 +206,9 @@ AGORAKUBE enables an easy way to deploy and manage customizable K8S clusters.
 
 ## ansible.cfg file
 
-This file alows you to configure default settings for your Ansible server.
+This file allows you to configure default settings for your Ansible server.
 
-**If you are using CentOS-7, make sure to set "interpreter_python = /usr/bin/python2.7" !!** Ansible on CentOS-7 don't fully support Python3. 
+**If you are using CentOS-7, make sure to set "interpreter_python = /usr/bin/python2.7" !!** Ansible on CentOS-7 doesn't fully support Python3. 
 
 
 
@@ -466,7 +466,7 @@ agorakube_encrypt_etcd_keys:
 
 # AGORAKUBE Parameters
 
-Below  you can find all the parameters you can use in this file, section by section.
+Below, you can find all the parameters you can use in this file, section by section.
 
 ## Global Section
 
@@ -615,7 +615,7 @@ This section allows you to configure your K8S features.
 | `agorakube_features.gatekeeper.replicas.controller_manager `| Number of Gatekeeper Controller_Manager Replicas | **3** *(default)* | 
 
 ## AGORAKUBE other settings
-This section allows you to configure some other settings
+This section allows you to configure additional settings
 
 | Parameter | Description | Values |
 | --- | --- | --- |
@@ -1051,7 +1051,7 @@ ETCD logs are only present in "journalctl". Run the following command to get ETC
 
 # Configure Calico
 
-With Agorakube, you can configure the way Calico discover node IFACE. In some case, Agorakube master/nodes can have multiple Iface, with different names, order, and subnet/network. In that case, Calico will need your help to discover which Iface should be used to route bettwen nodes. To do this, you can use "agorakube_network.calico_autodetection_method" parameter.
+With Agorakube, you can configure the way Calico discover node IFACE. In some cases, Agorakube master/nodes can have multiple Iface, with different names, order, and subnet/network. In that case, Calico will need your help to discover which Iface should be used to route between nodes. To do this, you can use "agorakube_network.calico_autodetection_method" parameter.
 The following sections describe the available IP autodetection methods. (From https://docs.projectcalico.org/reference/node/configuration#ip-autodetection-methods)
 
 ## First-Found
