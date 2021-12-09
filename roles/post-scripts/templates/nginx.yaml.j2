@@ -339,6 +339,7 @@ spec:
             - --validating-webhook=:8443
             - --validating-webhook-certificate=/usr/local/certificates/cert
             - --validating-webhook-key=/usr/local/certificates/key
+            - --watch-ingress-without-class=true
           securityContext:
             capabilities:
               drop:
@@ -420,6 +421,8 @@ metadata:
     app.kubernetes.io/component: controller
   name: nginx
   namespace: ingress-nginx
+  annotations:
+    ingressclass.kubernetes.io/is-default-class: "true"
 spec:
   controller: k8s.io/ingress-nginx
 ---
