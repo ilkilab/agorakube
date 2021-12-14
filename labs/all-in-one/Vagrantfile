@@ -157,7 +157,7 @@ agorakube_features:
     enabled: true
   ingress:
     controller: nginx
-    release: v0.46.0
+    release: v1.1.0
   supervision: 
     monitoring:
       enabled: true
