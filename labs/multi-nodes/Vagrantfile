@@ -86,7 +86,7 @@ agorakube_pki:
 
 agorakube_base_components:
   etcd:
-    release: v3.4.14
+    release: v3.4.16
     upgrade: False
     check: true
     data_path: /var/lib/etcd
@@ -106,8 +106,10 @@ agorakube_base_components:
           nodename: "master1"
           path: /var/etcd-backup
   kubernetes:
-    release: v1.21.1
-    upgrade: false
+    release: v1.23.5
+    upgrade: False
+  cloud_controller_manager:
+    enabled: False
   container:
     engine: containerd
 # release : Only Supported if container engine is set to docker
@@ -122,7 +124,7 @@ agorakube_network:
     pod: 10.33.0.0/16
     service: 10.32.0.0/16
   service_ip:
-    kubernetes: 10.32.0.1 
+    kubernetes: 10.32.0.1
     coredns: 10.32.0.10
   dns:
     primary_forwarder: 8.8.8.8
@@ -142,10 +144,10 @@ agorakube_features:
     release: "1.8.3"
     replicas: 2
   reloader:
-    enabled: false
+    enabled: False
     release: "0.0.89"
   storage:
-    enabled: false
+    enabled: False
     release: "2.9.0"
     jiva:
       data_path: /var/openebs
@@ -153,20 +155,21 @@ agorakube_features:
     hostpath:
       data_path: /var/local-hostpath
   dashboard:
-    enabled: false
-    generate_admin_token: false
+    enabled: False
+    generate_admin_token: False
     release: v2.2.0
   metrics_server:
-    enabled: true
+    enabled: True
   ingress:
     controller: nginx
     release: v1.1.0
+
   supervision:
     monitoring:
-      enabled: true
-      dashboard: false
+      enabled: False
+      dashboard: True
       persistent:
-        enable: true
+        enabled: False
         storage:
           capacity: 4Gi
           type: "storageclass"
@@ -176,29 +179,14 @@ agorakube_features:
             name: "my-pv-monitoring"
             storageclass: "my-storageclass-name"
           hostpath:
-            nodename: "master1"
+            nodename: "worker1"
             path: /var/monitoring-persistent
     dashboard:
       admin:
         user: administrator
         password: P@ssw0rd
       persistent:
-        enabled: true
-        storage:
-          capacity: 4Gi
-          type: "storageclass"
-          storageclass:
-            name: "default-jiva"
-          persistentvolument:
-            storageclass: "my-storageclass-name"
-          hostpath:
-            nodename: "master1"
-            path: /var/monitoring-persistent
-    logging:
-      enabled: true
-      dashboard: true
-      persistent:
-        enabled: true
+        enabled: False
         storage:
           capacity: 4Gi
           type: "storageclass"
@@ -206,31 +194,49 @@ agorakube_features:
             name: "default-jiva"
           persistentvolume:
             name: "my-pv-monitoring"
-              storageclass: "my-storageclass-name"
-            hostpath:
-              nodename: "master1"
-              path: /var/monitoring-persistent
+            storageclass: "my-storageclass-name"
+          hostpath:
+            nodename: "worker1"
+            path: /var/grafana-persistent
+    logging:
+      enabled: False
+      dashboard: True
+      persistent:
+        enabled: False
+        storage:
+          capacity: 4Gi
+          type: "storageclass"
+          storageclass:
+            name: "default-jiva"
+          persistentvolume:
+            name: "my-pv-monitoring"
+            storageclass: "my-storageclass-name"
+          hostpath:
+            nodename: "worker1"
+            path: /var/logging-persistent
   logrotate:
-    enabled: false
+    enabled: False
     crontab: "* 2 * * *"
     day_retention: 14
   gatekeeper:
-    enabled: false
+    enabled: False
     release: v3.4.0
     replicas:
       #audit: 1
       controller_manager: 3
+#argocd is an Alpha feature and do not support persistence wet. Use it only for test purpose.
   argocd:
-    enabled: false
-# keycloak_oidc is an Alpha feature and do not support persistence wet. Use it only for test purpose.
+    enabled: False
+
+# keycloak_oidc is an Alpha feature.
   keycloak_oidc:
-    enabled: false
+    enabled: False
     admin:
       user: administrator
       password: P@ssw0rd
     auto_bootstrap:
-        bootstrap_keycloak: false
-        bootstrap_kube_apiserver: false
+        bootstrap_keycloak: true
+        bootstrap_kube_apiserver: true
         populate_etc_hosts: true
         host: oidc.local.lan
     storage:
@@ -246,7 +252,7 @@ agorakube_features:
           nodename: "master1"
           path: /var/keycloak
 
-agorakube_populate_etc_hosts: true
+agorakube_populate_etc_hosts: True
 
 # Security
 agorakube_encrypt_etcd_keys:
