@@ -1048,7 +1048,9 @@ In "/var/log/kubernetes/" directory, log file size is limited to 1800 MB.
 
 Pods logs are stored in "/var/log/pods" directory.
 
-ETCD logs are only present in "journalctl". Run the following command to get ETCD logs from an "ETCD" host : `journalctl -xeu etcd`
+ETCD logs are only present in "/var/log/etcd.log".
+
+Run the following command to get system logs from host : `journalctl -xeu [SERVICE]`
 
 # Configure Calico
 
