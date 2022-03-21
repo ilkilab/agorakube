@@ -129,9 +129,15 @@ You can create your own *Python Virtual Environment* from scratch by following:
 
 ```
 # Install on deploy machine python3, pyhton3-pip and python3-venv
-# On Ubuntu (18.04,20.04) or Debian10 use the following commands:
+# On Ubuntu (18.04) or Debian10 use the following commands:
 apt update
 apt install -yqq python3 python3-pip python3-venv
+
+# Install on deploy machine python3, pyhton3-pip and python3-venv
+# On Ubuntu (20.04) or Debian10 use the following commands:
+apt update
+apt install python3.8-venv
+
 
 # Only on Centos7
 yum install -y libselinux-python3
