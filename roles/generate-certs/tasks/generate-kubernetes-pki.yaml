@@ -466,7 +466,7 @@
     country_name: "{{ agorakube_pki.infos.country }}"
     organization_name: 'system:nodes'
     use_common_name_for_san: False
-    subject_alt_name: "DNS:{{ item }}"
+    subject_alt_name: "DNS:{{ item }},IP:{{ hostvars[item].ansible_host }}"
   with_items:
     - "{{ groups['masters'] }}"
     - "{{ groups['workers'] }}"
