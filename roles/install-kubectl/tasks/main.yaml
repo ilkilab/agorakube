@@ -1,6 +1,8 @@
 ---
-- name: Setup kubectl's {{ ansible_distribution }} repo
-  include_tasks: "repo-{{ ansible_distribution }}.yaml"
-
 - name: Install kubectl
-  package: name=kubectl state=present
+  get_url:
+    url: https://storage.googleapis.com/kubernetes-release/release/{{ agorakube_base_components.kubernetes.release }}/bin/linux/amd64/kubectl
+    dest: /usr/bin/kubectl
+    owner: root
+    group: root
+    mode: 0777

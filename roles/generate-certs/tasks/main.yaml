@@ -1,9 +1,8 @@
----
-- name: Install cfssl and cfssljson
-  include_tasks: install-cfssl-cfssljson.yaml
-- name: clean certs
-  include_tasks: clean-certs.yaml
-  when: update_certs
-- name: generate certificates and configs
-  include_tasks: gen-certs.yaml
+- name: Include label hosts
+  include_tasks: generate-kubernetes-pki.yaml
 
+- name: Generate Keycloak PKI
+  include_tasks: oidc-keycloak.yaml
+  when:
+    - agorakube_features.keycloak_oidc.auto_bootstrap.bootstrap_keycloak | bool == True
+    - agorakube_features.keycloak_oidc.enabled | bool == True

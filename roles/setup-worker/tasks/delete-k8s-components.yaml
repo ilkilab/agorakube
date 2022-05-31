@@ -1,0 +1,75 @@
+---
+# Stop the Services before uninstalling them
+- name: Stop Kubelet Service
+  systemd:
+    state: stopped
+    name: kubelet
+  tags: ['never', 'uninstall']
+  ignore_errors: yes
+
+- name: Stop Kube-proxy Service
+  systemd:
+    state: stopped
+    name: kube-proxy
+  tags: ['never', 'uninstall']
+  ignore_errors: yes
+
+# Delete Services Definition
+- name: Delete Kubelet Service
+  file:
+    path: /etc/systemd/system/kubelet.service
+    state: absent
+  notify:
+    - Reload Daemons
+  tags: ['never', 'uninstall']
+
+- name: Delete Kube-proxy Service
+  file:
+    path: /etc/systemd/system/kube-proxy.service
+    state: absent
+  notify:
+    - Reload Daemons
+  tags: ['never', 'uninstall']
+
+- name: Get kubelet volumes
+  shell: >
+    df -HT | grep '/var/lib/kubelet/' | awk '{print $7}'
+  register: kubelet_volumes
+  tags: ['never', 'uninstall']
+
+- name: Unmount kubelet volumes
+  mount:
+    path: "{{ item }}"
+    state: unmounted
+  tags: ['never', 'uninstall']
+  when: kubelet_volumes.stdout != ""
+  with_items:
+    - "{{ kubelet_volumes.stdout_lines }}"
+
+# Delete Kubelet
+- name: Delete Kubelet data dir
+  file:
+    path: /var/lib/kubelet
+    state: absent
+  tags: ['never', 'uninstall']
+
+# Delete PKI files and Data Directory
+- name: Delete PKI files
+  file:
+    path: /etc/kubernetes
+    state: absent
+  tags: ['never', 'uninstall']
+
+# Delete Binaries
+- name: Delete Node Binaries
+  file:
+    path: /usr/local/bin/kubernetes
+    state: absent
+  tags: ['never', 'uninstall']
+
+# Delete Logs
+- name: Delete Logs
+  file:
+    path: /var/log/kubernetes
+    state: absent
+  tags: ['never', 'uninstall']

@@ -1,0 +1,18 @@
+---
+- name: Install packages to allow apt to use a repository over HTTPS
+  package:
+    name: ['apt-transport-https', 'ca-certificates', 'curl', 'software-properties-common', 'gnupg-agent']
+    state: latest
+    update_cache: yes
+
+- name: Add Docker’s official GPG key
+  apt_key:
+    url: https://download.docker.com/linux/{{ ansible_distribution | lower }}/gpg
+    state: present
+
+- name: Add Docker apt repository
+  apt_repository:
+    repo: deb [arch=amd64] https://download.docker.com/linux/{{ ansible_distribution | lower }} {{ ansible_lsb.codename }} stable
+    state: present
+    update_cache: yes
+

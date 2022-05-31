@@ -1,0 +1,49 @@
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: monitoring
+---
+apiVersion: rbac.authorization.k8s.io/v1beta1
+kind: ClusterRole
+metadata:
+  name: tls-admin-monitoring
+rules:
+- apiGroups: [""]
+  resources:
+  - secrets
+  verbs: ["get", "list", "watch", "create"]
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: tls-admin-monitoring
+  namespace: monitoring
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: tls-admin-monitoring
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: tls-admin-monitoring
+subjects:
+- kind: ServiceAccount
+  name: tls-admin-monitoring
+  namespace: monitoring
+---
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: tls-monitoring-gen
+  namespace: monitoring
+spec:
+  ttlSecondsAfterFinished: 100
+  template:
+    spec:
+      serviceAccountName: tls-admin-monitoring
+      containers:
+      - name: certgen
+        image: agorakube/tls-gen-monitoring:v1.0.0
+      restartPolicy: Never

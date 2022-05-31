@@ -1,0 +1,35 @@
+---
+- name: Create tempdir
+  tempfile:
+    state: directory
+    suffix: monitoring
+  register: monitoring_tempdir
+  changed_when: false
+
+- name: Render templates 1
+  template:
+    dest: "{{ monitoring_tempdir.path }}/monitoring.yaml"
+    src: "monitoring.yaml.j2"
+  changed_when: false
+
+- name: Apply templates 1
+  command: kubectl --kubeconfig {{ pki_path }}/kubeconfigs/admin/admin.conf apply -f {{ monitoring_tempdir.path }}/monitoring.yaml
+  register: apply_monitoring
+  changed_when: >
+    apply_monitoring.stdout is search("created")
+    or apply_monitoring.stdout is search("configured")
+
+- name: Cleanup tempdir
+  file:
+    state: absent
+    path: "{{ monitoring_tempdir.path }}"
+  changed_when: false
+
+- name: Wait for Prometheus to be deployed
+  command: kubectl --kubeconfig {{ pki_path }}/kubeconfigs/admin/admin.conf get deploy -n supervision prometheus
+  changed_when: false
+  register: monitoring_deployment
+  until: monitoring_deployment.stdout.find("1/1") != -1
+  retries: 300
+  delay: 10
+  run_once: true

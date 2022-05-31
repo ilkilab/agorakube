@@ -1,0 +1,3 @@
+---
+is_debian_like: "{{ 'True' if ansible_distribution|lower == 'ubuntu' or ansible_distribution|lower == 'debian'  else 'False' }}"
+is_centos_like: "{{ 'True' if ansible_distribution|lower == 'centos' or ansible_distribution|lower == 'fedora'  else 'False' }}"

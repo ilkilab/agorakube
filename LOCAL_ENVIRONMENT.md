@@ -1,46 +1,96 @@
-# Local AgoraKube Development Environment
+# Local AGORAKUBE Development Environment
 
 You can create a local environment by using Vagrant. 
-The document below describes pre-requisites for Agorakube local environment and how you can start using them.
+The document below describes pre-requisites for AGORAKUBE local environment and how you can start using them.
+
 
 ## Pre-requisites
 
-* Vagrant
-* VirtualBox
+* [Vagrant](https://www.vagrantup.com/downloads)
+* [VirtualBox](https://www.virtualbox.org/wiki/Downloads)
+
 
 ## Environment customization
 
-There are two files which can be modified to customize the local environment, especially in terms of number of nodes. By default, it works with single node which acts as : 
-- Agorakube deployment node used to deploy all components
-- master and worker node for Kubernetes
+We use Vagrant and VirtualBox to deploy local environments.
 
-The configuration files for Vagrant based local environment are located in [test_lab folder](/test_lab).
+Test environments are located in [labs](./labs) folder which contains a set of sub-folders for each configuration you may want to implement. Feel free to customize VagrantFiles according to your need !
 
-**Note :** First, you can choose the base OS (Ubuntu or CentOS) of you local environment by modifying [Vagrantfile](/test_lab/Vagrantfile). 
-
-If you want to change the number of nodes :
-1. You can first modify the [Vagrantfile](/test_lab/Vagrantfile) by uncommenting blocks corresponding to node1 and node2.
-   - **Note :** Only uncomment the lines between *# Node[12] Block START* and *# Node[12] Block END*
-2. Next, adjust [hosts.vagrant](/test_lab/hosts.vagrant) file accordingly by uncommenting the desired lines.
-   - **Note :** Make sure to update the *advertise_ip_masters* :
-     - In case of a single node deployment (default), the IP must correspond to the deployment node IP
-     - In case of multi-node deployment, the IP must correspond to the node1 IP 
-    
 
 ## Start the environment
 
-1) Simply open a terminal and goto test_lab folder and then run the following command:
+1) Simply open a terminal and go to [labs/multi-nodes](./labs/multi-nodes) or [labs/all-in-one](./labs/all-in-one) folder depending on the configuration you want to deploy.
 
-`vagrant up`
 
-2) One Agorakube installation is finished, connect to the deploy manachine with the following command:
+2) Once you are located on the folder that contains your file "Vagrantfile", run the command :
 
-`vagrant ssh deploy`
+```
+vagrant up
+```
 
-3) Kubernetes CLI "kubectl" is configured for root user, so use the following command to become root:
+3) Once ILKE installation is finished, a kubeconfig file ("config") is generated next to your Vagrantfile. You can use this file to manage your Kubernetes installation with [kubectl](https://kubernetes.io/docs/tasks/tools/install-kubectl/), or you can connect to the deploy machine with the following command :
 
-`sudo su`
+```
+vagrant ssh deploy (all-in-one configuration)
 
-4) You can now enjoy your Agorakube/K8S fresh cluster ! Use the following command to print K8S version:
+vagrant ssh worker1 (multi-nodes configuration)
+```
 
-`kubectl version`
+4) Kubernetes CLI "kubectl" is configured for root user, so use the following command to become root :
+
+```
+sudo su
+```
+
+5) You can now enjoy your AGORAKUBE/K8S fresh cluster ! Use the following command to print K8S version :
+
+```
+kubectl version
+```
+
+
+6) If you want to stop your kubernetes cluster, juste go to your Vagrantfile folder and run :
+
+```
+vagrant halt -f
+```
+
+You can also start again your K8S cluster with `vagrant up`. If `vagrant up` does not start all the machines correctly, simply start them manually on VirtualBox.
+
+
+7) If you want to destroy your local cluster, just run :
+
+```
+vagrant destroy -f 
+```
+
+
+## Best practices
+
+If you want to test your branch in the local environment, be sure to follow these tips :
+
+1) Create a test folder in which you will clone your branch :
+
+```
+mkdir test
+
+cd test
+
+git clone https://github.com/repo/agorakube.git -b test-branch
+```
+
+
+2) Copy the "hosts.yaml" file to your branch :
+
+```
+cp agorakube/hosts test/agorakube/hosts
+```
+
+
+3) You are now ready to test :
+
+```
+source /usr/local/agorakube-env/bin/activate
+
+ansible-playbook agorakube.yaml
+```

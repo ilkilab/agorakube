@@ -1,5 +1,5 @@
 [Unit]
-Description=Kubernetes Kube Proxy {{ kubernetes_release }}
+Description=Kubernetes Kube Proxy {{ agorakube_base_components.kubernetes.release }}
 Documentation=https://github.com/kubernetes/kubernetes
 
 [Service]
@@ -8,15 +8,19 @@ ExecStart=/usr/local/bin/kubernetes/server/bin/kube-proxy \
 {% else %}
 ExecStart=/usr/local/bin/kubernetes/node/bin/kube-proxy \
 {% endif %}
-{% if kube_proxy_mode in ['userspace','iptables','ipvs'] %}
-  --proxy-mode={{kube_proxy_mode}} \
+{% if agorakube_network.kube_proxy.mode in ['userspace','iptables','ipvs'] %}
+  --proxy-mode={{ agorakube_network.kube_proxy.mode }} \
 {% endif %}
-{% if kube_proxy_mode == 'ipvs' %}
-{% if kube_proxy_ipvs_algotithm in ['rr','lc','dh','sh','sed','nq'] %}
-  --ipvs-scheduler={{kube_proxy_ipvs_algotithm}} \
+{% if agorakube_network.kube_proxy.mode == 'ipvs' %}
+{% if agorakube_network.kube_proxy.algorithm in ['rr','lc','dh','sh','sed','nq'] %}
+  --ipvs-scheduler={{ agorakube_network.kube_proxy.algorithm }} \
 {% endif %}
 {% endif %}
-  --config=/etc/kubernetes/kube-proxy-config.yaml
+  --hostname-override={{ ansible_fqdn }} \
+  --log-file=/var/log/kubernetes/kube-proxy.log \
+  --log-file-max-size=1800 \
+  --logtostderr=false \
+  --config=/etc/kubernetes/manifests/kube-proxy-config.yaml
 Restart=on-failure
 RestartSec=5
 

@@ -1,0 +1,14 @@
+---
+- name: "Install {{ item }}"
+  package:
+    name: "{{ item }}"
+    state: present
+  with_items:
+    - yum-utils
+    - device-mapper-persistent-data
+    - lvm2
+
+- name: Add docker repository
+  command: yum-config-manager  --add-repo  https://download.docker.com/linux/{{ ansible_distribution | lower }}/docker-ce.repo
+  args:
+    creates: /etc/yum.repos.d/docker-ce.repo

@@ -1,0 +1,14 @@
+---
+- name: Install docker
+  package:
+    name: ["containerd.io","docker-ce","docker-ce-cli"]
+    state: latest
+    update_cache: yes
+  when: agorakube_base_components.container.release|length == 0
+
+- name: Install docker in specific release
+  package:
+    name: ["containerd.io","docker-ce-{{ agorakube_base_components.container.release }}","docker-ce-cli-{{ agorakube_base_components.container.release }}"]
+    state: present
+    update_cache: yes
+  when: agorakube_base_components.container.release|length > 0

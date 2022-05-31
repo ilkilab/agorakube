@@ -1,0 +1,35 @@
+---
+- name: Create tempdir
+  tempfile:
+    state: directory
+    suffix: gatekeeper
+  register: gatekeeper_tempdir
+  changed_when: false
+
+- name: Render templates
+  template:
+    dest: "{{ gatekeeper_tempdir.path }}/gatekeeper.yaml"
+    src: "gatekeeper.yaml.j2"
+  changed_when: false
+
+- name: Apply templates
+  command: kubectl --kubeconfig {{ pki_path }}/kubeconfigs/admin/admin.conf apply -f {{ gatekeeper_tempdir.path }}/gatekeeper.yaml
+  register: apply_gatekeeper
+  changed_when: >
+    apply_gatekeeper.stdout is search("created")
+    or apply_gatekeeper.stdout is search("configured")
+
+- name: Cleanup tempdir
+  file:
+    state: absent
+    path: "{{ gatekeeper_tempdir.path }}"
+  changed_when: false
+
+- name: Verify if gatekeeper pods has successfully started
+  command: kubectl --kubeconfig {{ pki_path }}/kubeconfigs/admin/admin.conf get deploy -n gatekeeper-system
+  changed_when: false
+  register: gatekeeper_deployment
+  until: gatekeeper_deployment.stdout.find(agorakube_features.gatekeeper.replicas.controller_manager | string + "/" + agorakube_features.gatekeeper.replicas.controller_manager | string) != -1
+  retries: 300
+  delay: 10
+  run_once: true

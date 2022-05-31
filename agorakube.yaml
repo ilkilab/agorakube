@@ -1,5 +1,5 @@
 ---
-- hosts: all
+- hosts: workers,etcd,masters,storage
   any_errors_fatal: true
   become: true
   roles:
@@ -8,11 +8,13 @@
     - populate_etc_hosts
 - hosts: deploy
   become: true
+  vars:
+    ansible_python_interpreter: /usr/local/agorakube-env/bin/python3
   roles:
-    - compliance-checks
+#    - compliance-checks
     - install-kubectl
-    - install-go
     - generate-certs
+    - configure-kubeconfig
 - hosts: etcd
   become: true
   roles:
@@ -21,20 +23,18 @@
   become: true
   roles:
     - setup-master
-    - configure-kubeconfig
+    - install-cni
     - install-runtimes
     - setup-worker
-- hosts: workers
+- hosts: workers,storage
   become: true
   roles:
-  - install-runtimes
-  - setup-worker
+    - install-cni
+    - install-runtimes
+    - setup-worker
+    - clear
 - hosts: deploy
   become: true
   roles:
-    - install-kubectl
-    - configure-kubeconfig
     - post-scripts
-    - install-helm
-    - deploy-kubeapps
     - show-info

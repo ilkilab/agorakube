@@ -11,11 +11,16 @@ authorization:
   mode: Webhook
 clusterDomain: "cluster.local"
 clusterDNS:
-  - "{{cluster_dns_ip}}"
-podCIDR: "{{ cluster_cidr }}"
+  - "{{ agorakube_network.service_ip.coredns }}"
+eventRecordQPS: 5
+makeIPTablesUtilChains: true
+podCIDR: "{{ agorakube_network.cidr.pod }}"
+protectKernelDefaults: true
+readOnlyPort: 0
 {% if ansible_distribution == "Ubuntu" %}
 resolvConf: "/run/systemd/resolve/resolv.conf"
 {% endif %}
 runtimeRequestTimeout: "15m"
-tlsCertFile: "/etc/kubernetes/pki/apiserver-kubelet-client.crt"
-tlsPrivateKeyFile: "/etc/kubernetes/pki/apiserver-kubelet-client.key"
+streamingConnectionIdleTimeout: "5m"
+tlsCertFile: "/etc/kubernetes/pki/kubelet.crt"
+tlsPrivateKeyFile: "/etc/kubernetes/pki/kubelet.key"

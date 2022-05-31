@@ -1,0 +1,110 @@
+- name: Create tempdir
+  tempfile:
+    state: directory
+    suffix: keycloak
+  register: keycloak_tempdir
+  changed_when: false
+
+- name: Render templates
+  template:
+    dest: "{{ keycloak_tempdir.path }}/keycloak.yaml"
+    src: "keycloak.yaml.j2"
+  changed_when: false
+
+- name: Apply templates
+  command: kubectl --kubeconfig {{ pki_path }}/kubeconfigs/admin/admin.conf apply -f {{ keycloak_tempdir.path }}/keycloak.yaml
+  register: apply_keycloak
+  changed_when: >
+    apply_keycloak.stdout is search("created")
+    or apply_keycloak.stdout is search("configured")
+
+- name: Create TLS secret for Keycloak Ingress
+  command: kubectl --kubeconfig {{ pki_path }}/kubeconfigs/admin/admin.conf -n keycloak create secret tls keycloak-tls --cert=/var/agorakube/pki/oidc/oidc-end.crt --key=/var/agorakube/pki/oidc/oidc-end.key
+  register: apply_keycloak_tls
+  changed_when: >
+    apply_keycloak_tls.stdout is search("created")
+    or apply_keycloak_tls.stdout is search("configured")
+  ignore_errors: yes
+  when: agorakube_features.keycloak_oidc.auto_bootstrap.bootstrap_keycloak | bool == True
+
+- name: Render templates Ingress OIDC
+  template:
+    dest: "{{ keycloak_tempdir.path }}/keycloak-ingress.yaml"
+    src: "keycloak-ingress.yaml.j2"
+  changed_when: false
+
+- name: Apply templates Ingress OIDC
+  command: kubectl --kubeconfig {{ pki_path }}/kubeconfigs/admin/admin.conf apply -f {{ keycloak_tempdir.path }}/keycloak-ingress.yaml
+  register: apply_keycloak_ingress
+  changed_when: >
+    apply_keycloak_ingress.stdout is search("created")
+    or apply_keycloak_ingress.stdout is search("configured")
+
+- name: Cleanup tempdir
+  file:
+    state: absent
+    path: "{{ keycloak_tempdir.path }}"
+  changed_when: false
+
+- name: Verify if keycloak pod has successfully started
+  command: kubectl --kubeconfig {{ pki_path }}/kubeconfigs/admin/admin.conf get deploy -n keycloak keycloak
+  changed_when: false
+  register: keycloak_deployment
+  until: keycloak_deployment.stdout.find("1/1") != -1
+  retries: 300
+  delay: 10
+  run_once: true
+
+- name: Get Ingress keycloak IP if Ingress is Nginx
+  command: kubectl --kubeconfig {{ pki_path }}/kubeconfigs/admin/admin.conf get services ingress-nginx-controller --namespace ingress-nginx --output jsonpath='{.spec.clusterIP}'
+  changed_when: false
+  register: keycloak_ip_nginx
+  run_once: true
+  when: agorakube_features.ingress.controller == 'nginx'
+
+- name: Get Ingress keycloak IP if Ingress is Traefik
+  command: kubectl --kubeconfig {{ pki_path }}/kubeconfigs/admin/admin.conf get services traefik --namespace ingress-traefik --output jsonpath='{.spec.clusterIP}'
+  changed_when: false
+  register: keycloak_ip_traefik
+  run_once: true
+  when: agorakube_features.ingress.controller == 'traefik'
+
+- name: Get Ingress keycloak IP if Ingress is HAProxy
+  command: kubectl --kubeconfig {{ pki_path }}/kubeconfigs/admin/admin.conf get services haproxy-ingress --namespace haproxy-controller --output jsonpath='{.spec.clusterIP}'
+  register: keycloak_ip_haproxy
+  run_once: true
+  when: agorakube_features.ingress.controller == 'haproxy'
+  changed_when: false
+
+- name: Configure /etc/hosts file for OIDC when ingress is nginx
+  lineinfile:
+    path: /etc/hosts
+    line: "{{ keycloak_ip_nginx.stdout }} {{ agorakube_features.keycloak_oidc.auto_bootstrap.host }}"
+    create: yes
+  when:
+  - agorakube_features.keycloak_oidc.auto_bootstrap.populate_etc_hosts | bool == True
+  - agorakube_features.ingress.controller == 'nginx'
+  delegate_to: "{{ item }}"
+  loop: "{{ groups['all'] }}"
+
+- name: Configure /etc/hosts file for OIDC whn ingress is traefik
+  lineinfile:
+    path: /etc/hosts
+    line: "{{ keycloak_ip_traefik.stdout }} {{ agorakube_features.keycloak_oidc.auto_bootstrap.host }}"
+    create: yes
+  when:
+  - agorakube_features.keycloak_oidc.auto_bootstrap.populate_etc_hosts | bool == True
+  - agorakube_features.ingress.controller == 'traefik'
+  delegate_to: "{{ item }}"
+  loop: "{{ groups['all'] }}"
+
+- name: Configure /etc/hosts file for OIDC when ingress is haproxy
+  lineinfile:
+    path: /etc/hosts
+    line: "{{ keycloak_ip_haproxy.stdout }} {{ agorakube_features.keycloak_oidc.auto_bootstrap.host }}"
+    create: yes
+  when:
+  - agorakube_features.keycloak_oidc.auto_bootstrap.populate_etc_hosts | bool == True
+  - agorakube_features.ingress.controller == 'haproxy'
+  delegate_to: "{{ item }}"
+  loop: "{{ groups['all'] }}"

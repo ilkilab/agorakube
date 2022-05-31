@@ -1,0 +1,109 @@
+---
+- name: Make sure hosts with cloud controller manager enabled not have taint node.cloudprovider.kubernetes.io/uninitialized
+  command: |
+    kubectl --kubeconfig {{ pki_path }}/kubeconfigs/admin/admin.conf \
+    taint nodes {{ item }} node.cloudprovider.kubernetes.io/uninitialized- --overwrite
+  changed_when: false
+  with_items:
+  - "{{ groups['masters'] }}"
+  - "{{ groups['workers'] }}"
+  - "{{ groups['storage'] }}"
+  ignore_errors: yes
+  when: agorakube_base_components.cloud_controller_manager.enabled | bool == True
+
+- name: Wait for nodes to be ready
+  command: kubectl --kubeconfig {{ pki_path }}/kubeconfigs/admin/admin.conf get node {{ item }}
+  changed_when: false
+  register: node_deployment
+  until: node_deployment.stdout.find("Ready") != -1
+  retries: 300
+  delay: 10
+  run_once: true
+  with_items:
+    - "{{ groups['masters'] }}"
+    - "{{ groups['workers'] }}"
+    - "{{ groups['storage'] }}"
+
+- name: Label Woker Nodes
+  command: "kubectl --kubeconfig {{ pki_path }}/kubeconfigs/admin/admin.conf label node {{ item }}  node-role.kubernetes.io/worker=true --overwrite"
+  changed_when: false
+  with_items: "{{ groups['workers'] }}"
+
+- name: Label Storage Nodes
+  command: "kubectl --kubeconfig {{ pki_path }}/kubeconfigs/admin/admin.conf label node {{ item }} node-role.kubernetes.io/storage=true --overwrite"
+  changed_when: false
+  with_items: "{{ groups['storage'] }}"
+
+- name: Label Master Nodes
+  command: "kubectl --kubeconfig {{ pki_path }}/kubeconfigs/admin/admin.conf label node {{ item }}  node-role.kubernetes.io/master=true --overwrite"
+  changed_when: false
+  with_items: "{{ groups['masters'] }}"
+
+- name: remove label node-role.kubernetes.io/worker=true
+  command: "kubectl --kubeconfig {{ pki_path }}/kubeconfigs/admin/admin.conf label node {{ item }}  node-role.kubernetes.io/worker=true- --overwrite"
+  changed_when: false
+  with_items:
+    - "{{ groups['masters'] }}"
+    - "{{ groups['storage'] }}"
+  when:
+    - item not in groups['workers']
+  ignore_errors: yes
+
+- name: remove label node-role.kubernetes.io/master=true
+  command: "kubectl --kubeconfig {{ pki_path }}/kubeconfigs/admin/admin.conf label node {{ item }}  node-role.kubernetes.io/master=true- --overwrite"
+  changed_when: false
+  with_items:
+    - "{{ groups['workers'] }}"
+    - "{{ groups['storage'] }}"
+  when:
+    - item not in groups['masters']
+  ignore_errors: yes
+
+- name: remove label node-role.kubernetes.io/storage=true
+  command: "kubectl --kubeconfig {{ pki_path }}/kubeconfigs/admin/admin.conf label node {{ item }}  node-role.kubernetes.io/storage=true- --overwrite"
+  changed_when: false
+  with_items:
+    - "{{ groups['workers'] }}"
+    - "{{ groups['masters'] }}"
+  when:
+    - item not in groups['storage']
+  ignore_errors: yes
+
+- name: Make hosts with master role not NoSchedulabe (if not a worker or storage)
+  command: |
+    kubectl --kubeconfig {{ pki_path }}/kubeconfigs/admin/admin.conf \
+    taint nodes {{ item }} node-role.kubernetes.io/master=true:NoSchedule --overwrite
+  changed_when: false
+  with_items:
+  - "{{ groups['masters'] }}"
+  when:
+    - item not in groups['workers']
+    - item not in groups['storage']
+
+- name: Make hosts with Storage role not NoSchedulabe (if not a worker, but can be a master)
+  command: |
+    kubectl --kubeconfig {{ pki_path }}/kubeconfigs/admin/admin.conf \
+    taint nodes {{ item }} node-role.kubernetes.io/storage=true:NoSchedule --overwrite
+  changed_when: false
+  with_items:
+  - "{{ groups['storage'] }}"
+  when:
+    - item not in groups['workers']
+
+- name: Make sure hosts with worker role not have taint node-role.kubernetes.io/storage
+  command: |
+    kubectl --kubeconfig {{ pki_path }}/kubeconfigs/admin/admin.conf \
+    taint nodes {{ item }} node-role.kubernetes.io/storage- --overwrite
+  changed_when: false
+  with_items:
+  - "{{ groups['workers'] }}"
+  ignore_errors: yes
+
+- name: Make sure hosts with worker role not have taint node-role.kubernetes.io/master
+  command: |
+    kubectl --kubeconfig {{ pki_path }}/kubeconfigs/admin/admin.conf \
+    taint nodes {{ item }} node-role.kubernetes.io/master- --overwrite
+  changed_when: false
+  with_items:
+  - "{{ groups['workers'] }}"
+  ignore_errors: yes

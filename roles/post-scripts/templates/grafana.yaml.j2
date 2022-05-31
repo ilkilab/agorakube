@@ -1,0 +1,196 @@
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: supervision
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: grafana
+  namespace: supervision
+spec:
+  selector:
+    matchLabels:
+      app: grafana
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels:
+        app: grafana
+    spec:
+      securityContext:
+        fsGroup: 472
+      containers:
+      - name: grafana
+        image: grafana/grafana:7.1.0
+        ports:
+        - containerPort: 3000
+        env:
+          - name: GF_SECURITY_ADMIN_USER
+            value: "{{ agorakube_features.supervision.dashboard.admin.user }}"
+          - name: GF_SECURITY_ADMIN_PASSWORD
+            value: "{{ agorakube_features.supervision.dashboard.admin.password }}"
+          - name: GF_USERS_ALLOW_SIGN_UP
+            value: "false"
+        volumeMounts:
+        - name: grafana-datasource
+          mountPath: /etc/grafana/provisioning/datasources
+        - name: grafana-dashboard
+          mountPath: /etc/grafana/provisioning/dashboards
+        - name: init-grafana-dashboard
+          mountPath: /etc/grafana/provisioning/dashboards/default/
+{% if agorakube_features.supervision.dashboard.persistent.enabled | bool == True %}
+        - name: grafana-data
+          mountPath: /var/lib/grafana/
+{% endif %}
+      initContainers:
+{% if agorakube_features.supervision.monitoring.enabled | bool == True and agorakube_features.supervision.monitoring.dashboard | bool == True %}
+      - name: init-grafana-dashboard-monitoring
+        image: busybox:1.32.0
+        command: ['sh', '-c', "wget https://raw.githubusercontent.com/ilkilab/agorakube/develop/roles/post-scripts/files/dashboards/agorakube-dashboard-v1.json -O /etc/grafana/provisioning/dashboards/default/agorakube-dashboard-v1.json", "chmod -R 777 /etc/grafana/provisioning/dashboards/default"]
+        volumeMounts:
+        - name: init-grafana-dashboard
+          mountPath: /etc/grafana/provisioning/dashboards/default/
+{% endif %}
+{% if agorakube_features.supervision.logging.enabled | bool == True and agorakube_features.supervision.logging.dashboard | bool == True %}
+      - name: init-grafana-dashboard-logging
+        image: busybox:1.32.0
+        command: ['sh', '-c', "wget https://raw.githubusercontent.com/ilkilab/agorakube/develop/roles/post-scripts/files/dashboards/agorakube-dashboard-v2.1.json -O /etc/grafana/provisioning/dashboards/default/agorakube-dashboard-logging.json", "chmod -R 777 /etc/grafana/provisioning/dashboards/default"]
+        volumeMounts:
+        - name: init-grafana-dashboard
+          mountPath: /etc/grafana/provisioning/dashboards/default/
+{% endif %}
+{% if agorakube_features.supervision.dashboard.persistent.enabled | bool == True %}
+      - name: chmod-grafana-data
+        image: busybox:1.32.0
+        command: ['sh', '-c', "chmod -R 777 /var/lib/grafana"]
+        volumeMounts:
+        - name: grafana-data
+          mountPath: /var/lib/grafana
+{% endif %}
+      volumes:
+      - name: grafana-datasource
+        configMap:
+         name: grafana-datasource
+      - name: grafana-dashboard
+        configMap:
+         name: grafana-dashboard
+      - name: init-grafana-dashboard
+        emptyDir: {}
+{% if agorakube_features.supervision.dashboard.persistent.enabled | bool == True %}
+      - name: grafana-data
+        persistentVolumeClaim:
+          claimName: grafana-data
+{% endif %}
+
+{% if agorakube_features.supervision.dashboard.persistent.enabled | bool == True %}
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: grafana-data
+  namespace: supervision
+  labels:
+    openebs.io/target-affinity: agorakube-monitoring
+spec:
+{% if agorakube_features.supervision.dashboard.persistent.storage.type == "hostpath" %}
+  storageClassName: persistent-grafana-data-hostpath
+{% endif %}
+{% if agorakube_features.supervision.dashboard.persistent.storage.type == "storageclass" %}
+  storageClassName: "{{ agorakube_features.supervision.dashboard.persistent.storage.storageclass.name }}"
+{% endif %}
+{% if agorakube_features.supervision.dashboard.persistent.storage.type == "persistentvolume" %}
+  storageClassName: "{{ agorakube_features.supervision.dashboard.persistent.storage.persistentvolume.name }}"
+{% endif %}
+  resources:
+    requests:
+      storage: "{{ agorakube_features.supervision.dashboard.persistent.storage.capacity }}"
+  volumeMode: Filesystem
+  accessModes:
+    - ReadWriteOnce
+{% endif %}
+---
+{% if agorakube_features.supervision.dashboard.persistent.storage.type == "hostpath" %}
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: persistent-grafana-data-hostpath
+spec:
+  storageClassName: persistent-grafana-data-hostpath
+  capacity:
+    storage: {{ agorakube_features.supervision.dashboard.persistent.storage.capacity }}
+  accessModes:
+    - ReadWriteOnce
+  hostPath:
+    path: "{{ agorakube_features.supervision.dashboard.persistent.storage.hostpath.path }}"
+{% endif %}
+
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: grafana-datasource
+  namespace: supervision
+data:
+{% if agorakube_features.supervision.monitoring.enabled | bool == True %}
+  prometheus.yaml: |
+    apiVersion: 1
+    datasources:
+      - name: Prometheus
+        type: prometheus
+        access: proxy
+        orgId: 1
+        url: http://prometheus:9090
+        basicAuth: false
+        isDefault: true
+        editable: true
+{% endif %}
+{% if agorakube_features.supervision.logging.enabled | bool == True %}
+  grafana-loki.yaml: |
+    apiVersion: 1
+    datasources:
+      - name: Loki
+        type: loki
+        access: proxy
+        orgId: 1
+        url: http://loki:3100
+        basicAuth: false
+        isDefault: false
+        editable: true
+{% endif %}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: grafana
+  namespace: supervision
+spec:
+  type: ClusterIP
+  selector:
+    app: grafana
+  ports:
+  - port: 3000
+    targetPort: 3000
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: grafana-dashboard
+  namespace: supervision
+data:
+  dashboard.yaml: |
+    apiVersion: 1
+    providers:
+      - name: 'Prometheus'
+        orgId: 1
+        folder: ''
+        type: file
+        disableDeletion: false
+        editable: true
+        allowUiUpdates: true
+        options:
+          path: /etc/grafana/provisioning/dashboards/
+#  node.json: |
+#{% raw %}

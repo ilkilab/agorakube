@@ -1,0 +1,104 @@
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  labels:
+    app: reloader-reloader
+  name: reloader-reloader-role
+  namespace: kube-system
+rules:
+  - apiGroups:
+      - ""
+    resources:
+      - secrets
+      - configmaps
+    verbs:
+      - list
+      - get
+      - watch
+  - apiGroups:
+      - "apps"
+    resources:
+      - deployments
+      - daemonsets
+      - statefulsets
+    verbs:
+      - list
+      - get
+      - update
+      - patch
+  - apiGroups:
+      - "extensions"
+    resources:
+      - deployments
+      - daemonsets
+    verbs:
+      - list
+      - get
+      - update
+      - patch
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  labels:
+    app: reloader-reloader
+  name: reloader-reloader-role-binding
+  namespace: kube-system
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: reloader-reloader-role
+subjects:
+  - kind: ServiceAccount
+    name: reloader-reloader
+    namespace: kube-system
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: reloader-reloader
+  name: reloader-reloader
+  namespace: kube-system
+spec:
+  replicas: 1
+  revisionHistoryLimit: 2
+  selector:
+    matchLabels:
+      app: reloader-reloader
+      release: "reloader"
+  template:
+    metadata:
+      labels:
+        app: reloader-reloader
+        release: "reloader"
+    spec:
+      containers:
+      - image: "stakater/reloader:v{{ agorakube_features.reloader.release }}"
+        imagePullPolicy: IfNotPresent
+        name: reloader-reloader
+
+        ports:
+        - name: http
+          containerPort: 9090
+        livenessProbe:
+          httpGet:
+            path: /metrics
+            port: http
+        readinessProbe:
+          httpGet:
+            path: /metrics
+            port: http
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 65534
+      serviceAccountName: reloader-reloader
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  labels:
+    app: reloader-reloader
+  name: reloader-reloader
+  namespace: kube-system

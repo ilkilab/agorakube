@@ -1,0 +1,639 @@
+---
+# The two following tasks are not done by setup-deploy.sh script. This packages are installed when pip install ansible
+#- name: Install required packages for ansible pip module
+#  package:
+#    name: ['python-setuptools','python-pip']
+#    state: latest
+
+#- name: Install Python Cryptography library used to generate PKI
+#  pip:
+#    name: cryptography
+
+- name: Create ca-root dir
+  file:
+    path: "{{ pki_path }}/ca-root"
+    state: directory
+
+- name: Generate root-ca.key private keys
+  openssl_privatekey:
+    path: "{{ pki_path }}/ca-root/root-ca.key"
+    force: "{{ rotate_private_keys }}"
+
+- name: Generate an OpenSSL Certificate Signing Request for ROOT CA
+  openssl_csr:
+    path: "{{ pki_path }}/ca-root/root-ca.csr"
+    privatekey_path: "{{ pki_path }}/ca-root/root-ca.key"
+    common_name: "{{ agorakube_pki.infos.root_cn }}"
+    state_or_province_name: "{{ agorakube_pki.infos.state }}"
+    locality_name: "{{ agorakube_pki.infos.locality }}"
+    country_name: "{{ agorakube_pki.infos.country }}"
+    basic_constraints: ['CA:TRUE']
+
+- name: Generate an OpenSSL certificate signed with your own CA certificate
+  openssl_certificate:
+    path: "{{ pki_path }}/ca-root/root-ca.crt"
+    privatekey_path: "{{ pki_path }}/ca-root/root-ca.key"
+    csr_path: "{{ pki_path }}/ca-root/root-ca.csr"
+    provider: selfsigned
+    selfsigned_not_after: "{{ agorakube_pki.infos.expirity }}"
+    force: "{{ agorakube_pki.management.rotate_certificats }}"
+
+- name: Make intermediate ca dir
+  file:
+    path: "{{ pki_path }}/intermediate"
+    state: directory
+
+- name: Make intermediate/etcd dir
+  file:
+    path: "{{ pki_path }}/intermediate/etcd"
+    state: directory
+
+- name: Generate intermediate CAs private keys
+  openssl_privatekey:
+    path: "{{ pki_path }}/intermediate/{{ item }}.key"
+    force: "{{ rotate_private_keys }}"
+  with_items:
+    - front-proxy-ca
+    - ca
+    - etcd/ca
+
+- name: Generate an OpenSSL Certificate Signing Request for intermediate CAs
+  openssl_csr:
+    path: "{{ pki_path }}/intermediate/{{ item.name }}.csr"
+    privatekey_path: "{{ pki_path }}/intermediate/{{ item.name }}.key"
+    common_name: "{{ item.cn }}"
+    state_or_province_name: "{{ agorakube_pki.infos.state }}"
+    locality_name: "{{ agorakube_pki.infos.locality }}"
+    country_name: "{{ agorakube_pki.infos.country }}"
+    basic_constraints: ['CA:TRUE']
+  loop:
+    - { cn: 'kubernetes-ca', name: 'ca' }
+    - { cn: 'etcd-ca', name: 'etcd/ca' }
+    - { cn: 'kubernetes-front-proxy-ca', name: 'front-proxy-ca' }
+
+- name: Generate an OpenSSL certificate signed For intermediate CA certificate
+  openssl_certificate:
+    path: "{{ pki_path }}/intermediate/{{ item }}.crt"
+    csr_path: "{{ pki_path }}/intermediate/{{ item }}.csr"
+    ownca_path: "{{ pki_path }}/ca-root/root-ca.crt"
+    ownca_privatekey_path: "{{ pki_path }}/ca-root/root-ca.key"
+    provider: ownca
+    force: "{{ agorakube_pki.management.rotate_certificats }}"
+  with_items:
+    - front-proxy-ca
+    - ca
+    - etcd/ca
+
+- name: Create directory for SA keys
+  file:
+    path: "{{ pki_path }}/sa"
+    state: directory
+
+- name: Generate Service Account Tokens private key
+  openssl_privatekey:
+    path: "{{ pki_path }}/sa/sa.key"
+
+- name: Generate an OpenSSL public key in PEM format for Service Account Tokens
+  openssl_publickey:
+    path: "{{ pki_path }}/sa/sa.pub"
+    privatekey_path: "{{ pki_path }}/sa/sa.key"
+
+- name: Make end certificates dir
+  file:
+    path: "{{ pki_path }}/end/"
+    state: directory
+
+- name: Generate end private keys
+  openssl_privatekey:
+    path: "{{ pki_path }}/end/{{ item }}.key"
+    force: "{{ rotate_private_keys }}"
+  with_items:
+    - kube-etcd
+    - kube-etcd-peer
+    - kube-etcd-healthcheck-client
+    - kube-apiserver-etcd-client
+    - kube-apiserver
+    - kube-apiserver-kubelet-client
+    - front-proxy-client
+
+- name: Generate CSR for kube-etcd
+  openssl_csr:
+    path: "{{ pki_path }}/end/kube-etcd.csr"
+    privatekey_path: "{{ pki_path }}/end/kube-etcd.key"
+    common_name: kube-etcd
+    state_or_province_name: "{{ agorakube_pki.infos.state }}"
+    locality_name: "{{ agorakube_pki.infos.locality }}"
+    country_name: "{{ agorakube_pki.infos.country }}"
+    key_usage:
+      - digitalSignature
+      - keyEncipherment
+    extended_key_usage:
+      - clientAuth
+      - serverAuth
+    subject_alt_name: "{{ etcd_subject }}"
+
+- name: Generate CSR for kube-etcd-healthcheck-client
+  openssl_csr:
+    path: "{{ pki_path }}/end/kube-etcd-healthcheck-client.csr"
+    privatekey_path: "{{ pki_path }}/end/kube-etcd-healthcheck-client.key"
+    common_name: kube-etcd-healthcheck-client
+    state_or_province_name: "{{ agorakube_pki.infos.state }}"
+    locality_name: "{{ agorakube_pki.infos.locality }}"
+    country_name: "{{ agorakube_pki.infos.country }}"
+    key_usage:
+      - digitalSignature
+      - keyEncipherment
+    extended_key_usage:
+      - clientAuth
+
+- name: Generate CSR for kube-apiserver-etcd-client
+  openssl_csr:
+    path: "{{ pki_path }}/end/kube-apiserver-etcd-client.csr"
+    privatekey_path: "{{ pki_path }}/end/kube-apiserver-etcd-client.key"
+    common_name: kube-apiserver-etcd-client
+    state_or_province_name: "{{ agorakube_pki.infos.state }}"
+    locality_name: "{{ agorakube_pki.infos.locality }}"
+    country_name: "{{ agorakube_pki.infos.country }}"
+    organization_name: 'system:masters'
+    key_usage:
+      - digitalSignature
+      - keyEncipherment
+    extended_key_usage:
+      - clientAuth
+
+- name: Generate CSR for kube-etcd-peer
+  openssl_csr:
+    path: "{{ pki_path }}/end/kube-etcd-peer.csr"
+    privatekey_path: "{{ pki_path }}/end/kube-etcd-peer.key"
+    common_name: kube-etcd-peer
+    state_or_province_name: "{{ agorakube_pki.infos.state }}"
+    locality_name: "{{ agorakube_pki.infos.locality }}"
+    country_name: "{{ agorakube_pki.infos.country }}"
+    organization_name: 'system:masters'
+    key_usage:
+      - digitalSignature
+      - keyEncipherment
+    extended_key_usage:
+      - clientAuth
+      - serverAuth
+    subject_alt_name: "{{ etcd_subject }}"
+
+- name: Generate an OpenSSL certificate signed for all ETCD end-certificates
+  openssl_certificate:
+    path: "{{ pki_path }}/end/{{ item }}.crt"
+    csr_path: "{{ pki_path }}/end/{{ item }}.csr"
+    ownca_path: "{{ pki_path }}/intermediate/etcd/ca.crt"
+    ownca_privatekey_path: "{{ pki_path }}/intermediate/etcd/ca.key"
+    provider: ownca
+    force: "{{ agorakube_pki.management.rotate_certificats }}"
+  with_items:
+    - kube-etcd
+    - kube-etcd-peer
+    - kube-etcd-healthcheck-client
+    - kube-apiserver-etcd-client
+
+- name: Generate CSR for kube-apiserver-kubelet-client
+  openssl_csr:
+    path: "{{ pki_path }}/end/kube-apiserver-kubelet-client.csr"
+    privatekey_path: "{{ pki_path }}/end/kube-apiserver-kubelet-client.key"
+    common_name: kube-apiserver-kubelet-client
+    state_or_province_name: "{{ agorakube_pki.infos.state }}"
+    locality_name: "{{ agorakube_pki.infos.locality }}"
+    country_name: "{{ agorakube_pki.infos.country }}"
+    organization_name: 'system:masters'
+    key_usage:
+      - digitalSignature
+      - keyEncipherment
+    extended_key_usage:
+      - clientAuth
+
+- name: Generate CSR for kube-apiserver
+  openssl_csr:
+    path: "{{ pki_path }}/end/kube-apiserver.csr"
+    privatekey_path: "{{ pki_path }}/end/kube-apiserver.key"
+    common_name: kube-apiserver
+    state_or_province_name: "{{ agorakube_pki.infos.state }}"
+    locality_name: "{{ agorakube_pki.infos.locality }}"
+    country_name: "{{ agorakube_pki.infos.country }}"
+    key_usage:
+      - digitalSignature
+      - keyEncipherment
+    extended_key_usage:
+      - serverAuth
+    subject_alt_name: "{{ kube_api_subject }}"
+
+- name: Generate an OpenSSL certificate signed for all Kube-apiserver end-certificates
+  openssl_certificate:
+    path: "{{ pki_path }}/end/{{ item }}.crt"
+    csr_path: "{{ pki_path }}/end/{{ item }}.csr"
+    ownca_path: "{{ pki_path }}/intermediate/ca.crt"
+    ownca_privatekey_path: "{{ pki_path }}/intermediate/ca.key"
+    provider: ownca
+    force: "{{ agorakube_pki.management.rotate_certificats }}"
+  with_items:
+    - kube-apiserver
+    - kube-apiserver-kubelet-client
+
+- name: Generate CSR for front-proxy-client
+  openssl_csr:
+    path: "{{ pki_path }}/end/front-proxy-client.csr"
+    privatekey_path: "{{ pki_path }}/end/front-proxy-client.key"
+    common_name: front-proxy-client
+    state_or_province_name: "{{ agorakube_pki.infos.state }}"
+    locality_name: "{{ agorakube_pki.infos.locality }}"
+    country_name: "{{ agorakube_pki.infos.country }}"
+    key_usage:
+      - digitalSignature
+      - keyEncipherment
+    extended_key_usage:
+      - clientAuth
+
+- name: Generate an OpenSSL certificate signed for front-proxy-client end-certificates
+  openssl_certificate:
+    path: "{{ pki_path }}/end/front-proxy-client.crt"
+    csr_path: "{{ pki_path }}/end/front-proxy-client.csr"
+    ownca_path: "{{ pki_path }}/intermediate/front-proxy-ca.crt"
+    ownca_privatekey_path: "{{ pki_path }}/intermediate/front-proxy-ca.key"
+    provider: ownca
+    force: "{{ agorakube_pki.management.rotate_certificats }}"
+
+- name: Create kube-configs dir
+  file:
+    path: "{{ pki_path }}/kubeconfigs"
+    state: directory
+
+- name: Create dir for kubeconfigs admin, controller-manager and scheduler
+  file:
+    path: "{{ pki_path }}/kubeconfigs/{{ item }}"
+    state: directory
+  with_items:
+    - admin
+    - controller-manager
+    - scheduler
+
+- name: Generate admin.key private keys
+  openssl_privatekey:
+    path: "{{ pki_path }}/kubeconfigs/{{ item }}/{{ item }}.key"
+    force: "{{ rotate_private_keys }}"
+  with_items:
+    - admin
+    - controller-manager
+    - scheduler
+
+- name: Generate CSR for admin X.509
+  openssl_csr:
+    path: "{{ pki_path }}/kubeconfigs/admin/admin.csr"
+    privatekey_path: "{{ pki_path }}/kubeconfigs/admin/admin.key"
+    common_name: kubernetes-admin
+    state_or_province_name: "{{ agorakube_pki.infos.state }}"
+    locality_name: "{{ agorakube_pki.infos.locality }}"
+    country_name: "{{ agorakube_pki.infos.country }}"
+    organization_name: 'system:masters'
+
+- name: Generate CSR for controller-manager and scheduler X.509
+  openssl_csr:
+    path: "{{ pki_path }}/kubeconfigs/{{ item }}/{{ item }}.csr"
+    privatekey_path: "{{ pki_path }}/kubeconfigs/{{ item }}/{{ item }}.key"
+    common_name: system:kube-{{ item }}
+    state_or_province_name: "{{ agorakube_pki.infos.state }}"
+    locality_name: "{{ agorakube_pki.infos.locality }}"
+    country_name: "{{ agorakube_pki.infos.country }}"
+    use_common_name_for_san: False
+  with_items:
+    - controller-manager
+    - scheduler
+
+- name: Generate an OpenSSL certificate signed for admin end-certificates
+  openssl_certificate:
+    path: "{{ pki_path }}/kubeconfigs/admin/admin.crt"
+    csr_path: "{{ pki_path }}/kubeconfigs/admin/admin.csr"
+    ownca_path: "{{ pki_path }}/intermediate/ca.crt"
+    ownca_privatekey_path: "{{ pki_path }}/intermediate/ca.key"
+    provider: ownca
+    force: "{{ agorakube_pki.management.rotate_certificats }}"
+  register: admin_certificate
+
+- name: Generate an OpenSSL certificate signed for controller-manager end-certificates
+  openssl_certificate:
+    path: "{{ pki_path }}/kubeconfigs/controller-manager/controller-manager.crt"
+    csr_path: "{{ pki_path }}/kubeconfigs/controller-manager/controller-manager.csr"
+    ownca_path: "{{ pki_path }}/intermediate/ca.crt"
+    ownca_privatekey_path: "{{ pki_path }}/intermediate/ca.key"
+    provider: ownca
+    force: "{{ agorakube_pki.management.rotate_certificats }}"
+  register: controllermanager_certificate
+
+
+- name: Generate an OpenSSL certificate signed for scheduler end-certificates
+  openssl_certificate:
+    path: "{{ pki_path }}/kubeconfigs/scheduler/scheduler.crt"
+    csr_path: "{{ pki_path }}/kubeconfigs/scheduler/scheduler.csr"
+    ownca_path: "{{ pki_path }}/intermediate/ca.crt"
+    ownca_privatekey_path: "{{ pki_path }}/intermediate/ca.key"
+    provider: ownca
+    force: "{{ agorakube_pki.management.rotate_certificats }}"
+  register: scheduler_certifiate
+
+- name: File generation of kubeconfig configuration for [admin] 1/4
+  shell: |
+    kubectl config set-cluster default-cluster --server=https://{{ advertise_masters }}:6443 \
+    --certificate-authority "{{ pki_path }}/intermediate/ca.crt" \
+    --embed-certs
+  environment:
+    KUBECONFIG: "{{ pki_path }}/kubeconfigs/admin/admin.conf"
+  when: admin_certificate.changed
+
+- name: File generation of kubeconfig configuration for [admin] 2/4
+  shell: |
+    kubectl config set-credentials default-admin \
+    --client-key "{{ pki_path }}/kubeconfigs/admin/admin.key" \
+    --client-certificate "{{ pki_path }}/kubeconfigs/admin/admin.crt" \
+    --embed-certs
+  environment:
+    KUBECONFIG: "{{ pki_path }}/kubeconfigs/admin/admin.conf"
+  when: admin_certificate.changed
+
+- name: File generation of kubeconfig configuration for [admin] 3/4
+  shell: |
+    kubectl config set-context default-system \
+    --cluster default-cluster \
+    --user default-admin
+  environment:
+    KUBECONFIG: "{{ pki_path }}/kubeconfigs/admin/admin.conf"
+  when: admin_certificate.changed
+
+- name: File generation of kubeconfig configuration for [admin] 4/4
+  shell: |
+    kubectl config use-context default-system
+  environment:
+    KUBECONFIG: "{{ pki_path }}/kubeconfigs/admin/admin.conf"
+  when: admin_certificate.changed
+
+- name: File generation of kubeconfig configuration for [controller-manager] 1/4
+  shell: |
+    kubectl config set-cluster default-cluster --server=https://{{ advertise_masters }}:6443 \
+    --certificate-authority "{{ pki_path }}/intermediate/ca.crt" \
+    --embed-certs
+  environment:
+    KUBECONFIG: "{{ pki_path }}/kubeconfigs/controller-manager/controller-manager.conf"
+  when: controllermanager_certificate.changed
+
+- name: File generation of kubeconfig configuration for [controller-manager] 2/4
+  shell: |
+    kubectl config set-credentials default-controller-manager \
+    --client-key "{{ pki_path }}/kubeconfigs/controller-manager/controller-manager.key" \
+    --client-certificate "{{ pki_path }}/kubeconfigs/controller-manager/controller-manager.crt" \
+    --embed-certs
+  environment:
+    KUBECONFIG: "{{ pki_path }}/kubeconfigs/controller-manager/controller-manager.conf"
+  when: controllermanager_certificate.changed
+
+- name: File generation of kubeconfig configuration for [controller-manager] 3/4
+  shell: |
+    kubectl config set-context default-system \
+    --cluster default-cluster \
+    --user default-controller-manager
+  environment:
+    KUBECONFIG: "{{ pki_path }}/kubeconfigs/controller-manager/controller-manager.conf"
+  when: controllermanager_certificate.changed
+
+- name: File generation of kubeconfig configuration for [controller-manager] 4/4
+  shell: |
+    kubectl config use-context default-system
+  environment:
+    KUBECONFIG: "{{ pki_path }}/kubeconfigs/controller-manager/controller-manager.conf"
+  when: controllermanager_certificate.changed
+
+- name: File generation of kubeconfig configuration for [scheduler] 1/4
+  shell: |
+    kubectl config set-cluster default-cluster --server=https://{{ advertise_masters }}:6443 \
+    --certificate-authority "{{ pki_path }}/intermediate/ca.crt" \
+    --embed-certs
+  environment:
+    KUBECONFIG: "{{ pki_path }}/kubeconfigs/scheduler/scheduler.conf"
+  when: scheduler_certifiate.changed
+
+- name: File generation of kubeconfig configuration for [scheduler] 2/4
+  shell: |
+    kubectl config set-credentials default-scheduler \
+    --client-key "{{ pki_path }}/kubeconfigs/scheduler/scheduler.key" \
+    --client-certificate "{{ pki_path }}/kubeconfigs/scheduler/scheduler.crt" \
+    --embed-certs
+  environment:
+    KUBECONFIG: "{{ pki_path }}/kubeconfigs/scheduler/scheduler.conf"
+  when: scheduler_certifiate.changed
+
+- name: File generation of kubeconfig configuration for [scheduler] 3/4
+  shell: |
+    kubectl config set-context default-system \
+    --cluster default-cluster \
+    --user default-scheduler
+  environment:
+    KUBECONFIG: "{{ pki_path }}/kubeconfigs/scheduler/scheduler.conf"
+  when: scheduler_certifiate.changed
+
+- name: File generation of kubeconfig configuration for [scheduler] 4/4
+  shell: |
+    kubectl config use-context default-system
+  environment:
+    KUBECONFIG: "{{ pki_path }}/kubeconfigs/scheduler/scheduler.conf"
+  when: scheduler_certifiate.changed
+
+- name: Create dir for all kubeconfig kubelet nodes
+  file:
+    path: "{{ pki_path }}/kubeconfigs/kubelet/{{ item }}"
+    state: directory
+  with_items:
+    - "{{ groups['masters'] }}"
+    - "{{ groups['workers'] }}"
+    - "{{ groups['storage'] }}"
+
+- name: Generate kubelets.key private keys
+  openssl_privatekey:
+    path: "{{ pki_path }}/kubeconfigs/kubelet/{{ item }}/kubelet.key"
+  with_items:
+    - "{{ groups['masters'] }}"
+    - "{{ groups['workers'] }}"
+    - "{{ groups['storage'] }}"
+
+- name: Generate CSR for kubelets X.509
+  openssl_csr:
+    path: "{{ pki_path }}/kubeconfigs/kubelet/{{ item }}/kubelet.csr"
+    privatekey_path: "{{ pki_path }}/kubeconfigs/kubelet/{{ item }}/kubelet.key"
+    common_name: "system:node:{{ item }}"
+    state_or_province_name: "{{ agorakube_pki.infos.state }}"
+    locality_name: "{{ agorakube_pki.infos.locality }}"
+    country_name: "{{ agorakube_pki.infos.country }}"
+    organization_name: 'system:nodes'
+    use_common_name_for_san: False
+    subject_alt_name: "DNS:{{ item }},IP:{{ hostvars[item].ansible_host }}"
+  with_items:
+    - "{{ groups['masters'] }}"
+    - "{{ groups['workers'] }}"
+    - "{{ groups['storage'] }}"
+
+- name: Generate an OpenSSL certificate signed for kubelets end-certificates
+  openssl_certificate:
+    path: "{{ pki_path }}/kubeconfigs/kubelet/{{ item }}/kubelet.crt"
+    csr_path: "{{ pki_path }}/kubeconfigs/kubelet/{{ item }}/kubelet.csr"
+    ownca_path: "{{ pki_path }}/intermediate/ca.crt"
+    ownca_privatekey_path: "{{ pki_path }}/intermediate/ca.key"
+    provider: ownca
+    force: "{{ agorakube_pki.management.rotate_certificats }}"
+  with_items:
+    - "{{ groups['masters'] }}"
+    - "{{ groups['workers'] }}"
+    - "{{ groups['storage'] }}"
+  register: kubelet_certificate
+
+- name: File generation of kubeconfig configuration for [kubelets] 1/4
+  shell: |
+    kubectl config set-cluster default-cluster --server=https://{{ advertise_masters }}:6443 \
+    --certificate-authority "{{ pki_path }}/intermediate/ca.crt" \
+    --embed-certs
+  environment:
+    KUBECONFIG: "{{ pki_path }}/kubeconfigs/kubelet/{{ item }}/kubelet.conf"
+  with_items:
+    - "{{ groups['masters'] }}"
+    - "{{ groups['workers'] }}"
+    - "{{ groups['storage'] }}"
+  when: kubelet_certificate.changed
+
+- name: File generation of kubeconfig configuration for [kubelets] 2/4
+  shell: |
+    kubectl config set-credentials default-auth \
+    --client-key "{{ pki_path }}/kubeconfigs/kubelet/{{ item }}/kubelet.key" \
+    --client-certificate "{{ pki_path }}/kubeconfigs/kubelet/{{ item }}/kubelet.crt" \
+    --embed-certs
+  environment:
+    KUBECONFIG: "{{ pki_path }}/kubeconfigs/kubelet/{{ item }}/kubelet.conf"
+  with_items:
+    - "{{ groups['masters'] }}"
+    - "{{ groups['workers'] }}"
+    - "{{ groups['storage'] }}"
+  when: kubelet_certificate.changed
+
+- name: File generation of kubeconfig configuration for [kubelets] 3/4
+  shell: |
+    kubectl config set-context default-system \
+    --cluster default-cluster \
+    --user default-auth
+  environment:
+    KUBECONFIG: "{{ pki_path }}/kubeconfigs/kubelet/{{ item }}/kubelet.conf"
+  with_items:
+    - "{{ groups['masters'] }}"
+    - "{{ groups['workers'] }}"
+    - "{{ groups['storage'] }}"
+  when: kubelet_certificate.changed
+
+- name: File generation of kubeconfig configuration for [kubelets] 4/4
+  shell: |
+    kubectl config use-context default-system
+  environment:
+    KUBECONFIG: "{{ pki_path }}/kubeconfigs/kubelet/{{ item }}/kubelet.conf"
+  with_items:
+    - "{{ groups['masters'] }}"
+    - "{{ groups['workers'] }}"
+    - "{{ groups['storage'] }}"
+  when: kubelet_certificate.changed
+
+#
+#
+#
+
+- name: Create dir for all kubeconfig kube-proxy nodes
+  file:
+    path: "{{ pki_path }}/kubeconfigs/proxier/{{ item }}"
+    state: directory
+  with_items:
+    - "{{ groups['masters'] }}"
+    - "{{ groups['workers'] }}"
+    - "{{ groups['storage'] }}"
+
+- name: Generate proxier.key private keys
+  openssl_privatekey:
+    path: "{{ pki_path }}/kubeconfigs/proxier/{{ item }}/proxier.key"
+  with_items:
+    - "{{ groups['masters'] }}"
+    - "{{ groups['workers'] }}"
+    - "{{ groups['storage'] }}"
+
+- name: Generate CSR for proxier X.509
+  openssl_csr:
+    path: "{{ pki_path }}/kubeconfigs/proxier/{{ item }}/proxier.csr"
+    privatekey_path: "{{ pki_path }}/kubeconfigs/proxier/{{ item }}/proxier.key"
+    common_name: "system:kube-proxy"
+    state_or_province_name: "{{ agorakube_pki.infos.state }}"
+    locality_name: "{{ agorakube_pki.infos.locality }}"
+    country_name: "{{ agorakube_pki.infos.country }}"
+    use_common_name_for_san: False
+    subject_alt_name: "DNS:{{ item }}"
+  with_items:
+    - "{{ groups['masters'] }}"
+    - "{{ groups['workers'] }}"
+    - "{{ groups['storage'] }}"
+
+- name: Generate an OpenSSL certificate signed for proxiers end-certificates
+  openssl_certificate:
+    path: "{{ pki_path }}/kubeconfigs/proxier/{{ item }}/proxier.crt"
+    csr_path: "{{ pki_path }}/kubeconfigs/proxier/{{ item }}/proxier.csr"
+    ownca_path: "{{ pki_path }}/intermediate/ca.crt"
+    ownca_privatekey_path: "{{ pki_path }}/intermediate/ca.key"
+    provider: ownca
+    force: "{{ agorakube_pki.management.rotate_certificats }}"
+  with_items:
+    - "{{ groups['masters'] }}"
+    - "{{ groups['workers'] }}"
+    - "{{ groups['storage'] }}"
+  register: kubelet_certificate
+
+- name: File generation of kubeconfig configuration for [kube-proxy] 1/4
+  shell: |
+    kubectl config set-cluster default-cluster --server=https://{{ advertise_masters }}:6443 \
+    --certificate-authority "{{ pki_path }}/intermediate/ca.crt" \
+    --embed-certs
+  environment:
+    KUBECONFIG: "{{ pki_path }}/kubeconfigs/proxier/{{ item }}/proxier.conf"
+  with_items:
+    - "{{ groups['masters'] }}"
+    - "{{ groups['workers'] }}"
+    - "{{ groups['storage'] }}"
+  when: kubelet_certificate.changed
+
+- name: File generation of kubeconfig configuration for [kube-proxy] 2/4
+  shell: |
+    kubectl config set-credentials default-proxier \
+    --client-key "{{ pki_path }}/kubeconfigs/proxier/{{ item }}/proxier.key" \
+    --client-certificate "{{ pki_path }}/kubeconfigs/proxier/{{ item }}/proxier.crt" \
+    --embed-certs
+  environment:
+    KUBECONFIG: "{{ pki_path }}/kubeconfigs/proxier/{{ item }}/proxier.conf"
+  with_items:
+    - "{{ groups['masters'] }}"
+    - "{{ groups['workers'] }}"
+    - "{{ groups['storage'] }}"
+  when: kubelet_certificate.changed
+
+- name: File generation of kubeconfig configuration for [kube-proxy] 3/4
+  shell: |
+    kubectl config set-context default-system \
+    --cluster default-cluster \
+    --user default-proxier
+  environment:
+    KUBECONFIG: "{{ pki_path }}/kubeconfigs/proxier/{{ item }}/proxier.conf"
+  with_items:
+    - "{{ groups['masters'] }}"
+    - "{{ groups['workers'] }}"
+    - "{{ groups['storage'] }}"
+  when: kubelet_certificate.changed
+
+- name: File generation of kubeconfig configuration for [kube-proxy] 4/4
+  shell: |
+    kubectl config use-context default-system
+  environment:
+    KUBECONFIG: "{{ pki_path }}/kubeconfigs/proxier/{{ item }}/proxier.conf"
+  with_items:
+    - "{{ groups['masters'] }}"
+    - "{{ groups['workers'] }}"
+    - "{{ groups['storage'] }}"
+  when: kubelet_certificate.changed

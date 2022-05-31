@@ -1,10 +1,27 @@
 ---
-network-cni-plugin: flannel
-dns_server_soft: coredns
-cluster_dns_ip: 10.32.0.10 
-ingress_controller: traefik
-k8s_dashboard: true
-k8s_dashboard_admin: true
-service_mesh: linkerd
-linkerd_release: stable-2.6.0
-flannel_iface: default
+#network_cni_plugin: kube-router
+#cluster_dns_ip: 10.32.0.10 
+#ingress_controller: traefik
+#k8s_dashboard: true
+#k8s_dashboard_admin: true
+#service_cluster_ip_range: 10.32.0.0/24
+#cni_release: 0.8.5
+#cluster_cidr: 10.33.0.0/16
+#enable_metrics_server: True
+# Calico
+# calico_mtu: 0  = auto-detect MTU. Configure calico_mtu manually for better performances.
+# Calico is configured to ues VXLan Cross-subnet. VxLAN add a 50-bytes header, so if you configure manually MTU, minus the max size by 50: eg 1500 => 1450
+#calico_mtu: 0
+#enable_metallb_layer2: True
+#metallb_layer2_ips: 10.100.200.10-10.100.200.250
+# metallb_secret_key is generated with command : openssl rand -base64 128
+#metallb_secret_key: LGyt2l9XftOxEUIeFf2w0eCM7KjyQdkHform0gldYBKMORWkfQIsfXW0sQlo1VjJBB17shY5RtLg0klDNqNq4PAhNaub+olSka61LxV73KN2VaJY/snrZmHbdf/a7DfdzaeQ5pzP6D5O7zbUZwfb5ASOhNrG8aDMY3rkf4ZzHkc=
+#enable_persistence: True
+#enable_monitoring: True
+#dashboard_admin_user: administrator
+#dashboard_admin_password: P@ssw0rd
+# ingress_nginx_release is used to specify the nginx release to install. Usefull for installation, AND UPGRADES
+#ingress_nginx_release: v0.41.2
+#openebs_io_base_dir: /var/openebs
+#jiva_fs_type: ext4
+#io_local_host_path: /var/local-hostpath

@@ -1,0 +1,53 @@
+apiVersion: audit.k8s.io/v1beta1
+kind: Policy
+rules:
+  # Do not log from kube-system accounts
+  - level: None
+    userGroups:
+    - system:serviceaccounts:kube-system
+
+  # Do not log from kubernetes service system accounts
+  - level: None
+    users:
+    - system:apiserver
+    - system:kube-scheduler
+    - system:volume-scheduler
+    - system:kube-controller-manager
+    - system:node
+    - system:kube-proxy
+
+  # Do not log IKE components logs
+  - level: None
+    users:
+    - system:serviceaccount:ingress-nginx:ingress-nginx
+    - system:serviceaccount:kubernetes-dashboard:kubernetes-dashboard
+    - system:serviceaccount:monitoring:prometheus
+    - system:serviceaccount:openebs:openebs-maya-operator
+    - system:serviceaccount:metallb-system:speaker
+    - system:serviceaccount:metallb-system:controller
+    - system:serviceaccount:ingress-traefik:traefik-ingress-controller
+    - system:serviceaccount:monitoring:metrics-prometheus-server
+
+  # Do not log from collector
+  - level: None
+    users:
+    - system:serviceaccount:collectorforkubernetes:collectorforkubernetes
+  # Don't log nodes communications
+  - level: None
+    userGroups:
+    - system:nodes
+
+  # Don't log these read-only URLs.
+  - level: None
+    nonResourceURLs:
+    - /healthz*
+    - /version
+    - /swagger*
+
+  # Log configmap and secret changes in all namespaces at the metadata level.
+  - level: Metadata
+    resources:
+    - resources: ["secrets", "configmaps"]
+
+  # A catch-all rule to log all other requests at the request level.
+  - level: Request

@@ -27,6 +27,13 @@ rules:
   - nodes
   verbs:
   - get
+- apiGroups:
+  - discovery.k8s.io
+  resources:
+  - endpointslices
+  verbs:
+  - list
+  - watch
 ---
 apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRoleBinding
@@ -53,19 +60,21 @@ metadata:
 data:
   Corefile: |
     .:53 {
-        errors
-        health
-        ready
-        kubernetes cluster.local in-addr.arpa ip6.arpa {
-          pods insecure
-          fallthrough in-addr.arpa ip6.arpa
-        }
-        prometheus :9153
-        forward . /etc/resolv.conf
-        cache 30
-        loop
-        reload
-        loadbalance
+      errors
+      log
+      health
+      ready
+      kubernetes cluster.local {{ agorakube_network.cidr.service }} {{ agorakube_network.cidr.pod }} {
+        pods insecure
+        fallthrough in-addr.arpa ip6.arpa
+        ttl 30
+      }
+      cache 30
+      prometheus :9153
+      forward . {{ agorakube_network.dns.primary_forwarder }} {{ agorakube_network.dns.secondary_forwarder }}
+      loop
+      reload
+      loadbalance
     }
 ---
 apiVersion: apps/v1
@@ -77,7 +86,7 @@ metadata:
     k8s-app: kube-dns
     kubernetes.io/name: "CoreDNS"
 spec:
-  replicas: 2
+  replicas: {{ agorakube_features.coredns.replicas }}
   strategy:
     type: RollingUpdate
     rollingUpdate:
@@ -99,11 +108,11 @@ spec:
         beta.kubernetes.io/os: linux
       containers:
       - name: coredns
-        image: coredns/coredns:1.5.0
+        image: coredns/coredns:{{ agorakube_features.coredns.release }}
         imagePullPolicy: IfNotPresent
         resources:
           limits:
-            memory: 170Mi
+            memory: 340Mi
           requests:
             cpu: 100m
             memory: 70Mi
@@ -168,7 +177,7 @@ metadata:
 spec:
   selector:
     k8s-app: kube-dns
-  clusterIP: {{cluster_dns_ip}} 
+  clusterIP: {{ agorakube_network.service_ip.coredns }} 
   ports:
   - name: dns
     port: 53

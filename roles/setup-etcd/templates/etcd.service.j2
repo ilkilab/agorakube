@@ -6,7 +6,10 @@ Documentation=https://github.com/coreos
 {{ etcd_initial_cluster.append( host+"=https://"+hostvars[host].ansible_host+":2380" ) }}
 {% endfor %}
 [Service]
-ExecStart=/usr/bin/etcd-{{etcd_release}}-linux-amd64/etcd \
+Type=notify
+ExecStart=/usr/bin/etcd-{{ agorakube_base_components.etcd.release }}-linux-amd64/etcd \
+  --auto-tls=false \
+  --peer-auto-tls=false \
   --name {{ ansible_fqdn }} \
   --cert-file=/etc/kubernetes/pki/etcd/server.crt \
   --key-file=/etc/kubernetes/pki/etcd/server.key \
@@ -23,7 +26,9 @@ ExecStart=/usr/bin/etcd-{{etcd_release}}-linux-amd64/etcd \
   --initial-cluster-token etcd-cluster-0 \
   --initial-cluster {{ etcd_initial_cluster|join(',') }} \
   --initial-cluster-state new \
-  --data-dir={{etcd_data_directory}}
+  --logger 'zap' \
+  --log-outputs=stderr,/var/log/etcd.log \
+  --data-dir={{ agorakube_base_components.etcd.data_path }}
 Restart=on-failure
 RestartSec=5
 

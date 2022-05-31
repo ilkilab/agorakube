@@ -1,0 +1,10 @@
+---
+- name : Clear Openebs Data Storage
+  include_tasks: delete_openebs.yaml
+  tags: [ 'never', 'uninstall' ]
+
+- name: Clear Calico dir
+  file:
+    path: /var/run/calico
+    state: absent
+  tags: [ 'never', 'uninstall' ]

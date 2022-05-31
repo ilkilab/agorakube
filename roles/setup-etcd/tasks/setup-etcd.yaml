@@ -1,19 +1,27 @@
 ---
 - name: Download etcd binaries
   unarchive:
-    src: https://github.com/etcd-io/etcd/releases/download/{{ etcd_release }}/etcd-{{ etcd_release }}-linux-amd64.tar.gz
+    src: https://github.com/etcd-io/etcd/releases/download/{{ agorakube_base_components.etcd.release }}/etcd-{{ agorakube_base_components.etcd.release }}-linux-amd64.tar.gz
     dest: /usr/bin
     remote_src: yes
+    creates: /usr/bin/etcd-{{ agorakube_base_components.etcd.release }}-linux-amd64/etcd
 
-- name: create folder {{ etcd_data_directory }}
+- name: create folder {{ agorakube_base_components.etcd.data_path }}
   file:
-    path: "{{ etcd_data_directory }}"
+    path: "{{ agorakube_base_components.etcd.data_path }}"
     state: directory
+    recurse: yes
+    owner: root
+    group: root
+    mode: '0700'
 
 - name: Import etcd.service
   template:
     src: etcd.service.j2
     dest: /etc/systemd/system/etcd.service
+    owner: root
+    group: root
+    mode: '644'
   notify:
     - Reload daemons
     - Restart etcd
@@ -24,3 +32,6 @@
     daemon_reload: yes
     name: etcd
     enabled: yes
+
+- name: Force all notified handlers to run at this point, not waiting for normal sync points
+  meta: flush_handlers

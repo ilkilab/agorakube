@@ -4,61 +4,123 @@
     name: ["socat", "conntrack", "ipset"]
     state: latest
 
+
+- name: install {{ iscsi_package_name }} package
+  package:
+    name: "{{ iscsi_package_name }}"
+    state: latest
+  when: agorakube_features.storage.enabled | bool == True
+
+- name: Ensure iscsid is running and enabled
+  systemd:
+    name: iscsid
+    state: started
+    enabled: yes
+    daemon_reload: yes
+  when: agorakube_features.storage.enabled | bool == True
+
+- name: Create /etc/kubernetes/manifests directory
+  file:
+    path: /etc/kubernetes/manifests
+    state: directory
+    recurse: True
+
+- name: Create /var/log/kubernetes directory
+  file:
+    path: /var/log/kubernetes
+    state: directory
+    recurse: True
+
 - name: Download Kubernetes node binaries
   unarchive:
-    src: https://dl.k8s.io/{{ kubernetes_release }}/kubernetes-node-linux-amd64.tar.gz
+    src: https://dl.k8s.io/{{ agorakube_base_components.kubernetes.release }}/kubernetes-node-linux-amd64.tar.gz
     dest: /usr/local/bin
     remote_src: yes
     creates: /usr/local/bin/kubernetes/node/bin/kubelet
+  notify:
+    - restart kubelet
+    - restart kube-proxy
   when:
-  - ansible_fqdn in groups['workers']
+  - ansible_fqdn in groups['workers'] or ansible_fqdn in groups['storage']
   - ansible_fqdn not in groups['masters']
+
 - name: Create kubelet service
   template:
     src: kubelet.service.j2
     dest: /etc/systemd/system/kubelet.service
+    owner: root
+    group: root
+    mode: '644'
   notify:
     - restart kubelet
 
 - name: Create kubelet config file
   template:
     src: kubelet-config.yaml.j2
-    dest: /etc/kubernetes/kubelet-config.yaml
+    dest: /etc/kubernetes/manifests/kubelet-config.yaml
+    owner: root
+    group: root
+    mode: '644'
   notify:
     - restart kubelet
 
-- name: Create /etc/kubernetes/manifests directory
-  file:
-    path: /etc/kubernetes/manifests
-    state: directory
-
-- name: Create kubelet kubeconfig file
+- name: Import kubelet and kube-proxy kubeconfig files
   copy:
-    src: "{{ data_path }}/certificates/configs/kubelet/{{ ansible_fqdn }}/kubelet.config"
-    dest: /etc/kubernetes/manifests/kubelet.conf
+    src: "{{ pki_path }}/kubeconfigs/{{ item }}/{{ ansible_fqdn }}/{{ item }}.conf"
+    dest: /etc/kubernetes/manifests/{{ item }}.conf
+    owner: root
+    group: root
+    mode: '644'
+  with_items:
+    - kubelet
+    - proxier
   notify:
     - restart kubelet
+    - restart kube-proxy
 
 - name: Create kube-proxy service
   template:
     src: kube-proxy.service.j2
     dest: /etc/systemd/system/kube-proxy.service
+    owner: root
+    group: root
+    mode: '644'
   notify:
     - restart kube-proxy
 
 - name: Create kube-proxy config file
   template:
     src: kube-proxy-config.yaml.j2
-    dest: /etc/kubernetes/kube-proxy-config.yaml
+    dest: /etc/kubernetes/manifests/kube-proxy-config.yaml
+    owner: root
+    group: root
+    mode: '644'
   notify:
     - restart kube-proxy
 
-- name: Import proxier kubeconfig
-  copy:
-    src: "{{ data_path }}/certificates/configs/proxier/proxier.conf"
-    dest: /etc/kubernetes/manifests/proxier.conf
-  notify:
-    - restart kube-proxy
+- name: Set Kernel vm.overcommit_memory to 1
+  sysctl:
+    name: vm.overcommit_memory
+    value: '1'
+    sysctl_set: yes
+    state: present
+    reload: yes
+
+- name: Set Kernel kernel.panic to 10
+  sysctl:
+    name: kernel.panic
+    value: '10'
+    sysctl_set: yes
+    state: present
+    reload: yes
+
+- name: Set Kernel kernel.panic_on_oops to 1
+  sysctl:
+    name: kernel.panic_on_oops
+    value: '1'
+    sysctl_set: yes
+    state: present
+    reload: yes
 
 - name: Start kubelet and kube-proxy services
   systemd:

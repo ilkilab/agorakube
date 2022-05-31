@@ -1,0 +1,56 @@
+---
+# Stop the Services before uninstalling them
+- name: Stop Kube APIServer Service
+  systemd:
+    state: stopped
+    name: kube-apiserver
+  tags: ['never', 'uninstall']
+  ignore_errors: yes
+
+- name: Stop Kube Controller Manager Service
+  systemd:
+    state: stopped
+    name: kube-controller-manager
+  tags: ['never', 'uninstall']
+  ignore_errors: yes
+
+- name: Stop Kube Scheduler Service
+  systemd:
+    state: stopped
+    name: kube-scheduler
+  tags: ['never', 'uninstall']
+  ignore_errors: yes
+
+# Delete Services Definition
+- name: Delete Master Service
+  file:
+    path: "/etc/systemd/system/{{ item }}"
+    state: absent
+  with_items:
+    - "kube-apiserver.service"
+    - "kube-controller-manager.service"
+    - "kube-scheduler.service"
+  notify:
+    - Reload daemons
+  tags: ['never', 'uninstall']
+
+# Delete PKI files and Data Directory
+- name: Delete PKI files and Data Directory
+  file:
+    path: /etc/kubernetes
+    state: absent
+  tags: ['never', 'uninstall']
+
+# Delete Binaries
+- name: Delete Server Binaries
+  file:
+    path: /usr/local/bin/kubernetes
+    state: absent
+  tags: ['never', 'uninstall']
+
+# Delete Logs
+- name: Delete Logs
+  file:
+    path: /var/log/kubernetes
+    state: absent
+  tags: ['never', 'uninstall']

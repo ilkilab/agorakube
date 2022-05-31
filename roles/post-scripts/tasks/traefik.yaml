@@ -13,7 +13,7 @@
   changed_when: false
 
 - name: Apply templates
-  command: kubectl --kubeconfig {{ data_path }}/certificates/configs/admin/admin.conf apply -f {{ traefik_tempdir.path }}/traefik.yaml
+  command: kubectl --kubeconfig {{ pki_path }}/kubeconfigs/admin/admin.conf apply -f {{ traefik_tempdir.path }}/traefik.yaml
   register: apply_traefik
   changed_when: >
     apply_traefik.stdout is search("created")
@@ -24,3 +24,12 @@
     state: absent
     path: "{{ traefik_tempdir.path }}"
   changed_when: false
+
+- name: Verify if traefik-ingress-controller pods has successfully started
+  command: kubectl --kubeconfig {{ pki_path }}/kubeconfigs/admin/admin.conf get deploy -n ingress-traefik traefik
+  changed_when: false
+  register: traefik_deployment
+  until: traefik_deployment.stdout.find("1/1") != -1
+  retries: 300
+  delay: 10
+  run_once: true

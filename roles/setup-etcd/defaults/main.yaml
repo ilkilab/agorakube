@@ -1,3 +1,4 @@
 ---
-etcd_release: v3.3.13 
-etcd_data_directory: "/var/lib/etcd"
+#etcd_release: v3.3.13 
+#etcd_data_directory: "/var/lib/etcd"
+#delete_etcd_install: False

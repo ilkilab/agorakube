@@ -1,0 +1,46 @@
+- name: Update etcd CA crt
+  shell: kubectl -n kube-system --kubeconfig {{ pki_path }}/kubeconfigs/admin/admin.conf create configmap etcd-ca.crt --from-file={{ agorakube.global.data_path }}/pki/intermediate/etcd/ca.crt -o yaml --dry-run | kubectl apply -f -
+  register: apply_etcd_ca
+  changed_when: >
+    apply_etcd_ca.stdout is search("created")
+    or apply_etcd_ca.stdout is search("configured")
+
+- name: Update etcd backup crt
+  shell: kubectl -n kube-system --kubeconfig {{ pki_path }}/kubeconfigs/admin/admin.conf create configmap etcd-healthcheck-client.crt --from-file={{ agorakube.global.data_path }}/pki/end/kube-etcd-healthcheck-client.crt -o yaml --dry-run | kubectl apply -f -
+  register: apply_etcd_client_crt
+  changed_when: >
+    apply_etcd_client_crt.stdout is search("created")
+    or apply_etcd_client_crt.stdout is search("configured")
+
+- name: Update etcd backup key
+  shell: kubectl -n kube-system --kubeconfig {{ pki_path }}/kubeconfigs/admin/admin.conf create secret generic etcd-healthcheck-client.key --from-file={{ agorakube.global.data_path }}/pki/end/kube-etcd-healthcheck-client.key -o yaml --dry-run | kubectl apply -f -
+  register: apply_etcd_client_key
+  changed_when: >
+    apply_etcd_client_key.stdout is search("created")
+    or apply_etcd_client_key.stdout is search("configured")
+
+- name: Create tempdir
+  tempfile:
+    state: directory
+    suffix: backup_etcd
+  register: backup_etcd_tempdir
+  changed_when: false
+
+- name: Render templates
+  template:
+    dest: "{{ backup_etcd_tempdir.path }}/backup_etcd.yaml"
+    src: "backup-etcd-cronjob.yaml.j2"
+  changed_when: false
+
+- name: Apply templates
+  command: kubectl --kubeconfig {{ pki_path }}/kubeconfigs/admin/admin.conf apply -f {{ backup_etcd_tempdir.path }}/backup_etcd.yaml
+  register: apply_backup_etcd
+  changed_when: >
+    apply_backup_etcd.stdout is search("created")
+    or apply_backup_etcd.stdout is search("configured")
+
+- name: Cleanup tempdir
+  file:
+    state: absent
+    path: "{{ backup_etcd_tempdir.path }}"
+  changed_when: false

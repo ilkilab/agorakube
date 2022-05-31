@@ -2,5 +2,18 @@
 - name: Import etcd certs
   include_tasks: import-certs.yaml
 
+- name: Delete previous ETCD install
+  include_tasks: clean-previous-etcd-install.yaml
+  when: agorakube_base_components.etcd.upgrade | bool == True
+
 - name: Setup etcd server
   include_tasks: setup-etcd.yaml
+
+- name: Check etcd cluster after installation
+  include_tasks: check-etcd.yaml
+  when: agorakube_base_components.etcd.check | bool == True
+  tags: check-etcd
+
+- name: Clear and delete etcd clusters
+  include_tasks: delete-etcd-clusters.yaml
+  tags: [ 'never', 'uninstall' ]

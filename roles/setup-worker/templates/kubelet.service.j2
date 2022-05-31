@@ -1,13 +1,13 @@
 [Unit]
-Description=Kubernetes Kubelet {{ kubernetes_release }}
+Description=Kubernetes Kubelet {{ agorakube_base_components.kubernetes.release }}
 Documentation=https://github.com/kubernetes/kubernetes
-{% if runtime == 'docker' %}
-After=docker.service \
-Requires=docker.service \
+{% if agorakube_base_components.container.engine == 'docker' %}
+After=docker.service
+Requires=docker.service
 {% endif %}
-{% if runtime == 'containerd' %}
-After=containerd.service \
-Requires=containerd.service \
+{% if agorakube_base_components.container.engine == 'containerd' %}
+After=containerd.service
+Requires=containerd.service
 {% endif %}
 
 [Service]
@@ -16,19 +16,26 @@ ExecStart=/usr/local/bin/kubernetes/server/bin/kubelet \
 {% else %}
 ExecStart=/usr/local/bin/kubernetes/node/bin/kubelet \
 {% endif %}
-  --config=/etc/kubernetes/kubelet-config.yaml \
-{% if runtime == 'docker' %}
+  --hostname-override={{ ansible_fqdn }} \
+  --config=/etc/kubernetes/manifests/kubelet-config.yaml \
+{% if agorakube_base_components.container.engine == 'docker' %}
   --container-runtime=docker \
 {% endif %}
-{% if runtime == 'containerd' %}
+{% if agorakube_base_components.cloud_controller_manager.enabled | bool == True %}
+  --cloud-provider=external \
+{% endif %}
+{% if agorakube_base_components.container.engine == 'containerd' %}
  --container-runtime=remote \
  --container-runtime-endpoint=unix:///var/run/containerd/containerd.sock \
 {% endif %}
-  --hostname-override={{ansible_fqdn}} \
   --image-pull-progress-deadline=2m \
   --kubeconfig=/etc/kubernetes/manifests/kubelet.conf \
   --network-plugin=cni \
   --register-node=true \
+  --log-file=/var/log/kubernetes/kubelet.log \
+  --log-file-max-size=1800 \
+  --logtostderr=false \
+  --node-ip={{ ansible_host }} \
   --v=2
 Restart=on-failure
 RestartSec=5

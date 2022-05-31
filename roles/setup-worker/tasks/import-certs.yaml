@@ -1,29 +1,32 @@
 ---
-- name: Folders creation /etc/kubernetes/pki /etc/kubernetes/pki/etcd
+- name: Create /etc/kubernetes/pki Dir
   file:
-    path: "{{ item }}"
+    path: /etc/kubernetes/pki
     state: directory
-  with_items:
-    - /etc/kubernetes
-    - /etc/kubernetes/pki
+    owner: root
+    group: root
+    mode: '644'
+    recurse: True
 
-- name: Import kubernetes ca.key
+- name: Import master CA crt for kubelet
   copy:
-    src: "{{ data_path }}/certificates/intermediate/kubernetes-ca/signed/kubernetes-ca.pem"
+    src: "{{ pki_path }}/intermediate/ca.crt"
     dest: /etc/kubernetes/pki/ca.crt
+  with_items:
+    - { src: 'intermediate/ca.crt', dest: 'ca.crt' }
   notify:
     - restart kubelet
 
-- name: Import apiserver-kubelet-client.crt
+- name: Import specific KEY for kubelet
   copy:
-    src: "{{ data_path }}/certificates/end/kube-apiserver-kubelet-client/kube-apiserver-kubelet-client.pem"
-    dest: /etc/kubernetes/pki/apiserver-kubelet-client.crt
+    src: "{{ pki_path }}/kubeconfigs/kubelet/{{ inventory_hostname }}/kubelet.key"
+    dest: /etc/kubernetes/pki/kubelet.key
   notify:
     - restart kubelet
 
-- name: Import apiserver-kubelet-client.key
+- name: Import specific KEY for kubelet
   copy:
-    src: "{{ data_path }}/certificates/end/kube-apiserver-kubelet-client/kube-apiserver-kubelet-client-key.pem"
-    dest: /etc/kubernetes/pki/apiserver-kubelet-client.key
+    src: "{{ pki_path }}/kubeconfigs/kubelet/{{ inventory_hostname }}/kubelet.crt"
+    dest: /etc/kubernetes/pki/kubelet.crt
   notify:
     - restart kubelet

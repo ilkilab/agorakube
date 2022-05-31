@@ -1,10 +1,15 @@
 [Unit]
-Description=Kubernetes Scheduler {{ kubernetes_release }}
+Description=Kubernetes Scheduler {{ agorakube_base_components.kubernetes.release }}
 Documentation=https://github.com/kubernetes/kubernetes
 
 [Service]
 ExecStart=/usr/local/bin/kubernetes/server/bin/kube-scheduler \
-  --config=/etc/kubernetes/config/kube-scheduler.yaml \
+  --bind-address=127.0.0.1 \
+  --config=/etc/kubernetes/manifests/kube-scheduler.yaml \
+  --profiling=false \
+  --log-file=/var/log/kubernetes/kube-scheduler.log \
+  --log-file-max-size=1800 \
+  --logtostderr=false \
   --v=2
 Restart=on-failure
 RestartSec=5

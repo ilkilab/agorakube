@@ -1,90 +1,157 @@
 ---
-- name: Check delete_previous_k8s_install variable
-  fail:
-    msg: "Variable delete_previous_k8s_install is set to {{ delete_previous_k8s_install }} ! Supported values are : True, False"
-  when: (delete_previous_k8s_install | string) not in ['True','False']
+#    msg: "Variable delete_previous_k8s_install is set to {{ delete_previous_k8s_install }} ! Supported values are : True, False"
+#  when: (delete_previous_k8s_install | string) not in ['True','False']
 
-- name: Check runtime variable
+- name: check rotate certificates
   fail:
-    msg: "Runtime {{ runtime }} is not supported ! Supported values are : docker, containerd, none, false"
-  when: runtime not in ['docker','containerd','false','none']
+    msg: "Rotate certificates {{ agorakube_pki.management.rotate_certificats }} is not supported ! Supported values are : true, false"
+  when: (agorakube_pki.management.rotate_certificats| string| lower) not in ['true', 'false']
 
-- name: Check CNI Pluging variable
+- name: check Upgrade Kubernetes release
   fail:
-    msg: "Network CNI plugin {{ network_cni_plugin }} is not supported ! Supported values are : flannel, calico, none"
-  when: network_cni_plugin not in ['flannel','calico','none']
+    msg: "Kubernetes release {{ agorakube_base_components.kubernetes.upgrade }} is not supported ! Supported values are : true, false"
+  when: (agorakube_base_components.kubernetes.upgrade| string| lower) not in ['true', 'false']
 
-- name: check Ingress Controller
+- name: check enable external loadbalancing
   fail:
-    msg: "Ingress Controller {{ ingress_controller }} is not supported ! Supported values are : none, traefik"
-  when: ingress_controller not in ['none','traefik','haproxy','nginx']
+    msg: "External_loadbalancing {{ agorakube_network.external_loadbalancing.enabled }} is not supported ! Supported values are : true, false"
+  when: (agorakube_network.external_loadbalancing.enabled| string| lower) not in ['true', 'false']
 
-- name: Check DNS Service
+- name: check enable OpenEBS Storage
   fail:
-    msg: "DNS Service {{ dns_server_soft }} is not supported ! Supported values are : none, coredns"
-  when: dns_server_soft not in ['none','coredns']
+    msg: "Variable agorakube_features.storage.enabled is set to : {{ agorakube_features.storage.enabled }} . Not supported ! Supported values are : true, false"
+  when: (agorakube_features.storage.enabled| string| lower) not in ['true', 'false']
+
+- name: check Enable Kubernetes dashboard
+  fail:
+    msg: "Variable agorakube_features.dashboard.enabled is set to : {{ agorakube_features.dashboard.enabled }} . Not supported ! Supported values are : true, false"
+  when: (agorakube_features.dashboard.enabled| string| lower) not in ['true', 'false']
+- name: check enable default admin user for Kubernetes Dashboard
+  fail:
+    msg: "Variable agorakube_features.dashboard.generate_admin_token is set to : {{ agorakube_features.dashboard.generate_admin_token }} . Not supported ! Supported values are : true, false"
+  when: (agorakube_features.dashboard.generate_admin_token| string| lower) not in ['true', 'false']
+
+- name: Check enable Metric-Server
+  fail:
+    msg: "Variable agorakube_features.metrics_server.enabled is set to : {{ agorakube_features.metrics_server.enabled }} . Not supported ! Supported values are : true, false"
+  when: (agorakube_features.metrics_server.enabled| string| lower) not in ['true', 'false']
+
+- name: check ETCD cluster status and Health
+  fail:
+    msg: "Variable agorakube_base_components.etcd.check is set to : {{ agorakube_base_components.etcd.check }} . Not supported ! Supported values are :  true, false"
+  when: (agorakube_base_components.etcd.check| string| lower) not in ['true', 'false']
+
+- name: check Enable ETCD cluster backup
+  fail:
+    msg: "Variable agorakube_base_components.etcd.backup.enabled is set to : {{ agorakube_base_components.etcd.backup.enabled }} . Not supported ! Supported values are :  true, false"
+  when: (agorakube_base_components.etcd.backup.enabled| string| lower) not in ['true', 'false']
+
+- name: check Enable Monitoring
+  fail:
+    msg: "Variable agorakube_features.monitoring.enabled is set to {{ agorakube_features.monitoring.enabled }} . Not supported ! Supported values are : true, false"
+  when: (agorakube_features.monitoring.enabled| string| lower) not in ['true', 'false']
+
+- name: check Monitoring Data Persistent
+  fail:
+    msg: "Variable agorakube_features.monitoring.persistent.enable is set to : {{ agorakube_features.monitoring.persistent.enable }} . Not supported ! Supported values are : true, false"
+  when: (agorakube_features.monitoring.persistent.enable| string| lower) not in ['true', 'false']
 
 - name: Check Populate /etc/hosts
   fail:
-    msg: "Populate /etc/hosts variable is set to : {{ populate_etc_hosts }} ! Supported values are : True, False"
-  when: (populate_etc_hosts | string)  not in ['True','False']
+    msg: "Variable agorakube_populate_etc_hosts is set to : {{ agorakube_populate_etc_hosts }} ! Supported values are : true, false"
+  when: (agorakube_populate_etc_hosts| string| lower) not in ['true', 'false']
 
-- name: Check k8s_dashboard
+- name: Check runtime variable
   fail:
-    msg: "Variable k8s_dashboard is set to {{ k8s_dashboard }} ! Supported values are : True, False"
-  when: (k8s_dashboard | string) not in ['True','False']
+    msg: "Variable agorakube_base_components.container.engine is set to :  {{ agorakube_base_components.container.engine }} is not supported ! Supported values are : docker, containerd, none, false"
+  when: (agorakube_base_components.container.engine| string| lower) not in ['docker','containerd','false','none']
 
-- name: Check update_certs
+- name: Check CNI plugin used
   fail:
-    msg: "Variable update_certs is set to {{ update_certs }} ! Supported values are : True, False"
-  when: (update_certs | string) not in ['True','False']
+    msg: "CNI plugin used {{ agorakube_network.cni_plugin }} is not supported ! Supported values are : calico, kube-router, none"
+  when: (agorakube_network.cni_plugin| string| lower) not in ['calico','kube-router','none']
 
-- name: Check service_mesh
+- name: Check Kube-Proxy mode
   fail:
-    msg: "Variable service_mesh is set to {{ service_mesh }} ! Supported values are : none, linkerd "
-  when: service_mesh not in ['none','linkerd']
+    msg: "Kube-Proxy mode {{ agorakube_network.kube_proxy.mode }} is not supported ! Supported values are : ipvs, none, false"
+  when: (agorakube_network.kube_proxy.mode| string| lower) not in ['ipvs','false','none']
 
-- name: Check install_helm
+- name: Check Default ClusterIP loadBalancing Algorithm
   fail:
-    msg: "Variable install_helm is set to {{ install_helm }} ! Supported values are : True, False"
-  when: (install_helm | string) not in ['True','False']
+    msg: "Default ClusterIP loadBalancing Algorithm {{ agorakube_network.kube_proxy.algorithm }} is not supported ! Supported values are : rr, lc, dh, sh, sed, nq, none"
+  when: (agorakube_network.kube_proxy.algorithm| string| lower) not in ['rr','lc','dh','sh','sed','nq','none']
 
-- name: Check init_helm
+#- name: Check Jiva FS types
+#  fail:
+#    msg: "Jiva FS types {{ agorakube_features.storage.jiva.fs_type }} is not supported ! Supported values are : ext4, none, false"
+#  when: (agorakube_features.storage.jiva.fs_type| string| lower) not in ['ext4','false','none']
+
+- name: check Ingress Controller
   fail:
-    msg: "Variable init_helm is set to {{ init_helm }} ! Supported values are : True, False"
-  when: (init_helm | string) not in ['True','False']
+    msg: "Ingress Controller {{ agorakube_features.ingress.controller }} is not supported ! Supported values are : none, traefik, haproxy, nginx"
+  when: (agorakube_features.ingress.controller| string| lower) not in ['none','traefik','haproxy','nginx']
 
 - name: Check cluster_cidr
   fail:
     msg: "Variable cluster_cidr must be an IP adresse CIDR !"
-  when: cluster_cidr is not regex("^([0-9]{1,3}\.){3}[0-9]{1,3}(\/([0-9]|[1-2][0-9]|3[0-2]))?$")
+  when: agorakube_network.cidr.service is not regex("^([0-9]{1,3}\.){3}[0-9]{1,3}(\/([0-9]|[1-2][0-9]|3[0-2]))?$")
 
 - name: Check service_cluster_ip_range
   fail:
     msg: "Variable service_cluster_ip_range must be an IP adresse CIDR !"
-  when: service_cluster_ip_range is not regex("^([0-9]{1,3}\.){3}[0-9]{1,3}(\/([0-9]|[1-2][0-9]|3[0-2]))?$")
+  when: agorakube_network.external_loadbalancing.ip_range is not regex("(?<![0-9])(?:(?:[0-1]?[0-9]{1,2}|2[0-4][0-9]|25[0-5])[.](?:[0-1]?[0-9]{1,2}|2[0-4][0-9]|25[0-5])[.](?:[0-1]?[0-9]{1,2}|2[0-4][0-9]|25[0-5])[.](?:[0-1]?[0-9]{1,2}|2[0-4][0-9]|25[0-5]))(?![0-9])")
 
 - name: Check kubernetes_service
   fail:
-    msg: "Variable kubernetes_service must be an IP adresse from service_cluster_ip_range !"
-  when: kubernetes_service is not regex("^([0-9]{1,3}\.){3}[0-9]{1,3}(\/([0-9]|[1-2][0-9]|3[0-2]))?$")
+    msg: "agorakube_network.service_ip.kubernetes must be an IP adresse from service_cluster_ip_range !"
+  when: agorakube_network.service_ip.kubernetes is not regex("^([0-9]{1,3}\.){3}[0-9]{1,3}(\/([0-9]|[1-2][0-9]|3[0-2]))?$")
 
 - name: Check cluster_dns_ip
   fail:
-    msg: "Variable cluster_dns_ip must be an IP adresse from service_cluster_ip_range "
-  when: cluster_dns_ip is not regex("^([0-9]{1,3}\.){3}[0-9]{1,3}(\/([0-9]|[1-2][0-9]|3[0-2]))?$")
+    msg: "agorakube_network.service_ip.corednsmust be an IP adresse from service_cluster_ip_range "
+  when: agorakube_network.service_ip.coredns is not regex("^([0-9]{1,3}\.){3}[0-9]{1,3}(\/([0-9]|[1-2][0-9]|3[0-2]))?$")
 
 - name: Check Node Port Range
   fail:
     msg: "Variable must be INT-INT => sample : 30000-32767"
-  when: service_node_port_range is not regex("(?:[+-]?(?:[0-9]+))-(?:[+-]?(?:[0-9]+))")
-
-- name: Check calico_mtu variable
-  fail:
-    msg: "Variable calico_mtu must be an integer !"
-  when: calico_mtu is not regex("(?:[+-]?(?:[0-9]+))")
+  when: agorakube_network.nodeport.range is not regex("(?:[+-]?(?:[0-9]+))-(?:[+-]?(?:[0-9]+))")
 
 - name: Check data_path variable
   fail:
-    msg: "Variable data_path must be a linux path ! Get {{ data_path }}"
-  when: data_path is not regex("^(\/[^\/ ]*)+\/?$")
+    msg: "Variable data_path must be a valid linux path ! Get {{ agorakube.global.data_path }}"
+  when: agorakube.global.data_path is not regex("^(\/[^\/ ]*)+\/?$")
+
+- name : check kubernetes release
+  fail:
+    msg: "Variable agorakube_base_components.kubernetes.release is set to : {{ agorakube_base_components.kubernetes.release }} . Not supported ! Supported values have the following patern : vX.X.X - Sample: v1.22.0"
+  when: agorakube_base_components.kubernetes.release is not regex ("^v(?:[+-]?(?:[0-9]+)).(?:[+-]?(?:[0-9]+)).(?:[+-]?(?:[0-9]+))?$")
+
+- name : check ETCD release
+  fail:
+    msg: "Variable agorakube_base_components.etcd.release is set to : {{ agorakube_base_components.etcd.release }} . Not supported ! Supported values have the following pattern : vX.X.X - Sample: v3.4.14"
+  when: agorakube_base_components.etcd.release is not regex ("^v(?:[+-]?(?:[0-9]+)).(?:[+-]?(?:[0-9]+)).(?:[+-]?(?:[0-9]+))?$")
+
+- name: Check agorakube_base_components.etcd.data_path variable
+  fail:
+    msg: "Variable agorakube_base_components.etcd.data_path must be a valid linux path ! Get {{ agorakube_base_components.etcd.data_path }}"
+  when: agorakube_base_components.etcd.data_path is not regex("^(\/[^\/ ]*)+\/?$")
+
+- name: Check agorakube_base_components.etcd.backup.storage.hostpath.path variable
+  fail:
+    msg: "Variable agorakube_base_components.etcd.backup.storage.hostpath.path must be a valid linux path ! Get {{ agoraagorakube_base_components.etcd.backup.storage.hostpath.path }}"
+  when: agorakube_base_components.etcd.backup.storage.hostpath.path is not regex("^(\/[^\/ ]*)+\/?$")
+
+- name: Check agorakube_features.storage.jiva.data_path variable
+  fail:
+    msg: "Variable agorakube_features.storage.jiva.data_path must be a valid linux path ! Get {{ agorakube_features.storage.jiva.data_path }}"
+  when: agorakube_features.storage.jiva.data_path is not regex("^(\/[^\/ ]*)+\/?$")
+
+- name: Check agorakube_features.storage.hostpath.data_path variable
+  fail:
+    msg: "Variable agorakube_base_components.etcd.backup.storage.hostpath.path must be a valid linux path ! Get {{ agorakube_features.storage.hostpath.data_path }}"
+  when: agorakube_features.storage.hostpath.data_path is not regex("^(\/[^\/ ]*)+\/?$")
+
+- name: Check agorakube_features.monitoring.persistent.storage.hostpath.path variable
+  fail:
+    msg: "Variable agorakube_features.monitoring.persistent.storage.hostpath.path must be a valid linux path ! Get {{ agorakube_features.monitoring.persistent.storage.hostpath.path }}"
+  when: agorakube_features.monitoring.persistent.storage.hostpath.path is not regex("^(\/[^\/ ]*)+\/?$")

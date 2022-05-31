@@ -1,0 +1,13 @@
+---
+- name: Find old ETCD dir binaries
+  find:
+    path: /usr/bin/
+    patterns: '*etcd*'
+    file_type: directory
+  register: etcd_dir_bin
+
+- name: Delete prevous etcd binaries
+  file:
+    state: absent
+    path: "{{ item.path }}"
+  loop: "{{ etcd_dir_bin.files }}"

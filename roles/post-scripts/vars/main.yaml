@@ -1,0 +1,5 @@
+---
+pki_path: "{{ agorakube.global.data_path }}/pki"
+number_storage: "{{ groups['storage'] | length }}"
+replicas_openebs: "{{ number_storage if number_storage < '3' else '3' }}"
+#replicas_openebs: "{{ groups['workers'] | length }}"
