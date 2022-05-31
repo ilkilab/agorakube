@@ -103,6 +103,6 @@ other components with their own licenses.
 Not all components we depend on are APACHE 2.0-licensed, but all
 *required* components are FLOSS. We prevent licensing issues
 using various processes (see [CONTRIBUTING](./docs/CONTRIBUTING.md)).
-
+ajout de texte
 
 [![FOSSA Status](https://app.fossa.io/api/projects/git%2Bgithub.com%2Filkilab%2Fagorakube.svg?type=large)](https://app.fossa.io/projects/git%2Bgithub.com%2Filkilab%2Fagorakube?ref=badge_large)
