@@ -31,7 +31,8 @@
   lineinfile:
     path: /etc/hosts
     backup: "{{ backup_etc_hosts | bool }}"
-    state: "{{ (item.ip not in (etc_hosts | map(attribute='ip') | list)) | ternary('absent', 'present') }}"
+    state: "{{ ((item.ip not in (etc_hosts | map(attribute='ip') | list)) or
+                (item.hostname not in (etc_hosts | map(attribute='hostname') | list))) | ternary('absent', 'present') }}"
     line: "{{ item.ip }} {{ item.hostname }}"
     regexp: "^{{ item.ip | regex_replace('\\.','\\.' ) }}\\s+{{ item.hostname }}"
   with_items:
