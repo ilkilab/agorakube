@@ -1,0 +1,2 @@
+---
+backup_etc_hosts: "{{ agorakube_backup_etc_hosts }}"
