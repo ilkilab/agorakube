@@ -1,0 +1,5 @@
+---
+- name: Remove orphaned /etc/hosts entries
+  include_tasks: remove-etc-hosts.yaml
+  when: agorakube_remove_etc_hosts | bool == True
+  tags: remove-etc-hosts

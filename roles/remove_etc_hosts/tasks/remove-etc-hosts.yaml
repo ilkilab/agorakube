@@ -1,0 +1,40 @@
+---
+- name: Combine etc_hosts list with etc_hosts group entries
+  set_fact:
+    etc_hosts: "{{ etc_hosts | default([]) + [{'hostname': item, 'ip': hostvars[item].ansible_host}] }}"
+  with_items:
+    - "{{ groups['etc_hosts'] }}"
+  when: hostvars[item].ansible_host not in etc_hosts | map(attribute="ip") | list
+
+- name: Slurp /etc/hosts file
+  slurp:
+    src: /etc/hosts
+  register: slurpfile
+
+- name: Create remote_etc_hosts list
+  set_fact:
+    remote_etc_hosts: "{{ remote_etc_hosts | default([]) + [{'ip': item.split(' ') | first, 'hostname': item.split(' ')[1:] | join(' ')}] }}"
+  with_items:
+    - "{{ slurpfile['content'] | b64decode | trim | split('\n') }}"
+
+- name: Update /etc/hosts
+  lineinfile:
+    path: /etc/hosts
+    backup: "{{ backup_etc_hosts | bool }}"
+    state: present
+    line: "{{ item.ip }} {{ item.hostname }}"
+  with_items:
+    - "{{ etc_hosts }}"
+  become: true
+
+- name: Cleanup /etc/hosts
+  lineinfile:
+    path: /etc/hosts
+    backup: "{{ backup_etc_hosts | bool }}"
+    state: "{{ ((item.ip not in (etc_hosts | map(attribute='ip') | list)) or
+                (item.hostname not in (etc_hosts | map(attribute='hostname') | list))) | ternary('absent', 'present') }}"
+    line: "{{ item.ip }} {{ item.hostname }}"
+    regexp: "^{{ item.ip | regex_replace('\\.','\\.' ) }}\\s+{{ item.hostname }}"
+  with_items:
+    - "{{ remote_etc_hosts }}"
+  become: true

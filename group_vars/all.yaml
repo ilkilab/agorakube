@@ -181,7 +181,19 @@ agorakube_features:
           nodename: "master1"
           path: /var/keycloak
 
+etc_hosts:
+  - hostname: "localhost"
+    ip: "127.0.0.1"
+
+# Populate /etc/hosts using etc_hosts inventory group
+# Note: This will not remove /etc/hosts entries when removed from inventory
 agorakube_populate_etc_hosts: True
+
+# Remove ALL /etc/hosts entries that are NOT defined in the etc_hosts group or etc_hosts variable
+agorakube_remove_etc_hosts: False
+
+# Optionally backup /etc/hosts each time a change is made
+agorakube_backup_etc_hosts: False
 
 # Security
 agorakube_encrypt_etcd_keys:

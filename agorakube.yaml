@@ -6,6 +6,7 @@
     - connexion-to-hosts
     - check-hosts-names
     - populate_etc_hosts
+    - remove_etc_hosts
 - hosts: deploy
   become: true
   vars:
