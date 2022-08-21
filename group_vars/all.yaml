@@ -185,7 +185,7 @@ etc_hosts:
   - hostname: "localhost"
     ip: "127.0.0.1"
 
-# Populate /etc/hosts using etc_hosts inventory group
+# Populate /etc/hosts using all inventory groups
 # Note: This will not remove /etc/hosts entries when removed from inventory
 agorakube_populate_etc_hosts: True
 
