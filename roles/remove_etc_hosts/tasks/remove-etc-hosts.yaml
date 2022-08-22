@@ -16,6 +16,9 @@
     remote_etc_hosts: "{{ remote_etc_hosts | default([]) + [{'ip': item.split(' ') | first, 'hostname': item.split(' ')[1:] | join(' ')}] }}"
   with_items:
     - "{{ slurpfile['content'] | b64decode | trim | split('\n') }}"
+  when:
+    - item is not regex('^#(.*)$')
+    - item | trim != ''
 
 - name: Update /etc/hosts
   lineinfile:

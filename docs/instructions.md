@@ -626,7 +626,9 @@ This section allows you to configure additional settings
 
 | Parameter | Description | Values |
 | --- | --- | --- |
-| `agorakube_populate_etc_hosts` | Add to all hostname/IPs of AGORAKUBE Cluster to /etc/hosts file of all hosts. | **True** *(default)* |
+| `agorakube_populate_etc_hosts` | Add all hostnames/IPs of AGORAKUBE Cluster to /etc/hosts file for all hosts. | **True** *(default)* |
+| `agorakube_remove_etc_hosts` | Remove ALL /etc/hosts entries that are NOT defined in the etc_hosts group or etc_hosts variable | **False** *(default)* |
+| `agorakube_backup_etc_hosts` | Optionally backup /etc/hosts each time a change is made | **False** *(default)* |
 | `agorakube_encrypt_etcd_keys` | Array of keys/algorith used to crypt/decrypt data in etcd? Generate with : `head -c 32 /dev/urandom | base64` | **changeME !** *(default)* |
 | `restoration_snapshot_file` | ETCD backup path to be restored | **none** *(default)* |
 | `master_custom_alt_name`  | Optional DNS alt name to be added to kube-apiserver certificate | **""** *(default)* |
