@@ -18,7 +18,6 @@ ExecStart=/usr/local/bin/kubernetes/node/bin/kubelet \
  --container-runtime=remote \
  --container-runtime-endpoint=unix:///var/run/containerd/containerd.sock \
   --kubeconfig=/etc/kubernetes/manifests/kubelet.conf \
-  --network-plugin=cni \
   --register-node=true \
   --log-file=/var/log/kubernetes/kubelet.log \
   --log-file-max-size=1800 \
