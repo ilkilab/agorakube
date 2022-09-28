@@ -39,11 +39,6 @@ agorakube_base_components:
     upgrade: False
   cloud_controller_manager:
     enabled: False
-  container:
-    engine: containerd
-# release : Only Supported if container engine is set to docker
-    release: ""
-#    upgrade: false
 
 agorakube_network:
   cni_plugin: calico

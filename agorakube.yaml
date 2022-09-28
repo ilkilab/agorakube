@@ -24,16 +24,16 @@
   become: true
   roles:
     - setup-master
-    - install-cni
+#    - install-cni
     - install-runtimes
     - setup-worker
 - hosts: workers,storage
   become: true
   roles:
-    - install-cni
+#    - install-cni
     - install-runtimes
     - setup-worker
-    - clear
+#    - clear
 - hosts: deploy
   become: true
   roles:
