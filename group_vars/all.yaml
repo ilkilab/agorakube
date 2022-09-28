@@ -19,21 +19,6 @@ agorakube_base_components:
     upgrade: False
     check: true
     data_path: /var/lib/etcd
-    backup:
-      enabled: False
-      crontab: "*/30 * * * *"
-      storage:
-        capacity: 10Gi
-        enabled: False
-        type: "storageclass"
-        storageclass:
-          name: "default-jiva"
-        persistentvolume:
-          name: "my-pv-backup-etcd"
-          storageclass: "my-storageclass-name"
-        hostpath:
-          nodename: "master1"
-          path: /var/etcd-backup
   kubernetes:
     release: v1.23.5
     upgrade: False
@@ -67,17 +52,6 @@ agorakube_features:
   coredns:
     release: "1.9.1"
     replicas: 2
-  reloader:
-    enabled: False
-    release: "0.0.89"
-  storage:
-    enabled: False
-    release: "2.9.0"
-    jiva:
-      data_path: /var/openebs
-      fs_type: ext4
-    hostpath:
-      data_path: /var/local-hostpath
   dashboard:
     enabled: False
     generate_admin_token: False
@@ -87,94 +61,6 @@ agorakube_features:
   ingress:
     controller: nginx
     release: v1.1.0
-
-  supervision:
-    monitoring:
-      enabled: False
-      dashboard: True
-      persistent:
-        enabled: False
-        storage:
-          capacity: 4Gi
-          type: "storageclass"
-          storageclass:
-            name: "default-jiva"
-          persistentvolume:
-            name: "my-pv-monitoring"
-            storageclass: "my-storageclass-name"
-          hostpath:
-            nodename: "worker1"
-            path: /var/monitoring-persistent
-    dashboard:
-      admin:
-        user: administrator
-        password: P@ssw0rd
-      persistent:
-        enabled: False
-        storage:
-          capacity: 4Gi
-          type: "storageclass"
-          storageclass: 
-            name: "default-jiva"
-          persistentvolume:
-            name: "my-pv-monitoring"
-            storageclass: "my-storageclass-name"
-          hostpath: 
-            nodename: "worker1"
-            path: /var/grafana-persistent
-    logging:
-      enabled: False
-      dashboard: True
-      persistent:
-        enabled: False
-        storage:
-          capacity: 4Gi
-          type: "storageclass"
-          storageclass:
-            name: "default-jiva"
-          persistentvolume:
-            name: "my-pv-monitoring"
-            storageclass: "my-storageclass-name"
-          hostpath:
-            nodename: "worker1"
-            path: /var/logging-persistent
-  logrotate:
-    enabled: False
-    crontab: "* 2 * * *"
-    day_retention: 14
-  gatekeeper:
-    enabled: False
-    release: v3.4.0
-    replicas:
-      #audit: 1
-      controller_manager: 3
-#argocd is an Alpha feature and do not support persistence wet. Use it only for test purpose.
-  argocd:
-    enabled: False
-   
-# keycloak_oidc is an Alpha feature.
-  keycloak_oidc:
-    enabled: False
-    admin:
-      user: administrator
-      password: P@ssw0rd
-    auto_bootstrap:
-        bootstrap_keycloak: true
-        bootstrap_kube_apiserver: true
-        populate_etc_hosts: true
-        host: oidc.local.lan
-    storage:
-        enabled: False
-        capacity: 10Gi
-        type: "storageclass"
-        storageclass:
-          name: "default-jiva"
-        persistentvolume:
-          name: "my-pv-backup-etcd"
-          storageclass: "my-storageclass-name"
-        hostpath:
-          nodename: "master1"
-          path: /var/keycloak
 
 etc_hosts:
   - hostname: "localhost"
