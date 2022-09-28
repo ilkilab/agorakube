@@ -10,18 +10,6 @@
   ignore_errors: yes
   when: agorakube_base_components.cloud_controller_manager.enabled | bool == True
 
-- name: Wait for nodes to be ready
-  command: kubectl --kubeconfig {{ pki_path }}/kubeconfigs/admin/admin.conf get node {{ item }}
-  changed_when: false
-  register: node_deployment
-  until: node_deployment.stdout.find("Ready") != -1
-  retries: 300
-  delay: 10
-  run_once: true
-  with_items:
-    - "{{ groups['masters'] }}"
-    - "{{ groups['workers'] }}"
-
 - name: Label Woker Nodes
   command: "kubectl --kubeconfig {{ pki_path }}/kubeconfigs/admin/admin.conf label node {{ item }}  node-role.kubernetes.io/worker=true --overwrite"
   changed_when: false
