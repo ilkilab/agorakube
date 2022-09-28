@@ -88,14 +88,13 @@ spec:
         emptyDir: {}
       containers:
       - name: metrics-server
-        image: k8s.gcr.io/metrics-server-amd64:v0.3.6
+        image: k8s.gcr.io/metrics-server/metrics-server:v0.5.2
         imagePullPolicy: IfNotPresent
         args:
           - --cert-dir=/tmp
           - --secure-port=4443
-          - --kubelet-insecure-tls
           - --v=2
-          - --kubelet-preferred-address-types=InternalIP,ExternalIP,Hostname
+          - --kubelet-preferred-address-types=InternalIP,Hostname,ExternalIP
         ports:
         - name: main-port
           containerPort: 4443

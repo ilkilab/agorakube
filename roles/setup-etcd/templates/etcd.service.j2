@@ -26,6 +26,8 @@ ExecStart=/usr/bin/etcd-{{ agorakube_base_components.etcd.release }}-linux-amd64
   --initial-cluster-token etcd-cluster-0 \
   --initial-cluster {{ etcd_initial_cluster|join(',') }} \
   --initial-cluster-state new \
+  --logger 'zap' \
+  --log-outputs=stderr,/var/log/etcd.log \
   --data-dir={{ agorakube_base_components.etcd.data_path }}
 Restart=on-failure
 RestartSec=5

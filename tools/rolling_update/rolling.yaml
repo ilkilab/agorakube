@@ -1,12 +1,12 @@
+# This playbook must be run from Agorakube root directory
 ---
-- hosts: workers,etcd,masters
+- hosts: workers,etcd,masters,storage
   any_errors_fatal: true
   become: true
   roles:
     - connexion-to-hosts
     - check-hosts-names
     - populate_etc_hosts
-    - remove_etc_hosts
 - hosts: deploy
   become: true
   vars:
@@ -22,16 +22,24 @@
     - setup-etcd
 - hosts: masters
   become: true
+  serial: 1
   roles:
+    - drain
     - setup-master
+    - install-cni
     - install-runtimes
     - setup-worker
-- hosts: workers
+    - uncordon
+- hosts: workers,storage
   become: true
+  serial: 1
   roles:
+    - drain
+    - install-cni
     - install-runtimes
     - setup-worker
-#    - clear
+    - clear
+    - uncordon
 - hosts: deploy
   become: true
   roles:

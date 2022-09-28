@@ -1,9 +1,8 @@
-
 $script = <<-SCRIPT
 echo "
 ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQDBTj+4Tjx2Az14spFKaD1rkxrhQSaybNDQOS9P7jGk3OaubL8qWTXVr69n4xu56PDCe06g4XOlpXkLNUOVr5CKOyP+9Eyw41V9de4DDEaPhidFtOULTubzYJ4tyhwysFnB/vq75TfoCgI6uYHl4tcSZqQB6g/4C2TGuFWj/T0CzlE6hxNzRy16udyfMxH7YZ445238Wtn96RxfJdkINgB+6h0jGRh1j8OuuIwZdUa1e4W+p53JGizXCRySAtZPxlNyaT2SxqOpfXShp+KqhIG8N7HPgCMdBHNXFy2zticR/tWjdWOPsuro0z8SZY7EgZD3PfgKD88BkdaG4B50RPgt pierre@DESKTOP-BT28R5N
 " >> /home/vagrant/.ssh/authorized_keys
-bash <(curl -s https://raw.githubusercontent.com/ilkilab/agorakube/master/setup-deploy.sh)
+bash <(curl -s https://raw.githubusercontent.com/pierrevillard/agorakube/master/setup-hosts.sh)
 SCRIPT
 
 $script2 = <<-SCRIPT
@@ -38,36 +37,28 @@ tLPRCasq7fw/jx3UnZlYAx5JiSgSl6wcr+eF+JDLLfZn4ExEqcwN03WHCXPPqede
 " >> /home/vagrant/ssh-private-key.pem
 chmod 0400 /home/vagrant/ssh-private-key.pem
 cd /home/vagrant/
-bash <(curl -s https://raw.githubusercontent.com/ilkilab/agorakube/master/setup-deploy.sh)
+bash <(curl -s https://raw.githubusercontent.com/pierrevillard/agorakube/master/setup-deploy.sh)
 echo '
 [deploy]
-worker1 ansible_connection=local
-
+master10 ansible_connection=local
 [masters]
-worker1  ansible_host=10.10.20.4
-
+master10  ansible_host=10.101.20.4
 [etcd]
-worker1  ansible_host=10.10.20.4
-
+master10  ansible_host=10.101.20.4
 [workers]
-worker2  ansible_host=10.10.20.5
-worker3  ansible_host=10.10.20.6
+worker10  ansible_host=10.101.20.5
+worker20  ansible_host=10.101.20.6
 
-[storage]
-# worker3  ansible_host=10.10.20.6
 [all:vars]
-advertise_masters=10.10.20.4
+advertise_masters=10.101.20.4
 #advertise_masters=kubernetes.localcluster.lan
-
 # SSH connection settings
 ansible_ssh_extra_args='-o StrictHostKeyChecking=no'
 ansible_user=vagrant
 ansible_ssh_private_key_file=/home/vagrant/ssh-private-key.pem
-
 [etc_hosts]
 #kubernetes.localcluster.lan ansible_host=10.10.20.4
 ' > /home/vagrant/agorakube/hosts
-
 echo '
 ---
 agorakube:
@@ -86,36 +77,19 @@ agorakube_pki:
 
 agorakube_base_components:
   etcd:
-    release: v3.4.14
+    release: v3.4.16
     upgrade: False
     check: true
     data_path: /var/lib/etcd
-    backup:
-      enabled: False
-      crontab: "*/30 * * * *"
-      storage:
-        capacity: 10Gi
-        enabled: False
-        type: "storageclass"
-        storageclass:
-          name: "default-jiva"
-        persistentvolume:
-          name: "my-pv-backup-etcd"
-          storageclass: "my-storageclass-name"
-        hostpath:
-          nodename: "master1"
-          path: /var/etcd-backup
   kubernetes:
-    release: v1.21.1
-    upgrade: false
-  container:
-    engine: containerd
-# release : Only Supported if container engine is set to docker
-    release: ""
-#    upgrade: false
+    release: v1.23.5
+    upgrade: False
+  cloud_controller_manager:
+    enabled: False
 
 agorakube_network:
   cni_plugin: calico
+  calico_autodetection_method: "first-found"
   mtu: 0
   cidr:
     pod: 10.33.0.0/16
@@ -123,6 +97,9 @@ agorakube_network:
   service_ip:
     kubernetes: 10.32.0.1 
     coredns: 10.32.0.10
+  dns:
+    primary_forwarder: 8.8.8.8
+    secondary_forwarder: 8.8.4.4
   nodeport:
     range: 30000-32000
   external_loadbalancing:
@@ -135,83 +112,31 @@ agorakube_network:
 
 agorakube_features:
   coredns:
-    release: "1.8.3"
+    release: "1.9.1"
     replicas: 2
-  reloader:
-    enabled: false
-    release: "0.0.89"
-  storage:
-    enabled: false
-    release: "2.9.0"
-    jiva:
-      data_path: /var/openebs
-      fs_type: ext4
-    hostpath:
-      data_path: /var/local-hostpath
   dashboard:
-    enabled: false
-    generate_admin_token: false
+    enabled: False
+    generate_admin_token: False
     release: v2.2.0
   metrics_server:
-    enabled: true
+    enabled: True
   ingress:
     controller: nginx
-    release: v0.46.0
-  monitoring:
-    enabled: false
-    persistent:
-      enable: false
-      storage:
-        capacity: 4Gi
-        type: "storageclass"
-        storageclass:
-          name: "default-jiva"
-        persistentvolume:
-          name: "my-pv-monitoring"
-          storageclass: "my-storageclass-name"
-        hostpath:
-          nodename: "master1"
-          path: /var/monitoring-persistent
-    admin:
-      user: administrator
-      password: P@ssw0rd
-  logrotate:
-    enabled: false
-    crontab: "* 2 * * *"
-    day_retention: 14
-  gatekeeper:
-    enabled: false
-    release: v3.4.0
-    replicas:
-      #audit: 1
-      controller_manager: 3
-  argocd:
-    enabled: false
-# keycloak_oidc is an Alpha feature and do not support persistence wet. Use it only for test purpose.
-  keycloak_oidc:
-    enabled: false
-    admin:
-      user: administrator
-      password: P@ssw0rd
-    auto_bootstrap:
-        bootstrap_keycloak: false
-        bootstrap_kube_apiserver: false
-        populate_etc_hosts: true
-        host: oidc.local.lan
-#    storage:
-#        enabled: False
-#        capacity: 10Gi
-#        type: "storageclass"
-#        storageclass:
-#          name: "default-jiva"
-#        persistentvolume:
-#          name: "my-pv-backup-etcd"
-#          storageclass: "my-storageclass-name"
-#        hostpath:
-#          nodename: "master1"
-#          path: /var/keycloak
+    release: v1.1.0
 
-agorakube_populate_etc_hosts: true
+etc_hosts:
+  - hostname: "localhost"
+    ip: "127.0.0.1"
+
+# Populate /etc/hosts using all inventory groups
+# Note: This will not remove /etc/hosts entries when removed from inventory
+agorakube_populate_etc_hosts: True
+
+# Remove ALL /etc/hosts entries that are NOT defined in the etc_hosts group or etc_hosts variable
+agorakube_remove_etc_hosts: False
+
+# Optionally backup /etc/hosts each time a change is made
+agorakube_backup_etc_hosts: False
 
 # Security
 agorakube_encrypt_etcd_keys:
@@ -226,9 +151,8 @@ agorakube_encrypt_etcd_keys:
 cd /home/vagrant/agorakube
 echo '
 #!/bin/bash
-yum -y update
-yum -y install python3 python3-pip python3-venv
-yum install -y libselinux-python3
+apt update
+apt -y install python3.8-venv
 python3 -m venv /usr/local/agorakube-env
 source /usr/local/agorakube-env/bin/activate
 pip3 install --upgrade pip
@@ -238,7 +162,6 @@ ansible --version
 chmod +x /home/vagrant/agorakube/script.sh
 cd /home/vagrant/agorakube/
 . /home/vagrant/agorakube/script.sh
-
 cd /home/vagrant/agorakube/
 ansible-playbook agorakube.yaml
 cp /root/.kube/config /var/kubeconfig/config
@@ -248,34 +171,34 @@ SCRIPT
 
 Vagrant.configure("2") do |config|
     config.vm.provision "shell", inline: $script
-    config.vm.box = "bento/centos-7"
-	config.vm.define "worker2" do |worker2|
-		worker2.vm.hostname = "worker2"
-		worker2.vm.network "private_network", ip: "10.10.20.5"
-		worker2.vm.provider "virtualbox" do |v|
+    config.vm.box = "bento/ubuntu-20.04"
+	  config.vm.define "worker10" do |worker10|
+    worker10.vm.hostname = "worker10"
+    worker10.vm.network "private_network", ip: "10.101.20.5"
+    worker10.vm.provider "virtualbox" do |v|
 			v.memory = 3096
 			v.cpus = 1
-			v.name = "worker2"
+			v.name = "worker10"
 		end
 	end
-	config.vm.define "worker3" do |worker3|
-		worker3.vm.hostname = "worker3"
-		worker3.vm.network "private_network", ip: "10.10.20.6"
-		worker3.vm.provider "virtualbox" do |v|
+	config.vm.define "worker20" do |worker20|
+		worker20.vm.hostname = "worker20"
+		worker20.vm.network "private_network", ip: "10.101.20.6"
+		worker20.vm.provider "virtualbox" do |v|
 			v.memory = 3096
 			v.cpus = 1
-			v.name = "worker3"
+			v.name = "worker20"
 		end
 	end
-	config.vm.define "worker1" do |worker1|
-	    worker1.vm.provision "shell", inline: $script2
-		worker1.vm.synced_folder ".", "/var/kubeconfig"
-		worker1.vm.hostname = "worker1"
-		worker1.vm.network "private_network", ip: "10.10.20.4"
-		worker1.vm.provider "virtualbox" do |v|
+	config.vm.define "master10" do |master10|
+    master10.vm.provision "shell", inline: $script2
+		master10.vm.synced_folder ".", "/var/kubeconfig"
+		master10.vm.hostname = "master10"
+		master10.vm.network "private_network", ip: "10.101.20.4"
+		master10.vm.provider "virtualbox" do |v|
 			v.memory = 3096
 			v.cpus = 1
-			v.name = "worker1"
+			v.name = "master10"
 		end
 	end
 end

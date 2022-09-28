@@ -1,11 +1,6 @@
 ---
 - name: Install runtime
-  include_tasks: "{{ agorakube_base_components.container.engine  }}.yaml"
-
-- name: Uninstall docker
-  include_tasks: uninstall-docker.yaml
-  when: agorakube_base_components.container.engine == "docker"
-  tags: [ 'never', 'uninstall' ]
+  include_tasks: "containerd.yaml"
 
 - name: Clear Containerd Components
   include_tasks: delete-containerd-components.yaml

@@ -6,9 +6,17 @@
   include_tasks: calico.yaml
   when: agorakube_network.cni_plugin == 'calico'
 
-- name: Include Tasks Kube-router
-  include_tasks: kube-router.yaml
-  when: agorakube_network.cni_plugin == 'kube-router'
+- name: Wait for nodes to be ready after CNI-Plugin deployment
+  command: kubectl --kubeconfig {{ pki_path }}/kubeconfigs/admin/admin.conf get node {{ item }}
+  changed_when: false
+  register: node_deployment
+  until: node_deployment.stdout.find("Ready") != -1
+  retries: 300
+  delay: 10
+  run_once: true
+  with_items:
+    - "{{ groups['masters'] }}"
+    - "{{ groups['workers'] }}"
 
 - name: Deploy CoreDNS to K8S
   include_tasks: coredns.yaml
@@ -21,50 +29,10 @@
   include_tasks: metrics-server.yaml
   when: agorakube_features.metrics_server.enabled | bool == True
 
-- name: Install Reloader
-  include_tasks: reloader.yaml
-  when: agorakube_features.reloader.enabled | bool == True
-
-- name: Install logrotate
-  include_tasks: logrotate.yaml
-  when: agorakube_features.logrotate.enabled | bool == True
-
-- name: Install ingress (traefik)
-  include_tasks: traefik.yaml
-  when: agorakube_features.ingress.controller == 'traefik'
-
-- name: Install ingress (haproxy)
-  include_tasks: haproxy.yaml
-  when: agorakube_features.ingress.controller == 'haproxy'
-
 - name: Install ingress (nginx)
   include_tasks: nginx.yaml
   when: agorakube_features.ingress.controller == 'nginx'
 
-- name: Install Keycloak OIDC
-  include_tasks: keycloak-oidc.yaml
-  when: agorakube_features.keycloak_oidc.enabled | bool == True
-
 - name: Install K8S Default Dashboard
   include_tasks: default_dashboard.yaml
   when: agorakube_features.dashboard.enabled | bool == True
-
-- name: Install openebs for persistence
-  include_tasks: openebs.yaml
-  when: agorakube_features.storage.enabled | bool == True
-
-- name: Install Monitoring
-  include_tasks: monitoring.yaml
-  when: agorakube_features.monitoring.enabled | bool == True
-
-- name: enable etcd backup cronJob
-  include_tasks: backup-etcd-cronjob.yaml
-  when: agorakube_base_components.etcd.backup.enabled | bool == True
-
-- name: Install Gatekeeper
-  include_tasks: gatekeeper.yaml
-  when: agorakube_features.gatekeeper.enabled | bool == True
-
-- name: Install argocd
-  include_tasks: argocd.yaml
-  when: agorakube_features.argocd.enabled | bool == True

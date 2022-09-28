@@ -12,17 +12,20 @@ This is a list of points that will be explained in this instructions file for th
 - [Storage Benchmark](#storage-benchmark)
 - [Upgrade OpenEBS Storage](#upgrade-openEBS-storage)
 - [How to use Reloader](#how-to-use-reloader)
+- [How to use Ingress-Nginx](#how-to-use-ingress-nginx)
 - [AGORAKUBE Log Architecture](#agorakube-log-architecture)
+- [Configure Calico](#configure-calico)
+- [Configure Keycloak](#configure-keycloak)
 - [Upgrade And Downgrade Kubernetes with Agorakube](#upgrade-and-downgrade-kubernetes-with-Agorakube)
 - [Uninstall AGORAKUBE](#uninstall-agorakube)
 
 
 # High-level Architecture
 
-Below a diagram of the high-level architecture deployed by AGORAKUBE :
+Below is a diagram of the high-level architecture deployed by AGORAKUBE :
 ![Architecture](../images/AGORAKUBE_diagram.png)
 
-**Notes :** This distibution is aimed to be customizable so you can choose : 
+**Notes :** This distribution is aimed to be customizable so you can choose : 
  - Where the **etcd** will be deployed (with the master or not) 
  - The number of **master** nodes to deploy (from 1 to many - 5 nodes for production)
  - The number of **etcd** nodes to deploy (from 1 to many - 5 nodes for production)
@@ -31,11 +34,11 @@ Below a diagram of the high-level architecture deployed by AGORAKUBE :
  
  # Prerequisites
 
-This section explains what are the prerequisites to install AGORAKUBE in your environment.
+This section details the prerequisites to install AGORAKUBE in your environment.
 
 ## OS
 
-Below the OS currently supported on all the machines :
+Below are the OS's currently supported on all the machines:
   - Ubuntu 18.04 & 20.04 - amd64
   - Centos 7 - amd64
   - Debian 10 - amd64
@@ -47,11 +50,26 @@ Below the OS currently supported on all the machines :
 - Unique hostname, MAC address, and product_uuid for every node. See here for more [details](https://kubernetes.io/docs/setup/production-environment/tools/kubeadm/install-kubeadm/#verify-the-mac-address-and-product-uuid-are-unique-for-every-node).
 - Certain ports are open on your machines. See here for more [details](https://kubernetes.io/docs/setup/production-environment/tools/kubeadm/install-kubeadm/#check-required-ports).
 
+If Agorakube is installed behind a Proxy/Firewall, make sure the following URLs are accessible:
+-	https://pypi.org/
+-	https://pypi.python.org/
+-	https://files.pythonhosted.org
+-	https://storage.googleapis.com/kubernetes-release/
+-	https://github.com/etcd-io/etcd/releases/download/
+-	https://dl.k8s.io/
+-	https://github.com/containernetworking/plugins/releases/download/
+-	https://download.docker.com/linux/
+-	https://index.docker.io/v1/
+-	https://k8s.gcr.io/
+-	https://docker.io
+-	https://github-releases.githubusercontent.com/
+
+
 ## Node Sizing
 
-Node sizing indicated here is for production environment. You can custom it according to suit your needs.
+Node sizing indicated here is for a production environment. You can custom it accordingly to suit your needs.
 
-It is a best-practice to install ETCD and MASTERS on separate hosts.
+It is best-practice to install ETCD and MASTERS on separate hosts.
 
 | AGORAKUBE Type | no HA or all-in-one | no-production | production |
 | --- | --- | --- | --- |
@@ -82,7 +100,7 @@ We actually configure the proper VM size for your ETCD depending on the number o
 
 # Nodes Setup
 
-This section explains how to setup nodes before deploying Kubernetes Clusters with AGORAKUBE.
+This section explains how to set up nodes before deploying Kubernetes Clusters with AGORAKUBE.
 
 ## Deployment node
 
@@ -104,16 +122,22 @@ bash <(curl -s https://raw.githubusercontent.com/ilkilab/agorakube/master/setup-
 
 ### Use Python Virtual Environment
 
-Sometimes it is better to run Ansible and all its dependences into a specific *Python Virtual Environment*. This will make it easier for you to install Ansible and all its dependences needed by AGORAKUBE without take the risk to break your existing Python/Python3 installation.
+Sometimes it is better to run Ansible and all its dependences in a specific *Python Virtual Environment*. This will make it easier for you to install Ansible and all its dependences needed by AGORAKUBE without the risk of breaking your existing Python/Python3 installation.
 
 
 You can create your own *Python Virtual Environment* from scratch by following:
 
 ```
 # Install on deploy machine python3, pyhton3-pip and python3-venv
-# On Ubuntu (18.04,20.04) or Debian10 use the following commands:
+# On Ubuntu (18.04) or Debian10 use the following commands:
 apt update
 apt install -yqq python3 python3-pip python3-venv
+
+# Install on deploy machine python3, pyhton3-pip and python3-venv
+# On Ubuntu (20.04) or Debian10 use the following commands:
+apt update
+apt install python3.8-venv
+
 
 # Only on Centos7
 yum install -y libselinux-python3
@@ -146,7 +170,7 @@ ansible --version
 #  python version = 3.8.5 (default, Jul 28 2020, 12:59:40) [GCC 9.3.0]
 
 
-# If you whant to stop using the Python Virtual Environment, just execute the following command:
+# If you want to stop using the Python Virtual Environment, just execute the following command:
 deactivate
 ```
 
@@ -189,9 +213,9 @@ AGORAKUBE enables an easy way to deploy and manage customizable K8S clusters.
 
 ## ansible.cfg file
 
-This file alows you to configure default settings for your Ansible server.
+This file allows you to configure default settings for your Ansible server.
 
-**If you are using CentOS-7, make sure to set "interpreter_python = /usr/bin/python2.7" !!** Ansible on CentOS-7 don't fully support Python3. 
+**If you are using CentOS-7, make sure to set "interpreter_python = /usr/bin/python2.7" !!** Ansible on CentOS-7 doesn't fully support Python3. 
 
 
 
@@ -314,6 +338,7 @@ agorakube_base_components:
 
 agorakube_network:
   cni_plugin: calico
+  calico_autodetection_method: "first-found"
   mtu: 0
   cidr:
     pod: 10.33.0.0/16
@@ -321,6 +346,9 @@ agorakube_network:
   service_ip:
     kubernetes: 10.32.0.1 
     coredns: 10.32.0.10
+  dns:
+    primary_forwarder: 8.8.8.8
+    secondary_forwarder: 8.8.4.4
   nodeport:
     range: 30000-32000
   external_loadbalancing:
@@ -355,24 +383,55 @@ agorakube_features:
   ingress:
     controller: nginx
     release: v0.46.0
-  monitoring:
-    enabled: true
-    persistent:
-      enable: true
-      storage:
-        capacity: 4Gi
-        type: "storageclass"
-        storageclass:
-          name: "default-jiva"
-        persistentvolume:
-          name: "my-pv-monitoring"
-          storageclass: "my-storageclass-name"
-        hostpath:
-          nodename: "master1"
-          path: /var/monitoring-persistent
-    admin:
-      user: administrator
-      password: P@ssw0rd
+  supervision:
+    monitoring:
+      enabled: true
+      dashboard: false
+      persistent:
+        enable: true
+        storage:
+          capacity: 4Gi
+          type: "storageclass"
+          storageclass:
+            name: "default-jiva"
+          persistentvolume:
+            name: "my-pv-monitoring"
+            storageclass: "my-storageclass-name"
+          hostpath:
+            nodename: "master1"
+            path: /var/monitoring-persistent
+    dashboard:
+      admin:
+        user: administrator
+        password: P@ssw0rd
+      persistent:
+        enabled: true
+        storage:
+          capacity: 4Gi
+          type: "storageclass"
+          storageclass:
+            name: "default-jiva"
+          persistentvolument:
+            storageclass: "my-storageclass-name"
+          hostpath:
+            nodename: "master1"
+            path: /var/monitoring-persistent
+    logging:
+      enabled: true
+      dashboard: true
+      persistent:
+        enabled: true
+        storage:
+          capacity: 4Gi
+          type: "storageclass"
+          storageclass:
+            name: "default-jiva"
+          persistentvolume:
+            name: "my-pv-monitoring"
+              storageclass: "my-storageclass-name"
+            hostpath:
+              nodename: "master1"
+              path: /var/monitoring-persistent
   logrotate:
     enabled: true
     crontab: "* 2 * * *"
@@ -385,7 +444,7 @@ agorakube_features:
       controller_manager: 3
   argocd:
     enabled: false
-# keycloak_oidc is an Alpha feature and do not support persistence wet. Use it only for test purpose.
+# keycloak_oidc is an Alpha feature and do not support persistence yet. Use it only for test purpose.
   keycloak_oidc:
     enabled: false
     admin:
@@ -414,7 +473,7 @@ agorakube_encrypt_etcd_keys:
 
 # AGORAKUBE Parameters
 
-Below  you can find all the parameters you can use in this file, section by section.
+Below, you can find all the parameters you can use in this file, section by section.
 
 ## Global Section
 
@@ -472,6 +531,14 @@ This section allows you to configure your Kubernetes deployment.
 | `agorakube_base_components.kubernetes.release` | Kubernetes release that will be installed on *Master/Worker/Storage* hosts |  **v1.21.0** *(default)* |
 | `agorakube_base_components.kubernetes.upgrade` | Upgrade current Kubernetes release to `agorakube_base_components.kubernetes.release` | **False** *(default)* |
 
+### Cloud Controller Manager
+
+This section allows you to configure the kubelet to use the [Cloud Controller Manager](https://kubernetes.io/docs/concepts/architecture/cloud-controller)
+
+| Parameter | Description | Values |
+| --- | --- | --- |
+| `agorakube_base_components.cloud_controller_manager.enabled` | Enable or disable the `cloud-controller-manager` | **False** *(default)* |
+
 ### Container Engine
 
 This section allows you to configure your Container Engine that will be deployed on all Master/Worker/Storage hosts.
@@ -489,11 +556,14 @@ This section allows you to configure your K8S cluster network settings.
 | Parameter | Description | Values |
 | --- | --- | --- |
 | `agorakube_network.cni_plugin` | CNI plugin used to enable K8S hosts Networking | **calico** *(default)*, kube-router |
+| `agorakube_network.calico_autodetection_method` | [Calico Autodetect Method](#configure-calico). Used by Calico to detect which IPv4 IFACE will be used to route between nodes  | **first-found** *(default)* |
 | `agorakube_network.mtu` | MTU for CNI plugin. Auto-MTU if set to **0**. Only used if `agorakube_network.cni_plugin` is set to **calico** | **0** *(default)* |
 | `agorakube_network.cidr.pod` | PODs CIDR network | **10.33.0.0/16** *(default)* |
 | `agorakube_network.cidr.service` | Service CIDR network | **10.32.0.0/16** *(default)* |
 | `agorakube_network.service_ip.kubernetes` | ClusterIP of *default.kubernetes* service. Should be the first IP available in `agorakube_network.cidr.service` | **10.32.0.1** *(default)* |
 | `agorakube_network.service_ip.coredns` | ClusterIP of *kube-system.kube-dns* service. | **10.32.0.10** *(default)* |
+| `agorakube_network.dns.primary_forwarder` | Default Primary DNS Forwarder | **8.8.8.8** *(default google DNS1)* |
+| `agorakube_network.dns.secondary_forwarder` | Default Secondary DNS Forwarder | **8.8.4.4** *(default google DNS2)* |
 | `agorakube_network.nodeport.range` | Range of allowed ports usable by NodePort services | **30000-32000** *(default)* |
 | `agorakube_network.external_loadbalancing.enabled` | Enable External LoadBalancing in ARP mode. Working only if On-Prem deployments | **False** *(default)* |
 | `agorakube_network.external_loadbalancing.ip_range` | IPs Range, or CIDR used by External LoadBalancer to assign External IPs  | **10.10.20.50-10.10.20.250** *(default range)* |
@@ -518,32 +588,47 @@ This section allows you to configure your K8S features.
 | `agorakube_features.metrics_server.enabled` | Enable Metrics-Server | **False** *(default)* |
 | `agorakube_features.ingress.controller` | Ingress Controller to install : nginx, ha-proxy, traefik | **nginx** *(default)* |
 | `agorakube_features.ingress.release` | Ingress controller release to install. Only used if `agorakube_features.ingress.controller` set to "nginx" | **False** *(default)* |
-| `agorakube_features.monitoring.enabled` | Enable Monitoring | **False** *(default)* |
-| `agorakube_features.monitoring.persistent.enable` | Persist Monitoring Data | **False** *(default)* |
-| `agorakube_features.monitoring.persistent.storage.capacity` | Storage size used to store Prometheus data and Dashboard localization | **4Gi** *(default)* |
-| `agorakube_features.monitoring.persistent.storage.type` | Type of Storage to use when `agorakube_features.monitoring.persistent.enable` is set to True | **storageclass** *(default)*, persistentVolume, hostpath |
-| `agorakube_features.monitoring.persistent.storage.storageclass.name` | StorageClass name used to store Prometheus data and Dashboard localization. Used only if `agorakube_features.monitoring.persistent.storage.type` is set to storageclass | **default-jiva** *(default)* |
-| `agorakube_features.monitoring.persistent.storage.persistentVolume.name` | PersistentVolume name used to store Prometheus data and Dashboard localization. Used only if `agorakube_features.monitoring.persistent.storage.type` is set to persistentVolume | **my-pv-monitoring** *(default)* |
-| `agorakube_features.monitoring.persistent.storage.persistentVolume.storageclass` | StorageClass name used to create persistentvolume set in `agorakube_features.monitoring.persistent.storage.persistentVolume.name`. Used only if `agorakube_features.monitoring.persistent.storage.type` is set to persistentvolume | **my storageclass-name** *(default)* |
-| `agorakube_features.monitoring.persistent.storage.hostpath.nodename` | K8S node (master/worker/storage) where monitoring data are stored locally. Used only `agorakube_features.monitoring.persistent.storage.type` is set to hostpath | **master1** *(default)* |
-| `agorakube_features.monitoring.persistent.storage.hostpath.path` | Path on `agorakube_features.monitoring.persistent.storage.hostpath.nodename` where Prometheus data and Dashboard localization are stored | **/var/monitoring-persistent** *(default)* |
-| `agorakube_features.monitoring.admin.user` | Default Grafana admin user | **administrator** *(default)* |
-| `agorakube_features.monitoring.admin.password` | Default grafana admin password | **P@ssw0rd** *(default)* |
+| `agorakube_features.supervision.monitoring.enabled` | Enable Monitoring | **True** *(default)* |
+| `agorakube_features.supervision.monitoring.dashboard` | Activate dashboard monitoring | **False** *(default)* |
+| `agorakube_features.supervision.monitoring.persistent.enabled` | Persist Monitoring Data | **False** *(default)* |
+| `agorakube_features.supervision.monitoring.persistent.storage.capacity` | Storage size used to store Prometheus data and Dashboard localization | **4Gi** *(default)* |
+| `agorakube_features.supervision.monitoring.persistent.storage.type` | Type of Storage to use when `agorakube_features.supervision.monitoring.persistent.enabled` is set to True | **storageclass** *(default)*, persistentVolume, hostpath |
+| `agorakube_features.supervision.monitoring.persistent.storage.storageclass.name` | StorageClass name used to store Prometheus data and Dashboard localization. Used only if `agorakube_features.supervision.monitoring.persistent.storage.type` is set to storageclass | **default-jiva** *(default)* |
+| `agorakube_features.supervision.monitoring.persistent.storage.persistentVolume.name` | PersistentVolume name used to store Prometheus data and Dashboard localization. Used only if `agorakube_features.supervision.monitoring.persistent.storage.type` is set to persistentVolume | **my-pv-monitoring** *(default)* |
+| `agorakube_features.supervision.monitoring.persistent.storage.persistentVolume.storageclass` | StorageClass name used to create persistentvolume set in `agorakube_features.supervision.monitoring.persistent.storage.persistentVolume.name`. Used only if `agorakube_features.supervision.monitoring.persistent.storage.type` is set to persistentvolume | **my storageclass-name** *(default)* |
+| `agorakube_features.supervision.monitoring.persistent.storage.hostpath.nodename` | K8S node (master/worker/storage) where monitoring data are stored locally. Used only `agorakube_features.supervision.monitoring.persistent.storage.type` is set to hostpath | **master1** *(default)* |
+| `agorakube_features.supervision.monitoring.persistent.storage.hostpath.path` | Path on `agorakube_features.supervision.monitoring.persistent.storage.hostpath.nodename` where Prometheus data and Dashboard localization are stored | **/var/monitoring-persistent** *(default)* |
+| `agorakube_features.supervision.monitoring.admin.user` | Default Grafana admin user | **administrator** *(default)* |
+| `agorakube_features.supervision.monitoring.admin.password` | Default grafana admin password | **P@ssw0rd** *(default)* |
+| `agorakube_features.supervision.logging.enabled` | Enable loki | **True** *(default)* |
+| `agorakube_features.supervision.logging.dashboard` | Enable loki dashboard | **True** *(default)* |
+| `agorakube_features.supervision.logging.persistent.enabled` | Persist loki datas | **True** *(default)* |
+| `agorakube_features.supervision.logging.persistent.storage.capacity` | Storage size used to store Loki datas and Dashboard localization | **4Gi** *(default)* |
+| `agorakube_features.supervision.logging.persistent.storage.type` | Type of Storage to use when `agorakube_features.supervision.logging.persistent.enabled` is set to True | **storageclass** *(default)*, persistentVolume, hostpath |
+| `agorakube_features.supervision.logging.persistent.storage.storageclass.name` | StorageClass name used to store Loki datas and Dashboard localization. Used only if `agorakube_features.supervision.logging.persistent.storage.type` is set to storageclass | **default-jiva** *(default)* |
+| `agorakube_features.supervision.logging.persistent.storage.persistentVolume.name` | PersistentVolume name used to store Loki datas and Dashboard localization. Used only if `agorakube_features.supervision.logging.persistent.storage.type` is set to persistentVolume | **my-pv-monitoring** *(default)* |
+| `agorakube_features.supervision.logging.persistent.storage.persistentVolume.storageclass` | StorageClass name used to create persistentvolume set in `agorakube_features.supervision.logging.persistent.storage.persistentVolume.name`. Used only if `agorakube_features.supervision.logging.persistent.storage.type` is set to persistentvolume | **my storageclass-name** *(default)* |
+| `agorakube_features.supervision.logging.persistent.storage.hostpath.nodename` | K8S node (master/worker/storage) where loki datas are stored locally. Used only `agorakube_features.supervision.logging.persistent.storage.type` is set to hostpath | **master1** *(default)* |
+| `agorakube_features.supervision.logging.persistent.storage.hostpath.path` | Path on `agorakube_features.supervision.logging.persistent.storage.hostpath.nodename` where Loki datas and Dashboard localization are stored | **/var/monitoring-persistent** *(default)* |
 | `agorakube_features.reloader.enabled` | Enable Reloader | **False** *(default)* |
 | `agorakube_features.reloader.release` | Reloader release to install | **0.0.89** *(default)* |
-| `agorakube_features.logrotate.enabled` | Enable Logrotate | **false** *(default)* |
+| `agorakube_features.logrotate.enabled` | Enable Logrotate | **False** *(default)* |
 | `agorakube_features.logrotate.crontab` | Crontab used to run logrotate | **"* 2 * * *"** *(default) run every day at 2 AM* |
 | `agorakube_features.logrotate.day_retention` | Indicate how many days logs will be keep | **14** *(default)* |
 | `agorakube_features.argocd.enabled` | Enable ArgoCD | **false** *(default)* |
-
-
+| `agorakube_features.gatekeeper.enabled` | Enable Gatekeeper | **True** *(default)* |
+| `agorakube_features.gatekeeper.release` | Gatekeeper release to install | **3.4.0** *(default)* |
+| `agorakube_features.gatekeeper.replicas.audit `| Number of Gatekeeper Audit Replicas | **Not activate** *(default)* |
+| `agorakube_features.gatekeeper.replicas.controller_manager `| Number of Gatekeeper Controller_Manager Replicas | **3** *(default)* | 
 
 ## AGORAKUBE other settings
-This section allows you to configure some other settings
+This section allows you to configure additional settings
 
 | Parameter | Description | Values |
 | --- | --- | --- |
-| `agorakube_populate_etc_hosts` | Add to all hostname/IPs of AGORAKUBE Cluster to /etc/hosts file of all hosts. | **True** *(default)* |
+| `agorakube_populate_etc_hosts` | Add all hostnames/IPs of AGORAKUBE Cluster to /etc/hosts file for all hosts. | **True** *(default)* |
+| `agorakube_remove_etc_hosts` | Remove ALL /etc/hosts entries that are NOT defined in the etc_hosts group or etc_hosts variable | **False** *(default)* |
+| `agorakube_backup_etc_hosts` | Optionally backup /etc/hosts each time a change is made | **False** *(default)* |
 | `agorakube_encrypt_etcd_keys` | Array of keys/algorith used to crypt/decrypt data in etcd? Generate with : `head -c 32 /dev/urandom | base64` | **changeME !** *(default)* |
 | `restoration_snapshot_file` | ETCD backup path to be restored | **none** *(default)* |
 | `master_custom_alt_name`  | Optional DNS alt name to be added to kube-apiserver certificate | **""** *(default)* |
@@ -899,17 +984,251 @@ metadata:
 spec:
   template: metadata:
 ```
+# How to use Ingress NGINX
+
+## Basic usage
+
+### Deployment
+
+Create a simple app pod.
+
+`kubectl run nginx --image=nginx --port 80`
+
+Customize you website front page:
+
+`kubectl exec nginx -- /bin/bash -c "echo My Super Website > /usr/share/nginx/html/index.html"`
+
+Create a service ClusterIP in front of your pod:
+
+`kubectl expose pod nginx --port=80 --name=frontend`
+
+Create an Ingress with the following code to publish your `frontend` service
+```
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: test-ingress
+spec:
+  rules:
+  - host: foo.bar.com
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: frontend
+            port:
+              number: 80
+```
+
+Access your Ingress and see your website !
+
+Warning: Sine Nginx Controller v1.0.0, Ingress must declare `spec.ingressClassName: nginx` !
+Note: If you had already created an "ingress" resource before version v1.0.4 : add `spec.ingressClassName: nginx` to your resource.
+
+Sample:
+```
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: test-ingress
+spec:
+  ingressClassName: nginx
+  rules:
+  - host: foo.bar.com
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: frontend
+            port:
+              number: 80
+```
+
 # AGORAKUBE Log Architecture
 
-Actually, AGORAKUBE configure Kubernetes componants to write logs in "journalctl" an "/var/log/kubernetes/" directory.
+Actually, AGORAKUBE configure Kubernetes components to write logs in "journalctl" an "/var/log/kubernetes/" directory.
 
 In "/var/log/kubernetes/" directory, log file size is limited to 1800 MB.
 
 Pods logs are stored in "/var/log/pods" directory.
 
-ETCD logs are only present in "journalctl". Run the following command to get ETCD logs from an "ETCD" host : `journalctl -xeu etcd`
+ETCD logs are only present in "/var/log/etcd.log".
+
+Run the following command to get system logs from host : `journalctl -xeu [SERVICE]`
+
+# Configure Calico
+
+With Agorakube, you can configure the way Calico discover node IFACE. In some cases, Agorakube master/nodes can have multiple Iface, with different names, order, and subnet/network. In that case, Calico will need your help to discover which Iface should be used to route between nodes. To do this, you can use "agorakube_network.calico_autodetection_method" parameter.
+The following sections describe the available IP autodetection methods. (From https://docs.projectcalico.org/reference/node/configuration#ip-autodetection-methods)
+
+## First-Found
+
+The `first-found` option enumerates all interface IP addresses and returns the first valid IP address (based on IP version and type of address) on the first valid interface. Certain known “local” interfaces are omitted, such as the docker bridge. The order that both the interfaces and the IP addresses are listed is system dependent.
+
+This is the default detection method. However, since this method only makes a very simplified guess, it is recommended to either configure the node with a specific IP address, or to use one of the other detection methods.
+
+```
+agorakube_network:
+  calico_autodetection_method: "fisrt-found"
+```
+
+## can-reach=DESTINATION
+
+The `can-reach` method uses your local routing to determine which IP address will be used to reach the supplied destination. Both IP addresses and domain names may be used.
+```
+agorakube_network:
+  calico_autodetection_method: "can-reach=8.8.8.8"
+```
+or
+```
+agorakube_network:
+  calico_autodetection_method: "can-reach=www.google.com"
+```
+
+## interface=INTERFACE-REGEX
+
+The interface method uses the supplied interface regular expression (golang syntax) to enumerate matching interfaces and to return the first IP address on the first matching interface. The order that both the interfaces and the IP addresses are listed is system dependent.
+
+```
+agorakube_network:
+  calico_autodetection_method: "interface=eth.*"
+```
+
+## skip-interface=INTERFACE-REGEX
+
+The `skip-interface` method uses the supplied interface regular expression (golang syntax) to exclude interfaces and to return the first IP address on the first interface that not matching. The order that both the interfaces and the IP addresses are listed is system dependent.
+
+```
+agorakube_network:
+  calico_autodetection_method: "skip-interface=enp6s0f0,eth.*"
+```
+
+## cidr=CIDR
+
+The `cidr` method uses one or more comma-separated IP ranges in CIDR format to determine valid IP addresses to choose from.
+```
+agorakube_network:
+  calico_autodetection_method: "cidr=10.10.20.0/24"
+```
+
+## Debug Calico
+
+If you notice some network trouble with calico, deploy a calico pod with : `kubectl apply -f https://docs.projectcalico.org/manifests/calicoctl.yaml`
+
+Then, print IFACE used by Calico with : `kubectl exec -ti -n kube-system calicoctl -- /calicoctl get nodes --allow-version-mismatch -o wide`
+
+Calicoctl help command:  `kubectl exec -ti -n kube-system calicoctl -- /calicoctl -h`
+
+# Configure Keycloak
+
+Keycloak is used to enable SSO OIDC in Agorakube Kubernetes Cluster.
+
+Keycloak can be enabled with the following parameters:
+
+```
+  keycloak_oidc:
+    enabled: False
+    admin:
+      user: administrator
+      password: P@ssw0rd
+    auto_bootstrap:
+        bootstrap_keycloak: true
+        bootstrap_kube_apiserver: true
+        populate_etc_hosts: true
+        host: oidc.local.lan
+
+    # And Keycloak Storage parametters
+    #
+    #
+```
+
+## Setup infrastructure
+
+Keycloak is published with an Ingress entry powered by Nginx-Controller with TLS.
+
+Agorakube automatically configure a "/etc/hosts" on kubernetes nodes to points to "nginx-controller" ClusterIP. So all Kubernetes master/nodes can access OIDC/Keycloak through "https://keycloak_oidc.auto_bootstraphost" (eg: https://oidc.local.lan).
+
+If you wanna use SSO/OIDC **from outside the cluster**, you will need to publish your Nginx-Ingress through a LoadBalancer (Powered by Agorakube/MetalLB, or by your own infra) and configure your external DNS (Used by your users) to resolve "keycloak_oidc.auto_bootstraphost".
+
+All users must be able to access keyclock through "https://keycloak_oidc.auto_bootstraphost". DO NOT USE PORT OTHER THAN 443 ! If you do so, you will notice an Authorization error on kube-APISERVER. ` "Unable to authenticate the request" err="invalid bearer token" `
+
+
+## Manage Keycloak
+
+- Connect to keycloak service and login with Administrator credentials.
+- Create a user in keycloack:
+  - User MUST have a "mail" field (Used by Kubernetes to authenticate user and log actions)
+  - User MUST have "e-mail verifed" set to "ON"
+  - Once user is created, set up a password to that user ("Credentials" panel) and set "Temporary" field to "OFF"
+
+Kubernetes will authorize users according Keycloak (or federated) users and groups.
+
+By default Agorakube create 2 groups - "kubernetes-admin" and "kubernetes-auditor" with associated RBAC created on Kubernetes.
+
+Adding your user to "kubernetes-admin" group will give them all "cluster-admin" rights.
+
+Adding your user to "kubernetes-admin" group will give them a "read-all cluster" rights.
+
+Here are default RBAC. Notice "oidc" prefix used on "Subjects" to identify OIDC/Keycloak users and groups ! 
+
+```
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: cluster-auditor-oidc
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: cluster-view
+subjects:
+- apiGroup: rbac.authorization.k8s.io
+  kind: Group
+  name: oidc:kubernetes-auditor
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: cluster-admin-oidc
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: cluster-admin
+subjects:
+- apiGroup: rbac.authorization.k8s.io
+  kind: Group
+  name: oidc:kubernetes-admin
+```
+
+## Setup Kubectl for users
+
+Firstlly, you MUST regenerate a private "oidc-client-secret" used by all your users. Do not use the Agorakube default "oidc-client-secret" wich is public !
+  - Connect to keycloak GUI with Administrator credentials
+  - Go to : "Local Realm (default)" > Configure > Clients > kube > Credentials > Clic on "Regenerate Secret".
+
+In order to manage kubernetes, your users must :
+  - install kubectl -> https://kubernetes.io/fr/docs/tasks/tools/install-kubectl/
+  - install kubelogin -> https://github.com/int128/kubelogin
+  - Get Keycloak OIDC-CA cert located on Deploy Agorakube machine at -> /var/agorakube/pki/oidc/oidc-ca.crt (Used to validate TLS with Keycloak)
+
+Once kubectl and kubelogin are installed, and oidc-ca.crt is present on the client machine, you can authenticate yourself to keycloak with the following command:
+
+Sample:
+```
+kubectl oidc-login setup \
+  --oidc-issuer-url=https://oidc.local.lan/auth/realms/local \
+  --oidc-client-id=kube \
+  --oidc-client-secret=79e34f70-581a-4cc3-a2b4-10b5a4d670df \
+  --certificate-authority=C:\Users\PierreILKI\.kube\oidc-ca.crt
+```
 
 # Upgrade And Downgrade Kubernetes with Agorakube
+
+## One-Shoot Upgrade
 
 Edit "./group_vars/all.yaml" file with the following parameters
 
@@ -918,12 +1237,27 @@ agorakube_base_components:
   kubernetes:
     release: v1.21.1  (Desired K8S release)
     upgrade: true
-
 ```
 
-Then apply your new Agorakube configuration by running the following command:
+Then apply your new Agorakube configuration from your agorakube root directory by running the following command:
 
 `ansible-playbook agorakube.yaml`
+
+
+## Rolling Upgrade
+
+Agorakube support Rolling Upgrades for Kubernetes.
+To make a rolling upgrade, edit "./group_vars/all.yaml" file with the following parameters
+
+```
+agorakube_base_components:
+  kubernetes:
+    release: v1.21.1  (Desired K8S release)
+    upgrade: true
+```
+Then apply your new Agorakube configuration from your agorakube root directory by running the following command:
+
+`ansible-playbook tools/rolling_update/rolling.yaml`
 
 # Uninstall AGORAKUBE
 

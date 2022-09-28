@@ -1,14 +1,8 @@
 [Unit]
 Description=Kubernetes Kubelet {{ agorakube_base_components.kubernetes.release }}
 Documentation=https://github.com/kubernetes/kubernetes
-{% if agorakube_base_components.container.engine == 'docker' %}
-After=docker.service
-Requires=docker.service
-{% endif %}
-{% if agorakube_base_components.container.engine == 'containerd' %}
 After=containerd.service
 Requires=containerd.service
-{% endif %}
 
 [Service]
 {% if ansible_fqdn in groups['masters'] %}
@@ -18,13 +12,11 @@ ExecStart=/usr/local/bin/kubernetes/node/bin/kubelet \
 {% endif %}
   --hostname-override={{ ansible_fqdn }} \
   --config=/etc/kubernetes/manifests/kubelet-config.yaml \
-{% if agorakube_base_components.container.engine == 'docker' %}
-  --container-runtime=docker \
+{% if agorakube_base_components.cloud_controller_manager.enabled | bool == True %}
+  --cloud-provider=external \
 {% endif %}
-{% if agorakube_base_components.container.engine == 'containerd' %}
  --container-runtime=remote \
  --container-runtime-endpoint=unix:///var/run/containerd/containerd.sock \
-{% endif %}
   --image-pull-progress-deadline=2m \
   --kubeconfig=/etc/kubernetes/manifests/kubelet.conf \
   --network-plugin=cni \

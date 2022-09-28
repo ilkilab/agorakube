@@ -71,7 +71,7 @@ data:
       }
       cache 30
       prometheus :9153
-      forward . 8.8.8.8
+      forward . {{ agorakube_network.dns.primary_forwarder }} {{ agorakube_network.dns.secondary_forwarder }}
       loop
       reload
       loadbalance

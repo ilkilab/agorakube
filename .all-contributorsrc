@@ -169,6 +169,52 @@
         "doc",
         "code"
       ]
+    },
+    {
+      "login": "HaroldIlki",
+      "name": "HaroldIlki",
+      "avatar_url": "https://avatars.githubusercontent.com/u/90386162?v=4",
+      "profile": "https://github.com/HaroldIlki",
+      "contributions": [
+        "doc",
+        "code"
+      ]
+    },
+    {
+      "login": "robakerson",
+      "name": "Bob Akerson",
+      "avatar_url": "https://avatars.githubusercontent.com/u/85378187?v=4",
+      "profile": "https://github.com/robakerson",
+      "contributions": [
+        "doc"
+      ]
+    },
+    {
+      "login": "jeremyj563",
+      "name": "jeremyj563",
+      "avatar_url": "https://avatars.githubusercontent.com/u/12220868?v=4",
+      "profile": "https://github.com/jeremyj563",
+      "contributions": [
+        "code"
+      ]
+    },
+    {
+      "login": "Rajpratik71",
+      "name": "Pratik Raj",
+      "avatar_url": "https://avatars.githubusercontent.com/u/12658912?v=4",
+      "profile": "http://ow.ly/v40s50zwWhl",
+      "contributions": [
+        "code"
+      ]
+    },
+    {
+      "login": "McgovernJP",
+      "name": "McgovernJP",
+      "avatar_url": "https://avatars.githubusercontent.com/u/50113854?v=4",
+      "profile": "https://github.com/McgovernJP",
+      "contributions": [
+        "doc"
+      ]
     }
   ],
   "contributorsPerLine": 7,

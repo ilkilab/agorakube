@@ -113,6 +113,7 @@ agorakube_base_components:
 
 agorakube_network:
   cni_plugin: calico
+  calico_autodetection_method: "first-found"
   mtu: 0
   cidr:
     pod: 10.33.0.0/16
@@ -120,6 +121,9 @@ agorakube_network:
   service_ip:
     kubernetes: 10.32.0.1 
     coredns: 10.32.0.10
+  dns:
+    primary_forwarder: 8.8.8.8
+    secondary_forwarder: 8.8.4.4
   nodeport:
     range: 30000-32000
   external_loadbalancing:
@@ -153,25 +157,57 @@ agorakube_features:
     enabled: true
   ingress:
     controller: nginx
-    release: v0.46.0
-  monitoring:
-    enabled: false
-    persistent:
-      enable: false
-      storage:
-        capacity: 4Gi
-        type: "storageclass"
-        storageclass:
-          name: "default-jiva"
-        persistentvolume:
-          name: "my-pv-monitoring"
-          storageclass: "my-storageclass-name"
-        hostpath:
-          nodename: "master1"
-          path: /var/monitoring-persistent
-    admin:
-      user: administrator
-      password: P@ssw0rd
+    release: v1.1.0
+  supervision: 
+    monitoring:
+      enabled: true
+      dashboard: false
+      persistent:
+        enable: true
+        storage:
+          capacity: 4Gi
+          type: "storageclass"
+          storageclass:
+            name: "default-jiva"
+          persistentvolume:
+            name: "my-pv-monitoring"
+            storageclass: "my-storageclass-name"
+          hostpath:
+            nodename: "master1"
+            path: /var/monitoring-persistent
+    dashboard:
+      admin:
+        user: administrator
+        password: P@ssw0rd
+      persistent:
+        enabled: true
+        storage:
+          capacity: 4Gi
+          type: "storageclass"
+          storageclass:
+            name: "default-jiva"
+          persistentvolume:
+            name: "my-pv-monitoring"
+            storageclass: "my-storageclass-name"
+          hostpath:
+            nodename: "master1"
+            path: /var/monitoring-persistent  
+    logging:
+      enabled: true
+      dashboard: true
+      persistent:
+        enabled: true
+        storage:
+          capacity: 4Gi
+          type: "storageclass"
+          storageclass:
+            name: "default-jiva"
+          persistentvolume:
+            name: "my-pv-monitoring"
+              storageclass: "my-storageclass-name"
+            hostpath:
+              nodename: "master1"
+              path: /var/monitoring-persistent
   logrotate:
     enabled: false
     crontab: "* 2 * * *"
@@ -195,18 +231,18 @@ agorakube_features:
         bootstrap_kube_apiserver: false
         populate_etc_hosts: true
         host: oidc.local.lan
-#    storage:
-#        enabled: False
-#        capacity: 10Gi
-#        type: "storageclass"
-#        storageclass:
-#          name: "default-jiva"
-#        persistentvolume:
-#          name: "my-pv-backup-etcd"
-#          storageclass: "my-storageclass-name"
-#        hostpath:
-#          nodename: "master1"
-#          path: /var/keycloak
+    storage:
+        enabled: False
+        capacity: 10Gi
+        type: "storageclass"
+        storageclass:
+          name: "default-jiva"
+        persistentvolume:
+          name: "my-pv-backup-etcd"
+          storageclass: "my-storageclass-name"
+        hostpath:
+          nodename: "master1"
+          path: /var/keycloak
 
 agorakube_populate_etc_hosts: true
 

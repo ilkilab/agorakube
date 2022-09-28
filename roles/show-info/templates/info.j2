@@ -1,11 +1,9 @@
-
-
 #################################################################
-###    ILKI KUBERNETES ENGINE Installation Information        ###
+###    AGORAKUBE Installation Information        ###
 #################################################################
 
 
-Thank you for using ILKI KUBERNETES ENGINE to deploy and manage your Kubernetes installation.
+Thank you for using AGORAKUBE to deploy and manage your Kubernetes installation.
 
 This file (agorakube-info.txt) is stored in root home directory for your reference.
 
@@ -32,28 +30,13 @@ http://localhost:8001/api/v1/namespaces/kubernetes-dashboard/services/https:kube
 3. The Admin token is stored in: /root/.kube/dashboardadmin
 {% endif %}
 {% endif %}
-################################################################################
+##############################################################################
 
    Run following command to see this information again anytime.
    $ cat /root/agorakube-info.txt
 
-###############################################################################
+##############################################################################
 
-################################################################################
-
-{% if agorakube_features.monitoring.enabled | bool == True %}
-
-1.1. By default, run the follwoing command on your client machine. (Where your Browser is installed)
-# kubectl port-forward service/grafana 3000:3000 -n monitoring
-
-2.To log in to Grafana for the first time: open your web browser and go to 
-# http://localhost:3000
-
-3. To login, enter Default Grafana admin user and Default grafana admin password :
-
-user: {{ agorakube_features.monitoring.admin.user }}
-password: {{ agorakube_features.monitoring.admin.password }}
-
-{% endif %}
+##############################################################################
 
 ##############################################################################

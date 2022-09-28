@@ -17,9 +17,7 @@ makeIPTablesUtilChains: true
 podCIDR: "{{ agorakube_network.cidr.pod }}"
 protectKernelDefaults: true
 readOnlyPort: 0
-{% if ansible_distribution == "Ubuntu" %}
 resolvConf: "/run/systemd/resolve/resolv.conf"
-{% endif %}
 runtimeRequestTimeout: "15m"
 streamingConnectionIdleTimeout: "5m"
 tlsCertFile: "/etc/kubernetes/pki/kubelet.crt"
