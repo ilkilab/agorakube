@@ -4,21 +4,6 @@
     name: ["socat", "conntrack", "ipset"]
     state: latest
 
-
-- name: install {{ iscsi_package_name }} package
-  package:
-    name: "{{ iscsi_package_name }}"
-    state: latest
-  when: agorakube_features.storage.enabled | bool == True
-
-- name: Ensure iscsid is running and enabled
-  systemd:
-    name: iscsid
-    state: started
-    enabled: yes
-    daemon_reload: yes
-  when: agorakube_features.storage.enabled | bool == True
-
 - name: Create /etc/kubernetes/manifests directory
   file:
     path: /etc/kubernetes/manifests
@@ -41,7 +26,7 @@
     - restart kubelet
     - restart kube-proxy
   when:
-  - ansible_fqdn in groups['workers'] or ansible_fqdn in groups['storage']
+  - ansible_fqdn in groups['workers']
   - ansible_fqdn not in groups['masters']
 
 - name: Create kubelet service
