@@ -1,38 +1,4 @@
-{% if  (agorakube_base_components.kubernetes.release | replace('v','')) is version('1.19.0', '<') %}
-algorithmSource:
-  provider: DefaultProvider
-apiVersion: kubescheduler.config.k8s.io/v1alpha1
-bindTimeoutSeconds: 600
-clientConnection:
-  acceptContentTypes: ""
-  burst: 100
-  contentType: application/vnd.kubernetes.protobuf
-  kubeconfig: /etc/kubernetes/manifests/scheduler.conf
-  qps: 50
-disablePreemption: false
-enableContentionProfiling: false
-enableProfiling: false
-hardPodAffinitySymmetricWeight: 1
-healthzBindAddress: 0.0.0.0:10251
-kind: KubeSchedulerConfiguration
-leaderElection:
-  leaderElect: true
-  leaseDuration: 15s
-  lockObjectName: kube-scheduler
-  lockObjectNamespace: kube-system
-  renewDeadline: 10s
-  resourceLock: endpoints
-  retryPeriod: 2s
-metricsBindAddress: 0.0.0.0:10251
-percentageOfNodesToScore: 0
-schedulerName: default-scheduler
-{% else %}
-{% if  (agorakube_base_components.kubernetes.release | replace('v','')) is version('1.23.0', '<') %}
-apiVersion: kubescheduler.config.k8s.io/v1beta1
-{% endif %}
-{% if  (agorakube_base_components.kubernetes.release | replace('v','')) is version('1.23.0', '>=') %}
 apiVersion: kubescheduler.config.k8s.io/v1beta2
-{% endif %}
 kind: KubeSchedulerConfiguration
 clientConnection:
   acceptContentTypes: ""
@@ -40,16 +6,14 @@ clientConnection:
   contentType: application/vnd.kubernetes.protobuf
   kubeconfig: /etc/kubernetes/manifests/scheduler.conf
   qps: 50
-{% if  (agorakube_base_components.kubernetes.release | replace('v','')) is version('1.23.0', '>=') %}
 healthzBindAddress: 0.0.0.0:0
-{% endif %}
 leaderElection:
   leaderElect: true
   leaseDuration: 15s
   resourceName: kube-scheduler
   resourceNamespace: kube-system
   renewDeadline: 10s
-  resourceLock: endpoints
+  resourceLock: endpointsleases
   retryPeriod: 2s
 {% if  (agorakube_base_components.kubernetes.release | replace('v','')) is version('1.23.0', '>=') %}
 metricsBindAddress: 0.0.0.0:0
