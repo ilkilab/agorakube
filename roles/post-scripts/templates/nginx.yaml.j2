@@ -336,9 +336,11 @@ spec:
             - --election-id=ingress-controller-leader
             - --controller-class=k8s.io/ingress-nginx
             - --configmap=$(POD_NAMESPACE)/ingress-nginx-controller
+{% if agorakube_sonobuoy_mode | bool == True %}
             - --validating-webhook=:8443
             - --validating-webhook-certificate=/usr/local/certificates/cert
             - --validating-webhook-key=/usr/local/certificates/key
+{% endif %}
             - --watch-ingress-without-class=true
           securityContext:
             capabilities:
@@ -426,6 +428,7 @@ metadata:
 spec:
   controller: k8s.io/ingress-nginx
 ---
+{% if agorakube_sonobuoy_mode | bool == True %}
 # Source: ingress-nginx/templates/admission-webhooks/validating-webhook.yaml
 # before changing this value, check the required kubernetes version
 # https://kubernetes.io/docs/reference/access-authn-authz/extensible-admission-controllers/#prerequisites
@@ -463,6 +466,7 @@ webhooks:
         name: ingress-nginx-controller-admission
         path: /networking/v1/ingresses
 ---
+{% endif %}
 # Source: ingress-nginx/templates/admission-webhooks/job-patch/serviceaccount.yaml
 apiVersion: v1
 kind: ServiceAccount
