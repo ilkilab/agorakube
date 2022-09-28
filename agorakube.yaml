@@ -1,5 +1,5 @@
 ---
-- hosts: workers,etcd,masters,storage
+- hosts: workers,etcd,masters
   any_errors_fatal: true
   become: true
   roles:
@@ -24,13 +24,11 @@
   become: true
   roles:
     - setup-master
-#    - install-cni
     - install-runtimes
     - setup-worker
-- hosts: workers,storage
+- hosts: workers
   become: true
   roles:
-#    - install-cni
     - install-runtimes
     - setup-worker
 #    - clear
