@@ -18,6 +18,7 @@
   changed_when: >
     apply_nginx.stdout is search("created")
     or apply_nginx.stdout is search("configured")
+
 - name: Cleanup tempdir
   file:
     state: absent
@@ -32,3 +33,11 @@
   retries: 300
   delay: 10
   run_once: true
+
+- name: Make sure Nginx Ingress Validation Webhook is disabled for conformance test
+  command: |
+    kubectl --kubeconfig {{ pki_path }}/kubeconfigs/admin/admin.conf \
+    kubectl delete -A ValidatingWebhookConfiguration ingress-nginx-admission
+  changed_when: false
+  ignore_errors: yes
+  when: agorakube_sonobuoy_mode | bool == False
