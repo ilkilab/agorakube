@@ -83,4 +83,5 @@ agorakube_encrypt_etcd_keys:
   key1:
     secret: 1fJcKt6vBxMt+AkBanoaxFF2O6ytHIkETNgQWv4b/+Q=
 
+agorakube_sonobuoy_mode: False
 #restoration_snapshot_file: /path/snopshot/file Located on {{ etcd_data_directory }}
