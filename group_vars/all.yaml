@@ -60,7 +60,7 @@ agorakube_features:
     enabled: True
   ingress:
     controller: nginx
-    release: v1.3.1
+    release: v1.1.0
 
 etc_hosts:
   - hostname: "localhost"
