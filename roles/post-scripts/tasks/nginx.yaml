@@ -37,7 +37,7 @@
 - name: Make sure Nginx Ingress Validation Webhook is disabled for conformance test
   command: |
     kubectl --kubeconfig {{ pki_path }}/kubeconfigs/admin/admin.conf \
-    kubectl delete -A ValidatingWebhookConfiguration ingress-nginx-admission
+    delete -A ValidatingWebhookConfiguration ingress-nginx-admission
   changed_when: false
   ignore_errors: yes
   when: agorakube_sonobuoy_mode | bool == True
