@@ -59,6 +59,15 @@ ExecStart=/usr/local/bin/kubernetes/server/bin/kube-apiserver \
   --log-file-max-size=1800 \
   --logtostderr=false \
   --audit-log-path=/var/log/kubernetes/kube-apiserver-audit.log \
+{% if agorakube_sonobuoy_mode | bool == True %}
+  --oidc-issuer-url=https://myfake.oidcserverforconformance.local/auth/realms/local \
+  --oidc-client-id=kube \
+  --oidc-ca-file=/etc/kubernetes/pki/front-proxy-ca.crt \
+  --oidc-groups-prefix=oidc: \
+  --oidc-username-prefix=oidc: \
+  --oidc-groups-claim=groups \
+  --oidc-username-claim=email \
+{% endif %}
   --service-account-signing-key-file=/etc/kubernetes/pki/sa/sa.key
 Restart=on-failure
 RestartSec=5

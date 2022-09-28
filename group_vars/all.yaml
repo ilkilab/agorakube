@@ -60,7 +60,7 @@ agorakube_features:
     enabled: True
   ingress:
     controller: nginx
-    release: v1.1.0
+    release: v1.3.1
 
 etc_hosts:
   - hostname: "localhost"
@@ -83,4 +83,5 @@ agorakube_encrypt_etcd_keys:
   key1:
     secret: 1fJcKt6vBxMt+AkBanoaxFF2O6ytHIkETNgQWv4b/+Q=
 
+agorakube_sonobuoy_mode: False
 #restoration_snapshot_file: /path/snopshot/file Located on {{ etcd_data_directory }}
