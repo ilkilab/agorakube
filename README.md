@@ -21,7 +21,7 @@
 </p>
 
 This project aims to provide the simplest way to install Kubernetes on AMD-64 bare-metal, virtual & Cloud environments.
-Currently, Ubuntu 18.04 & 20.04,  Centos 7 and Debian 10  are supported, but several other operating systems will be available soon.
+Currently, Ubuntu 18.04 & 20.04,  and Debian 10  are supported, but several other operating systems will be available soon.
 
 Master branch is stable.
 
@@ -38,29 +38,22 @@ The following items are explained in this Readme file for the Agorakube project 
 
 ## What is AGORAKUBE
 
-Agorakube is an easy-to-use, stable Kubernetes distribution (Kubernetes v1.15, 1.16, 1.17, 1.18, 1.19, 1.20, 1.21, 1.22, 1.23).
+Agorakube is an easy-to-use, stable Kubernetes distribution (Kubernetes 1.22, 1.23, 1.24).
 
 Agorakube provides a simple, user-friendly way to deploy and manage K8S Clusters.
 
 Agorakube is based on Ansible scripts that install and configure Kubernetes components (control plane and data plane) quickly on bare-metal / VMs / Cloud Instances, as systemd services.
 
 This distribution is also adaptive by offering the opportunity to customize your deployment to fit your needs :
-* OS : Ubuntu-18.04/20.04-amd64 and Centos 7.X-amd64, Debian-10-amd64
+* OS : Ubuntu-18.04/20.04-amd64 and  Debian-10-amd64
 * DNS Service: CoreDNS
-* Ingress Controller Traefik v2 & HA-Proxy & Nginx (Default)
-* Container Runtime: Containerd (Default) & Docker
+* Nginx Ingress Controller
+* Container Runtime: Containerd
 * Certificats: Self Signed PKI using OpenSSL
-* Storage: OpenEBS (Jiva and HostPath)
-* Monitoring: Prometheus/Grafana/node-Exporter
-* CNI plugin: Kube-router, Calico (VxLAN Cross-Subnet)
+* CNI plugin: Calico (VxLAN Cross-Subnet for pod-to-pod network and NetworkPolicy enabled)
 * MetalLB (L2/ARP mode for external LB)
 * Metrics-Server
 * Kubernetes-Dashboard
-* Kubernetes ConfigMap and Secret Reloader
-* Logrotate
-* OIDC/SSO with Keycloak
-* Open Policy Agent Gatekeeper
-* ArgoCD
 
 ![AGORAKUBE](./images/AGORAKUBE.png)
 

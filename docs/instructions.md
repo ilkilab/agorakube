@@ -30,7 +30,6 @@ Below is a diagram of the high-level architecture deployed by AGORAKUBE :
  - The number of **master** nodes to deploy (from 1 to many - 5 nodes for production)
  - The number of **etcd** nodes to deploy (from 1 to many - 5 nodes for production)
  - The number of **worker** nodes to deploy (from 1 to many)
- - The number of **storage** nodes to deploy (from 0 to many - 3 nodes for production needs)
  
  # Prerequisites
 
@@ -40,7 +39,6 @@ This section details the prerequisites to install AGORAKUBE in your environment.
 
 Below are the OS's currently supported on all the machines:
   - Ubuntu 18.04 & 20.04 - amd64
-  - Centos 7 - amd64
   - Debian 10 - amd64
 
 ## Network
@@ -137,10 +135,6 @@ apt install -yqq python3 python3-pip python3-venv
 # On Ubuntu (20.04) or Debian10 use the following commands:
 apt update
 apt install python3.8-venv
-
-
-# Only on Centos7
-yum install -y libselinux-python3
 
 # Create a Python Virtual Environment
 python3 -m venv /usr/local/agorakube-env
@@ -241,9 +235,6 @@ master1  ansible_host=10.10.20.4
 worker2  ansible_host=10.10.20.5
 worker3  ansible_host=10.10.20.6
 
-[storage]
-worker4 ansible_host=10.10.20.20
-
 [all:vars]
 advertise_masters=10.10.20.4
 #advertise_masters=kubernetes.localcluster.lan
@@ -272,8 +263,6 @@ The **masters** section contains information about the masters nodes (K8S Contro
 
 The **workers** section contains information about the workers nodes (K8S Data Plane).
 
-The **storage** section contains information about the storage nodes (K8S Storage Plane ).
-
 The **etc_hosts** section contains a list of DNS entries that will be injected to /etc/hosts files of all hosts. Use it only if you don't have DNS server.
 
 The **all:vars** section contains information about how to connect to K8S nodes.
@@ -291,7 +280,6 @@ Sample file will deploy **containerd** as container runtime, **calico** as CNI p
 
 ```
 ---
----
 agorakube:
   global:
     data_path: /var/agorakube
@@ -308,33 +296,15 @@ agorakube_pki:
 
 agorakube_base_components:
   etcd:
-    release: v3.4.14
+    release: v3.4.16
     upgrade: False
     check: true
     data_path: /var/lib/etcd
-    backup:
-      enabled: False
-      crontab: "*/30 * * * *"
-      storage:
-        capacity: 10Gi
-        enabled: False
-        type: "storageclass"
-        storageclass:
-          name: "default-jiva"
-        persistentvolume:
-          name: "my-pv-backup-etcd"
-          storageclass: "my-storageclass-name"
-        hostpath:
-          nodename: "master1"
-          path: /var/etcd-backup
   kubernetes:
-    release: v1.21.1
-    upgrade: false
-  container:
-    engine: containerd
-# release : Only Supported if container engine is set to docker
-    release: ""
-#    upgrade: false
+    release: v1.23.5
+    upgrade: False
+  cloud_controller_manager:
+    enabled: False
 
 agorakube_network:
   cni_plugin: calico
@@ -352,8 +322,8 @@ agorakube_network:
   nodeport:
     range: 30000-32000
   external_loadbalancing:
-    enabled: False
-    ip_range: 10.20.20.50-10.20.20.250
+    enabled: True
+    ip_range: 10.10.20.50-10.10.20.250
     secret_key: LGyt2l9XftOxEUIeFf2w0eCM7KjyQdkHform0gldYBKMORWkfQIsfXW0sQlo1VjJBB17shY5RtLg0klDNqNq4PAhNaub+olSka61LxV73KN2VaJY/snrZmHbdf/a7DfdzaeQ5pzP6D5O7zbUZwfb5ASOhNrG8aDMY3rkf4ZzHkc=
   kube_proxy:
     mode: ipvs
@@ -361,102 +331,31 @@ agorakube_network:
 
 agorakube_features:
   coredns:
-    release: "1.8.3"
+    release: "1.9.1"
     replicas: 2
-  reloader:
-    enabled: true
-    release: "0.0.89"
-  storage:
-    enabled: true
-    release: "2.9.0"
-    jiva:
-      data_path: /var/openebs
-      fs_type: ext4
-    hostpath:
-      data_path: /var/local-hostpath
   dashboard:
-    enabled: true
-    generate_admin_token: true
+    enabled: True
+    generate_admin_token: True
     release: v2.2.0
   metrics_server:
-    enabled: true
+    enabled: True
   ingress:
     controller: nginx
-    release: v0.46.0
-  supervision:
-    monitoring:
-      enabled: true
-      dashboard: false
-      persistent:
-        enable: true
-        storage:
-          capacity: 4Gi
-          type: "storageclass"
-          storageclass:
-            name: "default-jiva"
-          persistentvolume:
-            name: "my-pv-monitoring"
-            storageclass: "my-storageclass-name"
-          hostpath:
-            nodename: "master1"
-            path: /var/monitoring-persistent
-    dashboard:
-      admin:
-        user: administrator
-        password: P@ssw0rd
-      persistent:
-        enabled: true
-        storage:
-          capacity: 4Gi
-          type: "storageclass"
-          storageclass:
-            name: "default-jiva"
-          persistentvolument:
-            storageclass: "my-storageclass-name"
-          hostpath:
-            nodename: "master1"
-            path: /var/monitoring-persistent
-    logging:
-      enabled: true
-      dashboard: true
-      persistent:
-        enabled: true
-        storage:
-          capacity: 4Gi
-          type: "storageclass"
-          storageclass:
-            name: "default-jiva"
-          persistentvolume:
-            name: "my-pv-monitoring"
-              storageclass: "my-storageclass-name"
-            hostpath:
-              nodename: "master1"
-              path: /var/monitoring-persistent
-  logrotate:
-    enabled: true
-    crontab: "* 2 * * *"
-    day_retention: 14
-  gatekeeper:
-    enabled: true
-    release: v3.4.0
-    replicas:
-      #audit: 1
-      controller_manager: 3
-  argocd:
-    enabled: false
-# keycloak_oidc is an Alpha feature and do not support persistence yet. Use it only for test purpose.
-  keycloak_oidc:
-    enabled: false
-    admin:
-      user: administrator
-      password: P@ssw0rd
-    auto_bootstrap:
-        bootstrap_keycloak: false
-        bootstrap_kube_apiserver: false
-        populate_etc_hosts: true
-        host: oidc.local.lan
+    release: v1.1.0
 
-agorakube_populate_etc_hosts: true
+etc_hosts:
+  - hostname: "localhost"
+    ip: "127.0.0.1"
+
+# Populate /etc/hosts using all inventory groups
+# Note: This will not remove /etc/hosts entries when removed from inventory
+agorakube_populate_etc_hosts: True
+
+# Remove ALL /etc/hosts entries that are NOT defined in the etc_hosts group or etc_hosts variable
+agorakube_remove_etc_hosts: False
+
+# Optionally backup /etc/hosts each time a change is made
+agorakube_backup_etc_hosts: False
 
 # Security
 agorakube_encrypt_etcd_keys:
@@ -465,7 +364,9 @@ agorakube_encrypt_etcd_keys:
   key1:
     secret: 1fJcKt6vBxMt+AkBanoaxFF2O6ytHIkETNgQWv4b/+Q=
 
+agorakube_sonobuoy_mode: False
 #restoration_snapshot_file: /path/snopshot/file Located on {{ etcd_data_directory }}
+
 
 ```
 
