@@ -70,7 +70,7 @@ To deploy your K8S cluster follow these [instructions](docs/instructions.md).
 
 ## How to try
 
-You need to install on your computer VirtualBox and Vagrant tools then download "agorakube/labs/multi-nodes/Vagrantfile" file.
+You need to install on your computer [VirtualBox](https://www.virtualbox.org/wiki/Downloads) and [Vagrant](vagrantup.com/downloads) tools then download "agorakube/labs/multi-nodes/Vagrantfile" file.
 
 Then, with your terminal/cmd go to the directory that contains your Vagrantfile file and use command "vagrant up".
 
