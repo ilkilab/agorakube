@@ -25,6 +25,32 @@
     path: "{{ metallb_tempdir.path }}"
   changed_when: false
 
+- name: Create tempdir
+  tempfile:
+    state: directory
+    suffix: metallbpool
+  register: metallbpool_tempdir
+  changed_when: false
+
+- name: Render templates
+  template:
+    dest: "{{ metallbpool_tempdir.path }}/metal-lb-layer2.yaml"
+    src: "metal-lb-layer2.yaml.j2"
+  changed_when: false
+
+- name: Apply templates
+  command: kubectl --kubeconfig {{ pki_path }}/kubeconfigs/admin/admin.conf apply -f {{ metallbpool_tempdir.path }}/metal-lb-layer2.yaml
+  register: apply_metallbpool
+  changed_when: >
+    apply_metallbpool.stdout is search("created")
+    or apply_metallbpool.stdout is search("configured")
+
+- name: Cleanup tempdir
+  file:
+    state: absent
+    path: "{{ metallbpool_tempdir.path }}"
+  changed_when: false
+
 #- name: Test if secret memberlist exist in namespace metallb-system
 #  command: kubectl --kubeconfig {{ pki_path }}/kubeconfigs/admin/admin.conf get secret -n metallb-system
 #  register: search_memberlist
