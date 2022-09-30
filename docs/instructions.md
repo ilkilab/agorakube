@@ -293,7 +293,6 @@ Sample file will deploy **containerd** as container runtime, **calico** as CNI p
 agorakube:
   global:
     data_path: /var/agorakube
-
 agorakube_pki:
   infos:
     state: "Ile-De-France"
@@ -303,19 +302,17 @@ agorakube_pki:
     expirity: "+3650d"
   management:
     rotate_certificats: False
-
 agorakube_base_components:
   etcd:
-    release: v3.4.16
+    release: v3.4.21
     upgrade: False
     check: true
     data_path: /var/lib/etcd
   kubernetes:
-    release: v1.23.5
+    release: v1.25.2
     upgrade: False
   cloud_controller_manager:
     enabled: False
-
 agorakube_network:
   cni_plugin: calico
   calico_autodetection_method: "first-found"
@@ -333,49 +330,41 @@ agorakube_network:
     range: 30000-32000
   external_loadbalancing:
     enabled: True
-    ip_range: 10.10.20.50-10.10.20.250
+    ip_range: 10.201.20.50-10.201.20.250
   kube_proxy:
     mode: ipvs
     algorithm: rr
-
 agorakube_features:
   coredns:
-    release: "1.9.1"
+    release: "1.9.4"
     replicas: 2
   dashboard:
     enabled: True
     generate_admin_token: True
-    release: v2.2.0
+    release: v2.7.0
   metrics_server:
     enabled: True
   ingress:
     controller: nginx
-    release: v1.1.0
-
+    release: v1.3.1
 etc_hosts:
   - hostname: "localhost"
     ip: "127.0.0.1"
-
 # Populate /etc/hosts using all inventory groups
 # Note: This will not remove /etc/hosts entries when removed from inventory
 agorakube_populate_etc_hosts: True
-
 # Remove ALL /etc/hosts entries that are NOT defined in the etc_hosts group or etc_hosts variable
 agorakube_remove_etc_hosts: False
-
 # Optionally backup /etc/hosts each time a change is made
 agorakube_backup_etc_hosts: False
-
 # Security
 agorakube_encrypt_etcd_keys:
 # Warrning: If multiple keys are defined ONLY LAST KEY is used for encrypt and decrypt.
 # Other keys are used only for decrypt purpose. Keys can be generated with command: head -c 32 /dev/urandom | base64
   key1:
     secret: 1fJcKt6vBxMt+AkBanoaxFF2O6ytHIkETNgQWv4b/+Q=
-
 agorakube_sonobuoy_mode: False
 #restoration_snapshot_file: /path/snopshot/file Located on {{ etcd_data_directory }}
-
 
 ```
 
