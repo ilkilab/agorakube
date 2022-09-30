@@ -25,6 +25,28 @@
     path: "{{ metallb_tempdir.path }}"
   changed_when: false
 
+#- name: Test if secret memberlist exist in namespace metallb-system
+#  command: kubectl --kubeconfig {{ pki_path }}/kubeconfigs/admin/admin.conf get secret -n metallb-system
+#  register: search_memberlist
+#  changed_when: False
+
+#- name: Create memberlist secret if it doesn t exist
+#  command: kubectl --kubeconfig {{ pki_path }}/kubeconfigs/admin/admin.conf create secret generic -n metallb-system memberlist --from-literal=secretkey="$(openssl rand -base64 128)"
+#  register: apply_memberlist
+#  changed_when: >
+#    apply_memberlist.stdout is search("created")
+#    or apply_memberlist.stdout is search("configured")
+#  when: search_memberlist.stdout.find("memberlist") != -1
+
+- name: Verify if metallb pods has successfully started
+  command: kubectl --kubeconfig {{ pki_path }}/kubeconfigs/admin/admin.conf get deploy -n metallb-system controller
+  changed_when: false
+  register: metallb_deployment
+  until: metallb_deployment.stdout.find("1/1") != -1
+  retries: 300
+  delay: 10
+  run_once: true
+
 - name: Create tempdir
   tempfile:
     state: directory
@@ -50,25 +72,3 @@
     state: absent
     path: "{{ metallbpool_tempdir.path }}"
   changed_when: false
-
-#- name: Test if secret memberlist exist in namespace metallb-system
-#  command: kubectl --kubeconfig {{ pki_path }}/kubeconfigs/admin/admin.conf get secret -n metallb-system
-#  register: search_memberlist
-#  changed_when: False
-
-#- name: Create memberlist secret if it doesn t exist
-#  command: kubectl --kubeconfig {{ pki_path }}/kubeconfigs/admin/admin.conf create secret generic -n metallb-system memberlist --from-literal=secretkey="$(openssl rand -base64 128)"
-#  register: apply_memberlist
-#  changed_when: >
-#    apply_memberlist.stdout is search("created")
-#    or apply_memberlist.stdout is search("configured")
-#  when: search_memberlist.stdout.find("memberlist") != -1
-
-- name: Verify if metallb pods has successfully started
-  command: kubectl --kubeconfig {{ pki_path }}/kubeconfigs/admin/admin.conf get deploy -n metallb-system controller
-  changed_when: false
-  register: metallb_deployment
-  until: metallb_deployment.stdout.find("1/1") != -1
-  retries: 300
-  delay: 10
-  run_once: true
