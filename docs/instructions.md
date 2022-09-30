@@ -9,13 +9,9 @@ This is a list of points that will be explained in this instructions file for th
 - [Kubernetes deployment](#kubernetes-deployment)
 - [Manage ETCD Cluster](./manage_etcd.md)
 - [Create Pod](#create-pod)
-- [Storage Benchmark](#storage-benchmark)
-- [Upgrade OpenEBS Storage](#upgrade-openEBS-storage)
-- [How to use Reloader](#how-to-use-reloader)
 - [How to use Ingress-Nginx](#how-to-use-ingress-nginx)
 - [AGORAKUBE Log Architecture](#agorakube-log-architecture)
 - [Configure Calico](#configure-calico)
-- [Configure Keycloak](#configure-keycloak)
 - [Upgrade And Downgrade Kubernetes with Agorakube](#upgrade-and-downgrade-kubernetes-with-Agorakube)
 - [Uninstall AGORAKUBE](#uninstall-agorakube)
 
@@ -95,6 +91,20 @@ We actually configure the proper VM size for your ETCD depending on the number o
 | 50-250 | 4 CPU - 16 Go RAM | A medium cluster serves fewer than 500 clients, fewer than 1,000 of requests per second, and stores no more than 500MB of data |
 | 250-1000 | 8 CPU - 32 Go RAM | A large cluster serves fewer than 1,500 clients, fewer than 10,000 of requests per second, and stores no more than 1GB of data |
 | 1000-3000 | 16 CPU - 64 Go RAM | An xLarge cluster serves more than 1,500 clients, more than 10,000 of requests per second, and stores more than 1GB data |
+
+
+These CPU and memory requirements apply to each Worker in a Agorakube
+
+| Worker Size     | vCPUs  | RAM      |
+| --------------- | -------| ---------|
+| nano            | 1      | 3 GB     |
+| Small           | 2      | 8 GB     |
+| Medium          | 4      | 16 GB    |
+| Large           | 8      | 32 GB    |
+| X-Large         | 16     | 64 GB    |
+| XX-Large        | 32     | 128 GB   |
+
+Every use case and environment is different, adapt to your needs.
 
 # Nodes Setup
 
@@ -324,7 +334,6 @@ agorakube_network:
   external_loadbalancing:
     enabled: True
     ip_range: 10.10.20.50-10.10.20.250
-    secret_key: LGyt2l9XftOxEUIeFf2w0eCM7KjyQdkHform0gldYBKMORWkfQIsfXW0sQlo1VjJBB17shY5RtLg0klDNqNq4PAhNaub+olSka61LxV73KN2VaJY/snrZmHbdf/a7DfdzaeQ5pzP6D5O7zbUZwfb5ASOhNrG8aDMY3rkf4ZzHkc=
   kube_proxy:
     mode: ipvs
     algorithm: rr
@@ -411,16 +420,6 @@ This section allows you to configure your ETCD deployment.
 | `agorakube_base_components.etcd.upgrade` | Upgrade current ETCD release to `agorakube_base_components.etcd.release` | **False** *(default)* |
 | `agorakube_base_components.etcd.check` | Check ETCD cluster Status/Size/Health/Leader when running agorakube run | **True** *(default)* |
 | `agorakube_base_components.etcd.data_path` | Path where ETCD save data on ETCD hosts | **/var/lib/etcd** *(default)* |
-| `agorakube_base_components.etcd.backup.enabled` | Enable etcd backup Pod | **False** *(default)* |
-| `agorakube_base_components.etcd.backup.crontab` | CronTab used to run ETCD Backup | **"*/30 * * * *"** *(default)* |
-| `agorakube_base_components.etcd.backup.storage.enabled` | Enable persistent Storage for ETCD Backups | **False** *(default)* |
-| `agorakube_base_components.etcd.backup.storage.capacity` | Storage Size used to store ETCD Backups | **10Gi** *(default)* |
-| `agorakube_base_components.etcd.backup.storage.type` | Type of Storage to use when `agorakube_base_components.etcd.backup.storage.enabled` is set to **True** | **hostpath** *(default)*, storageclass, persistentvolume |
-| `agorakube_base_components.etcd.backup.storage.storageclass.name` | StorageClass name used to store ETCD Backups. Used only if `agorakube_base_components.etcd.backup.storage.type` is set to **storageclass** | **default-jiva** *(default)* |
-| `agorakube_base_components.etcd.backup.storage.persistentvolume.name` | PersistentVolume name used to store ETCD Backups. Used only if `agorakube_base_components.etcd.backup.storage.type` is set to **persistentvolume** | **my-pv-backup-etcd** *(default)* |
-| `agorakube_base_components.etcd.backup.storage.persistentvolume.storageclass` | StorageClass name used to create persistentvolume set in `agorakube_base_components.etcd.backup.storage.persistentvolume.name`. Used only if `ike_base_components.etcd.backup.storage.type` is set to **persistentvolume** | **/var/lib/etcd** *(default)* |
-| `agorakube_base_components.etcd.backup.storage.hostpath.nodename` | K8S node (master/worker/storage) where backups are stored locally. Used only if `agorakube_base_components.etcd.backup.storage.type` is set to **hostpath** | **master1** *(default)* |
-| `agorakube_base_components.etcd.backup.storage.hostpath.path` | Path on `agorakube_base_components.etcd.backup.storage.hostpath.nodename` where ETCD backups are stored | **/var/etcd-backup** *(default)* |
 
 
 ### Kubernetes
@@ -446,8 +445,8 @@ This section allows you to configure your Container Engine that will be deployed
 
 | Parameter | Description | Values |
 | --- | --- | --- |
-| `agorakube_base_components.container.engine`  | Container Engine to install (Containerd or Docker) on all Master/Worker/Storage hosts |  **containerd** *(default)*, or docker |
-| `agorakube_base_components.container.release` | Release of Container Engine to install - Supported only if `agorakube_base_components.container.engine` set to *docker*  | If **""** install latest release *(default)* |
+| `agorakube_base_components.container.engine`  | Container Engine to install (Containerd or Docker) on all Master/Worker/Storage hosts |  **containerd** |
+| `agorakube_base_components.container.release` | Release of Container Engine to install - Not supported wet  | If **""** install latest release *(default)* |
 | `agorakube_base_components.container.upgrade` | Upgrade current Container Engine release to `agorakube_base_components.container.release` | **Will be available soon** (No effect) |
 
 ## Network Settings
@@ -456,7 +455,7 @@ This section allows you to configure your K8S cluster network settings.
 
 | Parameter | Description | Values |
 | --- | --- | --- |
-| `agorakube_network.cni_plugin` | CNI plugin used to enable K8S hosts Networking | **calico** *(default)*, kube-router |
+| `agorakube_network.cni_plugin` | CNI plugin used to enable K8S hosts Networking | **calico** |
 | `agorakube_network.calico_autodetection_method` | [Calico Autodetect Method](#configure-calico). Used by Calico to detect which IPv4 IFACE will be used to route between nodes  | **first-found** *(default)* |
 | `agorakube_network.mtu` | MTU for CNI plugin. Auto-MTU if set to **0**. Only used if `agorakube_network.cni_plugin` is set to **calico** | **0** *(default)* |
 | `agorakube_network.cidr.pod` | PODs CIDR network | **10.33.0.0/16** *(default)* |
@@ -468,7 +467,6 @@ This section allows you to configure your K8S cluster network settings.
 | `agorakube_network.nodeport.range` | Range of allowed ports usable by NodePort services | **30000-32000** *(default)* |
 | `agorakube_network.external_loadbalancing.enabled` | Enable External LoadBalancing in ARP mode. Working only if On-Prem deployments | **False** *(default)* |
 | `agorakube_network.external_loadbalancing.ip_range` | IPs Range, or CIDR used by External LoadBalancer to assign External IPs  | **10.10.20.50-10.10.20.250** *(default range)* |
-| `agorakube_network.external_loadbalancing.secret_key` | Security Key : Generate a custom key with : `openssl rand -base64 128` | **a default insecure key** *(Change it !)* |
 | `agorakube_network.kube_proxy.mode` | Kube-Proxy mode. iptables/ipvs. IPVS > IPTABLES | **ipvs** *(default)* |
 | `agorakube_network.kube_proxy.algorithm` | Default ClusterIP loadBalancing Algorithm : rr,lc,dh,sh,sed,nq. Only supported if IPVS | **rr** *(default Round-Robin)* |
 
@@ -479,48 +477,11 @@ This section allows you to configure your K8S features.
 
 | Parameter | Description | Values |
 | --- | --- | --- |
-| `agorakube_features.storage.enabled` | Enable Storage feature - OpenEBS based | **False** *(default)* |
-| `agorakube_features.storage.release` | OpenEBS release to be installed | **2.8.0** *(default)* |
-| `agorakube_features.storage.jiva.data_path` | Path where OpenEBS store Jiva volumes on Storage Nodes | **/var/openebs** *(default)* |
-| `agorakube_features.storage.jiva.fs_type` | Jiva FS types | **ext4** *(default)* |
-| `agorakube_features.storage.hostpath.data_path` | Path where OpenEBS store HostPath volumes on Pod node | **False** *(default)* |
 | `agorakube_features.dashboard.enabled` | Enable Kubernetes dashboard | **False** *(default)* |
 | `agorakube_features.dashboard.generate_admin_token` | Generate a default admin user + save token to /root/.kube/dashboardamin on Deploy node | **False** *(default)* |
 | `agorakube_features.metrics_server.enabled` | Enable Metrics-Server | **False** *(default)* |
 | `agorakube_features.ingress.controller` | Ingress Controller to install : nginx, ha-proxy, traefik | **nginx** *(default)* |
 | `agorakube_features.ingress.release` | Ingress controller release to install. Only used if `agorakube_features.ingress.controller` set to "nginx" | **False** *(default)* |
-| `agorakube_features.supervision.monitoring.enabled` | Enable Monitoring | **True** *(default)* |
-| `agorakube_features.supervision.monitoring.dashboard` | Activate dashboard monitoring | **False** *(default)* |
-| `agorakube_features.supervision.monitoring.persistent.enabled` | Persist Monitoring Data | **False** *(default)* |
-| `agorakube_features.supervision.monitoring.persistent.storage.capacity` | Storage size used to store Prometheus data and Dashboard localization | **4Gi** *(default)* |
-| `agorakube_features.supervision.monitoring.persistent.storage.type` | Type of Storage to use when `agorakube_features.supervision.monitoring.persistent.enabled` is set to True | **storageclass** *(default)*, persistentVolume, hostpath |
-| `agorakube_features.supervision.monitoring.persistent.storage.storageclass.name` | StorageClass name used to store Prometheus data and Dashboard localization. Used only if `agorakube_features.supervision.monitoring.persistent.storage.type` is set to storageclass | **default-jiva** *(default)* |
-| `agorakube_features.supervision.monitoring.persistent.storage.persistentVolume.name` | PersistentVolume name used to store Prometheus data and Dashboard localization. Used only if `agorakube_features.supervision.monitoring.persistent.storage.type` is set to persistentVolume | **my-pv-monitoring** *(default)* |
-| `agorakube_features.supervision.monitoring.persistent.storage.persistentVolume.storageclass` | StorageClass name used to create persistentvolume set in `agorakube_features.supervision.monitoring.persistent.storage.persistentVolume.name`. Used only if `agorakube_features.supervision.monitoring.persistent.storage.type` is set to persistentvolume | **my storageclass-name** *(default)* |
-| `agorakube_features.supervision.monitoring.persistent.storage.hostpath.nodename` | K8S node (master/worker/storage) where monitoring data are stored locally. Used only `agorakube_features.supervision.monitoring.persistent.storage.type` is set to hostpath | **master1** *(default)* |
-| `agorakube_features.supervision.monitoring.persistent.storage.hostpath.path` | Path on `agorakube_features.supervision.monitoring.persistent.storage.hostpath.nodename` where Prometheus data and Dashboard localization are stored | **/var/monitoring-persistent** *(default)* |
-| `agorakube_features.supervision.monitoring.admin.user` | Default Grafana admin user | **administrator** *(default)* |
-| `agorakube_features.supervision.monitoring.admin.password` | Default grafana admin password | **P@ssw0rd** *(default)* |
-| `agorakube_features.supervision.logging.enabled` | Enable loki | **True** *(default)* |
-| `agorakube_features.supervision.logging.dashboard` | Enable loki dashboard | **True** *(default)* |
-| `agorakube_features.supervision.logging.persistent.enabled` | Persist loki datas | **True** *(default)* |
-| `agorakube_features.supervision.logging.persistent.storage.capacity` | Storage size used to store Loki datas and Dashboard localization | **4Gi** *(default)* |
-| `agorakube_features.supervision.logging.persistent.storage.type` | Type of Storage to use when `agorakube_features.supervision.logging.persistent.enabled` is set to True | **storageclass** *(default)*, persistentVolume, hostpath |
-| `agorakube_features.supervision.logging.persistent.storage.storageclass.name` | StorageClass name used to store Loki datas and Dashboard localization. Used only if `agorakube_features.supervision.logging.persistent.storage.type` is set to storageclass | **default-jiva** *(default)* |
-| `agorakube_features.supervision.logging.persistent.storage.persistentVolume.name` | PersistentVolume name used to store Loki datas and Dashboard localization. Used only if `agorakube_features.supervision.logging.persistent.storage.type` is set to persistentVolume | **my-pv-monitoring** *(default)* |
-| `agorakube_features.supervision.logging.persistent.storage.persistentVolume.storageclass` | StorageClass name used to create persistentvolume set in `agorakube_features.supervision.logging.persistent.storage.persistentVolume.name`. Used only if `agorakube_features.supervision.logging.persistent.storage.type` is set to persistentvolume | **my storageclass-name** *(default)* |
-| `agorakube_features.supervision.logging.persistent.storage.hostpath.nodename` | K8S node (master/worker/storage) where loki datas are stored locally. Used only `agorakube_features.supervision.logging.persistent.storage.type` is set to hostpath | **master1** *(default)* |
-| `agorakube_features.supervision.logging.persistent.storage.hostpath.path` | Path on `agorakube_features.supervision.logging.persistent.storage.hostpath.nodename` where Loki datas and Dashboard localization are stored | **/var/monitoring-persistent** *(default)* |
-| `agorakube_features.reloader.enabled` | Enable Reloader | **False** *(default)* |
-| `agorakube_features.reloader.release` | Reloader release to install | **0.0.89** *(default)* |
-| `agorakube_features.logrotate.enabled` | Enable Logrotate | **False** *(default)* |
-| `agorakube_features.logrotate.crontab` | Crontab used to run logrotate | **"* 2 * * *"** *(default) run every day at 2 AM* |
-| `agorakube_features.logrotate.day_retention` | Indicate how many days logs will be keep | **14** *(default)* |
-| `agorakube_features.argocd.enabled` | Enable ArgoCD | **false** *(default)* |
-| `agorakube_features.gatekeeper.enabled` | Enable Gatekeeper | **True** *(default)* |
-| `agorakube_features.gatekeeper.release` | Gatekeeper release to install | **3.4.0** *(default)* |
-| `agorakube_features.gatekeeper.replicas.audit `| Number of Gatekeeper Audit Replicas | **Not activate** *(default)* |
-| `agorakube_features.gatekeeper.replicas.controller_manager `| Number of Gatekeeper Controller_Manager Replicas | **3** *(default)* | 
 
 ## AGORAKUBE other settings
 This section allows you to configure additional settings
@@ -574,317 +535,7 @@ Run the following command to verify if the deployed pod is running:
 ```
 kubectl get pods
 ```
-# Storage Benchmark
 
-You can Benchmark your AGORAKUBE Storage Class as follow:
-
-* Create a file named "benchmarkStorage.yaml" with the following content:
-
-Note: You can custom the storageClassName in your PersistentVolumeClaim to Benchmark a specific StorageClass. Default config Benchark the default StorageClass (Jiva volume)
-```
----
-apiVersion: v1
-kind: PersistentVolumeClaim
-metadata:
-  name: dbench
-spec:
-  accessModes:
-    - ReadWriteOnce
-  resources:
-    requests:
-      storage: 2Gi
----
-apiVersion: batch/v1
-kind: Job
-metadata:
-  name: benchmark-openebs
-spec:
-  template:
-    spec:
-      containers:
-      - name: dbench
-        image: openebs/perf-test:latest
-        imagePullPolicy: IfNotPresent
-        env:
-
-          ## storage mount point on which testfiles are created
-
-          - name: DBENCH_MOUNTPOINT
-            value: /data
-
-          ##########################################################
-          # I/O PROFILE COVERAGE FOR SPECIFIC PERF CHARACTERISTICS #
-          ##########################################################
-
-          ## quick: {read, write} iops, {read, write} bw (all random)
-          ## detailed: {quick}, {read, write} latency & mixed 75r:25w (all random), {read, write} bw (all sequential)
-          ## custom: a single user-defined job run with params specified in env 'CUSTOM'
-
-          - name: DBENCH_TYPE
-            value: detailed
-
-          ####################################################
-          # STANDARD TUNABLES FOR DBENCH_TYPE=QUICK/DETAILED #
-          ####################################################
-
-          ## active data size for the bench test
-
-          - name: FIO_SIZE
-            value: 1G
-
-          ## use un-buffered i/o (usually O_DIRECT)
-
-          - name: FIO_DIRECT
-            value: '1'
-
-          ## no of independent threads doing the same i/o
-
-          - name: FIO_NUMJOBS
-            value: '1'
-
-          ## space b/w starting offsets on a file in case of parallel file i/o
-
-          - name: FIO_OFFSET_INCREMENT
-            value: 250M
-
-          ## nature of i/o to file. commonly supported: libaio, sync,
-
-          - name: FIO_IOENGINE
-            value: libaio
-
-          ## additional runtime options which will be appended to the above params
-          ## ensure options used are not mutually exclusive w/ above params
-          ## ex: '--group_reporting=1, stonewall, --ramptime=<val> etc..,
-
-          - name: OPTIONS
-            value: ''
-
-          ####################################################
-          # CUSTOM JOB SPEC FOR DBENCH_TYPE=CUSTOM           #
-          ####################################################
-
-          ## this will execute a single job run with the params specified
-          ## ex: '--bs=16k --iodepth=64 --ioengine=sync --size=500M --name=custom --readwrite=randrw --rwmixread=80 --random_distribution=pareto'
-
-          - name: CUSTOM
-            value: ''
-
-        volumeMounts:
-        - name: dbench-pv
-          mountPath: /data
-      restartPolicy: Never
-      volumes:
-      - name: dbench-pv
-        persistentVolumeClaim:
-          claimName: dbench
-  backoffLimit: 4
-```
-
-* Run ```kubectl apply -f benchmarkStorage.yaml``` and check the logs of the ongoing/completed job
-- In case of quick/detailed job types (default is **detailed**), the fio results are parsed and summary provided: 
-
-  ```
-  All tests complete.
-
-  ==================
-  = Dbench Summary =
-  ==================
-  Random Read/Write IOPS: 1148/1572. BW: 54.6MiB/s / 47.8MiB/s
-  Average Latency (usec) Read/Write: 3678.07/2544.32
-  Sequential Read/Write: 78.2MiB/s / 68.7MiB/s
-  Mixed Random Read/Write IOPS: 938/315
-  ```
-# Upgrade OpenEBS Storage
-
-Official Upgrade doc is available at https://github.com/openebs/openebs/blob/master/k8s/upgrades/README.md
-
-To upgrade OpenEBS Jiva volumes in your AGORAKUBE cluster, you have to follow the 2 next steps:
-  - Change in file *"./group_vars/all.yaml"* the variable **agorakube_features.storage.release** to the desired OpenEBS release (https://github.com/openebs/openebs/releases) and apply your changes to the cluster - This will only update the OpenEBS control plane
-  - **Customize the following Job** and run it on your cluster:  (Exemple will upgrade listed PVs from OpenEBS 2.6.0 to 2.8.0) - This will upgrade data plane
-
-```
-#This is an example YAML for upgrading jiva volume.
-#Some of the values below needs to be changed to
-#match your openebs installation. The fields are
-#indicated with VERIFY
----
-apiVersion: batch/v1
-kind: Job
-metadata:
-  #VERIFY that you have provided a unique name for this upgrade job.
-  #The name can be any valid K8s string for name. This example uses
-  #the following convention: jiva-vol-<flattened-from-to-versions>
-  name: jiva-vol-upgrade-27042021
-
-  #VERIFY the value of namespace is same as the namespace where openebs components
-  # are installed. You can verify using the command:
-  # `kubectl get pods -n <openebs-namespace> -l openebs.io/component-name=maya-apiserver`
-  # The above command should return status of the openebs-apiserver.
-  namespace: openebs
-
-spec:
-  backoffLimit: 4
-  template:
-    spec:
-      # VERIFY the value of serviceAccountName is pointing to service account
-      # created within openebs namespace. Use the non-default account.
-      # by running `kubectl get sa -n <openebs-namespace>`
-      serviceAccountName: openebs-maya-operator
-      containers:
-      - name:  upgrade
-        args:
-        - "jiva-volume"
-
-        # --from-version is the current version of the volume
-        - "--from-version=2.0.6"
-
-        # --to-version is the version desired upgrade version
-        - "--to-version=2.8.0"
-
-        # If the pools and volumes images have the prefix `quay.io/openebs/`
-        # then please add this flag as the new multi-arch images are not pushed to quay.
-        # It can also be used specify any other private repository or airgap prefix in use.
-        # "--to-version-image-prefix=openebs/"
-
-        # Bulk upgrade is supported
-        # To make use of it, please provide the list of PVs
-        # as mentioned below
-        - "pvc-1bc3b45a-3023-4a8e-a94b-b457cf9529b4"
-        - "pvc-82a2d097-c666-4f29-820d-6b7e41541c11"
-        
-        #Following are optional parameters
-        #Log Level
-        - "--v=4"
-        #DO NOT CHANGE BELOW PARAMETERS
-        env:
-        - name: OPENEBS_NAMESPACE
-          valueFrom:
-            fieldRef:
-              fieldPath: metadata.namespace
-        tty: true
-
-        # the image version should be same as the --to-version mentioned above
-        # in the args of the job
-        image: openebs/m-upgrade:2.8.0
-        imagePullPolicy: Always
-      restartPolicy: OnFailure
----
-```
-
-  - Sometimes, some PVs become *"ReadOnyFilesystem"* after an OpenEBS Upgrade due to an Iscsi target error. Rebooting your nodes will solve this issue.
-
-# How to use Reloader
-
-Reloader is a tool that will help you to reload DaemonSet/Deployments/StatefulSets when a change on their ConfigMap/Secret occurs.
-
-## Install K8S ConfigMap and Secret Reloader
-
-Make sure that `agorakube_features.reloader.enabled` and `agorakube_features.reloader.release` variables are set correctly in your "./group_vars/all.yaml" config file.
-
-## Use K8S Reloader
-
-For a `Deployment` called `foo` have a `ConfigMap` called `foo-configmap` or `Secret` called `foo-secret` or both. Then add your annotation (by default `reloader.stakater.com/auto`) to main metadata of your `Deployment`
-
-```yaml
-kind: Deployment
-metadata:
-  annotations:
-    reloader.stakater.com/auto: "true"
-spec:
-  template: metadata:
-```
-
-This will discover deploymentconfigs/deployments/daemonsets/statefulset/rollouts automatically where `foo-configmap` or `foo-secret` is being used either via environment variable or from volume mount. And it will perform rolling upgrade on related pods when `foo-configmap` or `foo-secret`are updated.
-
-You can restrict this discovery to only `ConfigMap` or `Secret` objects that
-are tagged with a special annotation. To take advantage of that, annotate
-your deploymentconfigs/deployments/daemonsets/statefulset/rollouts like this:
-
-```yaml
-kind: Deployment
-metadata:
-  annotations:
-    reloader.stakater.com/search: "true"
-spec:
-  template:
-```
-
-and Reloader will trigger the rolling upgrade upon modification of any
-`ConfigMap` or `Secret` annotated like this:
-
-```yaml
-kind: ConfigMap
-metadata:
-  annotations:
-    reloader.stakater.com/match: "true"
-data:
-  key: value
-```
-
-provided the secret/configmap is being used in an environment variable, or a
-volume mount.
-
-Please note that `reloader.stakater.com/search` and
-`reloader.stakater.com/auto` do not work together. If you have the
-`reloader.stakater.com/auto: "true"` annotation on your deployment, then it
-will always restart upon a change in configmaps or secrets it uses, regardless
-of whether they have the `reloader.stakater.com/match: "true"` annotation or
-not.
-
-We can also specify a specific configmap or secret which would trigger rolling upgrade only upon change in our specified configmap or secret, this way, it will not trigger rolling upgrade upon changes in all configmaps or secrets used in a deploymentconfig, deployment, daemonset, statefulset or rollout.
-To do this either set the auto annotation to `"false"` (`reloader.stakater.com/auto: "false"`) or remove it altogether, and use annotations mentioned [here](#Configmap) or [here](#Secret)
-
-### Configmap
-
-To perform rolling upgrade when change happens only on specific configmaps use below annotation.
-
-For a `Deployment` called `foo` have a `ConfigMap` called `foo-configmap`. Then add this annotation to main metadata of your `Deployment`
-
-```yaml
-kind: Deployment
-metadata:
-  annotations:
-    configmap.reloader.stakater.com/reload: "foo-configmap"
-spec:
-  template: metadata:
-```
-
-Use comma separated list to define multiple configmaps.
-
-```yaml
-kind: Deployment
-metadata:
-  annotations:
-    configmap.reloader.stakater.com/reload: "foo-configmap,bar-configmap,baz-configmap"
-spec:
-  template: metadata:
-```
-
-### Secret
-
-To perform rolling upgrade when change happens only on specific secrets use below annotation.
-
-For a `Deployment` called `foo` have a `Secret` called `foo-secret`. Then add this annotation to main metadata of your `Deployment`
-
-```yaml
-kind: Deployment
-metadata:
-  annotations:
-    secret.reloader.stakater.com/reload: "foo-secret"
-spec:
-  template: metadata:
-```
-
-Use comma separated list to define multiple secrets.
-
-```yaml
-kind: Deployment
-metadata:
-  annotations:
-    secret.reloader.stakater.com/reload: "foo-secret,bar-secret,baz-secret"
-spec:
-  template: metadata:
-```
 # How to use Ingress NGINX
 
 ## Basic usage
@@ -1056,76 +707,6 @@ Agorakube automatically configure a "/etc/hosts" on kubernetes nodes to points t
 If you wanna use SSO/OIDC **from outside the cluster**, you will need to publish your Nginx-Ingress through a LoadBalancer (Powered by Agorakube/MetalLB, or by your own infra) and configure your external DNS (Used by your users) to resolve "keycloak_oidc.auto_bootstraphost".
 
 All users must be able to access keyclock through "https://keycloak_oidc.auto_bootstraphost". DO NOT USE PORT OTHER THAN 443 ! If you do so, you will notice an Authorization error on kube-APISERVER. ` "Unable to authenticate the request" err="invalid bearer token" `
-
-
-## Manage Keycloak
-
-- Connect to keycloak service and login with Administrator credentials.
-- Create a user in keycloack:
-  - User MUST have a "mail" field (Used by Kubernetes to authenticate user and log actions)
-  - User MUST have "e-mail verifed" set to "ON"
-  - Once user is created, set up a password to that user ("Credentials" panel) and set "Temporary" field to "OFF"
-
-Kubernetes will authorize users according Keycloak (or federated) users and groups.
-
-By default Agorakube create 2 groups - "kubernetes-admin" and "kubernetes-auditor" with associated RBAC created on Kubernetes.
-
-Adding your user to "kubernetes-admin" group will give them all "cluster-admin" rights.
-
-Adding your user to "kubernetes-admin" group will give them a "read-all cluster" rights.
-
-Here are default RBAC. Notice "oidc" prefix used on "Subjects" to identify OIDC/Keycloak users and groups ! 
-
-```
----
-apiVersion: rbac.authorization.k8s.io/v1
-kind: ClusterRoleBinding
-metadata:
-  name: cluster-auditor-oidc
-roleRef:
-  apiGroup: rbac.authorization.k8s.io
-  kind: ClusterRole
-  name: cluster-view
-subjects:
-- apiGroup: rbac.authorization.k8s.io
-  kind: Group
-  name: oidc:kubernetes-auditor
----
-apiVersion: rbac.authorization.k8s.io/v1
-kind: ClusterRoleBinding
-metadata:
-  name: cluster-admin-oidc
-roleRef:
-  apiGroup: rbac.authorization.k8s.io
-  kind: ClusterRole
-  name: cluster-admin
-subjects:
-- apiGroup: rbac.authorization.k8s.io
-  kind: Group
-  name: oidc:kubernetes-admin
-```
-
-## Setup Kubectl for users
-
-Firstlly, you MUST regenerate a private "oidc-client-secret" used by all your users. Do not use the Agorakube default "oidc-client-secret" wich is public !
-  - Connect to keycloak GUI with Administrator credentials
-  - Go to : "Local Realm (default)" > Configure > Clients > kube > Credentials > Clic on "Regenerate Secret".
-
-In order to manage kubernetes, your users must :
-  - install kubectl -> https://kubernetes.io/fr/docs/tasks/tools/install-kubectl/
-  - install kubelogin -> https://github.com/int128/kubelogin
-  - Get Keycloak OIDC-CA cert located on Deploy Agorakube machine at -> /var/agorakube/pki/oidc/oidc-ca.crt (Used to validate TLS with Keycloak)
-
-Once kubectl and kubelogin are installed, and oidc-ca.crt is present on the client machine, you can authenticate yourself to keycloak with the following command:
-
-Sample:
-```
-kubectl oidc-login setup \
-  --oidc-issuer-url=https://oidc.local.lan/auth/realms/local \
-  --oidc-client-id=kube \
-  --oidc-client-secret=79e34f70-581a-4cc3-a2b4-10b5a4d670df \
-  --certificate-authority=C:\Users\PierreILKI\.kube\oidc-ca.crt
-```
 
 # Upgrade And Downgrade Kubernetes with Agorakube
 
