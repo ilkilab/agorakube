@@ -34,12 +34,12 @@
 
 - name: Render templates
   template:
-    dest: "{{ metallbpool_tempdir.path }}/metal-lb-layer2.yaml"
-    src: "metal-lb-layer2.yaml.j2"
+    dest: "{{ metallbpool_tempdir.path }}/metal-lb-ippool.yaml"
+    src: "metal-lb-ippool.yaml.j2"
   changed_when: false
 
 - name: Apply templates
-  command: kubectl --kubeconfig {{ pki_path }}/kubeconfigs/admin/admin.conf apply -f {{ metallbpool_tempdir.path }}/metal-lb-layer2.yaml
+  command: kubectl --kubeconfig {{ pki_path }}/kubeconfigs/admin/admin.conf apply -f {{ metallbpool_tempdir.path }}/metal-lb-ippool.yaml
   register: apply_metallbpool
   changed_when: >
     apply_metallbpool.stdout is search("created")
