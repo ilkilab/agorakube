@@ -38,7 +38,7 @@ The following items are explained in this Readme file for the Agorakube project 
 
 ## What is AGORAKUBE
 
-Agorakube is an easy-to-use, stable Kubernetes distribution (Kubernetes 1.22, 1.23, 1.24).
+Agorakube is an easy-to-use, stable Kubernetes distribution.
 
 Agorakube provides a simple, user-friendly way to deploy and manage K8S Clusters.
 
