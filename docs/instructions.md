@@ -101,7 +101,7 @@ These CPU and memory requirements apply to each Worker in a Agorakube
 
 | Worker Size     | vCPUs  | RAM      |
 | --------------- | -------| ---------|
-| nano            | 1      | 4 GB     |
+| nano            | 1      | 3 GB     |
 | Small           | 2      | 8 GB     |
 | Medium          | 4      | 16 GB    |
 | Large           | 8      | 32 GB    |
