@@ -61,6 +61,9 @@ This project is currently under active development so other customizable options
 
 [![asciicast](https://asciinema.org/a/Y58GrrJG3gPM6GvKsSMCZevbX.svg)](https://asciinema.org/a/Y58GrrJG3gPM6GvKsSMCZevbX)
 
+Below is a diagram of the high-level architecture deployed by AGORAKUBE :
+![Architecture](./images/AGORAKUBE_diagram.png)
+
 ## How to install
 
 To deploy your K8S cluster follow these [instructions](docs/instructions.md).
