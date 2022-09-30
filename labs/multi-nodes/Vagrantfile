@@ -42,15 +42,15 @@ echo '
 [deploy]
 master10 ansible_connection=local
 [masters]
-master10  ansible_host=10.101.20.4
+master10  ansible_host=10.201.20.4
 [etcd]
-master10  ansible_host=10.101.20.4
+master10  ansible_host=10.201.20.4
 [workers]
-worker10  ansible_host=10.101.20.5
-worker20  ansible_host=10.101.20.6
+worker10  ansible_host=10.201.20.5
+worker20  ansible_host=10.201.20.6
 
 [all:vars]
-advertise_masters=10.101.20.4
+advertise_masters=10.201.20.4
 #advertise_masters=kubernetes.localcluster.lan
 # SSH connection settings
 ansible_ssh_extra_args='-o StrictHostKeyChecking=no'
@@ -77,12 +77,12 @@ agorakube_pki:
 
 agorakube_base_components:
   etcd:
-    release: v3.4.16
+    release: v3.4.21
     upgrade: False
     check: true
     data_path: /var/lib/etcd
   kubernetes:
-    release: v1.23.5
+    release: v1.25.2
     upgrade: False
   cloud_controller_manager:
     enabled: False
@@ -103,26 +103,25 @@ agorakube_network:
   nodeport:
     range: 30000-32000
   external_loadbalancing:
-    enabled: False
-    ip_range: 10.10.20.50-10.10.20.250
-    secret_key: LGyt2l9XftOxEUIeFf2w0eCM7KjyQdkHform0gldYBKMORWkfQIsfXW0sQlo1VjJBB17shY5RtLg0klDNqNq4PAhNaub+olSka61LxV73KN2VaJY/snrZmHbdf/a7DfdzaeQ5pzP6D5O7zbUZwfb5ASOhNrG8aDMY3rkf4ZzHkc=
+    enabled: True
+    ip_range: 10.201.20.50-10.201.20.250
   kube_proxy:
     mode: ipvs
     algorithm: rr
 
 agorakube_features:
   coredns:
-    release: "1.9.1"
+    release: "1.9.4"
     replicas: 2
   dashboard:
-    enabled: False
-    generate_admin_token: False
-    release: v2.2.0
+    enabled: True
+    generate_admin_token: True
+    release: v2.7.0
   metrics_server:
     enabled: True
   ingress:
     controller: nginx
-    release: v1.1.0
+    release: v1.3.1
 
 etc_hosts:
   - hostname: "localhost"
@@ -145,6 +144,7 @@ agorakube_encrypt_etcd_keys:
   key1:
     secret: 1fJcKt6vBxMt+AkBanoaxFF2O6ytHIkETNgQWv4b/+Q=
 
+agorakube_sonobuoy_mode: False
 #restoration_snapshot_file: /path/snopshot/file Located on {{ etcd_data_directory }}
 
 ' > /home/vagrant/agorakube/group_vars/all.yaml
@@ -174,7 +174,7 @@ Vagrant.configure("2") do |config|
     config.vm.box = "bento/ubuntu-20.04"
 	  config.vm.define "worker10" do |worker10|
     worker10.vm.hostname = "worker10"
-    worker10.vm.network "private_network", ip: "10.101.20.5"
+    worker10.vm.network "private_network", ip: "10.201.20.5"
     worker10.vm.provider "virtualbox" do |v|
 			v.memory = 3096
 			v.cpus = 1
@@ -183,7 +183,7 @@ Vagrant.configure("2") do |config|
 	end
 	config.vm.define "worker20" do |worker20|
 		worker20.vm.hostname = "worker20"
-		worker20.vm.network "private_network", ip: "10.101.20.6"
+		worker20.vm.network "private_network", ip: "10.201.20.6"
 		worker20.vm.provider "virtualbox" do |v|
 			v.memory = 3096
 			v.cpus = 1
@@ -191,10 +191,10 @@ Vagrant.configure("2") do |config|
 		end
 	end
 	config.vm.define "master10" do |master10|
-    master10.vm.provision "shell", inline: $script2
+		master10.vm.provision "shell", inline: $script2
 		master10.vm.synced_folder ".", "/var/kubeconfig"
 		master10.vm.hostname = "master10"
-		master10.vm.network "private_network", ip: "10.101.20.4"
+		master10.vm.network "private_network", ip: "10.201.20.4"
 		master10.vm.provider "virtualbox" do |v|
 			v.memory = 3096
 			v.cpus = 1
