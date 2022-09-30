@@ -96,6 +96,20 @@ We actually configure the proper VM size for your ETCD depending on the number o
 | 250-1000 | 8 CPU - 32 Go RAM | A large cluster serves fewer than 1,500 clients, fewer than 10,000 of requests per second, and stores no more than 1GB of data |
 | 1000-3000 | 16 CPU - 64 Go RAM | An xLarge cluster serves more than 1,500 clients, more than 10,000 of requests per second, and stores more than 1GB data |
 
+
+These CPU and memory requirements apply to each Worker in a Agorakube
+
+| Worker Size     | vCPUs  | RAM      |
+| --------------- | -------| ---------|
+| nano            | 1      | 4 GB     |
+| Small           | 2      | 8 GB     |
+| Medium          | 4      | 16 GB    |
+| Large           | 8      | 32 GB    |
+| X-Large         | 16     | 64 GB    |
+| XX-Large        | 32     | 128 GB   |
+
+Every use case and environment is different, adapt to your needs.
+
 # Nodes Setup
 
 This section explains how to set up nodes before deploying Kubernetes Clusters with AGORAKUBE.
