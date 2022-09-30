@@ -38,7 +38,7 @@ The following items are explained in this Readme file for the Agorakube project 
 
 ## What is AGORAKUBE
 
-Agorakube is an easy-to-use, stable Kubernetes distribution (Kubernetes 1.22, 1.23, 1.24).
+Agorakube is an easy-to-use, stable Kubernetes distribution.
 
 Agorakube provides a simple, user-friendly way to deploy and manage K8S Clusters.
 
@@ -60,6 +60,9 @@ This distribution is also adaptive by offering the opportunity to customize your
 This project is currently under active development so other customizable options will be added soon.
 
 [![asciicast](https://asciinema.org/a/Y58GrrJG3gPM6GvKsSMCZevbX.svg)](https://asciinema.org/a/Y58GrrJG3gPM6GvKsSMCZevbX)
+
+Below is a diagram of the high-level architecture deployed by AGORAKUBE :
+![Architecture](./images/AGORAKUBE_diagram.png)
 
 ## How to install
 

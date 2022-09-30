@@ -46,3 +46,29 @@
   retries: 300
   delay: 10
   run_once: true
+
+- name: Create tempdir
+  tempfile:
+    state: directory
+    suffix: metallbpool
+  register: metallbpool_tempdir
+  changed_when: false
+
+- name: Render templates
+  template:
+    dest: "{{ metallbpool_tempdir.path }}/metal-lb-ippool.yaml"
+    src: "metal-lb-ippool.yaml.j2"
+  changed_when: false
+
+- name: Apply templates
+  command: kubectl --kubeconfig {{ pki_path }}/kubeconfigs/admin/admin.conf apply -f {{ metallbpool_tempdir.path }}/metal-lb-ippool.yaml
+  register: apply_metallbpool
+  changed_when: >
+    apply_metallbpool.stdout is search("created")
+    or apply_metallbpool.stdout is search("configured")
+
+- name: Cleanup tempdir
+  file:
+    state: absent
+    path: "{{ metallbpool_tempdir.path }}"
+  changed_when: false
