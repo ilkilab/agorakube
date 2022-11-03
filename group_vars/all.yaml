@@ -48,6 +48,7 @@ agorakube_base_components:
 agorakube_network:
   cni_plugin: calico
   calico_autodetection_method: "first-found"
+  enable_vpn: true
   mtu: 0
   cidr:
     pod: 10.33.0.0/16
