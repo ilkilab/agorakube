@@ -20,7 +20,7 @@ agorakube_base_components:
     check: true
     data_path: /var/lib/etcd
   kubernetes:
-    release: v1.23.5
+    release: v1.25.6
     upgrade: False
   cloud_controller_manager:
     enabled: False
