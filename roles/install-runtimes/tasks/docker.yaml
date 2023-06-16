@@ -18,6 +18,13 @@
     path: /usr/sbin/iptables-legacy
   when: ansible_distribution|lower == 'debian'
 
+- name: Configure /etc/docker/daemon.json
+  copy:
+    dest: /etc/docker/daemon.json
+    src: daemon.json
+  notify:
+    - Reload docker
+
 - name: Install Docker for Debian lagorakube distros
   include_tasks: "docker-debian-like.yaml"
   when: is_debian_like
@@ -25,7 +32,6 @@
 - name: Install Docker for Centos lagorakube distros
   include_tasks: "docker-centos-like.yaml"
   when: is_centos_like
-
 
 - name: Start Runtime
   systemd:
@@ -36,13 +42,6 @@
   file:
     path: /etc/docker
     state: directory
-
-- name: Configure /etc/docker/daemon.json
-  copy:
-    dest: /etc/docker/daemon.json
-    src: daemon.json
-  notify:
-    - Reload docker
 
 - name: Make sure docker is running
   systemd:
