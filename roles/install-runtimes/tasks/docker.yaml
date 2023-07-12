@@ -18,6 +18,12 @@
     path: /usr/sbin/iptables-legacy
   when: ansible_distribution|lower == 'debian'
 
+- name: Create /etc/docker directory
+  file:
+    path: /etc/docker
+    state: directory
+    mode: '0755'
+
 - name: Configure /etc/docker/daemon.json
   copy:
     dest: /etc/docker/daemon.json
